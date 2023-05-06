@@ -65,7 +65,7 @@ We have created a video showcasing simple interactions between LLMs, with a LLM 
 
 ```bash
 # Install the dependencies
-git clone [this_repository]
+git clone https://github.com/OpenBMB/AgentVerse.git
 pip install -r requirements.txt
 
 # Install BMTools
