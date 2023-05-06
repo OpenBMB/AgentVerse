@@ -190,8 +190,8 @@ class UI:
                         reset_btn = gr.Button("Reset")
                         #next_btn = gr.Button("Next", variant="primary")
                         next_btn = gr.Button("Next")
-                        start_autoplay_btn = gr.Button("Start Autoplay")
                         stop_autoplay_btn = gr.Button("Stop Autoplay")
+                        start_autoplay_btn = gr.Button("Start Autoplay")
                 #text_output = gr.Textbox()
                 text_output = gr.HTML(self.reset()[1])
 
