@@ -1,0 +1,10 @@
+pyyaml
+langchain>=0.0.155
+fastapi
+uvicorn
+py3langid
+iso-639
+openai
+opencv-python
+gradio
+httpx[socks]
