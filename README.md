@@ -95,7 +95,7 @@ python3 main.py --task nlp_classroom_9players
 We also have a local website demo for this environment. You can launch it with
 
 ```shell
-python3 main_demo.py
+python3 main_demo.py --task nlp_classroom_9players
 ```
 After successfully launching the local server, you can visit [http://127.0.0.1:7860/](http://127.0.0.1:7860/) to view the classroom environment.
 
