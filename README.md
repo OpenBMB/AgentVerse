@@ -26,7 +26,13 @@
 
 - 🤖 **Supports a Wide Range of LLMs**: Our framework is built on top of [LangChain](https://github.com/hwchase17/langchain), which supports a wide range of different large language models. You can also easily customize your own LLM by referring to the [LangChain documentation](https://python.langchain.com/en/latest/modules/models/llms/examples/custom_llm.html).
 
+### 🗓 Coming Soon
 
+- [ ] Demonstrate how to use AgentVerse to support the behavior of agents in a [sandbox environment GPT-World](https://github.com/ShengdingHu/GPT-World)
+- [ ] Add documentation
+- [ ] Support more sophisticated memory for conversation history
+- [ ] Add support for local LLM
+- [ ] ...
 
 ### 👾 A Simple Demo Video
 
@@ -55,7 +61,6 @@ We have created a video showcasing simple interactions between LLMs, with a LLM 
       - [3. Writing an Output Parser](#3-writing-an-output-parser)
   - [Customization Guide for More Complex Environments](#customization-guide-for-more-complex-environments)
 - [🔎 Examples](#-examples)
-- [🗓 Todo](#-todo)
 
 
 
@@ -212,12 +217,3 @@ Here's a brief overview of each example:
 3. `nlp_classroom_9players_group`: This example introduces group discussions. The professor can launch a group discussion when necessary, and students can only interact with other students in the same group during the group discussion.
 4. `nlp_classroom_3players_withtool`: Students in this classroom can use Bing search API when listening to the class.
 5. `math_problem_2players_tools`: A simple example demonstrating how two agents can use the WolframAlpha API to play an arithmetic game.
-
-
-
-## 🗓 Todo
-
-- [ ] Add documentation
-- [ ] Support more sophisticated memory for conversation history
-- [ ] Add support for local LLM
-- [ ] ...
