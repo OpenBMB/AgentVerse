@@ -75,11 +75,15 @@ class UI:
         if not 0 <= stu_num <= 30:
             raise gr.Error("the number of students must be between 0 and 30.")
 
+        """
         # [To-Do] Need to add a function to assign agent numbers into the backend.
+        """
         #self.backend.reset(stu_num)
         #self.stu_num = stu_num
 
+        """
         # [To-Do] Pass the parameters to reset
+        """
         self.backend.reset()
 
         background = cv2.imread("./imgs/background.png")
@@ -150,7 +154,9 @@ class UI:
 
 
         #data.sort(key=lambda item: item["sender"])
+        """
         # [To-Do]; Check the message from the backend: only 1 person can speak
+        """
 
         # If the backend cannot handle this error, use the following code.
         message = ""

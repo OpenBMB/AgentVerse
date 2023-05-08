@@ -32,6 +32,7 @@
 - [ ] Add documentation
 - [ ] Support more sophisticated memory for conversation history
 - [ ] Add support for local LLM
+- [ ] Auto-generate UI based on the given multi-agent environment
 - [ ] ...
 
 ### 👾 A Simple Demo Video
