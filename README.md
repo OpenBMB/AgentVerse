@@ -74,15 +74,17 @@ We have created a video showcasing simple interactions between LLMs, with a LLM 
 git clone https://github.com/OpenBMB/AgentVerse.git
 pip install -r requirements.txt
 
+# Export your OpenAI API key
+export OPENAI_API_KEY="your_api_key_here"
+```
+
+<!--
 # Install BMTools
 cd ../
 git clone git@github.com:OpenBMB/BMTools.git
 cd BMTools
 python setup.py develop
-
-# Export your OpenAI API key
-export OPENAI_API_KEY="your_api_key_here"
-```
+-->
 
 ### Launch the Demo Locally
 

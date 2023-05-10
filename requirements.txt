@@ -8,3 +8,4 @@ openai
 opencv-python
 gradio
 httpx[socks]
+git@github.com:OpenBMB/BMTools.git
