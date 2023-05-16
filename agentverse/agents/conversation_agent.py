@@ -9,24 +9,32 @@ from agentverse.parser import OutputParseError, OutputParser
 from .base import BaseAgent
 
 
-class AgentAction(NamedTuple):
-    """Agent's action to take."""
-
-    tool: str
-    tool_input: Union[str, dict]
-    log: str
-
-
-class AgentFinish(NamedTuple):
-    """Agent's return value."""
-
-    return_values: dict
-    log: str
-
-
 class ConversationAgent(BaseAgent):
     def step(self, env_description: str = "") -> Message:
-        pass
+        prompt = self._fill_prompt_template(env_description)
+
+        parsed_response = None
+        for i in range(self.max_retry):
+            try:
+                response = self.llm.generate_response(prompt)
+                parsed_response = self.output_parser.parse(response)
+                break
+            except Exception as e:
+                logging.error(e)
+                logging.warning("Retrying...")
+                continue
+
+        if parsed_response is None:
+            logging.error(f"{self.name} failed to generate valid response.")
+
+        message = Message(
+            content=""
+            if parsed_response is None
+            else parsed_response.return_values["output"],
+            sender=self.name,
+            receiver=self.get_receiver(),
+        )
+        return message
 
     async def astep(self, env_description: str = "") -> Message:
         """Asynchronous version of step"""
@@ -56,6 +64,13 @@ class ConversationAgent(BaseAgent):
         return message
 
     def _fill_prompt_template(self, env_description: str = "") -> str:
+        """Fill the placeholders in the prompt template
+
+        In the conversation agent, three placeholders are supported:
+        - ${agent_name}: the name of the agent
+        - ${env_description}: the description of the environment
+        - ${role_description}: the description of the role of the agent
+        """
         input_arguments = {
             "agent_name": self.name,
             "env_description": env_description,

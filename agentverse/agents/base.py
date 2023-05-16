@@ -1,6 +1,6 @@
 import logging
 from abc import abstractmethod
-from typing import List, Set, Union
+from typing import List, Set, Union, NamedTuple
 
 from pydantic import BaseModel, Field
 
@@ -8,6 +8,21 @@ from agentverse.llms import BaseLLM
 from agentverse.memory import BaseMemory
 from agentverse.message import Message
 from agentverse.parser import OutputParser
+
+
+class AgentAction(NamedTuple):
+    """Agent's action to take."""
+
+    tool: str
+    tool_input: Union[str, dict]
+    log: str
+
+
+class AgentFinish(NamedTuple):
+    """Agent's return value."""
+
+    return_values: dict
+    log: str
 
 
 class BaseAgent(BaseModel):
