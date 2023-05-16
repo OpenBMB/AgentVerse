@@ -81,7 +81,7 @@ class OpenAIChat(BaseChatModel):
         args = OpenAIChatArgs()
         args = args.dict()
         for k, v in args.items():
-            args.k = kwargs.pop(k, v)
+            args[k] = kwargs.pop(k, v)
         if len(kwargs) > 0:
             logging.warning(f"Unused arguments: {kwargs}")
         super().__init__(args=args, max_retry=max_retry)
@@ -91,7 +91,7 @@ class OpenAIChat(BaseChatModel):
 
     def generate_response(self, prompt: str) -> LLMResult:
         messages = self._construct_messages(prompt)
-        response = openai.Completion.create(messages=messages, **self.args.dict())
+        response = openai.ChatCompletion.create(messages=messages, **self.args.dict())
         return LLMResult(
             content=response["choices"][0]["message"]["content"],
             send_tokens=response["usage"]["prompt_tokens"],
@@ -102,7 +102,7 @@ class OpenAIChat(BaseChatModel):
     async def agenerate_response(self, prompt: str) -> LLMResult:
         messages = self._construct_messages(prompt)
         try:
-            response = await openai.Completion.acreate(
+            response = await openai.ChatCompletion.acreate(
                 messages=messages, **self.args.dict()
             )
         except OpenAIError as error:
