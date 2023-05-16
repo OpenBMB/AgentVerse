@@ -2,19 +2,23 @@ import asyncio
 import logging
 from typing import List
 
-from agentverse.agents import Agent
+# from agentverse.agents import Agent
+from agentverse.agents.conversation_agent import BaseAgent
 from agentverse.environments import BaseEnvironment
-from agentverse.initialization import (load_agent, load_environment,
-                                       prepare_task_config)
+from agentverse.initialization import load_agent, load_environment, prepare_task_config
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=logging.INFO)
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    datefmt="%m/%d/%Y %H:%M:%S",
+    level=logging.INFO,
+)
 
 openai_logger = logging.getLogger("openai")
 openai_logger.setLevel(logging.WARNING)
 
 
-class AgentVerse():
-    def __init__(self, agents: List[Agent], environment: BaseEnvironment):
+class AgentVerse:
+    def __init__(self, agents: List[BaseAgent], environment: BaseEnvironment):
         self.agents = agents
         self.environment = environment
 
@@ -29,13 +33,13 @@ class AgentVerse():
 
         # Build the agents
         agents = []
-        for agent_configs in task_config['agents']:
+        for agent_configs in task_config["agents"]:
             agent = load_agent(agent_configs)
             agents.append(agent)
 
         # Build the environment
-        env_config = task_config['environment']
-        env_config['agents'] = agents
+        env_config = task_config["environment"]
+        env_config["agents"] = agents
         environment = load_environment(env_config)
 
         return cls(agents, environment)
