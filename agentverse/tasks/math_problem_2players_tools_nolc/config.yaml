@@ -15,7 +15,7 @@ prompts:
     ACTION: (a tool name, it can be one of [${tool_names}])
     ACTION INPUT: (input arguments for the tool)
 
-    [Option 2]: When you watn to speak, you can use the following format:
+    [Option 2]: When you want to speak, you can use the following format:
     ACTION: Speak
     ACTION INPUT: (what you want to say in a single line)
 
@@ -53,8 +53,10 @@ agents:
     memory:
       memory_type: chat_history
     prompt_template: *prompt
+    verbose: true
     llm:
-      llm_type: gpt-3.5-turbo
+      llm_type: text-davinci-003
+      model: text-davinci-003
       temperature: 0.7
       max_tokens: 250
     tools: *tools
@@ -65,8 +67,10 @@ agents:
     memory:
       memory_type: chat_history
     prompt_template: *prompt
+    verbose: true
     llm:
-      llm_type: gpt-3.5-turbo
+      llm_type: text-davinci-003
+      model: text-davinci-003
       temperature: 0.7
       max_tokens: 250
     tools: *tools

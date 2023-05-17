@@ -2,8 +2,10 @@ from .base import BaseMemory
 from typing import List
 from pydantic import Field
 from agentverse.message import Message
+from . import memory_registry
 
 
+@memory_registry.register("chat_history")
 class ChatHistoryMemory(BaseMemory):
     messages: List[Message] = Field(default=[])
 
