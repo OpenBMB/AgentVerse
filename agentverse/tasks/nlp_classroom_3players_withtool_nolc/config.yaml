@@ -7,7 +7,7 @@ prompts:
     - When you are speaking, you must use the following format:
     Thought: (your thought)
     Action: Speak
-    Action Input: (what you want to say)
+    Action Input: (what you want to say in without line break)
 
     - When several students raise their hands, you can choose to call on ONE (and only one) of them using the following format:
     Thought: (your thought)
@@ -39,7 +39,7 @@ prompts:
     - During class, you can listen to the professor by responding:
     Thought: (your thought)
     Action: Listen
-    Action Input: None
+    Action Input: "None"
 
     - During class, you have access to the following tools:
     ${tools}
@@ -54,7 +54,7 @@ prompts:
     - If you have a question that cannot be resolved by the tools, you should first raise your hand using the following format to let the professor notice you:
     Thought: (your thought)
     Action: RaiseHand
-    Action Input: None
+    Action Input: "None"
 
     if the professor does call on your name, you MUST speak or ask a question, and use the following format:
     Thought: (your thought)
@@ -156,11 +156,12 @@ agents:
       Your goal is to ensure that the students understand the material, so it's important to speak slowly and clearly. You don't necessarily have to strictly follow the course outline when teaching, you can also talk about some other relevant topics. Remember, in each round of conversation, your response should only address one topic at most. Please take your time and don't rush through the content.
     prompt_template: *professor_prompt
     llm:
-      llm_type: gpt-3.5-turbo
+      llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 250
     memory:
       memory_type: chat_history
+    verbose: true
   - agent_type: tool
     name: Student Oliver
     role_description: You are Oliver, a student curious about Natural Language Processing and you want to learn some basic concepts of NLP. You only have a very basic idea of what NLP is.
@@ -172,12 +173,14 @@ agents:
       llm:
         llm_type: gpt-3.5-turbo
         temperature: 0.7
-      prompt: *summary_prompt
+      prompt_template: *summary_prompt
+      recursive: true
     llm:
-      llm_type: gpt-3.5-turbo
+      llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 100
     tools: *tools
+    verbose: true
   - agent_type: tool
     name: Student Amelia
     role_description: You are Amelia, a shy student who struggles to keep up with the pace of the class. You have some background in computer science but find the concepts being taught in this class challenging.
@@ -189,9 +192,11 @@ agents:
       llm:
         llm_type: gpt-3.5-turbo
         temperature: 0.7
-      prompt: *summary_prompt
+      prompt_template: *summary_prompt
+      recursive: true
     llm:
-      llm_type: gpt-3.5-turbo
+      llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 100
     tools: *tools
+    verbose: true
