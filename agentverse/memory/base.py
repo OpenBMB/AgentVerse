@@ -1,7 +1,9 @@
-from pydantic import BaseModel, Field
-from typing import List, Dict
-from agentverse.message import Message
 from abc import abstractmethod
+from typing import Dict, List
+
+from pydantic import BaseModel, Field
+
+from agentverse.message import Message
 
 
 class BaseMemory(BaseModel):

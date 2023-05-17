@@ -1,16 +1,16 @@
 import logging
-from pydantic import Field
 from string import Template
 from typing import List, NamedTuple, Optional, Union
 
-from agentverse.llms import BaseChatModel, BaseCompletionModel, BaseLLM
+from langchain.tools import BaseTool
+from pydantic import Field
+
 from agentverse.memory import BaseMemory, ChatHistoryMemory
 from agentverse.message import Message
-from agentverse.parser import OutputParserError, OutputParser
-from .base import BaseAgent
-from langchain.tools import BaseTool
 from agentverse.utils import AgentAction, AgentFinish
+
 from . import agent_registry
+from .base import BaseAgent
 
 
 class ToolNotExistError(BaseException):
@@ -70,6 +70,7 @@ class ToolAgent(BaseAgent):
     async def astep(self, env_description: str = "") -> Message:
         """Asynchronous version of step"""
         parsed_response = None
+        # Initialize the tool_observation with tool_memory
         tool_observation = [self.tool_memory.to_string()]
         while True:
             prompt = self._fill_prompt_template(env_description, tool_observation)
@@ -79,6 +80,8 @@ class ToolAgent(BaseAgent):
                     response = await self.llm.agenerate_response(prompt)
                     parsed_response = self.output_parser.parse(response)
                     if isinstance(parsed_response, AgentAction):
+                        # If the response is an action, call the tool
+                        # and append the observation to tool_observation
                         observation = await self._acall_tool(parsed_response)
                         tool_observation.append(
                             parsed_response.log.strip()
@@ -112,7 +115,7 @@ class ToolAgent(BaseAgent):
         if response.tool not in name_to_tool:
             raise ToolNotExistError(response.tool)
         tool = name_to_tool[response.tool]
-        observation = tool.arun(response.tool_input, verbose=self.verbose)
+        observation = tool.run(response.tool_input, verbose=self.verbose)
         return observation
 
     async def _acall_tool(self, response: NamedTuple) -> str:
@@ -127,6 +130,7 @@ class ToolAgent(BaseAgent):
     def _update_tool_memory(self, tool_observation: List[str]):
         """Update the memory of the tool"""
         if len(tool_observation) == 1:
+            # If no tool is called this turn, do nothing
             return
         messages = [
             Message(content=observation) for observation in tool_observation[1:]

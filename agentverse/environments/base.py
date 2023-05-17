@@ -1,17 +1,16 @@
 from __future__ import annotations
-import asyncio
-import logging
-from typing import Any, Dict, List, TYPE_CHECKING
+
 from abc import abstractmethod
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from pydantic import BaseModel
 
 # from agentverse.agents.agent import Agent
 
 if TYPE_CHECKING:
+    from agentverse.agents.base import BaseAgent
     from agentverse.environments.rules.base import Rule
     from agentverse.message import Message
-    from agentverse.agents.base import BaseAgent
 
 
 class BaseEnvironment(BaseModel):

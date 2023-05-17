@@ -1,11 +1,11 @@
 import logging
 from abc import abstractmethod
-from typing import List, Set, Union, NamedTuple
+from typing import List, NamedTuple, Set, Union
 
 from pydantic import BaseModel, Field
 
 from agentverse.llms import BaseLLM
-from agentverse.memory import BaseMemory
+from agentverse.memory import BaseMemory, ChatHistoryMemory
 from agentverse.message import Message
 from agentverse.parser import OutputParser
 
@@ -16,7 +16,7 @@ class BaseAgent(BaseModel):
     output_parser: OutputParser
     prompt_template: str
     role_description: str = Field(default="")
-    memory: BaseMemory = Field(default_factory=BaseMemory)
+    memory: BaseMemory = Field(default_factory=ChatHistoryMemory)
     max_retry: int = Field(default=3)
     receiver: Set[str] = Field(default=set({"all"}))
     async_mode: bool = Field(default=True)
