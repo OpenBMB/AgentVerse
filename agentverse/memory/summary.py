@@ -58,9 +58,6 @@ class SummaryMemory(BaseMemory):
         return v
 
     def add_message(self, messages: List[Message]) -> None:
-        import pdb
-
-        pdb.set_trace()
         new_lines = "\n".join([message.content for message in messages])
         self.update_buffer(new_lines)
 

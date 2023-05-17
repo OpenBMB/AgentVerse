@@ -76,9 +76,6 @@ class ToolAgent(BaseAgent):
 
             for i in range(self.max_retry):
                 try:
-                    import pdb
-
-                    pdb.set_trace()
                     response = await self.llm.agenerate_response(prompt)
                     parsed_response = self.output_parser.parse(response)
                     if isinstance(parsed_response, AgentAction):
@@ -115,7 +112,7 @@ class ToolAgent(BaseAgent):
         if response.tool not in name_to_tool:
             raise ToolNotExistError(response.tool)
         tool = name_to_tool[response.tool]
-        observation = tool.run(response.tool_input, verbose=self.verbose)
+        observation = tool.arun(response.tool_input, verbose=self.verbose)
         return observation
 
     async def _acall_tool(self, response: NamedTuple) -> str:

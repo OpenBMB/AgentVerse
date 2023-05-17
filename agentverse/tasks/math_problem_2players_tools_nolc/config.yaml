@@ -91,13 +91,6 @@ agents:
     role_description: "You are Alice."
     memory:
       memory_type: chat_history
-    tool_memory:
-      memory_type: summary
-      llm:
-        llm_type: gpt-3.5-turbo
-        temperature: 0.7
-      prompt_template: *summary_prompt
-      recursive: true
     prompt_template: *prompt
     verbose: true
     llm:
@@ -112,13 +105,6 @@ agents:
     role_description: "You are Bob."
     memory:
       memory_type: chat_history
-    tool_memory:
-      memory_type: summary
-      llm:
-        llm_type: gpt-3.5-turbo
-        temperature: 0.7
-      prompt_template: *summary_prompt
-      recursive: true
     prompt_template: *prompt
     verbose: true
     llm:
