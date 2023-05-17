@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import List, Tuple, Set
 
-from langchain.schema import AgentAction, ChatMessage
+# from langchain.schema import AgentAction, ChatMessage
+from agentverse.utils import AgentAction
 
 
 class Message(BaseModel):

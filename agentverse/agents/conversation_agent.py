@@ -82,8 +82,8 @@ class ConversationAgent(BaseAgent):
         }
         return Template(self.prompt_template).safe_substitute(input_arguments)
 
-    def add_message_to_memory(self, message: Message) -> None:
-        self.memory.add_message(message)
+    def add_message_to_memory(self, messages: List[Message]) -> None:
+        self.memory.add_message(messages)
 
     def reset(self) -> None:
         """Reset the agent"""

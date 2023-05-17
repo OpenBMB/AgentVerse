@@ -7,8 +7,9 @@ from agentverse.llms import BaseChatModel, BaseCompletionModel, BaseLLM
 from agentverse.memory import BaseMemory, ChatHistoryMemory
 from agentverse.message import Message
 from agentverse.parser import OutputParserError, OutputParser
-from .base import BaseAgent, AgentAction, AgentFinish
+from .base import BaseAgent
 from langchain.tools import BaseTool
+from agentverse.utils import AgentAction, AgentFinish
 from . import agent_registry
 
 
@@ -114,10 +115,7 @@ class ToolAgent(BaseAgent):
         if response.tool not in name_to_tool:
             raise ToolNotExistError(response.tool)
         tool = name_to_tool[response.tool]
-        observation = tool.arun(response.tool_input, verbose=self.verbose)
-        import pdb
-
-        pdb.set_trace()
+        observation = tool.run(response.tool_input, verbose=self.verbose)
         return observation
 
     async def _acall_tool(self, response: NamedTuple) -> str:
@@ -131,8 +129,12 @@ class ToolAgent(BaseAgent):
 
     def _update_tool_memory(self, tool_observation: List[str]):
         """Update the memory of the tool"""
-        for observation in tool_observation[1:]:
-            self.tool_memory.add_message(Message(content=observation))
+        if len(tool_observation) == 1:
+            return
+        messages = [
+            Message(content=observation) for observation in tool_observation[1:]
+        ]
+        self.tool_memory.add_message(messages)
 
     def _fill_prompt_template(
         self, env_description: str = "", tool_observation: List[str] = []
@@ -162,8 +164,8 @@ class ToolAgent(BaseAgent):
         }
         return Template(self.prompt_template).safe_substitute(input_arguments)
 
-    def add_message_to_memory(self, message: Message) -> None:
-        self.memory.add_message(message)
+    def add_message_to_memory(self, messages: List[Message]) -> None:
+        self.memory.add_message(messages)
 
     def reset(self) -> None:
         """Reset the agent"""

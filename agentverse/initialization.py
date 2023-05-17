@@ -26,12 +26,6 @@ from agentverse.parser import output_parser_registry
 
 def load_llm(llm_config: Dict):
     llm_type = llm_config.pop("llm_type", "text-davinci-003")
-    # if llm_type == "gpt-3.5-turbo":
-    #     return OpenAIChat(**llm_config)
-    # elif llm_type == "text-davinci-003":
-    #     return OpenAICompletion(**llm_config)
-    # else:
-    #     raise NotImplementedError("LLM type {} not implemented".format(llm_type))
     return llm_registry.build(llm_type, **llm_config)
 
 
@@ -92,12 +86,6 @@ def prepare_task_config(task):
         llm = load_llm(agent_configs.get("llm", "text-davinci-003"))
         agent_configs["llm"] = llm
         agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
-
-        # tool_strings = "\n".join(
-        #     [f"> {tool.name}: {tool.description}" for tool in agent_configs["tools"]]
-        # )
-
-        # tool_names = ", ".join([tool.name for tool in agent_configs["tools"]])
 
         agent_configs["output_parser"] = task_config["output_parser"]
 

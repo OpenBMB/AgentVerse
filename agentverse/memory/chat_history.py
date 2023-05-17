@@ -9,8 +9,9 @@ from . import memory_registry
 class ChatHistoryMemory(BaseMemory):
     messages: List[Message] = Field(default=[])
 
-    def add_message(self, message: Message) -> None:
-        self.messages.append(message)
+    def add_message(self, messages: List[Message]) -> None:
+        for message in messages:
+            self.messages.append(message)
 
     def to_string(self, add_sender_prefix: bool = False) -> str:
         if add_sender_prefix:

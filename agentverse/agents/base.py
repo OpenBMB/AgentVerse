@@ -10,21 +10,6 @@ from agentverse.message import Message
 from agentverse.parser import OutputParser
 
 
-class AgentAction(NamedTuple):
-    """Agent's action to take."""
-
-    tool: str
-    tool_input: Union[str, dict]
-    log: str
-
-
-class AgentFinish(NamedTuple):
-    """Agent's return value."""
-
-    return_values: dict
-    log: str
-
-
 class BaseAgent(BaseModel):
     name: str
     llm: BaseLLM
@@ -52,7 +37,7 @@ class BaseAgent(BaseModel):
         pass
 
     @abstractmethod
-    def add_message_to_memory(self, message: Message) -> None:
+    def add_message_to_memory(self, messages: List[Message]) -> None:
         """Add a message to the memory"""
         pass
 

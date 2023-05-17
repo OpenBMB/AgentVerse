@@ -6,7 +6,7 @@ from abc import abstractmethod
 
 class BaseMemory(BaseModel):
     @abstractmethod
-    def add_message(self, message: Message) -> None:
+    def add_message(self, messages: List[Message]) -> None:
         pass
 
     @abstractmethod

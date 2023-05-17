@@ -9,7 +9,7 @@ from langchain.agents import AgentOutputParser
 
 from agentverse.parser import OutputParserError, output_parser_registry, OutputParser
 from agentverse.llms.base import LLMResult
-from agentverse.agents.base import AgentAction, AgentFinish
+from agentverse.utils import AgentAction, AgentFinish
 
 
 @output_parser_registry.register("math_problem_2players_tools_nolc")
