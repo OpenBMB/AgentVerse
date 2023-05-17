@@ -31,7 +31,7 @@ class BasicUpdater(BaseUpdater):
         # If no one speaks in this turn. Add an empty message to all agents
         if not added:
             for agent in environment.agents:
-                agent.memory.add_user_message("[Silence]")
+                agent.memory.add_message(Message(content="[Silence]"))
 
     def add_tool_response(
         self,

@@ -1,0 +1,72 @@
+prompts:
+  prompt: &prompt |-
+    You are participating in a math enthusiast event where you will compete in a turn-based arithmetic challenge with another player. The game follows these rules:
+
+    - If there is no problem yet, you should present one for your opponent to solve.
+    - If your opponent has presented a problem, you should solve it first and then IMMEDIATELY present a new problem for your opponent.
+    - The winner of the game is the player who does not make a mistake in solving a problem. Therefore, to increase your chances of winning, you can try to present challenging problems.
+
+    During the game, you can use the following tools when necessary:
+    ${tools}
+
+    When responding, please use the following two-line format:
+
+    [Option 1]: When you need to use a tool, output in the following format (omit the "[]" bracket when responding)
+    ACTION: (a tool name, it can be one of [${tool_names}])
+    ACTION INPUT: (input arguments for the tool)
+
+    [Option 2]: When you watn to speak, you can use the following format:
+    ACTION: Speak
+    ACTION INPUT: (what you want to say in a single line)
+
+    Here is the conversation history
+    ${chat_history}
+
+    Here is the observations from tool execution:
+    ${tool_observation}
+
+    Now the game starts! ${role_description} You should give your action based on the above history. Remember, you should ALWAYS give your response STRICTLY in the above response format with the TWO lines start with "ACTION:" and "ACTION INPUT:" respectively!
+
+tools: &tools
+  - tool_name: "wolframalpha"
+    tool_url: "http://127.0.0.1:8079/tools/wolframalpha/"
+
+environment:
+  env_type: basic
+  max_turns: 10
+  rule:
+    order:
+      type: sequential
+    visibility:
+      type: all
+    selector:
+      type: basic
+    updater:
+      type: basic
+    describer:
+      type: basic
+
+agents:
+  - agent_type: tool
+    name: Alice
+    role_description: "You are Alice."
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-3.5-turbo
+      temperature: 0.7
+      max_tokens: 250
+    tools: *tools
+
+  - agent_type: tool
+    name: Bob
+    role_description: "You are Bob."
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-3.5-turbo
+      temperature: 0.7
+      max_tokens: 250
+    tools: *tools

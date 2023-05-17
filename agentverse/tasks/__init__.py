@@ -9,3 +9,6 @@ from .nlp_classroom_3players_withtool.output_parser import (
 )
 from .nlp_classroom_9players_group.output_parser import NlpClassroom9PlayersGroupParser
 from .nlp_classroom_3players_nolc.output_parser import NlpClassroom3PlayersNolcParser
+from .math_problem_2players_tools_nolc.output_parser import (
+    MathProblem2PlayersToolsNolcParser,
+)

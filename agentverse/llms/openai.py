@@ -32,7 +32,7 @@ class OpenAIChatArgs(BaseModelArgs):
     temperature: float = Field(default=1.0)
     top_p: int = Field(default=1)
     n: int = Field(default=1)
-    stop: Optional[Union[str, List]] = Field(default=None)
+    stop: Optional[Union[str, List]] = Field(default=["\nObservation:"])
     presence_penalty: int = Field(default=0)
     frequency_penalty: int = Field(default=0)
 

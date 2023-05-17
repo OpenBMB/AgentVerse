@@ -13,7 +13,12 @@ class ChatHistoryMemory(BaseMemory):
     def to_string(self, add_sender_prefix: bool = False) -> str:
         if add_sender_prefix:
             return "\n".join(
-                [f"[{message.sender}]: {message.content}" for message in self.messages]
+                [
+                    f"[{message.sender}]: {message.content}"
+                    if message.sender != ""
+                    else message.content
+                    for message in self.messages
+                ]
             )
         else:
             return "\n".join([message.content for message in self.messages])

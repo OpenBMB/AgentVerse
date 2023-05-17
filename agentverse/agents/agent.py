@@ -25,7 +25,7 @@ from langchain.tools.base import BaseTool
 
 # from agentverse.memory.memory import SummaryMemory
 from agentverse.message import Message
-from agentverse.parser import OutputParseError
+from agentverse.parser import OutputParserError
 
 try:
     import openai
@@ -119,7 +119,7 @@ class Agent(langchainAgent):
             try:
                 response = executor(input_arguments)
                 break
-            except OutputParseError as e:
+            except OutputParserError as e:
                 print(e)
                 print("Retrying...")
                 continue
@@ -168,7 +168,7 @@ class Agent(langchainAgent):
             try:
                 response = await executor.acall(input_arguments)
                 break
-            except OutputParseError as e:
+            except OutputParserError as e:
                 print(e)
                 print("Retrying...")
                 continue

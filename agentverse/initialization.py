@@ -16,8 +16,7 @@ from langchain.memory.prompt import _DEFAULT_SUMMARIZER_TEMPLATE
 from langchain.prompts import PromptTemplate
 
 # from agentverse.agents import Agent
-from agentverse.agents.conversation_agent import BaseAgent
-from agentverse.agents.conversation_agent import ConversationAgent
+from agentverse.agents import agent_registry
 from agentverse.environments import BaseEnvironment, env_registry
 from agentverse.memory import ChatHistoryMemory
 
@@ -61,17 +60,13 @@ def load_tools(tool_config: List[Dict]):
 
 
 def load_environment(env_config: Dict) -> BaseEnvironment:
-    env_type = env_config.pop("env_type", "base")
+    env_type = env_config.pop("env_type", "basic")
     return env_registry.build(env_type, **env_config)
 
 
 def load_agent(agent_config: Dict) -> langchainAgent:
     agent_type = agent_config.pop("agent_type", "conversation")
-    if agent_type == "conversation":
-        # agent = Agent.from_llm_and_tools(**agent_config)
-        agent = ConversationAgent(**agent_config)
-    else:
-        raise NotImplementedError("Agent type {} not found".format(agent_type))
+    agent = agent_registry.build(agent_type, **agent_config)
     return agent
 
 

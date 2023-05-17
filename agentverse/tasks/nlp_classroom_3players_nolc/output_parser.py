@@ -7,7 +7,7 @@ from typing import Union
 from agentverse.parser import OutputParser, LLMResult
 from langchain.schema import AgentAction, AgentFinish
 
-from agentverse.parser import OutputParseError, output_parser_registry
+from agentverse.parser import OutputParserError, output_parser_registry
 
 
 @output_parser_registry.register("nlp_classroom_3players_nolc")
@@ -22,10 +22,10 @@ class NlpClassroom3PlayersNolcParser(OutputParser):
             and cleaned_output[0].startswith("Action:")
             and cleaned_output[1].startswith("Action Input:")
         ):
-            raise OutputParseError(text)
+            raise OutputParserError(text)
         action = cleaned_output[0][len("Action:") :].strip()
         action_input = cleaned_output[1][len("Action Input:") :].strip()
         if action == "Speak":
             return AgentFinish({"output": action_input}, text)
         else:
-            raise OutputParseError(text)
+            raise OutputParserError(text)

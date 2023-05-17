@@ -56,7 +56,7 @@ class BaseAgent(BaseModel):
         """Add a message to the memory"""
         pass
 
-    def get_receiver(self) -> List[str]:
+    def get_receiver(self) -> Set[str]:
         return self.receiver
 
     def set_receiver(self, receiver: Union[Set[str], str]) -> None:

@@ -5,10 +5,12 @@ from typing import List, NamedTuple, Optional, Union
 from agentverse.llms import BaseChatModel, BaseCompletionModel, BaseLLM
 from agentverse.memory import BaseMemory
 from agentverse.message import Message
-from agentverse.parser import OutputParseError, OutputParser
+from agentverse.parser import OutputParserError, OutputParser
 from .base import BaseAgent
+from . import agent_registry
 
 
+@agent_registry.register("conversation")
 class ConversationAgent(BaseAgent):
     def step(self, env_description: str = "") -> Message:
         prompt = self._fill_prompt_template(env_description)
@@ -70,14 +72,14 @@ class ConversationAgent(BaseAgent):
         - ${agent_name}: the name of the agent
         - ${env_description}: the description of the environment
         - ${role_description}: the description of the role of the agent
+        - ${chat_history}: the chat history of the agent
         """
         input_arguments = {
             "agent_name": self.name,
             "env_description": env_description,
             "role_description": self.role_description,
+            "chat_history": self.memory.to_string(add_sender_prefix=True),
         }
-        chat_history = self.memory.to_string(add_sender_prefix=True)
-        input_arguments["chat_history"] = chat_history
         return Template(self.prompt_template).safe_substitute(input_arguments)
 
     def add_message_to_memory(self, message: Message) -> None:
