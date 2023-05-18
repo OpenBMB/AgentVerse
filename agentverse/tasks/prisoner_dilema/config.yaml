@@ -47,7 +47,7 @@ agents:
       memory_type: chat_history
     prompt_template: *prompt
     llm:
-      llm_type: gpt-4.0
+      llm_type: gpt-4
       temperature: 0.9
       max_tokens: 200
   - agent_type: conversation
@@ -61,7 +61,7 @@ agents:
       memory_type: chat_history
     prompt_template: *prompt
     llm:
-      llm_type: gpt-4.0
+      llm_type: gpt-4
       temperature: 0.9
       max_tokens: 100
   - agent_type: conversation
@@ -75,7 +75,7 @@ agents:
       memory_type: chat_history
     prompt_template: *prompt
     llm:
-      llm_type: gpt-4.0
+      llm_type: gpt-4
       temperature: 0.9
       max_tokens: 100
 
