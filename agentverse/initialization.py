@@ -26,7 +26,7 @@ from agentverse.parser import output_parser_registry
 
 def load_llm(llm_config: Dict):
     llm_type = llm_config.pop("llm_type", "text-davinci-003")
-    if llm_type == "gpt-3.5-turbo":
+    if llm_type in ["gpt-3.5-turbo", "gpt-4.0"]:
         return OpenAIChat(**llm_config)
     elif llm_type == "text-davinci-003":
         return OpenAICompletion(**llm_config)

@@ -7,7 +7,7 @@ from pydantic import BaseModel
 output_parser_registry = Registry(name="OutputParserRegistry")
 
 
-class OutputParserError(BaseException):
+class OutputParserError(Exception):
     """Exception raised when parsing output from a command fails."""
 
     def __init__(self, message):

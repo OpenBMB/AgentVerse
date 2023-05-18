@@ -20,7 +20,7 @@ class ConversationAgent(BaseAgent):
             try:
                 response = self.llm.generate_response(prompt)
                 parsed_response = self.output_parser.parse(response)
-                break
+                # break
             except Exception as e:
                 logging.error(e)
                 logging.warning("Retrying...")
@@ -46,7 +46,7 @@ class ConversationAgent(BaseAgent):
         for i in range(self.max_retry):
             try:
                 response = await self.llm.agenerate_response(prompt)
-                parsed_response = self.output_parser.parse(response)
+                parsed_response = self.output_parser.parse(self, response)
                 break
             except Exception as e:
                 logging.error(e)
