@@ -12,4 +12,10 @@ from .nlp_classroom_3players_nolc.output_parser import NlpClassroom3PlayersNolcP
 from .math_problem_2players_tools_nolc.output_parser import (
     MathProblem2PlayersToolsNolcParser,
 )
+
 from .prisoner_dilema.output_parser import PrisonerDilemaParser
+
+from .nlp_classroom_3players_withtool_nolc.output_parser import (
+    NlpClassroom3PlayersWithtoolNolcParser,
+)
+

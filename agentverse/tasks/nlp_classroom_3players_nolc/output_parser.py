@@ -5,7 +5,9 @@ from typing import Union
 
 # from langchain.agents import AgentOutputParser
 from agentverse.parser import OutputParser, LLMResult
-from langchain.schema import AgentAction, AgentFinish
+
+# from langchain.schema import AgentAction, AgentFinish
+from agentverse.utils import AgentAction, AgentFinish
 
 from agentverse.parser import OutputParserError, output_parser_registry
 

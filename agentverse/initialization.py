@@ -9,7 +9,7 @@ from langchain.agents import Agent as langchainAgent
 # from langchain.chat_models.base import BaseChatModel
 # from langchain.llms import OpenAI
 # from langchain.llms.base import BaseLLM
-from agentverse.llms import OpenAICompletion, OpenAIChat
+from agentverse.llms import OpenAICompletion, OpenAIChat, llm_registry
 
 # from langchain.memory import ChatMessageHistory
 from langchain.memory.prompt import _DEFAULT_SUMMARIZER_TEMPLATE
@@ -18,7 +18,7 @@ from langchain.prompts import PromptTemplate
 # from agentverse.agents import Agent
 from agentverse.agents import agent_registry
 from agentverse.environments import BaseEnvironment, env_registry
-from agentverse.memory import ChatHistoryMemory
+from agentverse.memory import memory_registry
 
 # from agentverse.memory.memory import SummaryMemory
 from agentverse.parser import output_parser_registry
@@ -26,27 +26,14 @@ from agentverse.parser import output_parser_registry
 
 def load_llm(llm_config: Dict):
     llm_type = llm_config.pop("llm_type", "text-davinci-003")
-    if llm_type in ["gpt-3.5-turbo", "gpt-4.0"]:
-        return OpenAIChat(**llm_config)
-    elif llm_type == "text-davinci-003":
-        return OpenAICompletion(**llm_config)
-    else:
-        raise NotImplementedError("LLM type {} not implemented".format(llm_type))
+
+    return llm_registry.build(llm_type, **llm_config)
+
 
 
 def load_memory(memory_config: Dict):
-    memory_type = memory_config.pop("memory_type", "chat_message_history")
-    if memory_type == "chat_history":
-        return ChatHistoryMemory()
-    elif memory_type == "summary":
-        llm = load_llm(memory_config.pop("llm", "text-davinci-003"))
-        prompt = memory_config.pop("prompt", _DEFAULT_SUMMARIZER_TEMPLATE)
-        memory_config["prompt"] = PromptTemplate(
-            input_variables=["summary", "new_lines"], template=prompt
-        )
-        return SummaryMemory(llm=llm, **memory_config)
-    else:
-        raise NotImplementedError("Memory type {} not implemented".format(memory_type))
+    memory_type = memory_config.pop("memory_type", "chat_history")
+    return memory_registry.build(memory_type, **memory_config)
 
 
 def load_tools(tool_config: List[Dict]):
@@ -101,12 +88,6 @@ def prepare_task_config(task):
         llm = load_llm(agent_configs.get("llm", "text-davinci-003"))
         agent_configs["llm"] = llm
         agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
-
-        # tool_strings = "\n".join(
-        #     [f"> {tool.name}: {tool.description}" for tool in agent_configs["tools"]]
-        # )
-
-        # tool_names = ", ".join([tool.name for tool in agent_configs["tools"]])
 
         agent_configs["output_parser"] = task_config["output_parser"]
 
