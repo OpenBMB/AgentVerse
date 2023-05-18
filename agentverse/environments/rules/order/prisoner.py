@@ -40,7 +40,7 @@ class PrisonerOrder(BaseOrder):
                 next_prisoner = self.last_prisoner_index
                 self.last_prisoner_index = self.switch_func[self.last_prisoner_index]
                 return [next_prisoner]
-            elif sender.startswith("Prisoner"):
+            elif sender.startswith("Suspect"):
                 # 3. when one prisoner made his action, let the police tell another prisoner
                 return [0]
         else:

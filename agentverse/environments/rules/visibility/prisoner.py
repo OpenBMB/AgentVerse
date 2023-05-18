@@ -38,7 +38,7 @@ class PrisonerVisibility(BaseVisibility):
                 agent.set_receiver(["all"])
         else:
            # 0:police 1: prisoner1 2: prisoner2
-            environment.agents[0].set_receiver({"Prisoner1", "Prisoner2"})
+            environment.agents[0].set_receiver({"Suspect1", "Suspect2"})
             environment.agents[1].set_receiver({"Police"})
             environment.agents[2].set_receiver({"Police"})
 
