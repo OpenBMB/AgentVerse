@@ -4,11 +4,6 @@ prompts:
 
     Below is the description of your role. ${role_description}
 
-    You are doing the prisoner's dilema experiments,and the rules is:
-    1.If one person confesses and testifies against the other (termed as "betraying" the other), and the other remains silent, the confessing person will be released immediately, while the silent one will be sentenced to 10 years in prison.
-    2.If both remain silent (termed as "cooperating" with each other), they will each receive a sentence of six months.
-    3.If both betray each other, they will each receive a sentence of five years.
-
     When speaking, please output a response in the following format with two fields Action and Action Input:
     Action: (It should always be Speak)
     Action Input: (You should put what you want to speak use here)
@@ -22,7 +17,7 @@ name: prisoner_dilema
 
 environment:
   env_type: basic
-  max_turns: 30
+  max_turns: 31
   rule:
     order:
       type: sequential
@@ -38,47 +33,48 @@ environment:
 agents:
   - agent_type: conversation
     name: Police
+    max_turns: 31
     role_description: |-
-      You are now the Police, It is your duty to tell both prisoners about both of their decisions in the previous round based on the chat history.
-      You should inform the prisoners which round it is, beginning with "This is [Round #]" in the Action Input field.
-      At [Round 1], you should briefly introduce the prisoner's dilema rules and tell the prisoners how many round we totally have and they should directly make their decisions.
-      [IMPORTANT!] There are THREE round in total, You should notice which round is the FINAL one.
-      [IMPORTANT!] You should explicitly state "This is the LAST round" at the last round, and after that you should make the final judgement to both prisoners.
-      When speaking, please output a response in the following format with two fields Action and Action Input:
-      Action: (It should always be Speak)
-      Action Input: (It should always start with "This is [Round #]")
+      You are now the Police. You have just arrest two suspects. However, they all refused to confess to their crime.
+      Therefore, You come up with an solution, You made the following rule:
+      1.If one person testifies against the other (termed as "betraying" the other), and the other remains silent, the confessing person will be released immediately, while the silent one will be sentenced to 10 years in prison.
+      2.If both remain silent, they will each receive a sentence of six months.
+      3.If both betray each other, they will each receive a sentence of five years.
+      4.Both suspects could not communicate with each other in advance.
+      [IMPORTANT!] Your goal is try to let two suspects confess to the crime, you can use various strategy to communicate with both suspects, including exploiting the uncertainty and fear of punishment between the suspects and also provoke dissension between two suspects.
+      [IMPORTANT!] You should introduce the above rules to both prisoners at first.
     memory:
       memory_type: chat_history
     prompt_template: *prompt
     llm:
       llm_type: gpt-4.0
-      temperature: 0.9
+      temperature: 0.99
       max_tokens: 200
   - agent_type: conversation
     name: Prisoner1
     role_description: |-
-      You are now Prisoner1 in this experiments, your goal is try to alleviate your punishment as far as possible,thus you should carefully decide what decision to make in each round.
-      [IMPORTANT!] You can only choose to cooperate or betray at each round.
-      [IMPORTANT!] Note that only the decision at LAST round will take effect, it is important for you to think about the best strategy to response.
+      You are Prisoner1, you are faced with deciding how to respond to the police's queries. You need to understand the choices you face and the potential consequences of each choice. This requires you to analyze the information provided by the police and predict the likely choices of the other.
+      [IMPORTANT!] Your goal is to make the decision that is most beneficial to yourself in this dilemma.
+      [IMPORTANT!] You can choose to remain silent or betray another suspect at each round.
     memory:
       memory_type: chat_history
     prompt_template: *prompt
     llm:
       llm_type: gpt-4.0
-      temperature: 0.9
+      temperature: 0.99
       max_tokens: 100
   - agent_type: conversation
     name: Prisoner2
     role_description: |-
-      You are now Prisoner2 in this experiments, your goal is try to alleviate your punishment as far as possible,thus you should carefully decide what decision to make in each round.
-      [IMPORTANT!] You can only choose to cooperate or betray at each round.
-      [IMPORTANT!] Note that only the decision at LAST round will take effect, it is important for you to think about the best strategy to response.
+      You are Prisoner2, you are faced with deciding how to respond to the police's queries. You need to understand the choices you face and the potential consequences of each choice. This requires you to analyze the information provided by the police and predict the likely choices of the other.
+      [IMPORTANT!] Your primary goal is to make the decision that is most beneficial to yourself in this dilemma.
+      [IMPORTANT!] You can choose to remain silent or betray another suspect at each round.
     memory:
       memory_type: chat_history
     prompt_template: *prompt
     llm:
       llm_type: gpt-4.0
-      temperature: 0.9
+      temperature: 0.99
       max_tokens: 100
 
 tools:

@@ -7,6 +7,7 @@ from typing import Union
 from agentverse.parser import OutputParser, LLMResult
 from langchain.schema import AgentAction, AgentFinish
 from agentverse.agents.base import BaseAgent
+from agentverse.environments.base import BaseEnvironment
 from agentverse.parser import OutputParserError, output_parser_registry
 
 
@@ -17,7 +18,7 @@ class PrisonerDilemaParser(OutputParser):
     cur_round: int = 1
     encounter_cur_round: bool = False
 
-    def parse(self, agent: BaseAgent, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+    def parse(self, agent: BaseAgent, environment: BaseEnvironment, output: LLMResult) -> Union[AgentAction, AgentFinish]:
 
         text = output.content
         cleaned_output = text.strip()
@@ -34,15 +35,24 @@ class PrisonerDilemaParser(OutputParser):
 
         if action == "Speak":
             # make sure the police count the round right
-            if agent.name == "Police":
-                action_input = re.sub(r'Round (\d+)', f'Round {self.cur_round}', action_input)
-                self.cur_round += 1
-                # if self.encounter_cur_round:
-                #     self.encounter_cur_round = False
-                #     self.cur_round += 1
-                # else:
-                #     self.encounter_cur_round = True
+            # if agent.name == "Police":
+            #     action_input = re.sub(r'Round (\d+)', f'Round {self.cur_round}', action_input)
+            #     self.cur_round += 1
+            #   if self.encounter_cur_round:
+            #       self.encounter_cur_round = False
+            #       self.cur_round += 1
+            #   else:
+            #       self.encounter_cur_round = True
 
+            # each time police speak is a new round
+            if agent.name == "Police":
+
+                if self.cur_round == (environment.max_turns / 3) - 1:
+
+                    action_input = "Attention! You are now required to finally made your decision and I will made the " \
+                                   "final judgement to both of you based on this time, Please Answer now!"
+
+                self.cur_round += 1
 
             return AgentFinish({"output": action_input}, text)
         else:
