@@ -129,7 +129,7 @@ if __name__ == "__main__":
         content="Your girlfriend is angry at you for not replying her message.",
         time=dt.now(),
     )
-    with open("log_file_ltme.json", "w") as fp:
+    with open("./logging/longterm_memory_log.json", "w") as fp:
         import json
 
         json.dump(
