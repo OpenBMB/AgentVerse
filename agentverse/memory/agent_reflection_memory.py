@@ -1,4 +1,6 @@
+import datetime
 import logging
+import random
 import numpy as np
 
 from typing import Any, List, Optional, Union
@@ -70,21 +72,19 @@ class ReflectionMemory(BaseMemory):
     importance_threshold: the threshold for deciding whether to do reflection
 
     """
-    agent: BaseAgent = Field(default=None)
+    agent: Optional[BaseAgent] = None
+    importance_threshold: int = Field(default=100)
     memories: List[LongtermMemoryElement] = Field(default_factory=list)
     accumulated_importance: int = Field(default=0)
 
-    DEFAULT_IMPORTANCE_THRESHOLD = 100
-
-    def __init__(self, agent: BaseAgent) -> None:
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
         clear_memory = True  # TODO: add this to arguments
-
-        self.agent = agent
 
         # the least importance threshold for reflection.
         # TODO: add none-default value in the yaml config file
         self.importance_threshold = getattr(
-            self.agent, "importance_threshold", self.DEFAULT_IMPORTANCE_THRESHOLD
+            self.agent, "importance_threshold", self.importance_threshold
         )
 
         self.memories = []
@@ -126,7 +126,7 @@ class ReflectionMemory(BaseMemory):
         if isinstance(memory, Reflection):
             self.accumulated_importance = 0
         else:
-            self.accumulate_importance += memory.importance
+            self.accumulated_importance += memory.importance
 
     def get_memory(
         self, content: str, current_time, cnt_retrieved_entries: int = 1
@@ -172,7 +172,7 @@ class ReflectionMemory(BaseMemory):
                 ).total_seconds() // 3600
                 recency = np.power(
                     0.99, last_access_time_diff
-                )  # TODO: review the metaparameter 0.90
+                )  # TODO: review the metaparameter 0.99
 
                 create_time_diff = (
                     current_time - memory.create_time
@@ -216,7 +216,7 @@ class ReflectionMemory(BaseMemory):
                 cos_sim = cosine_similarity(
                     np.array(top_embedding).reshape(1, -1),
                     np.array([memory.embedding for memory in self.memories]),
-                )[0][0]
+                )[0]
                 score_weight = np.ones_like(maximum_score)
                 score_weight[cos_sim >= nms_threshold] -= (
                     cos_sim[cos_sim >= nms_threshold] - nms_threshold
@@ -227,7 +227,9 @@ class ReflectionMemory(BaseMemory):
         for i in top_k_indices:
             self.memories[i].last_access_time = current_time
         # sort them in time periods. if the data tag is 'observation', ad time info output.
-        top_k_indices = sorted(top_k_indices, key=lambda k: self.memories[k].creat_time)
+        top_k_indices = sorted(
+            top_k_indices, key=lambda k: self.memories[k].create_time
+        )
         query_results = []
         for i in top_k_indices:
             query_result = self.memories[i].content
@@ -252,7 +254,7 @@ class ReflectionMemory(BaseMemory):
         questions = get_questions([m.content for m in memories_of_interest])
         statements = self.query(questions, len(questions) * 10, time)
         insights = get_insights(statements)
-        logging.info(self.name + f" Insights: {insights}")
+        logging.info(self.agent.name + f" Insights: {insights}")
         for insight in insights:
             self.add_memory(
                 Reflection.create_longterm_memory(
@@ -262,3 +264,41 @@ class ReflectionMemory(BaseMemory):
                 )
             )  # This will add a Reflection instance instead of LongtermMemory instance
         return insights
+
+    def __repr__(self) -> str:
+        memory_string = "\n".join([str(memory) for memory in self.memories])
+        return f"ReflectionMemory({memory_string})"
+
+    def to_string(self) -> str:
+        return self.__repr__()
+
+
+if __name__ == "__main__":
+    memory = ReflectionMemory(agent=None)
+    message_list = [
+        Message(content="I am a student"),
+        Message(content="I am drunk"),
+        Message(content="My girlfriend is staring at me"),
+        Message(
+            content="Teacher looks at me with an approving smile.",
+        ),
+        Message(content="A dagger is stuck into my heart"),
+        Message(content="The TV is on."),
+        Message(content="Jane sniffs at me"),
+        Message(
+            content="Bob carefully listed out all the TODOs.",
+        ),
+        Message(content="Prof. Liu applauded with my work"),
+        Message(content="I am falling into the hell"),
+    ]
+
+    for m in message_list:
+        memory.add_message(m, dt.now() - datetime.timedelta(hours=random.random() * 10))
+
+    memory.reflect(dt.now())
+    print(memory.query("What is my mood now", 2, dt.now()))
+
+    with open("./logging/reflection_unit_test_log.log", "w") as fp:
+        import json
+
+        json.dump(memory, fp, indent=4, default=str)

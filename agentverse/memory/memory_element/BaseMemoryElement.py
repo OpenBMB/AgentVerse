@@ -19,8 +19,7 @@ SAVE_OPTIONS = (
 )
 
 
-@dataclass
-class BaseMemoryElement:
+class BaseMemoryElement(BaseModel):
     """
     Base class for memory elements.
     TODO: later make Message inherit this MemoryElement

@@ -6,7 +6,7 @@ from datetime import datetime as dt
 from agentverse.agents.base import BaseAgent
 from agentverse.llms.openai import chat, get_embedding
 from agentverse.message import Message
-from agentverse.memory.memory_element import BaseMemoryElement
+from agentverse.memory.memory_element.BaseMemoryElement import BaseMemoryElement
 
 
 IMPORTANCE_PROMPT = """On the scale of 1 to 10, where 1 is purely mundane \
@@ -119,3 +119,19 @@ class LongtermMemoryElement(BaseMemoryElement):
             )
             score = 0
         return score
+
+    def __repr__(self):
+        return f"LongtermMemoryElement(content={self.content}, importance={self.importance}, immediacy={self.immediacy})"
+
+
+if __name__ == "__main__":
+    memory1 = LongtermMemoryElement.create_longterm_memory(
+        content="Your girlfriend is angry at you for not replying her message.",
+        time=dt.now(),
+    )
+    with open("log_file_ltme.json", "w") as fp:
+        import json
+
+        json.dump(
+            memory1.dict(), fp, default=str
+        )  # datetime -> 2023-05-18 21:34:38.273607
