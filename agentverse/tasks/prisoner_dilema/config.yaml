@@ -17,7 +17,7 @@ name: prisoner_dilema
 
 environment:
   env_type: basic
-  max_turns: 31
+  max_turns: 16
   rule:
     order:
       type: sequential
@@ -33,7 +33,6 @@ environment:
 agents:
   - agent_type: conversation
     name: Police
-    max_turns: 31
     role_description: |-
       You are now the Police. You have just arrest two suspects. However, they all refused to confess to their crime.
       Therefore, You come up with an solution, You made the following rule:

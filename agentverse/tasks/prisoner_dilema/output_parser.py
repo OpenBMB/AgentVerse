@@ -47,7 +47,7 @@ class PrisonerDilemaParser(OutputParser):
             # each time police speak is a new round
             if agent.name == "Police":
 
-                if self.cur_round == (environment.max_turns / 3) - 1:
+                if self.cur_round == (environment.max_turns / 3):
 
                     action_input = "Attention! You are now required to finally made your decision and I will made the " \
                                    "final judgement to both of you based on this time, Please Answer now!"
