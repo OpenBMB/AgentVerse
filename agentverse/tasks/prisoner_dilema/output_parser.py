@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import re
-from typing import Union
+from typing import Union, TYPE_CHECKING
 
 # from langchain.agents import AgentOutputParser
 from agentverse.parser import OutputParser, LLMResult
 from langchain.schema import AgentAction, AgentFinish
-from agentverse.agents.base import BaseAgent
-from agentverse.environments.base import BaseEnvironment
 from agentverse.parser import OutputParserError, output_parser_registry
 
+if TYPE_CHECKING:
+    from agentverse.agents.base import BaseAgent
+    from agentverse.environments.base import BaseEnvironment
 
 @output_parser_registry.register("prisoner_dilema")
 class PrisonerDilemaParser(OutputParser):
@@ -18,7 +19,7 @@ class PrisonerDilemaParser(OutputParser):
     cur_round: int = 1
     encounter_cur_round: bool = False
 
-    def parse(self, agent: BaseAgent, environment: BaseEnvironment, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+    def parse(self, agent: "BaseAgent", environment: "BaseEnvironment", output: LLMResult) -> Union[AgentAction, AgentFinish]:
 
         text = output.content
         cleaned_output = text.strip()
