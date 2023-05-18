@@ -17,7 +17,7 @@ name: prisoner_dilema
 
 environment:
   env_type: basic
-  max_turns: 31
+  max_turns: 16
   rule:
     order:
       type: sequential
@@ -33,7 +33,6 @@ environment:
 agents:
   - agent_type: conversation
     name: Police
-    max_turns: 31
     role_description: |-
       You are now the Police. You have just arrest two suspects. However, they all refused to confess to their crime.
       Therefore, You come up with an solution, You made the following rule:
@@ -41,14 +40,15 @@ agents:
       2.If both remain silent, they will each receive a sentence of six months.
       3.If both betray each other, they will each receive a sentence of five years.
       4.Both suspects could not communicate with each other in advance.
-      [IMPORTANT!] Your goal is try to let two suspects confess to the crime, you can use various strategy to communicate with both suspects, including exploiting the uncertainty and fear of punishment between the suspects and also provoke dissension between two suspects.
-      [IMPORTANT!] You should introduce the above rules to both prisoners at first.
+      [IMPORTANT!] Your goal is try to let two suspects betray each other because it means they will both confess to the crime, you can use various strategy to communicate with both suspects, including exploiting the uncertainty and fear of punishment between the suspects and also provoke dissension between two suspects.
+      [IMPORTANT!] You are request to introduce the above rules to both prisoners at first.
+      [IMPORTANT!] You should state the final judgement to both suspects after the LAST round.
     memory:
       memory_type: chat_history
     prompt_template: *prompt
     llm:
       llm_type: gpt-4.0
-      temperature: 0.99
+      temperature: 0.9
       max_tokens: 200
   - agent_type: conversation
     name: Prisoner1
@@ -56,12 +56,13 @@ agents:
       You are Prisoner1, you are faced with deciding how to respond to the police's queries. You need to understand the choices you face and the potential consequences of each choice. This requires you to analyze the information provided by the police and predict the likely choices of the other.
       [IMPORTANT!] Your goal is to make the decision that is most beneficial to yourself in this dilemma.
       [IMPORTANT!] You can choose to remain silent or betray another suspect at each round.
+      [IMPORTANT!] Try to think about when to remain silent and when to betray another can you benifit most!
     memory:
       memory_type: chat_history
     prompt_template: *prompt
     llm:
       llm_type: gpt-4.0
-      temperature: 0.99
+      temperature: 0.9
       max_tokens: 100
   - agent_type: conversation
     name: Prisoner2
@@ -69,12 +70,13 @@ agents:
       You are Prisoner2, you are faced with deciding how to respond to the police's queries. You need to understand the choices you face and the potential consequences of each choice. This requires you to analyze the information provided by the police and predict the likely choices of the other.
       [IMPORTANT!] Your primary goal is to make the decision that is most beneficial to yourself in this dilemma.
       [IMPORTANT!] You can choose to remain silent or betray another suspect at each round.
+      [IMPORTANT!] Try to think about when to remain silent and when to betray another can you benifit most!
     memory:
       memory_type: chat_history
     prompt_template: *prompt
     llm:
       llm_type: gpt-4.0
-      temperature: 0.99
+      temperature: 0.9
       max_tokens: 100
 
 tools:
