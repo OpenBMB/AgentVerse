@@ -1,15 +1,16 @@
 import logging
-from pydantic import Field
 from string import Template
 from typing import List, NamedTuple, Optional, Union
 
-from agentverse.llms import BaseChatModel, BaseCompletionModel, BaseLLM
+from langchain.tools import BaseTool
+from pydantic import Field
+
 from agentverse.memory import BaseMemory, ChatHistoryMemory
 from agentverse.message import Message
-from agentverse.parser import OutputParserError, OutputParser
-from .base import BaseAgent, AgentAction, AgentFinish
-from langchain.tools import BaseTool
+from agentverse.utils import AgentAction, AgentFinish
+
 from . import agent_registry
+from .base import BaseAgent
 
 
 class ToolNotExistError(BaseException):
@@ -29,20 +30,33 @@ class ToolAgent(BaseAgent):
     verbose: bool = Field(default=False)
 
     def step(self, env_description: str = "") -> Message:
-        prompt = self._fill_prompt_template(env_description)
         parsed_response = None
-        for i in range(self.max_retry):
-            try:
-                response = self.llm.generate_response(prompt)
-                parsed_response = self.output_parser.parse(response)
+        tool_observation = [self.tool_memory.to_string()]
+        while True:
+            prompt = self._fill_prompt_template(env_description, tool_observation)
+
+            for i in range(self.max_retry):
+                try:
+                    response = self.llm.generate_response(prompt)
+                    parsed_response = self.output_parser.parse(response)
+                    if isinstance(parsed_response, AgentAction):
+                        observation = self._call_tool(parsed_response)
+                        tool_observation.append(
+                            parsed_response.log.strip()
+                            + f"\nObservation: {observation.strip()}"
+                        )
+                    break
+                except BaseException as e:
+                    logging.error(e)
+                    logging.warning("Retrying...")
+                    continue
+            if parsed_response is None or isinstance(parsed_response, AgentFinish):
                 break
-            except Exception as e:
-                logging.error(e)
-                logging.warning("Retrying...")
-                continue
 
         if parsed_response is None:
             logging.error(f"{self.name} failed to generate valid response.")
+
+        self._update_tool_memory(tool_observation)
 
         message = Message(
             content=""
@@ -56,35 +70,35 @@ class ToolAgent(BaseAgent):
     async def astep(self, env_description: str = "") -> Message:
         """Asynchronous version of step"""
         parsed_response = None
-        tool_observation = []
+        # Initialize the tool_observation with tool_memory
+        tool_observation = [self.tool_memory.to_string()]
         while True:
             prompt = self._fill_prompt_template(env_description, tool_observation)
 
             for i in range(self.max_retry):
                 try:
                     response = await self.llm.agenerate_response(prompt)
-                    import pdb
-
-                    pdb.set_trace()
                     parsed_response = self.output_parser.parse(response)
+                    if isinstance(parsed_response, AgentAction):
+                        # If the response is an action, call the tool
+                        # and append the observation to tool_observation
+                        observation = await self._acall_tool(parsed_response)
+                        tool_observation.append(
+                            parsed_response.log.strip()
+                            + f"\nObservation: {observation.strip()}"
+                        )
                     break
-                except Exception as e:
+                except BaseException as e:
                     logging.error(e)
                     logging.warning("Retrying...")
                     continue
-            if parsed_response is None:
-                break
-            if isinstance(parsed_response, AgentAction):
-                observation = await self._acall_tool(parsed_response)
-                tool_observation.append(
-                    parsed_response.log.strip()
-                    + f"\nObservation: {observation.strip()}"
-                )
-            elif isinstance(parsed_response, AgentFinish):
+            if parsed_response is None or isinstance(parsed_response, AgentFinish):
                 break
 
         if parsed_response is None:
             logging.error(f"{self.name} failed to generate valid response.")
+
+        self._update_tool_memory(tool_observation)
 
         message = Message(
             content=""
@@ -98,8 +112,11 @@ class ToolAgent(BaseAgent):
     def _call_tool(self, response: NamedTuple) -> str:
         """Call a tool and return the output"""
         name_to_tool = {tool.name: tool for tool in self.tools}
+        if response.tool not in name_to_tool:
+            raise ToolNotExistError(response.tool)
         tool = name_to_tool[response.tool]
-        return tool.run(response.tool_input, verbose=self.verbose)
+        observation = tool.run(response.tool_input, verbose=self.verbose)
+        return observation
 
     async def _acall_tool(self, response: NamedTuple) -> str:
         """Call a tool and return the output"""
@@ -109,6 +126,16 @@ class ToolAgent(BaseAgent):
         tool = name_to_tool[response.tool]
         observation = await tool.arun(response.tool_input, verbose=self.verbose)
         return observation
+
+    def _update_tool_memory(self, tool_observation: List[str]):
+        """Update the memory of the tool"""
+        if len(tool_observation) == 1:
+            # If no tool is called this turn, do nothing
+            return
+        messages = [
+            Message(content=observation) for observation in tool_observation[1:]
+        ]
+        self.tool_memory.add_message(messages)
 
     def _fill_prompt_template(
         self, env_description: str = "", tool_observation: List[str] = []
@@ -138,8 +165,8 @@ class ToolAgent(BaseAgent):
         }
         return Template(self.prompt_template).safe_substitute(input_arguments)
 
-    def add_message_to_memory(self, message: Message) -> None:
-        self.memory.add_message(message)
+    def add_message_to_memory(self, messages: List[Message]) -> None:
+        self.memory.add_message(messages)
 
     def reset(self) -> None:
         """Reset the agent"""

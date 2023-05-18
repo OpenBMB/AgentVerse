@@ -1,13 +1,14 @@
 import logging
 from string import Template
-from typing import List, NamedTuple, Optional, Union, TYPE_CHECKING
 
-from agentverse.llms import BaseChatModel, BaseCompletionModel, BaseLLM
-from agentverse.memory import BaseMemory
+
+from typing import List, TYPE_CHECKING
+
+
 from agentverse.message import Message
-from agentverse.parser import OutputParserError, OutputParser
-from .base import BaseAgent
+
 from . import agent_registry
+from .base import BaseAgent
 
 
 if TYPE_CHECKING:
@@ -85,8 +86,8 @@ class ConversationAgent(BaseAgent):
         }
         return Template(self.prompt_template).safe_substitute(input_arguments)
 
-    def add_message_to_memory(self, message: Message) -> None:
-        self.memory.add_message(message)
+    def add_message_to_memory(self, messages: List[Message]) -> None:
+        self.memory.add_message(messages)
 
     def reset(self) -> None:
         """Reset the agent"""

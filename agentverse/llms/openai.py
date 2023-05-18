@@ -1,10 +1,13 @@
 import logging
 import os
-from pydantic import Field, BaseModel
-from typing import List, Optional, Union, Dict
+from typing import Dict, List, Optional, Union
+
+from pydantic import BaseModel, Field
 
 from agentverse.llms.base import LLMResult
-from .base import BaseModelArgs, BaseChatModel, BaseCompletionModel
+
+from . import llm_registry
+from .base import BaseChatModel, BaseCompletionModel, BaseModelArgs
 
 try:
     import openai
@@ -32,7 +35,7 @@ class OpenAIChatArgs(BaseModelArgs):
     temperature: float = Field(default=1.0)
     top_p: int = Field(default=1)
     n: int = Field(default=1)
-    stop: Optional[Union[str, List]] = Field(default=["\nObservation:"])
+    stop: Optional[Union[str, List]] = Field(default=None)
     presence_penalty: int = Field(default=0)
     frequency_penalty: int = Field(default=0)
 
@@ -43,6 +46,7 @@ class OpenAICompletionArgs(OpenAIChatArgs):
     best_of: int = Field(default=1)
 
 
+@llm_registry.register("text-davinci-003")
 class OpenAICompletion(BaseCompletionModel):
     args: OpenAICompletionArgs = Field(default_factory=OpenAICompletionArgs)
 
@@ -74,6 +78,8 @@ class OpenAICompletion(BaseCompletionModel):
         )
 
 
+@llm_registry.register("gpt-3.5-turbo")
+@llm_registry.register("gpt-4")
 class OpenAIChat(BaseChatModel):
     args: OpenAIChatArgs = Field(default_factory=OpenAIChatArgs)
 
@@ -91,7 +97,12 @@ class OpenAIChat(BaseChatModel):
 
     def generate_response(self, prompt: str) -> LLMResult:
         messages = self._construct_messages(prompt)
-        response = openai.ChatCompletion.create(messages=messages, **self.args.dict())
+        try:
+            response = openai.ChatCompletion.create(
+                messages=messages, **self.args.dict()
+            )
+        except OpenAIError as error:
+            raise
         return LLMResult(
             content=response["choices"][0]["message"]["content"],
             send_tokens=response["usage"]["prompt_tokens"],

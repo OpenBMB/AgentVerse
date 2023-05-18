@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING, List, Tuple
 
 from . import updater_registry as UpdaterRegistry
 from .base import BaseUpdater
-from agentverse.agents import BaseAgent
-from agentverse.message import AgentAction, Message
+from agentverse.message import Message
 
 if TYPE_CHECKING:
     from agentverse.environments import BaseEnvironment
+    from agentverse.agents import BaseAgent
 
 
 @UpdaterRegistry.register("basic")
@@ -31,19 +31,19 @@ class BasicUpdater(BaseUpdater):
         # If no one speaks in this turn. Add an empty message to all agents
         if not added:
             for agent in environment.agents:
-                agent.memory.add_message(Message(content="[Silence]"))
+                agent.add_message_to_memory([Message(content="[Silence]")])
 
     def add_tool_response(
         self,
         name: str,
         agents: List[BaseAgent],
-        tool_response: List[Tuple[AgentAction, str]],
+        tool_response: List[str],
     ):
         for agent in agents:
             if agent.name != name:
                 continue
             if agent.tool_memory is not None:
-                agent.tool_memory.save_context(tool_response)
+                agent.tool_memory.add_message(tool_response)
             break
 
     def add_message_to_all_agents(
@@ -52,14 +52,14 @@ class BasicUpdater(BaseUpdater):
         if "all" in message.receiver:
             # If receiver is all, then add the message to all agents
             for agent in agents:
-                agent.add_message_to_memory(message)
+                agent.add_message_to_memory([message])
             return True
         else:
             # If receiver is not all, then add the message to the specified agents
             receiver_set = message.receiver
             for agent in agents:
                 if agent.name in receiver_set:
-                    agent.add_message_to_memory(message)
+                    agent.add_message_to_memory([message])
                     receiver_set.remove(agent.name)
             if len(receiver_set) > 0:
                 missing_receiver = ", ".join(list(receiver_set))

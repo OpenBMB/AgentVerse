@@ -2,12 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Tuple
 
-from langchain.schema import AgentAction
 from pydantic import BaseModel
 
 # from agentverse.agents import Agent
-from agentverse.agents import BaseAgent
-from agentverse.message import Message
 from abc import abstractmethod
 
 from . import updater_registry as UpdaterRegistry

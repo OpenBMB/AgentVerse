@@ -48,7 +48,7 @@ agents:
     prompt_template: *prompt
     llm:
       llm_type: gpt-4.0
-      temperature: 0.99
+      temperature: 0.9
       max_tokens: 200
   - agent_type: conversation
     name: Prisoner1
@@ -61,7 +61,7 @@ agents:
     prompt_template: *prompt
     llm:
       llm_type: gpt-4.0
-      temperature: 0.99
+      temperature: 0.9
       max_tokens: 100
   - agent_type: conversation
     name: Prisoner2
@@ -74,7 +74,7 @@ agents:
     prompt_template: *prompt
     llm:
       llm_type: gpt-4.0
-      temperature: 0.99
+      temperature: 0.9
       max_tokens: 100
 
 tools:
