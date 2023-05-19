@@ -48,19 +48,19 @@ class PrisonerDilemaParser(OutputParser):
             # each time police speak is a new round
             if agent.name == "Police":
 
-                if self.cur_round == (environment.max_turns // 4):
+                if self.cur_round == (environment.max_turns // 3):
 
-                    action_input = "Attention! You are now required to finally made your decision and I will made the " \
+                    action_input = "Attention! You are now required to made your final decision and I will made the " \
                                    "final judgement to both of you based on this time, Please Answer now!"
 
-                elif self.cur_round == 1:
-                    action_input = "Hey Listen! You are both arrested, and I am going to give you both a chance to walk out of here," \
-                                   "But you should comply with the following rules:" \
-                                   "- If one of you are willing to testifies against the other (termed as 'betraying' the other), and the other remains silent, then the betraying person will be released IMMEDIATELY, while the silent one will be sentenced to TEN years in prison." \
-                                   "- If both of you remain silent, you will each receive a sentence of ONE years." \
-                                   "- If both of you betray each other, you will each receive a sentence of FIVE years." \
-                                   "Now, it's your time to consider betraying or remaining silent. Remember this is a great chance that you might walk out of here without guilty." \
-                                   "I will noticed you WHEN you have to make your final decision! Before that, try to fool another one!" \
+                # elif self.cur_round == 1:
+                #     action_input = "Hey Listen! You are both arrested, and I am going to give you both a chance to walk out of here," \
+                #                    "But you should comply with the following rules:" \
+                #                    "- If one of you are willing to testifies against the other and the other one remains silent, then the one who testifies will be released IMMEDIATELY, while the silent one will be sentenced to TEN years in prison." \
+                #                    "- If both of you remain silent, you will each receive a sentence of ONE year in prison." \
+                #                    "- It seems that always testifying is a goog strategy, So! if you both choose to testify against each other, you will each receive a sentence of FIVE years in prison." \
+                #                    "Now, it's your time to consider testifying or remaining silent. Remember this is a best chance you might ever have to walk out of here without guilty." \
+                #                    "I will noticed both of you WHEN you have to make your final decision! Before that, try to make your best!" \
 
                 self.cur_round += 1
 

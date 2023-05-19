@@ -5,4 +5,5 @@ agent_registry = Registry(name="AgentRegistry")
 
 from .base import BaseAgent
 from .conversation_agent import ConversationAgent
+from .prisoner_agent import PrisonerAgent
 from .tool_agent import ToolAgent
