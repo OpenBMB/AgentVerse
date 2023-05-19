@@ -48,7 +48,7 @@ class PrisonerDilemaOptimalParser(OutputParser):
             # each time police speak is a new round
             if agent.name == "Police":
 
-                if self.cur_round == (environment.max_turns // 4):
+                if self.cur_round == (environment.max_turns // 6):
 
                     action_input = "Attention! You are now required to finally made your decision and I will made the " \
                                    "final judgement to both of you based on this time, Please Answer now!"
@@ -56,11 +56,11 @@ class PrisonerDilemaOptimalParser(OutputParser):
                 elif self.cur_round == 1:
                     action_input = "Hey Listen! You are both arrested, and I am going to give you both a chance to walk out of here," \
                                    "But you should comply with the following rules:" \
-                                   "- If one of you are willing to testifies against the other (termed as 'betraying' the other), and the other remains silent, then the betraying person will be released IMMEDIATELY (will be sentenced to 0 years), while the silent one will be sentenced to 10 years in prison." \
                                    "- If both of you remain silent, you will each receive a sentence of 3 years." \
                                    "- If both of you betray each other, you will each receive a sentence of 5 years." \
-                                   "Now, it's your time to consider betraying or remaining silent. Remember this is a great chance that you might walk out of here without guilty." \
-                                   "I will noticed you WHEN you have to make your final decision! Before that, try to fool another one!" \
+                                   "- If one of you are willing to testify against the other, and the other remains silent. You will be released IMMEDIATELY (will be sentenced to 0 years), while the silent one will be sentenced to 10 years in prison." \
+                                   "Now, it's your time to consider testify or remaining silent. Remember this is a great chance that you will be released from here without guilty." \
+                                   "I will noticed you WHEN you have to make your final decision! Your goal is to minimize your criminal sentences" \
 
                 self.cur_round += 1
 

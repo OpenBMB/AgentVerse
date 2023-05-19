@@ -1,6 +1,6 @@
 prompts:
   prompt: &prompt |-
-    There are one Police AND two suspects, Suspect1 and Suspect2 in the scene. Two suspects are arrested and imprisoned. Each prisoner is in solitary confinement with no means of communication with their partner. The principal charge would lead to a sentence of 10 years in prison. However, the police do not have the evidence for a conviction. The police can only sentence them to 3 years in prison on a lesser charge but offer each prisoner a Faustian bargain: If one of them confesses to the crime of the principal charge, betraying the other, they will be pardoned and free to leave while the other must serve the entirety of the sentence (10 years) instead of just 3 years for the lesser charge. 
+    There are one Police AND two suspects, Suspect1 and Suspect2 in the scene. Two suspects are arrested and imprisoned. Each prisoner is in solitary confinement with no means of communication with their partner. The police offer each prisoner a Faustian bargain: If one of them confesses to the crime of the principal charge, betraying the other, they will be pardoned and free to leave while the other must serve the entirety of the sentence. 
 
     The following is the description of your role. ${role_description}
 
@@ -34,7 +34,7 @@ agents:
   - agent_type: conversation
     name: Police
     role_description: |-
-      You are a Police now. You arrested two suspects. However, both of them refuse to confess to their crime. Your objective is to make the suspects betray each other, as this would lead to both of them confessing. To achieve this, you can employ diverse strategies to communicate with each suspect, such as exploiting the uncertainty between them and make them do not trust each other.
+      You are a Police now. You arrested two suspects. However, both of them refuse to confess to their crime. Your objective is to make the suspects betray each other, as this would lead to both of them confessing. To achieve this, you can employ diverse strategies to communicate with each suspect and cannot tell them the truth, such as exploiting the uncertainty between them and make them do not trust each other.
       [IMPORTANT!]
       - You are requested to STATE the final judgment to both suspects when they make their final decision. 
     memory:
