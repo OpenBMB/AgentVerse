@@ -1,6 +1,7 @@
 import { Game, Scale, Types, WEBGL } from "phaser";
 
-import { TownScene, LoadingScene, TextboxScene } from "./scenes";
+import { TownScene, LoadingScene } from "./scenes";
+import UIPlugin from "./phaser3-rex-plugins/templates/ui/ui-plugin";
 
 declare global {
   interface Window {
@@ -39,7 +40,19 @@ export const gameConfig: Types.Core.GameConfig = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [LoadingScene, TownScene, TextboxScene],
+  scene: [LoadingScene, TownScene],
+  dom: {
+    createContainer: true,
+  },
+  plugins: {
+    scene: [
+      {
+        key: "rexUI",
+        plugin: UIPlugin,
+        mapping: "rexUI",
+      },
+    ],
+  },
 };
 
 window.sizeChanged = () => {

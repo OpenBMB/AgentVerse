@@ -1,0 +1,64 @@
+$type: HolyGrail
+name:
+
+width:
+height:
+
+# Relace child data by game objct
+background:
+header:
+leftSide:
+content:
+rightSide:
+footer:
+# ----
+
+space:
+    left:
+    right:
+    top:
+    bottom:
+    header:
+    # header:
+    #     left:
+    #     right:
+    #     top:
+    #     bottom:
+    footer:
+    # footer:
+    #     left:
+    #     right:
+    #     top:
+    #     bottom:
+    leftSide:
+    # leftSide:
+    #     left:
+    #     right:
+    #     top:
+    #     bottom:
+    rightSide:
+    # rightSide:
+    #     left:
+    #     right:
+    #     top:
+    #     bottom:
+proportion:
+    header:
+    footer:
+    leftSide:
+    rightSide:
+    content:
+expand:
+    header:
+    footer:
+    leftSide:
+    rightSide:
+    content:
+align:
+    header:
+    footer:
+    leftSide:
+    rightSide:
+    content:
+
+draggable:

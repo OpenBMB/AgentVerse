@@ -7,11 +7,9 @@ export class Player extends Actor {
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, "player");
-    // KEYS
-    this.keyW = this.scene.input.keyboard!.addKey("W");
-    this.keyA = this.scene.input.keyboard!.addKey("A");
-    this.keyS = this.scene.input.keyboard!.addKey("S");
-    this.keyD = this.scene.input.keyboard!.addKey("D");
+
+    // Keys
+    this.initKeyboard();
 
     // PHYSICS
     this.getBody().setSize(14, 20);
@@ -56,26 +54,26 @@ export class Player extends Actor {
     this.getBody().setVelocity(0);
 
     var pressed_flag = false;
-    if (this.keyW?.isDown) {
+    if (this.keyW.enabled && this.keyW?.isDown) {
       this.getBody().setVelocityY(-110);
       this.anims.play("walk-up", true);
       pressed_flag = true;
     }
 
-    if (this.keyA?.isDown) {
+    if (this.keyA.enabled && this.keyA?.isDown) {
       // this.getBody().setOffset(48, 15);
       this.getBody().setVelocityX(-110);
       this.anims.play("walk-left", true);
       pressed_flag = true;
     }
 
-    if (this.keyS?.isDown) {
+    if (this.keyS.enabled && this.keyS?.isDown) {
       this.getBody().setVelocityY(110);
       this.anims.play("walk-down", true);
       pressed_flag = true;
     }
 
-    if (this.keyD?.isDown) {
+    if (this.keyD.enabled && this.keyD?.isDown) {
       this.getBody().setVelocityX(110);
       this.anims.play("walk-right", true);
       // this.getBody().setOffset(15, 15);
@@ -85,5 +83,12 @@ export class Player extends Actor {
     if (!pressed_flag && this.anims.isPlaying) {
       this.anims.setCurrentFrame(this.anims.currentAnim!.frames[0]);
     }
+  }
+
+  public initKeyboard(): void {
+    this.keyW = this.scene.input.keyboard!.addKey("W");
+    this.keyA = this.scene.input.keyboard!.addKey("A");
+    this.keyS = this.scene.input.keyboard!.addKey("S");
+    this.keyD = this.scene.input.keyboard!.addKey("D");
   }
 }

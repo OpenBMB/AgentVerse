@@ -1,0 +1,14 @@
+$type: Sprite
+name:
+
+key:
+frame:
+width:
+height:
+
+tint:
+alpha:
+visible:
+flipX:
+flipY:
+cropResize:

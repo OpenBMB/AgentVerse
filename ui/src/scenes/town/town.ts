@@ -1,3 +1,4 @@
+import * as Phaser from "phaser";
 import {
   Scene,
   Tilemaps,
@@ -8,9 +9,24 @@ import {
 } from "phaser";
 import { Player } from "../../classes/player";
 import { NPC } from "../../classes/npc";
+import eventsCenter from "../../classes/event_center";
 // import { Agents, Message } from '../../classes/message';
 // import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
 // import { TextBox } from "../../classes/textbox";
+import {
+  TextBox,
+  RoundRectangle,
+  InputText,
+  Buttons,
+  Label,
+  Click,
+} from "../../phaser3-rex-plugins/templates/ui/ui-components";
+import Button from "../../phaser3-rex-plugins/plugins/button";
+import UIPlugin from "../../phaser3-rex-plugins/templates/ui/ui-plugin";
+
+const COLOR_PRIMARY = 0x4e342e;
+const COLOR_LIGHT = 0x7b5e57;
+const COLOR_DARK = 0x260e04;
 
 export class TownScene extends Scene {
   private map: Tilemaps.Tilemap;
@@ -21,9 +37,10 @@ export class TownScene extends Scene {
   private treeLayer: Tilemaps.TilemapLayer;
   private houseLayer: Tilemaps.TilemapLayer;
 
-  private player: Physics.Arcade.Sprite;
+  private player: Player;
   private npcGroup: GameObjects.Group;
   private keySpace: Phaser.Input.Keyboard.Key;
+  private rexUI: UIPlugin;
   // private message!: GameObjects.Text;
 
   constructor() {
@@ -71,14 +88,9 @@ export class TownScene extends Scene {
         this.npcGroup
       );
       if (npc) {
-        createTextBox(this);
+        this.createInputBox(npc);
       }
     });
-
-    // this.physics.add.overlap(this.player, this.npcGroup, interact, null, this);
-
-    // message (this, x_position, y_position)
-    // this.message = new Message(this, 0, 560);
 
     this.physics.world.setBounds(
       0,
@@ -87,7 +99,7 @@ export class TownScene extends Scene {
       this.groundLayer.height
     );
 
-    // Camera
+    // Camera;
     this.cameras.main.setSize(this.game.scale.width, this.game.scale.height);
     this.cameras.main.setBounds(
       0,
@@ -101,16 +113,159 @@ export class TownScene extends Scene {
 
   update(): void {
     this.player.update();
-    // this.npc.update();
-    // this.conversation.updateMessage();
-    // this.conversation.getMessage();
   }
-}
 
-function createTextBox(scene: Scene) {
-  console.log("Hi");
-  scene.scene.launch("textbox-scene", { text: Math.random().toString() });
-  scene.scene.pause("town-scene");
+  disableKeyboard(): void {
+    this.input.keyboard.manager.enabled = false;
+  }
+
+  enableKeyboard(): void {
+    this.input.keyboard.manager.enabled = true;
+  }
+
+  createInputBox(npc: Physics.Arcade.Sprite) {
+    this.disableKeyboard();
+    var upperLeftCorner = this.cameras.main.getWorldPoint(
+      this.cameras.main.width * 0.2,
+      this.cameras.main.height * 0.3
+    );
+    var x = upperLeftCorner.x;
+    var y = upperLeftCorner.y;
+    var width = this.cameras.main.width;
+    var height = this.cameras.main.height;
+    var scale = this.cameras.main.zoom;
+
+    var inputText = this.rexUI.add
+      .inputText({
+        x: x,
+        y: y,
+        width: width * 0.6,
+        height: height * 0.3,
+        type: "textarea",
+        text: "Input your words",
+        color: "#ffffff",
+        border: 2,
+        backgroundColor: "#" + COLOR_DARK.toString(16),
+        borderColor: "#" + COLOR_LIGHT.toString(16),
+      })
+      .setOrigin(0)
+      .setScale(1 / scale, 1 / scale)
+      .setFocus()
+      .setAlpha(0.8);
+
+    const self = this;
+    var submitBtn = this.rexUI.add
+      .label({
+        x: x,
+        y: y + inputText.height / scale + 5,
+        background: this.rexUI.add
+          .roundRectangle(0, 0, 2, 2, 20, COLOR_PRIMARY)
+          .setStrokeStyle(2, COLOR_LIGHT),
+        text: this.add.text(0, 0, "Submit"),
+        space: {
+          left: 10,
+          right: 10,
+          top: 10,
+          bottom: 10,
+        },
+      })
+      .setOrigin(0)
+      .setScale(1 / scale, 1 / scale)
+      .layout();
+
+    var cancelBtn = this.rexUI.add
+      .label({
+        x: x + submitBtn.width / scale + 5,
+        y: y + inputText.height / scale + 5,
+        background: this.rexUI.add
+          .roundRectangle(0, 0, 2, 2, 20, COLOR_PRIMARY)
+          .setStrokeStyle(2, COLOR_LIGHT),
+        text: this.add.text(0, 0, "Cancel"),
+        space: {
+          left: 10,
+          right: 10,
+          top: 10,
+          bottom: 10,
+        },
+      })
+      .setOrigin(0)
+      .setScale(1 / scale, 1 / scale)
+      .layout();
+
+    submitBtn.onClick(function (
+      click: Click,
+      gameObject: Phaser.GameObjects.GameObject,
+      pointer: Phaser.Input.Pointer,
+      event: Phaser.Types.Input.EventData
+    ) {
+      let text = inputText.text;
+      inputText.destroy();
+      gameObject.destroy();
+      cancelBtn.destroy();
+      self.submitPrompt(text, npc);
+    });
+
+    cancelBtn.onClick(function (
+      click: Click,
+      gameObject: Phaser.GameObjects.GameObject,
+      pointer: Phaser.Input.Pointer,
+      event: Phaser.Types.Input.EventData
+    ) {
+      inputText.destroy();
+      gameObject.destroy();
+      submitBtn.destroy();
+      self.enableKeyboard();
+    });
+  }
+
+  submitPrompt(prompt: string, npc: Physics.Arcade.Sprite) {
+    this.createTextBox().start("Waiting for the response...", 200);
+    var timer = this.time.addEvent({
+      delay: 6000, // ms
+      callback: () => {
+        this.createTextBox().start("Waiting for the response...", 200);
+      },
+      loop: true,
+    });
+    this.enableKeyboard();
+  }
+
+  createTextBox(): TextBox {
+    var upperLeftCorner = this.cameras.main.getWorldPoint(
+      this.cameras.main.width * 0.1,
+      this.cameras.main.height * 0.8
+    );
+    var x = upperLeftCorner.x;
+    var y = upperLeftCorner.y;
+    var textBox = this.rexUI.add
+      .textBox({
+        x: x,
+        y: y,
+        background: this.rexUI.add.roundRectangle(
+          0,
+          0,
+          2,
+          2,
+          20,
+          COLOR_PRIMARY
+        ),
+        text: this.add.text(0, 0, "", {
+          fixedWidth: this.cameras.main.width * 0.8,
+        }),
+        space: {
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: 20,
+          icon: 10,
+          text: 10,
+        },
+      })
+      .setScale(0.25, 0.25)
+      .setOrigin(0)
+      .layout();
+    return textBox;
+  }
 }
 
 function getNearbyNPC(

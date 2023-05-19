@@ -1,0 +1,13 @@
+$type: Video
+name:
+
+key:
+width:
+height:
+
+tint:
+alpha:
+visible:
+flipX:
+flipY:
+cropResize:

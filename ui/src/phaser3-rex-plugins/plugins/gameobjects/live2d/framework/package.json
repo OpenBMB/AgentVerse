@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.1",
+    "typescript": "^3.7.5"
+  }
+}

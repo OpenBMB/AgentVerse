@@ -1,0 +1,33 @@
+$type: FixWidthButtons
+name:
+
+width:
+height:
+buttonsType:
+
+rtl:
+expand:
+align:
+click:
+    mode:
+    clickInterval:
+space:
+    left:
+    right:
+    top:
+    bottom:
+    item:
+    indentLeftOdd:
+    indentLeftEven:
+    indentTopOdd:
+    indentTopEven:
+
+draggable:
+
+# Relace child data by game objct
+background:
+buttons:
+    - $type:
+      # ...
+# ----
+

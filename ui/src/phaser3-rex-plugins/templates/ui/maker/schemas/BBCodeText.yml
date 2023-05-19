@@ -1,0 +1,50 @@
+$type: BBCodeText
+name:
+
+text: 
+fontFamily:
+fontSize:
+fontStyle:
+backgroundColor:
+backgroundColor2:
+backgroundHorizontalGradient:
+backgroundStrokeColor:
+backgroundStrokeLineWidth:
+backgroundCornerRadius:
+backgroundCornerIteration:
+color:
+stroke:
+strokeThickness:
+shadow:
+    offsetX:
+    offsetY:
+    color:
+    blur:
+    stroke:
+    fill:
+underline:
+    color:
+    thickness:
+    offset:
+halign:
+valign:
+padding:
+    left:
+    right:
+    top:
+    bottom:    
+fixedWidth:
+fixedHeight:
+lineSpacing:
+maxLines:
+testString:
+wrap:
+    mode:
+    width:
+
+tint:
+alpha:
+visible:
+flipX:
+flipY:
+cropResize:

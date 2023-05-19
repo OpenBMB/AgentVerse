@@ -39,6 +39,7 @@ export default {
 
         //  Parse our .ts source files
         nodeResolve({
+            browser: true,
             extensions: [ '.ts', '.tsx' ]
         }),
 
