@@ -1,6 +1,6 @@
-import { Game, Scale, Types, WEBGL } from 'phaser';
+import { Game, Scale, Types, WEBGL } from "phaser";
 
-import { TownScene, LoadingScene, MessageScene } from './scenes';
+import { TownScene, LoadingScene, TextboxScene } from "./scenes";
 
 declare global {
   interface Window {
@@ -10,9 +10,9 @@ declare global {
 }
 
 export const gameConfig: Types.Core.GameConfig = {
-  title: 'Phaser game tutorial',
+  title: "Phaser game tutorial",
   type: WEBGL,
-  parent: 'game',
+  parent: "game",
   // backgroundColor: '#351f1b',
   scale: {
     mode: Scale.ScaleModes.NONE,
@@ -20,7 +20,7 @@ export const gameConfig: Types.Core.GameConfig = {
     height: window.innerHeight,
   },
   physics: {
-    default: 'arcade',
+    default: "arcade",
     arcade: {
       debug: false,
     },
@@ -39,7 +39,7 @@ export const gameConfig: Types.Core.GameConfig = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [LoadingScene, TownScene, MessageScene]
+  scene: [LoadingScene, TownScene, TextboxScene],
 };
 
 window.sizeChanged = () => {
@@ -48,8 +48,8 @@ window.sizeChanged = () => {
       window.game.scale.resize(window.innerWidth, window.innerHeight);
 
       window.game.canvas.setAttribute(
-        'style',
-        `display: block; width: ${window.innerWidth}px; height: ${window.innerHeight}px;`,
+        "style",
+        `display: block; width: ${window.innerWidth}px; height: ${window.innerHeight}px;`
       );
     }, 100);
   }

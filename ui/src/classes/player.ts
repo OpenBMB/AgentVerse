@@ -4,13 +4,14 @@ export class Player extends Actor {
   private keyA: Phaser.Input.Keyboard.Key;
   private keyS: Phaser.Input.Keyboard.Key;
   private keyD: Phaser.Input.Keyboard.Key;
+
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, "player");
     // KEYS
-    this.keyW = this.scene.input.keyboard.addKey("W");
-    this.keyA = this.scene.input.keyboard.addKey("A");
-    this.keyS = this.scene.input.keyboard.addKey("S");
-    this.keyD = this.scene.input.keyboard.addKey("D");
+    this.keyW = this.scene.input.keyboard!.addKey("W");
+    this.keyA = this.scene.input.keyboard!.addKey("A");
+    this.keyS = this.scene.input.keyboard!.addKey("S");
+    this.keyD = this.scene.input.keyboard!.addKey("D");
 
     // PHYSICS
     this.getBody().setSize(14, 20);
@@ -50,6 +51,7 @@ export class Player extends Actor {
       frameRate: 6,
     });
   }
+
   update(): void {
     this.getBody().setVelocity(0);
 
@@ -81,7 +83,7 @@ export class Player extends Actor {
     }
 
     if (!pressed_flag && this.anims.isPlaying) {
-      this.anims.setCurrentFrame(this.anims.currentAnim.frames[0]);
+      this.anims.setCurrentFrame(this.anims.currentAnim!.frames[0]);
     }
   }
 }

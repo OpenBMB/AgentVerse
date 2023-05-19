@@ -30,5 +30,8 @@
         "rollup-plugin-serve": "^2.0.2",
         "typescript": "^5.0.3",
         "vite-plugin-static-copy": "^0.15.0"
+    },
+    "dependencies": {
+        "phaser3-rex-plugins": "^1.60.1"
     }
 }
