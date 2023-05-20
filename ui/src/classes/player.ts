@@ -6,48 +6,17 @@ export class Player extends Actor {
   private keyD: Phaser.Input.Keyboard.Key;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, "player");
+    super(scene, x, y, "Brendan");
 
     // Keys
     this.initKeyboard();
 
     // PHYSICS
-    this.getBody().setSize(14, 20);
+    this.getBody().setSize(14, 21);
     this.getBody().setOffset(0, 0);
 
     // ANIMATIONS
-    this.scene.anims.create({
-      key: "walk-down",
-      frames: this.scene.anims.generateFrameNumbers("player", {
-        start: 0,
-        end: 2,
-      }),
-      frameRate: 6,
-    });
-    this.scene.anims.create({
-      key: "walk-up",
-      frames: this.scene.anims.generateFrameNumbers("player", {
-        start: 3,
-        end: 5,
-      }),
-      frameRate: 6,
-    });
-    this.scene.anims.create({
-      key: "walk-left",
-      frames: this.scene.anims.generateFrameNumbers("player", {
-        start: 6,
-        end: 8,
-      }),
-      frameRate: 6,
-    });
-    this.scene.anims.create({
-      key: "walk-right",
-      frames: this.scene.anims.generateFrameNumbers("player", {
-        start: 9,
-        end: 11,
-      }),
-      frameRate: 6,
-    });
+    this.initAnimations();
   }
 
   update(): void {
@@ -85,7 +54,42 @@ export class Player extends Actor {
     }
   }
 
-  public initKeyboard(): void {
+  initAnimations(): void {
+    this.scene.anims.create({
+      key: "walk-down",
+      frames: this.scene.anims.generateFrameNumbers("Brendan", {
+        start: 0,
+        end: 2,
+      }),
+      frameRate: 6,
+    });
+    this.scene.anims.create({
+      key: "walk-up",
+      frames: this.scene.anims.generateFrameNumbers("Brendan", {
+        start: 3,
+        end: 5,
+      }),
+      frameRate: 6,
+    });
+    this.scene.anims.create({
+      key: "walk-left",
+      frames: this.scene.anims.generateFrameNumbers("Brendan", {
+        start: 6,
+        end: 8,
+      }),
+      frameRate: 6,
+    });
+    this.scene.anims.create({
+      key: "walk-right",
+      frames: this.scene.anims.generateFrameNumbers("Brendan", {
+        start: 9,
+        end: 11,
+      }),
+      frameRate: 6,
+    });
+  }
+
+  initKeyboard(): void {
     this.keyW = this.scene.input.keyboard!.addKey("W");
     this.keyA = this.scene.input.keyboard!.addKey("A");
     this.keyS = this.scene.input.keyboard!.addKey("S");

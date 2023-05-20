@@ -10,17 +10,24 @@ export class LoadingScene extends Scene {
   preload(): void {
     this.load.baseURL = "assets/";
 
-    // PLAYER LOADING
-    // this.load.image('king', 'sprites/king.png');
-    this.load.spritesheet("player", "sprites/npc1.png", {
+    // SPRITE LOADING
+    this.load.spritesheet("Brendan", "sprites/brendan.png", {
+      frameWidth: 14,
+      frameHeight: 21,
+    });
+
+    this.load.spritesheet("May", "sprites/may.png", {
       frameWidth: 14,
       frameHeight: 20,
     });
-    // this.load.atlas('a-king', 'spritesheets/a-king.png', 'spritesheets/a-king_atlas.json');
 
-    // NPC LOADING
-    this.load.spritesheet("npc", "sprites/npc1.png", {
-      frameWidth: 14,
+    this.load.spritesheet("Birch", "sprites/birch.png", {
+      frameWidth: 16,
+      frameHeight: 20,
+    });
+
+    this.load.spritesheet("Steven", "sprites/steven.png", {
+      frameWidth: 16,
       frameHeight: 20,
     });
 

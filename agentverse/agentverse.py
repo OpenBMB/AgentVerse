@@ -55,7 +55,7 @@ class AgentVerse:
         for agent in self.agents:
             agent.reset()
 
-    def next(self):
+    def next(self, *args, **kwargs):
         """Run the environment for one step and return the return message."""
-        return_message = asyncio.run(self.environment.step())
+        return_message = asyncio.run(self.environment.step(*args, **kwargs))
         return return_message

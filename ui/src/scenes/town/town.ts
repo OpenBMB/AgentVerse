@@ -75,14 +75,14 @@ export class TownScene extends Scene {
 
     // NPC
     this.npcGroup = this.add.group();
-    var npc = new NPC(this, 400, 340);
+    var npc = new NPC(this, 400, 340, "May", 0);
     this.npcGroup.add(npc);
     this.physics.add.collider(this.npcGroup, this.wallLayer);
     this.physics.add.collider(this.npcGroup, this.treeLayer);
     this.physics.add.collider(this.npcGroup, this.houseLayer);
     this.physics.add.collider(this.player, this.npcGroup);
 
-    this.keySpace.on("down", () => {
+    this.keySpace.on("up", () => {
       var npc: Physics.Arcade.Sprite | null = getNearbyNPC(
         this.player,
         this.npcGroup
@@ -219,15 +219,49 @@ export class TownScene extends Scene {
   }
 
   submitPrompt(prompt: string, npc: Physics.Arcade.Sprite) {
-    this.createTextBox().start("Waiting for the response...", 200);
+    var waitingBox = this.createTextBox().start(
+      "Waiting for the response...",
+      200
+    );
     var timer = this.time.addEvent({
       delay: 6000, // ms
       callback: () => {
-        this.createTextBox().start("Waiting for the response...", 200);
+        var waitingBox = this.createTextBox().start(
+          "Waiting for the response...",
+          200
+        );
       },
       loop: true,
     });
-    this.enableKeyboard();
+    fetch("http://127.0.0.1:10002/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        content: prompt,
+        sender: "Brendan",
+        receiver_id: (npc as NPC).id,
+        receiver: (npc as NPC).name,
+      }),
+    }).then((response) => {
+      response.json().then((data) => {
+        console.log(data);
+        timer.destroy();
+        waitingBox.destroy();
+        var responseBox = this.createTextBox()
+          .start(data.content, 50)
+          .on("complete", () => {
+            this.enableKeyboard();
+            this.input.keyboard.on("keydown", () => {
+              debugger;
+              responseBox.destroy();
+              this.input.keyboard.off("keydown");
+            });
+          });
+      });
+    });
   }
 
   createTextBox(): TextBox {
@@ -237,6 +271,8 @@ export class TownScene extends Scene {
     );
     var x = upperLeftCorner.x;
     var y = upperLeftCorner.y;
+    var width = this.cameras.main.width * 0.8;
+    var height = this.cameras.main.height * 0.15;
     var textBox = this.rexUI.add
       .textBox({
         x: x,
@@ -249,9 +285,15 @@ export class TownScene extends Scene {
           20,
           COLOR_PRIMARY
         ),
-        text: this.add.text(0, 0, "", {
-          fixedWidth: this.cameras.main.width * 0.8,
-        }),
+        text: this.add
+          .text(0, 0, "", {
+            fixedWidth: width,
+            wordWrap: {
+              width: width,
+            },
+            maxLines: 3,
+          })
+          .setFixedSize(width, height),
         space: {
           left: 20,
           right: 20,
@@ -287,6 +329,7 @@ function getNearbyNPC(
       nearbyObject = object as Physics.Arcade.Sprite;
     }
   });
+  debugger;
 
   return nearbyObject;
 }

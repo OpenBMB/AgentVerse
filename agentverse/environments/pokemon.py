@@ -1,6 +1,7 @@
 import asyncio
+import time
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 # from agentverse.agents.agent import Agent
 from agentverse.agents.conversation_agent import BaseAgent
@@ -11,10 +12,10 @@ from . import env_registry as EnvironmentRegistry
 from .base import BaseEnvironment
 
 
-@EnvironmentRegistry.register("basic")
-class BasicEnvironment(BaseEnvironment):
+@EnvironmentRegistry.register("pokemon")
+class PokemonEnvironment(BaseEnvironment):
     """
-    A basic environment implementing the logic of conversation.
+    An environment for Pokémon demo.
 
     Args:
         agents: List of agents
@@ -48,14 +49,26 @@ class BasicEnvironment(BaseEnvironment):
         )
         super().__init__(rule=rule, **kwargs)
 
-    async def step(self) -> List[Message]:
+    async def step(
+        self, player_content: str, receiver: str, receiver_id: Optional[int] = None
+    ) -> List[Message]:
         """Run one step of the environment"""
 
         # Get the next agent index
-        agent_ids = self.rule.get_next_agent_idx(self)
+        # return [Message(content="Test", sender="May", receiver=["May"])]
+        if receiver_id is None:
+            for agent in self.agents:
+                if agent.name == receiver:
+                    receiver_id = agent.agent_id
+                    break
+        agent_ids = [receiver_id]
+        agent_name = receiver
+        player_message = Message(
+            sender="Brenden", content=player_content, receiver=[agent_name]
+        )
 
         # Generate current environment description
-        env_descriptions = self.rule.get_env_description(self)
+        env_descriptions = self.rule.get_env_description(self, player_content)
 
         # Generate the next message
         messages = await asyncio.gather(
@@ -64,11 +77,11 @@ class BasicEnvironment(BaseEnvironment):
 
         # Some rules will select certain messages from all the messages
         selected_messages = self.rule.select_message(self, messages)
-        self.last_messages = selected_messages
-        self.print_messages(selected_messages)
 
         # Update the memory of the agents
+        self.last_messages = [player_message, *selected_messages]
         self.rule.update_memory(self)
+        self.print_messages(selected_messages)
 
         # Update the set of visible agents for each agent
         self.rule.update_visible_agents(self)

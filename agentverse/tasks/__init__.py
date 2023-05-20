@@ -15,3 +15,4 @@ from .math_problem_2players_tools_nolc.output_parser import (
 from .nlp_classroom_3players_withtool_nolc.output_parser import (
     NlpClassroom3PlayersWithtoolNolcParser,
 )
+from .pokemon.output_parser import PokemonParser
