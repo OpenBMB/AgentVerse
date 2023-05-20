@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="48" height="35" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="9">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="48" height="35" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="15">
  <editorsettings>
   <export target="../dist/assets/tilemaps/json/town.json" format="json"/>
  </editorsettings>
@@ -40121,4 +40121,15 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="10" name="npcs">
+  <object id="12" name="May" type="npc" x="215.333" y="248.667">
+   <point/>
+  </object>
+  <object id="13" name="Steven" type="npc" x="422.667" y="296">
+   <point/>
+  </object>
+  <object id="14" name="Birch" type="npc" x="343.333" y="423.333">
+   <point/>
+  </object>
+ </objectgroup>
 </map>

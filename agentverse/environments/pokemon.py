@@ -67,6 +67,12 @@ class PokemonEnvironment(BaseEnvironment):
         player_message = Message(
             sender="Brenden", content=player_content, receiver=[agent_name]
         )
+        import pdb
+
+        pdb.set_trace()
+
+        # Update the set of visible agents for each agent
+        self.rule.update_visible_agents(self)
 
         # Generate current environment description
         env_descriptions = self.rule.get_env_description(self, player_content)
@@ -83,9 +89,6 @@ class PokemonEnvironment(BaseEnvironment):
         self.last_messages = [player_message, *selected_messages]
         self.rule.update_memory(self)
         self.print_messages(selected_messages)
-
-        # Update the set of visible agents for each agent
-        self.rule.update_visible_agents(self)
 
         self.cnt_turn += 1
 

@@ -9,19 +9,11 @@ import {
 } from "phaser";
 import { Player } from "../../classes/player";
 import { NPC } from "../../classes/npc";
-import { DIRECTION } from "../../constans";
-// import { Agents, Message } from '../../classes/message';
-// import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
-// import { TextBox } from "../../classes/textbox";
+import { DIRECTION } from "../../utils";
 import {
   TextBox,
-  RoundRectangle,
-  InputText,
-  Buttons,
-  Label,
   Click,
 } from "../../phaser3-rex-plugins/templates/ui/ui-components";
-import Button from "../../phaser3-rex-plugins/plugins/button";
 import UIPlugin from "../../phaser3-rex-plugins/templates/ui/ui-plugin";
 
 const COLOR_PRIMARY = 0x4e342e;
@@ -41,7 +33,6 @@ export class TownScene extends Scene {
   private npcGroup: GameObjects.Group;
   private keySpace: Phaser.Input.Keyboard.Key;
   private rexUI: UIPlugin;
-  // private message!: GameObjects.Text;
 
   constructor() {
     super("town-scene");
@@ -75,8 +66,17 @@ export class TownScene extends Scene {
 
     // NPC
     this.npcGroup = this.add.group();
-    var npc = new NPC(this, 400, 340, "May", 0);
-    this.npcGroup.add(npc);
+    var npcPoints = this.map.filterObjects("npcs", (npc) => {
+      return npc.type === "npc";
+    });
+    var npcs = npcPoints.map((npc) => {
+      var id_property = npc.properties.filter((property) => {
+        return property.name === "id";
+      });
+      this.npcGroup.add(
+        new NPC(this, npc.x, npc.y, npc.name, id_property[0].value)
+      );
+    });
     this.physics.add.collider(this.npcGroup, this.wallLayer);
     this.physics.add.collider(this.npcGroup, this.treeLayer);
     this.physics.add.collider(this.npcGroup, this.houseLayer);
@@ -236,6 +236,7 @@ export class TownScene extends Scene {
       },
       loop: true,
     });
+    debugger;
     fetch("http://127.0.0.1:10002/chat", {
       method: "POST",
       headers: {
