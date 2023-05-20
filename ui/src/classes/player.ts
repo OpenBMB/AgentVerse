@@ -8,6 +8,8 @@ export class Player extends Actor {
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, "Brendan");
 
+    this.setName("Brendan");
+
     // Keys
     this.initKeyboard();
 
@@ -25,26 +27,26 @@ export class Player extends Actor {
     var pressed_flag = false;
     if (this.keyW.enabled && this.keyW?.isDown) {
       this.getBody().setVelocityY(-110);
-      this.anims.play("walk-up", true);
+      this.anims.play(this.name + "-walk-up", true);
       pressed_flag = true;
     }
 
     if (this.keyA.enabled && this.keyA?.isDown) {
       // this.getBody().setOffset(48, 15);
       this.getBody().setVelocityX(-110);
-      this.anims.play("walk-left", true);
+      this.anims.play(this.name + "-walk-left", true);
       pressed_flag = true;
     }
 
     if (this.keyS.enabled && this.keyS?.isDown) {
       this.getBody().setVelocityY(110);
-      this.anims.play("walk-down", true);
+      this.anims.play(this.name + "-walk-down", true);
       pressed_flag = true;
     }
 
     if (this.keyD.enabled && this.keyD?.isDown) {
       this.getBody().setVelocityX(110);
-      this.anims.play("walk-right", true);
+      this.anims.play(this.name + "-walk-right", true);
       // this.getBody().setOffset(15, 15);
       pressed_flag = true;
     }
@@ -52,41 +54,6 @@ export class Player extends Actor {
     if (!pressed_flag && this.anims.isPlaying) {
       this.anims.setCurrentFrame(this.anims.currentAnim!.frames[0]);
     }
-  }
-
-  initAnimations(): void {
-    this.scene.anims.create({
-      key: "walk-down",
-      frames: this.scene.anims.generateFrameNumbers("Brendan", {
-        start: 0,
-        end: 2,
-      }),
-      frameRate: 6,
-    });
-    this.scene.anims.create({
-      key: "walk-up",
-      frames: this.scene.anims.generateFrameNumbers("Brendan", {
-        start: 3,
-        end: 5,
-      }),
-      frameRate: 6,
-    });
-    this.scene.anims.create({
-      key: "walk-left",
-      frames: this.scene.anims.generateFrameNumbers("Brendan", {
-        start: 6,
-        end: 8,
-      }),
-      frameRate: 6,
-    });
-    this.scene.anims.create({
-      key: "walk-right",
-      frames: this.scene.anims.generateFrameNumbers("Brendan", {
-        start: 9,
-        end: 11,
-      }),
-      frameRate: 6,
-    });
   }
 
   initKeyboard(): void {

@@ -46,15 +46,6 @@ export class LoadingScene extends Scene {
     //   frameWidth: 16,
     //   frameHeight: 16,
     // });
-
-    this.load.spritesheet(
-      "textbox",
-      "https://nick-hat-boecker.de/files/images/dynamic_box.png",
-      {
-        frameWidth: 16,
-        frameHeight: 16,
-      }
-    );
   }
 
   create(): void {

@@ -9,7 +9,7 @@ import {
 } from "phaser";
 import { Player } from "../../classes/player";
 import { NPC } from "../../classes/npc";
-import eventsCenter from "../../classes/event_center";
+import { DIRECTION } from "../../constans";
 // import { Agents, Message } from '../../classes/message';
 // import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
 // import { TextBox } from "../../classes/textbox";
@@ -83,11 +83,10 @@ export class TownScene extends Scene {
     this.physics.add.collider(this.player, this.npcGroup);
 
     this.keySpace.on("up", () => {
-      var npc: Physics.Arcade.Sprite | null = getNearbyNPC(
-        this.player,
-        this.npcGroup
-      );
+      var ret = getNearbyNPC(this.player, this.npcGroup);
+      var npc = ret[0];
       if (npc) {
+        (npc as NPC).changeDirection(ret[1]);
         this.createInputBox(npc);
       }
     });
@@ -113,6 +112,9 @@ export class TownScene extends Scene {
 
   update(): void {
     this.player.update();
+    this.npcGroup.getChildren().forEach(function (npc) {
+      (npc as NPC).update();
+    });
   }
 
   disableKeyboard(): void {
@@ -226,7 +228,8 @@ export class TownScene extends Scene {
     var timer = this.time.addEvent({
       delay: 6000, // ms
       callback: () => {
-        var waitingBox = this.createTextBox().start(
+        waitingBox.destroy();
+        waitingBox = this.createTextBox().start(
           "Waiting for the response...",
           200
         );
@@ -254,10 +257,9 @@ export class TownScene extends Scene {
           .start(data.content, 50)
           .on("complete", () => {
             this.enableKeyboard();
-            this.input.keyboard.on("keydown", () => {
-              debugger;
+            this.input.keyboard.on("keyup", () => {
               responseBox.destroy();
-              this.input.keyboard.off("keydown");
+              this.input.keyboard.off("keyup");
             });
           });
       });
@@ -291,7 +293,6 @@ export class TownScene extends Scene {
             wordWrap: {
               width: width,
             },
-            maxLines: 3,
           })
           .setFixedSize(width, height),
         space: {
@@ -313,23 +314,42 @@ export class TownScene extends Scene {
 function getNearbyNPC(
   player: Physics.Arcade.Sprite,
   npcGroup: GameObjects.Group
-): Physics.Arcade.Sprite | null {
+): [Physics.Arcade.Sprite | null, number] {
   var nearbyObject: Physics.Arcade.Sprite | null = null;
-  const nearbyDistance = Math.max(player.width, player.height);
 
+  // Not rigorous. Just a rough estimation. Requires that the npcs have
+  // similar width and height to player.
+  const nearbyDistance = 1.1 * Math.max(player.width, player.height);
+
+  var direction = 0;
   npcGroup.getChildren().forEach(function (object) {
+    var _object = object as Physics.Arcade.Sprite;
     const distance = Mathph.Distance.Between(
       player.x,
       player.y,
-      (object as Physics.Arcade.Sprite).x,
-      (object as Physics.Arcade.Sprite).y
+      _object.x,
+      _object.y
     );
 
     if (distance <= nearbyDistance) {
-      nearbyObject = object as Physics.Arcade.Sprite;
+      nearbyObject = _object;
+      var x_ratio = (player.x - _object.x) / _object.width;
+      var y_ratio = (player.y - _object.y) / _object.height;
+      if (Math.abs(x_ratio) > Math.abs(y_ratio)) {
+        if (x_ratio > 0) {
+          direction = DIRECTION.RIGHT;
+        } else {
+          direction = DIRECTION.LEFT;
+        }
+      } else {
+        if (y_ratio > 0) {
+          direction = DIRECTION.DOWN;
+        } else {
+          direction = DIRECTION.UP;
+        }
+      }
     }
   });
-  debugger;
 
-  return nearbyObject;
+  return [nearbyObject, direction];
 }

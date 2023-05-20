@@ -55,6 +55,7 @@ class PokemonEnvironment(BaseEnvironment):
         """Run one step of the environment"""
 
         # Get the next agent index
+        # time.sleep(8)
         # return [Message(content="Test", sender="May", receiver=["May"])]
         if receiver_id is None:
             for agent in self.agents:
