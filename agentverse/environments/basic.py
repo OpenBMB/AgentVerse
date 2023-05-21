@@ -59,7 +59,7 @@ class BasicEnvironment(BaseEnvironment):
 
         # Generate the next message
         messages = await asyncio.gather(
-            *[self.agents[i].astep(self, env_descriptions[i]) for i in agent_ids]
+            *[self.agents[i].astep(env_descriptions[i]) for i in agent_ids]
         )
 
         # Some rules will select certain messages from all the messages

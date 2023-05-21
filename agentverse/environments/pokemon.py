@@ -67,9 +67,6 @@ class PokemonEnvironment(BaseEnvironment):
         player_message = Message(
             sender="Brenden", content=player_content, receiver=[agent_name]
         )
-        import pdb
-
-        pdb.set_trace()
 
         # Update the set of visible agents for each agent
         self.rule.update_visible_agents(self)

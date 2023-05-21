@@ -1,29 +1,28 @@
+from __future__ import annotations
+
 import logging
 from string import Template
-
-
-from typing import List, TYPE_CHECKING
-
+from typing import TYPE_CHECKING, List
 
 from agentverse.message import Message
 
 from . import agent_registry
 from .base import BaseAgent
 
-
 if TYPE_CHECKING:
     from agentverse.environments.base import BaseEnvironment
 
+
 @agent_registry.register("conversation")
 class ConversationAgent(BaseAgent):
-    def step(self, environment: "BaseEnvironment", env_description: str = "",) -> Message:
+    def step(self, env_description: str = "") -> Message:
         prompt = self._fill_prompt_template(env_description)
 
         parsed_response = None
         for i in range(self.max_retry):
             try:
                 response = self.llm.generate_response(prompt)
-                parsed_response = self.output_parser.parse(self, environment, response)
+                parsed_response = self.output_parser.parse(response)
                 break
             except Exception as e:
                 logging.error(e)
@@ -42,7 +41,7 @@ class ConversationAgent(BaseAgent):
         )
         return message
 
-    async def astep(self, environment: "BaseEnvironment", env_description: str = "") -> Message:
+    async def astep(self, env_description: str = "") -> Message:
         """Asynchronous version of step"""
         prompt = self._fill_prompt_template(env_description)
 
@@ -50,7 +49,7 @@ class ConversationAgent(BaseAgent):
         for i in range(self.max_retry):
             try:
                 response = await self.llm.agenerate_response(prompt)
-                parsed_response = self.output_parser.parse(self, environment, response)
+                parsed_response = self.output_parser.parse(response)
                 break
             except Exception as e:
                 logging.error(e)
