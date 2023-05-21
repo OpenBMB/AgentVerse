@@ -38,7 +38,7 @@ agents:
     name: Police
     interrogating_form: You are now interrogating with both Suspects in turn, when you receive the message from Suspect1 you should transfer the information to Suspect2, vice versa.
     role_description: |-
-      You are now the Police. You have arrested two suspects. However, they both refused to confess to their crime.
+      You are now the Police. You have arrested Two suspect. However, they both refused to confess to their crime.
       Your goal is try to convict both suspects, therefore you come up with the following rules.
       - If one of the suspect are willing to testifies against the other and the other one remains silent, then the one who testifies will be released immediately, while the silent one will be sentenced to TEN years in prison.
       - If both of the suspects remain silent, they will each receive a sentence of ONE year in prison.
@@ -54,7 +54,7 @@ agents:
     llm:
       model: "gpt-4"
       llm_type: gpt-4
-      temperature: 1.2
+      temperature: 0
       max_tokens: 200
   - agent_type: prisoner
     name: Suspect1
@@ -74,12 +74,12 @@ agents:
     llm:
       model: "gpt-4"
       llm_type: gpt-4
-      temperature: 1.2
+      temperature: 0
       max_tokens: 100
   - agent_type: prisoner
     name: Suspect2
     personality: ""
-    relationship_with_another: "You have ever betray Suspect1 once."
+    relationship_with_another: ""
     role_description: |-
       You are Suspect2 !!! You are going to match wits and courage with Suspect1 to come out victorious in this interrogation.
       You will have to talk to Police several times and only the final decision will count.
@@ -94,7 +94,7 @@ agents:
     llm:
       model: "gpt-4"
       llm_type: gpt-4
-      temperature: 1.2
+      temperature: 0
       max_tokens: 100
 
 tools:

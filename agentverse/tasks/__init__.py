@@ -14,6 +14,9 @@ from .math_problem_2players_tools_nolc.output_parser import (
 )
 
 from .prisoner_dilema.output_parser import PrisonerDilemaParser
+from .prisoner_dilema.base.output_parser import PrisonerDilemaParser
+from .prisoner_dilema.s1_p_r.output_parser import PrisonerDilemaParser
+from .prisoner_dilema.police.output_parser import PrisonerDilemaParser
 
 from .nlp_classroom_3players_withtool_nolc.output_parser import (
     NlpClassroom3PlayersWithtoolNolcParser,
