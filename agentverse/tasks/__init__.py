@@ -21,3 +21,4 @@ from .nlp_classroom_3players_withtool_nolc.output_parser import (
     NlpClassroom3PlayersWithtoolNolcParser,
 )
 from .pokemon.output_parser import PokemonParser
+from .sde_team_3players_nolc.output_parser import SdeTeamParser
