@@ -43,7 +43,10 @@ class UI:
         self.text_now = None
 
     def get_avatar(self, idx):
-        img = cv2.imread(f"./imgs/{idx}.png")
+        if self.task == "prisoner_dilema":
+            img = cv2.imread(f"./imgs/prison/{idx}.png")
+        else:
+            img = cv2.imread(f"./imgs/{idx}.png")
         base64_str = cv2.imencode(".png", img)[1].tostring()
         return "data:image/png;base64," + base64.b64encode(base64_str).decode("utf-8")
 
@@ -108,13 +111,12 @@ class UI:
         :param data:
         :return: the new image
         """
-        # The foloowing code need to be more general. This one is too task-specific.
+        # The following code need to be more general. This one is too task-specific.
         # if len(data) != self.stu_num:
         if len(data) != self.stu_num + 1:
             raise gr.Error("data length is not equal to the total number of students.")
         if self.task == "prisoner_dilema":
             img = cv2.imread("./imgs/speaking.png", cv2.IMREAD_UNCHANGED)
-            print(self.messages)
             if len(self.messages) < 2 or self.messages[-1][0] == 1 or self.messages[-2][0] == 2:
                 background = cv2.imread("./imgs/prison/case_1.png")
                 if data[0]["message"] != "":
