@@ -26,7 +26,9 @@ from agentverse.parser import output_parser_registry
 
 def load_llm(llm_config: Dict):
     llm_type = llm_config.pop("llm_type", "text-davinci-003")
+
     return llm_registry.build(llm_type, **llm_config)
+
 
 
 def load_memory(memory_config: Dict):

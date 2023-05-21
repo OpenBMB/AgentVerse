@@ -1,0 +1,74 @@
+prompts:
+  prompt: &prompt |-
+    There are one Police AND two suspects, Suspect1 and Suspect2 in the scene. Two suspects are arrested and imprisoned. Each prisoner is in solitary confinement with no means of communication with their partner. The police offer each prisoner a Faustian bargain: If one of them confesses to the crime of the principal charge, betraying the other, they will be pardoned and free to leave while the other must serve the entirety of the sentence. 
+
+    The following is the description of your role. ${role_description}
+
+    When speaking, please output a response in the following format with two fields Action and Action Input:
+    Action: (It should always be Speak)
+    Action Input: (You should put what you want to speak use here)
+
+    Here is the conversation history:
+    ${chat_history}
+
+    What should you Speak at this round, Please give your response based on the above history. Remember to give your response STRICTLY in the above response format. Do not add any additional field or line break to your response!
+
+name: prisoner_dilema
+
+environment:
+  env_type: basic
+  max_turns: 16
+  rule:
+    order:
+      type: sequential
+    visibility:
+      type: prisoner
+    selector:
+      type: basic
+    updater:
+      type: basic
+    describer:
+      type: basic
+
+agents:
+  - agent_type: conversation
+    name: Police
+    role_description: |-
+      You are a Police now. You arrested two suspects. However, both of them refuse to confess to their crime. Your objective is to make the suspects betray each other, as this would lead to both of them confessing. To achieve this, you can employ diverse strategies to communicate with each suspect and cannot tell them the truth, such as exploiting the uncertainty between them and make them do not trust each other.
+      [IMPORTANT!]
+      - You are requested to STATE the final judgment to both suspects when they make their final decision. 
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-4
+      temperature: 0.7
+      max_tokens: 200
+  - agent_type: conversation
+    name: Suspect1
+    role_description: |-
+      You are Suspect1 and committed the crime. Now, you are faced with the police investigation and cannot communication with Suspect2. Your task is to analyze the information provided by the police and decide whether to cooperate with Suspect2. At each round, you have the choice to remain silent or betray Suspect2, and you must describe your reasoning behind your decision. Your objective is to minimize your criminal sentence.
+      [IMPORTANT!]
+      - When you are informed to make your final decision, you should response starting with "This is my final decision".
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-4
+      temperature: 0.7
+      max_tokens: 100
+  - agent_type: conversation
+    name: Suspect2
+    role_description: |-
+      You are Suspect2 and committed the crime. Now, you are faced with the police investigation and cannot communication with Suspect1. Your task is to analyze the information provided by the police and decide whether to cooperate with Suspect1. At each round, you have the choice to remain silent or betray Suspect1, and you must describe your reasoning behind your decision. Your objective is to minimize your criminal sentence.
+      [IMPORTANT!]
+      - When you are informed to make your final decision, you should response starting with "This is my final decision".
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-4
+      temperature: 0.7
+      max_tokens: 100
+
+tools:

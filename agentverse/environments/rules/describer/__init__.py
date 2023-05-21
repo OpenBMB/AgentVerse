@@ -6,3 +6,4 @@ from .base import BaseDescriber
 from .basic import BasicDescriber
 from .classroom import ClassroomDescriber
 from .pokemon import PokemonDescriber
+from .prisoner import PrisonerDescriber

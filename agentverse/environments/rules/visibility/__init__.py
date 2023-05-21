@@ -8,3 +8,4 @@ from .base import BaseVisibility
 from .all import AllVisibility
 from .classroom import ClassroomVisibility
 from .oneself import OneselfVisibility
+from .prisoner import PrisonerVisibility
