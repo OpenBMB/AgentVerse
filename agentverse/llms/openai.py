@@ -86,6 +86,7 @@ class OpenAIChat(BaseChatModel):
     def __init__(self, max_retry: int = 3, **kwargs):
         args = OpenAIChatArgs()
         args = args.dict()
+
         for k, v in args.items():
             args[k] = kwargs.pop(k, v)
         if len(kwargs) > 0:
@@ -111,6 +112,7 @@ class OpenAIChat(BaseChatModel):
         )
 
     async def agenerate_response(self, prompt: str) -> LLMResult:
+
         messages = self._construct_messages(prompt)
         try:
             response = await openai.ChatCompletion.acreate(
