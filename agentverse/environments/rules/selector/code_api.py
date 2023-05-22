@@ -4,7 +4,6 @@ import ast
 import json
 import astunparse
 import concurrent.futures
-from typing import List
 
 
 def get_call_str(assert_statement: str) -> str:
@@ -18,7 +17,7 @@ def get_output(func: str, assert_statement: str) -> str:
         output = eval(func_call)
         return output
     except Exception as e:
-        return str(type(e).__name__)
+        return str(e)
 
 def worker(code, globals=None, locals=None):
     old_stdout = sys.stdout
@@ -72,7 +71,7 @@ def execute_unit_tests(func_impl: str, tests: str) -> str:
             failed_tests += [f"{tests[i]} # output: Timeout"]
             is_passing = False
         elif output.startswith("Error: "):
-            print(output)
+            # print(output)
             func_output = get_output(func_impl, tests[i])
             failed_tests += [f"{tests[i]} # output: {func_output}"]
             is_passing = False
