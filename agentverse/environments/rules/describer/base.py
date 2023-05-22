@@ -5,16 +5,19 @@ from typing import TYPE_CHECKING, Any, List
 from pydantic import BaseModel
 
 from . import describer_registry as DescriberRegistry
+from abc import abstractmethod
 
 if TYPE_CHECKING:
     from agentverse.environments import BaseEnvironment
 
 
-@DescriberRegistry.register("base")
 class BaseDescriber(BaseModel):
-    def get_env_description(self, environment: BaseEnvironment) -> List[str]:
+    @abstractmethod
+    def get_env_description(
+        self, environment: BaseEnvironment, *args, **kwargs
+    ) -> List[str]:
         """Return the environment description for each agent"""
-        return ["" for _ in range(len(environment.agents))]
+        pass
 
     def reset(self) -> None:
         pass

@@ -1,0 +1,70 @@
+$type: ScrollablePanel
+name:
+
+width:
+height:
+scrollMode:
+
+# Relace child data by game objct
+background:
+panel:
+    child:
+    mask:
+        padding:
+        updateMode:
+slider:
+    background:
+    track:
+    indicator:
+    thumb:
+    input:
+    position:
+    adaptThumbSize:
+    minThumbSize:
+
+    buttons:
+        top:
+        bottom:
+        left:
+        right:
+        step:
+
+scroller:
+    threshold:
+    slidingDeceleration:
+    backDeceleration:
+    pointerOutRelease:
+
+mouseWheelScroller: false
+#mouseWheelScroller:
+#    focus:
+#    speed:
+
+clamplChildOY: false
+
+header:
+footer:
+# ----
+
+space:
+    left:
+    right:
+    top:
+    bottom:
+    panel:
+        left:
+        right:
+        top:
+        bottom:
+    header:
+    footer:
+
+expand:
+    header:
+    footer:
+
+align:
+    header:
+    footer:
+
+draggable:

@@ -1,0 +1,30 @@
+extends:
+  - eslint:recommended
+  - plugin:@typescript-eslint/eslint-recommended
+  - plugin:@typescript-eslint/recommended
+  - plugin:@typescript-eslint/recommended-requiring-type-checking
+  - plugin:prettier/recommended
+  - prettier/@typescript-eslint
+plugins:
+  - '@typescript-eslint'
+parser: '@typescript-eslint/parser'
+parserOptions:
+  sourceType: module
+  ecmaVersion: 2020
+  project: ./tsconfig.json
+rules:
+  prettier/prettier:
+    - error
+    - singleQuote: true
+  '@typescript-eslint/camelcase': warn
+  '@typescript-eslint/no-use-before-define': off
+  no-empty-function: off
+  '@typescript-eslint/no-empty-function':
+    - error
+    - allow:
+      - constructors
+  'no-fallthrough': warn
+  '@typescript-eslint/unbound-method': off
+  'no-inner-declarations': off
+  '@typescript-eslint/class-name-casing': warn
+  'prefer-const': warn

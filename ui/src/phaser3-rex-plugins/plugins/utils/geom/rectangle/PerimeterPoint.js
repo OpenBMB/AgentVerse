@@ -1,0 +1,48 @@
+/**
+ * @author       Richard Davey <rich@photonstorm.com>
+ * @copyright    2019 Photon Storm Ltd.
+ * @license      {@link https://opensource.org/licenses/MIT|MIT License}
+ */
+
+import Point from '../point/Point.js';
+import DegToRad from '../../math/DegToRad.js';
+
+/**
+ * [description]
+ *
+ * @function Phaser.Geom.Rectangle.PerimeterPoint
+ * @since 3.0.0
+ *
+ * @generic {Phaser.Geom.Point} O - [out,$return]
+ *
+ * @param {Phaser.Geom.Rectangle} rectangle - [description]
+ * @param {integer} angle - [description]
+ * @param {Phaser.Geom.Point} [out] - [description]
+ *
+ * @return {Phaser.Geom.Point} [description]
+ */
+var PerimeterPoint = function (rectangle, angle, out) {
+    if (out === undefined) { out = new Point(); }
+
+    angle = DegToRad(angle);
+
+    var s = Math.sin(angle);
+    var c = Math.cos(angle);
+
+    var dx = (c > 0) ? rectangle.width / 2 : rectangle.width / -2;
+    var dy = (s > 0) ? rectangle.height / 2 : rectangle.height / -2;
+
+    if (Math.abs(dx * s) < Math.abs(dy * c)) {
+        dy = (dx * s) / c;
+    }
+    else {
+        dx = (dy * c) / s;
+    }
+
+    out.x = dx + rectangle.centerX;
+    out.y = dy + rectangle.centerY;
+
+    return out;
+};
+
+export default PerimeterPoint;

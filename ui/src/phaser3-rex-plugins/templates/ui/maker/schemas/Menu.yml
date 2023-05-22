@@ -1,0 +1,31 @@
+$type: Menu
+name:
+
+# Relace child data by game objct
+background:
+items:
+    - $type:
+      # ...
+      $next:
+          - $type:
+            # ...
+            $next:
+                - $type:
+                  # ...
+      
+# ----
+
+orientation:
+subMenuSide:
+easeIn:
+# easeIn:
+#     duration:
+#     orientation:
+#     ease:
+easeOut:
+# easeOut:
+#     duration:
+#     orientation:
+#     ease:
+
+draggable:

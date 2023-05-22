@@ -1,0 +1,34 @@
+$type: NumberBar
+name:
+
+width:
+height:
+orientation:
+
+# Relace child data by game objct
+background:
+icon:
+slider:
+    background:
+    track:
+    indicator:
+    thumb:
+    input:
+    gap:
+    easeValue:
+        duration:
+        ease:
+text:
+# ----
+
+iconMask:
+space:
+    left:
+    right:
+    top:
+    bottom:
+    icon:
+    slider:
+enable:
+
+draggable:

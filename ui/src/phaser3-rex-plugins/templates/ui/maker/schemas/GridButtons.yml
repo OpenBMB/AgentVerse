@@ -1,0 +1,57 @@
+$type: GridButtons
+name:
+
+width:
+height:
+buttonsType:
+
+# Relace child data by game objct
+background:
+buttons:     # Game objects in 2d array
+    - 
+        - $type:
+          # ...
+        - $type:
+          # ...
+    -
+        - $type:
+          # ...
+        - $type:
+          # ...
+
+# Optional
+column:
+row:
+createCellContainerCallback:
+    child:
+        $type:
+        # ...
+    column:
+    row:
+    align:
+    padding:
+        left:
+        right:
+        top:
+        bottom:
+    expand:
+    key:
+# ----
+
+expand:
+click:
+    mode:
+    clickInterval:
+space:
+    left:
+    right:
+    top:
+    bottom:
+    column:
+    row:
+    indentLeftOdd:
+    indentLeftEven:
+    indentTopOdd:
+    indentTopEven:
+
+draggable:

@@ -1,0 +1,33 @@
+$type: TextBox
+name:
+
+width:
+height:
+orientation:
+
+# Relace child data by game objct
+background:
+icon:
+text:
+action:
+# ----
+
+iconMask:
+actionMask:
+align:
+space:
+    left:
+    right:
+    top:
+    bottom:
+    icon:
+    text:
+
+page:
+    maxLines:
+    pageBreak:
+type:
+    wrap:
+    speed:
+
+draggable:

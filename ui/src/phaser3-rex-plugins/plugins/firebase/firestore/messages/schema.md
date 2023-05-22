@@ -1,0 +1,6 @@
+- <randomID>
+    - `senderID` - Unique ID of sender
+	- `senderName` - Name of sender
+    - `message` - Message
+    - `timestamp` - Server-timestamp
+    - `receiverID` - Unique ID of receiver, optional
