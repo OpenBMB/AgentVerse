@@ -1,0 +1,197 @@
+agents:
+- agent_type: conversation
+  llm:
+    llm_type: gpt-3.5-turbo
+    max_tokens: 1024
+    temperature: 0.1
+  memory:
+    memory_type: sde_team
+  name: code_writer
+  prompt_template: 'You are working in a programming team to solve a python code implementation
+    problem.
+
+
+    ${role_description}
+
+
+    ${chat_history}'
+  receiver:
+  - code_writer
+  - code_reviewer
+  role_description: "You are a professional coding assistant. You will be given a\
+    \ function signature and docstring (in <problem>). You should copy the import\
+    \ statement, the function signature first and then finish the function body. Before\
+    \ writing any code, you should first think about the task and write down your\
+    \ thoughts in <thought>. Then you can write your code in <code>.\n\nYour submitted\
+    \ code (in <current code>) will be tested on a series of unit tests. You will\
+    \ be given the feedback (in <unit test feedback>) of the test, together with the\
+    \ review of your code (in <code review>) of a professional code reviewer. You\
+    \ can use these feedbacks to refine your code. The refinement will take multiple\
+    \ iterations. You can use the <thought> to record your thoughts during the refinement.\n\
+    \nHere is the steps of the code writing and refinement process:\n1 - generate\
+    \ <thought>\n2 - generate <code>\n\nThe following is two examples on code writing\
+    \ and refinement.\n\n[Example on code writing]:\n\n<problem>:\ndef is_palindrome(x:\
+    \ int) -> bool:\n\"\"\" Given an integer x, return True if x is a palindrome,\
+    \ and False otherwise.\nAn integer is a palindrome when it reads the same forward\
+    \ and backward.\n>>> is_palindrome(121)\nTrue\n>>> is_palindrome(10)\nFalse\n\"\
+    \"\"\n\n<thought>:\nI need to convert the integer to a string and then check if\
+    \ the string is a palindrome.\n\n<code>:\ndef is_palindrome(x: int) -> bool:\n\
+    \    s = str(x)\n    return s == s[::-1]\n\n[Example on refinement]:\n\n<problem>:\n\
+    from typing import List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n\
+    \"\"\" Given an array of integers nums and an integer target, return indices of\
+    \ the two numbers such that they add up to target.\nYou may assume that each input\
+    \ would have exactly one solution, and you may not use the same element twice.\
+    \ \nThe answer should be in an ascending order.\n>>> two_sum([2,7,11,15], 9)\n\
+    [0, 1]\n>>> two_sum([3,2,4], 6)\n[1, 2]\n\"\"\"\n\n<current code>:\nfrom typing\
+    \ import List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n   \
+    \ for i in range(len(nums)):\n        for j in range(len(nums)):\n           \
+    \ if nums[i] + nums[j] == target:\n                return [i, j]\n\n<unit test\
+    \ feedback>:\n{\"is_passing\": false, \"feedback\": \"Tested passed:\\nassert\
+    \ two_sum([2, 7, 11, 15], 9) == [0, 1]\\nassert two_sum([3, 5, 2, 7], 9) == [2,\
+    \ 3]\\n\\nTests failed:\\nassert two_sum([3, 2, 4], 6) == [1, 2] # output: [0,\
+    \ 0]\"}\n\n<code review>:\nThe previous code is not correct. It failed all the\
+    \ tests. The second for loop should start from i + 1.\n\n<thought>:\nThe code\
+    \ reviewer is right. I should start the second for loop from i + 1.\n\n<code>:\n\
+    from typing import List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n\
+    \    for i in range(len(nums)):\n        for j in range(i + 1, len(nums)):\n \
+    \           if nums[i] + nums[j] == target:\n                return [i, j]\n\n\
+    [Start of new task]:\n\nNow please solve the following problem.\n\n\n<problem>:\n\
+    from typing import List\n\n\ndef mean_absolute_deviation(numbers: List[float])\
+    \ -> float:\n    \"\"\" For a given list of input numbers, calculate Mean Absolute\
+    \ Deviation\n    around the mean of this dataset.\n    Mean Absolute Deviation\
+    \ is the average absolute difference between each\n    element and a centerpoint\
+    \ (mean in this case):\n    MAD = average | x - x_mean |\n    >>> mean_absolute_deviation([1.0,\
+    \ 2.0, 3.0, 4.0])\n    1.0\n    \"\"\"\n"
+  verbose: true
+- agent_type: conversation
+  llm:
+    llm_type: gpt-3.5-turbo
+    max_tokens: 1024
+    temperature: 0.1
+  memory:
+    memory_type: sde_team
+  name: code_reviewer
+  prompt_template: 'You are working in a programming team to solve a python code implementation
+    problem.
+
+
+    ${role_description}
+
+
+    ${chat_history}'
+  receiver:
+  - code_writer
+  role_description: "You are a professional code reviewer. You will be given a function\
+    \ signature and docstring in <problem>. A code writer has submitted his completion\
+    \ in <submitted code>.\nThe code has been executed on a series of unit tests.\
+    \ The execution feedback is provided in <unit test feedback>. Your job is to write\
+    \ a code review in <code review> to help the code writer improve his code.\n\n\
+    The following is an examples.\n\n[Example]:\n\n<problem>:\nfrom typing import\
+    \ List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n\"\"\" Given\
+    \ an array of integers nums and an integer target, return indices of the two numbers\
+    \ such that they add up to target.\nYou may assume that each input would have\
+    \ exactly one solution, and you may not use the same element twice. \nThe answer\
+    \ should be in an ascending order.\n>>> two_sum([2,7,11,15], 9)\n[0, 1]\n>>> two_sum([3,2,4],\
+    \ 6)\n[1, 2]\n\"\"\"\n\n<current code>:\nfrom typing import List\n\ndef two_sum(nums:\
+    \ List[int], target: int) -> List[int]:\n    for i in range(len(nums)):\n    \
+    \    for j in range(len(nums)):\n            if nums[i] + nums[j] == target:\n\
+    \                return [i, j]\n\n<unit test feedback>:\n{\"is_passing\": false,\
+    \ \"feedback\": \"Tested passed:\\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\\\
+    nassert two_sum([3, 5, 2, 7], 9) == [2, 3]\\n\\nTests failed:\\nassert two_sum([3,\
+    \ 2, 4], 6) == [1, 2] # output: [0, 0]\"}\n\n<code review>:\nThe previous code\
+    \ is not correct. It failed all the tests. The second for loop should start from\
+    \ i + 1.\n\n[Start of new task]:\n\nNow please review the following submitted\
+    \ code.\n\n\n<problem>:\nfrom typing import List\n\n\ndef mean_absolute_deviation(numbers:\
+    \ List[float]) -> float:\n    \"\"\" For a given list of input numbers, calculate\
+    \ Mean Absolute Deviation\n    around the mean of this dataset.\n    Mean Absolute\
+    \ Deviation is the average absolute difference between each\n    element and a\
+    \ centerpoint (mean in this case):\n    MAD = average | x - x_mean |\n    >>>\
+    \ mean_absolute_deviation([1.0, 2.0, 3.0, 4.0])\n    1.0\n    \"\"\"\n"
+  verbose: true
+environment:
+  env_type: sde_team_given_tests
+  max_turns: 5
+  rule:
+    describer:
+      type: basic
+    order:
+      type: sde_team_given_tests
+    selector:
+      type: sde_team_given_tests
+    updater:
+      type: sde_team
+    visibility:
+      type: all
+  task_name: HumanEval/0
+  unit_tests: '[''assert abs(mean_absolute_deviation([1.0, 2.0, 3.0]) - 2.0/3.0) <
+    1e-6\n'', ''assert abs(mean_absolute_deviation([1.0, 2.0, 3.0, 4.0]) - 1.0) <
+    1e-6\n'', ''assert abs(mean_absolute_deviation([1.0, 2.0, 3.0, 4.0, 5.0]) - 6.0/5.0)
+    < 1e-6\n\n'']'
+prompts:
+  code_reviewer_role_prompt: "You are a professional code reviewer. You will be given\
+    \ a function signature and docstring in <problem>. A code writer has submitted\
+    \ his completion in <submitted code>.\nThe code has been executed on a series\
+    \ of unit tests. The execution feedback is provided in <unit test feedback>. Your\
+    \ job is to write a code review in <code review> to help the code writer improve\
+    \ his code.\n\nThe following is an examples.\n\n[Example]:\n\n<problem>:\nfrom\
+    \ typing import List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n\
+    \"\"\" Given an array of integers nums and an integer target, return indices of\
+    \ the two numbers such that they add up to target.\nYou may assume that each input\
+    \ would have exactly one solution, and you may not use the same element twice.\
+    \ \nThe answer should be in an ascending order.\n>>> two_sum([2,7,11,15], 9)\n\
+    [0, 1]\n>>> two_sum([3,2,4], 6)\n[1, 2]\n\"\"\"\n\n<current code>:\nfrom typing\
+    \ import List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n   \
+    \ for i in range(len(nums)):\n        for j in range(len(nums)):\n           \
+    \ if nums[i] + nums[j] == target:\n                return [i, j]\n\n<unit test\
+    \ feedback>:\n{\"is_passing\": false, \"feedback\": \"Tested passed:\\nassert\
+    \ two_sum([2, 7, 11, 15], 9) == [0, 1]\\nassert two_sum([3, 5, 2, 7], 9) == [2,\
+    \ 3]\\n\\nTests failed:\\nassert two_sum([3, 2, 4], 6) == [1, 2] # output: [0,\
+    \ 0]\"}\n\n<code review>:\nThe previous code is not correct. It failed all the\
+    \ tests. The second for loop should start from i + 1.\n\n[Start of new task]:\n\
+    \nNow please review the following submitted code.\n"
+  code_writer_role_prompt: "You are a professional coding assistant. You will be given\
+    \ a function signature and docstring (in <problem>). You should copy the import\
+    \ statement, the function signature first and then finish the function body. Before\
+    \ writing any code, you should first think about the task and write down your\
+    \ thoughts in <thought>. Then you can write your code in <code>.\n\nYour submitted\
+    \ code (in <current code>) will be tested on a series of unit tests. You will\
+    \ be given the feedback (in <unit test feedback>) of the test, together with the\
+    \ review of your code (in <code review>) of a professional code reviewer. You\
+    \ can use these feedbacks to refine your code. The refinement will take multiple\
+    \ iterations. You can use the <thought> to record your thoughts during the refinement.\n\
+    \nHere is the steps of the code writing and refinement process:\n1 - generate\
+    \ <thought>\n2 - generate <code>\n\nThe following is two examples on code writing\
+    \ and refinement.\n\n[Example on code writing]:\n\n<problem>:\ndef is_palindrome(x:\
+    \ int) -> bool:\n\"\"\" Given an integer x, return True if x is a palindrome,\
+    \ and False otherwise.\nAn integer is a palindrome when it reads the same forward\
+    \ and backward.\n>>> is_palindrome(121)\nTrue\n>>> is_palindrome(10)\nFalse\n\"\
+    \"\"\n\n<thought>:\nI need to convert the integer to a string and then check if\
+    \ the string is a palindrome.\n\n<code>:\ndef is_palindrome(x: int) -> bool:\n\
+    \    s = str(x)\n    return s == s[::-1]\n\n[Example on refinement]:\n\n<problem>:\n\
+    from typing import List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n\
+    \"\"\" Given an array of integers nums and an integer target, return indices of\
+    \ the two numbers such that they add up to target.\nYou may assume that each input\
+    \ would have exactly one solution, and you may not use the same element twice.\
+    \ \nThe answer should be in an ascending order.\n>>> two_sum([2,7,11,15], 9)\n\
+    [0, 1]\n>>> two_sum([3,2,4], 6)\n[1, 2]\n\"\"\"\n\n<current code>:\nfrom typing\
+    \ import List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n   \
+    \ for i in range(len(nums)):\n        for j in range(len(nums)):\n           \
+    \ if nums[i] + nums[j] == target:\n                return [i, j]\n\n<unit test\
+    \ feedback>:\n{\"is_passing\": false, \"feedback\": \"Tested passed:\\nassert\
+    \ two_sum([2, 7, 11, 15], 9) == [0, 1]\\nassert two_sum([3, 5, 2, 7], 9) == [2,\
+    \ 3]\\n\\nTests failed:\\nassert two_sum([3, 2, 4], 6) == [1, 2] # output: [0,\
+    \ 0]\"}\n\n<code review>:\nThe previous code is not correct. It failed all the\
+    \ tests. The second for loop should start from i + 1.\n\n<thought>:\nThe code\
+    \ reviewer is right. I should start the second for loop from i + 1.\n\n<code>:\n\
+    from typing import List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n\
+    \    for i in range(len(nums)):\n        for j in range(i + 1, len(nums)):\n \
+    \           if nums[i] + nums[j] == target:\n                return [i, j]\n\n\
+    [Start of new task]:\n\nNow please solve the following problem.\n"
+  prompt: 'You are working in a programming team to solve a python code implementation
+    problem.
+
+
+    ${role_description}
+
+
+    ${chat_history}'

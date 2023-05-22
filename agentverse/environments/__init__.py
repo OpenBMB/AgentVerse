@@ -7,3 +7,4 @@ from .base import BaseEnvironment
 from .basic import BasicEnvironment
 from .pokemon import PokemonEnvironment
 from .sde_team import SdeTeamEnvironment
+from .sde_team_given_tests import SdeTeamGivenTestsEnvironment
