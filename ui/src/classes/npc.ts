@@ -15,7 +15,7 @@ export class NPC extends Actor {
     this.setName(name);
     this.id = id;
     // PHYSICS
-    this.getBody().setSize(14, 20);
+    this.getBody().setSize(14, 10);
     this.getBody().setOffset(0, 0);
     this.getBody().setImmovable(true);
 

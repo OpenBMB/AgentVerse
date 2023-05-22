@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="48" height="35" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="15">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="48" height="35" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="18">
  <editorsettings>
   <export target="../dist/assets/tilemaps/json/town.json" format="json"/>
  </editorsettings>
@@ -682,7 +682,7 @@
   </tile>
   <tile id="135">
    <properties>
-    <property name="collides" type="bool" value="false"/>
+    <property name="collides" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="136">
@@ -717,12 +717,12 @@
   </tile>
   <tile id="142">
    <properties>
-    <property name="collides" type="bool" value="false"/>
+    <property name="collides" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="143">
    <properties>
-    <property name="collides" type="bool" value="false"/>
+    <property name="collides" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="144">
@@ -757,12 +757,12 @@
   </tile>
   <tile id="150">
    <properties>
-    <property name="collides" type="bool" value="false"/>
+    <property name="collides" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="151">
    <properties>
-    <property name="collides" type="bool" value="false"/>
+    <property name="collides" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="152">
@@ -797,12 +797,12 @@
   </tile>
   <tile id="158">
    <properties>
-    <property name="collides" type="bool" value="false"/>
+    <property name="collides" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="159">
    <properties>
-    <property name="collides" type="bool" value="false"/>
+    <property name="collides" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="160">
@@ -832,17 +832,17 @@
   </tile>
   <tile id="165">
    <properties>
-    <property name="collides" type="bool" value="false"/>
+    <property name="collides" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="166">
    <properties>
-    <property name="collides" type="bool" value="false"/>
+    <property name="collides" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="167">
    <properties>
-    <property name="collides" type="bool" value="false"/>
+    <property name="collides" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="168">
@@ -1767,32 +1767,32 @@
   </tile>
   <tile id="352">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="353">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="354">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="355">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="356">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="357">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="358">
@@ -1967,27 +1967,27 @@
   </tile>
   <tile id="392">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="393">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="394">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="395">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="396">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="397">
@@ -1997,12 +1997,12 @@
   </tile>
   <tile id="398">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="399">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="400">
@@ -6167,7 +6167,7 @@
   </tile>
   <tile id="1232">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1233">
@@ -6182,7 +6182,7 @@
   </tile>
   <tile id="1235">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1236">
@@ -6552,17 +6552,17 @@
   </tile>
   <tile id="1309">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1310">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1311">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1312">
@@ -6592,17 +6592,17 @@
   </tile>
   <tile id="1317">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1318">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1319">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1320">
@@ -6632,12 +6632,12 @@
   </tile>
   <tile id="1325">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1326">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1327">
@@ -6672,17 +6672,17 @@
   </tile>
   <tile id="1333">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1334">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1335">
    <properties>
-    <property name="collides" type="bool" value="true"/>
+    <property name="collides" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="1336">
@@ -40122,13 +40122,40 @@
 </data>
  </layer>
  <objectgroup id="10" name="npcs">
-  <object id="12" name="May" type="npc" x="215.333" y="248.667">
+  <object id="12" name="May" type="npc" x="215.333" y="251.333">
+   <properties>
+    <property name="id" type="int" value="0"/>
+   </properties>
    <point/>
   </object>
-  <object id="13" name="Steven" type="npc" x="422.667" y="296">
+  <object id="13" name="Steven" type="npc" x="422.667" y="300">
+   <properties>
+    <property name="id" type="int" value="2"/>
+   </properties>
    <point/>
   </object>
-  <object id="14" name="Birch" type="npc" x="343.333" y="423.333">
+  <object id="14" name="Birch" type="npc" x="343.333" y="426.667">
+   <properties>
+    <property name="id" type="int" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="15" name="Maxie" type="npc" x="151.333" y="154">
+   <properties>
+    <property name="id" type="int" value="3"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="16" name="Archie" type="npc" x="407.333" y="138.667">
+   <properties>
+    <property name="id" type="int" value="4"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="17" name="Joseph" type="npc" x="455.333" y="155.333">
+   <properties>
+    <property name="id" type="int" value="5"/>
+   </properties>
    <point/>
   </object>
  </objectgroup>

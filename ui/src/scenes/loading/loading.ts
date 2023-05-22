@@ -28,7 +28,22 @@ export class LoadingScene extends Scene {
 
     this.load.spritesheet("Steven", "sprites/steven.png", {
       frameWidth: 16,
+      frameHeight: 21,
+    });
+
+    this.load.spritesheet("Maxie", "sprites/maxie.png", {
+      frameWidth: 16,
       frameHeight: 20,
+    });
+
+    this.load.spritesheet("Archie", "sprites/archie.png", {
+      frameWidth: 16,
+      frameHeight: 20,
+    });
+
+    this.load.spritesheet("Joseph", "sprites/joseph.png", {
+      frameWidth: 14,
+      frameHeight: 21,
     });
 
     // MESSAGE BLABK LOADING
