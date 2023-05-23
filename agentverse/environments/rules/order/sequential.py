@@ -15,6 +15,7 @@ class SequentialOrder(BaseOrder):
     Order for sequential conversation
     The agents speak in a round-robin fashion
     """
+
     next_agent_idx: int = 0
 
     def get_next_agent_idx(self, environment: BaseEnvironment) -> List[int]:
@@ -22,6 +23,6 @@ class SequentialOrder(BaseOrder):
         ret = self.next_agent_idx
         self.next_agent_idx = (self.next_agent_idx + 1) % len(environment.agents)
         return [ret]
-    
+
     def reset(self) -> None:
         self.next_agent_idx = 0

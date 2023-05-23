@@ -29,7 +29,6 @@ class PrisonerVisibility(BaseVisibility):
     current_turn: int = 0
 
     def update_visible_agents(self, environment: BaseEnvironment):
-
         self.update_receiver(environment, reset=False)
 
     def update_receiver(self, environment: BaseEnvironment, reset=False):
@@ -37,10 +36,10 @@ class PrisonerVisibility(BaseVisibility):
             for agent in environment.agents:
                 agent.set_receiver(["all"])
         else:
-           # 0:police 1: prisoner1 2: prisoner2
-           #  environment.agents[0].set_receiver({"Police", "Suspect1", "Suspect2"})
-           #  environment.agents[1].set_receiver({"Police", "Suspect1"})
-           #  environment.agents[2].set_receiver({"Police", "Suspect2"})
+            # 0:police 1: prisoner1 2: prisoner2
+            #  environment.agents[0].set_receiver({"Police", "Suspect1", "Suspect2"})
+            #  environment.agents[1].set_receiver({"Police", "Suspect1"})
+            #  environment.agents[2].set_receiver({"Police", "Suspect2"})
 
             # we update receiver in environment
             pass

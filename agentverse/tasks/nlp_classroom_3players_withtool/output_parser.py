@@ -3,17 +3,19 @@ from __future__ import annotations
 import re
 from typing import Union
 
-from langchain.agents import AgentOutputParser
 
 # from langchain.schema import AgentAction, AgentFinish
 from agentverse.utils import AgentAction, AgentFinish
 
 from agentverse.parser import OutputParserError, output_parser_registry
+from agentverse.parser import OutputParser
+from agentverse.llms.base import LLMResult
 
 
 @output_parser_registry.register("nlp_classroom_3players_withtool")
-class NlpClassroom3PlayersWithtoolParser(AgentOutputParser):
-    def parse(self, text: str) -> Union[AgentAction, AgentFinish]:
+class NlpClassroom3PlayersWithtoolParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
         cleaned_output = text.strip()
         cleaned_output = re.sub(r"\n+", "\n", cleaned_output)
         cleaned_output = cleaned_output.split("\n")

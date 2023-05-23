@@ -30,7 +30,6 @@ def load_llm(llm_config: Dict):
     return llm_registry.build(llm_type, **llm_config)
 
 
-
 def load_memory(memory_config: Dict):
     memory_type = memory_config.pop("memory_type", "chat_history")
     return memory_registry.build(memory_type, **memory_config)

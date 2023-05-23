@@ -1,5 +1,5 @@
 import { Actor } from "./actor";
-import { DIRECTION, DIRECTION_TO_TEXT } from "../utils";
+import { DIRECTION } from "../utils";
 export class NPC extends Actor {
   public id: number;
   public direction: number = DIRECTION.DOWN;

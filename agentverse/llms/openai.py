@@ -102,7 +102,7 @@ class OpenAIChat(BaseChatModel):
             response = openai.ChatCompletion.create(
                 messages=messages, **self.args.dict()
             )
-        except OpenAIError as error:
+        except (OpenAIError, KeyboardInterrupt) as error:
             raise
         return LLMResult(
             content=response["choices"][0]["message"]["content"],
@@ -112,13 +112,15 @@ class OpenAIChat(BaseChatModel):
         )
 
     async def agenerate_response(self, prompt: str) -> LLMResult:
-
         messages = self._construct_messages(prompt)
+        import pdb
+
+        pdb.set_trace()
         try:
             response = await openai.ChatCompletion.acreate(
                 messages=messages, **self.args.dict()
             )
-        except OpenAIError as error:
+        except (OpenAIError, KeyboardInterrupt) as error:
             raise
         return LLMResult(
             content=response["choices"][0]["message"]["content"],

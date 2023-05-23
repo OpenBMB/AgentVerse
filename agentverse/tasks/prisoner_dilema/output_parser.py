@@ -12,15 +12,16 @@ if TYPE_CHECKING:
     from agentverse.agents.base import BaseAgent
     from agentverse.environments.base import BaseEnvironment
 
+
 @output_parser_registry.register("prisoner_dilema")
 class PrisonerDilemaParser(OutputParser):
-
     # make sure 1 1 2 2 3 3
     cur_round: int = 1
     encounter_cur_round: bool = False
 
-    def parse(self, agent: "BaseAgent", environment: "BaseEnvironment", output: LLMResult) -> Union[AgentAction, AgentFinish]:
-
+    def parse(
+        self, agent: "BaseAgent", environment: "BaseEnvironment", output: LLMResult
+    ) -> Union[AgentAction, AgentFinish]:
         text = output.content
         cleaned_output = text.strip()
         cleaned_output = re.sub(r"\n+", "\n", cleaned_output)
@@ -47,14 +48,13 @@ class PrisonerDilemaParser(OutputParser):
 
             # each time police speak is a new round
             if agent.name == "Police":
-
                 if environment.cnt_turn == (environment.max_turns - 4):
-
-                    action_input = "Attention! You are now required to made your final decision and I will made the " \
-                                   "final judgement to both of you based on this time, Please Answer now !"
+                    action_input = (
+                        "Attention! You are now required to made your final decision and I will made the "
+                        "final judgement to both of you based on this time, Please Answer now !"
+                    )
 
                 elif environment.cnt_turn == (environment.max_turns - 2):
-
                     action_input = "Attention! Suspect2, it's now your time to make your final decision, Please Answer now !"
 
                 # elif self.cur_round == 1:
