@@ -8,3 +8,4 @@ from .concurrent import ConcurrentOrder
 from .classroom import ClassroomOrder
 from .prisoner import PrisonerOrder
 from .sde_team import SdeTeamOrder
+from .sde_team_given_tests import SdeTeamGivenTestsOrder

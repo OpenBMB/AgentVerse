@@ -20,6 +20,7 @@ else:
     openai.proxy = os.environ.get("http_proxy")
     if openai.proxy is None:
         openai.proxy = os.environ.get("HTTP_PROXY")
+    openai.proxy="http://127.0.0.1:7890"
     if openai.api_key is None:
         logging.warning(
             "OpenAI API key is not set. Please set the environment variable OPENAI_API_KEY"
