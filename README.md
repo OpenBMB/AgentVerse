@@ -43,7 +43,7 @@ We have created a video showcasing simple interactions between LLMs, with a LLM 
 ### [![Demo video](https://i.imgur.com/vKb2F1B.png)](https://youtu.be/9JCVfzMFhaM)
 -->
 
-![image](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzIyNGI5MGI4YTJhYjA2YWYwMmU5OTE3ZDk2OTJhMTk0ZjJlMTg0YiZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/FYuNg3l45fdJFpWoTh/giphy.gif)
+![image](imgs/multiagent-min.gif)
 
 
 
