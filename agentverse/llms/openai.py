@@ -113,9 +113,6 @@ class OpenAIChat(BaseChatModel):
 
     async def agenerate_response(self, prompt: str) -> LLMResult:
         messages = self._construct_messages(prompt)
-        import pdb
-
-        pdb.set_trace()
         try:
             response = await openai.ChatCompletion.acreate(
                 messages=messages, **self.args.dict()

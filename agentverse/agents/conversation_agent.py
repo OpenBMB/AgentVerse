@@ -48,9 +48,6 @@ class ConversationAgent(BaseAgent):
         parsed_response = None
         for i in range(self.max_retry):
             try:
-                import pdb
-
-                pdb.set_trace()
                 response = await self.llm.agenerate_response(prompt)
                 parsed_response = self.output_parser.parse(response)
                 break
