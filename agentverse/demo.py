@@ -52,23 +52,30 @@ class UI:
 
     def stop_autoplay(self):
         self.autoplay = False
+        return gr.Button.update(interactive=False), gr.Button.update(interactive=False), \
+            gr.Button.update(interactive=False)
 
     def start_autoplay(self):
         self.autoplay = True
+        yield self.image_now, self.text_now, gr.Button.update(interactive=False), \
+            gr.Button.update(interactive=True), gr.Button.update(interactive=False)
         while self.autoplay:
             outputs = self.gen_output()
             self.image_now, self.text_now = outputs
-            yield outputs
+            yield *outputs, gr.Button.update(interactive=not self.autoplay), \
+                gr.Button.update(interactive=self.autoplay), gr.Button.update(interactive=not self.autoplay)
 
     def delay_gen_output(self):
-        yield self.image_now, self.text_now, gr.Button.update(interactive=False)
+        yield self.image_now, self.text_now, gr.Button.update(interactive=False), gr.Button.update(interactive=False)
         outputs = self.gen_output()
         self.image_now, self.text_now = outputs
-        yield self.image_now, self.text_now, gr.Button.update(interactive=True)
+        yield self.image_now, self.text_now, gr.Button.update(interactive=True), gr.Button.update(interactive=True)
 
     def delay_reset(self):
+        self.autoplay = False
         self.image_now, self.text_now = self.reset()
-        return self.image_now, self.text_now, gr.Button.update(interactive=True)
+        return self.image_now, self.text_now, gr.Button.update(interactive=True), \
+            gr.Button.update(interactive=False), gr.Button.update(interactive=True)
 
     def reset(self, stu_num=0):
         """
@@ -214,7 +221,7 @@ class UI:
                         reset_btn = gr.Button("Reset")
                         # next_btn = gr.Button("Next", variant="primary")
                         next_btn = gr.Button("Next")
-                        stop_autoplay_btn = gr.Button("Stop Autoplay")
+                        stop_autoplay_btn = gr.Button("Stop Autoplay", interactive=False)
                         start_autoplay_btn = gr.Button("Start Autoplay")
                 # text_output = gr.Textbox()
                 text_output = gr.HTML(self.reset()[1])
@@ -224,17 +231,23 @@ class UI:
             # stu_num = self.stu_num
 
             # next_btn.click(fn=self.gen_output, inputs=None, outputs=[image_output, text_output], show_progress=False)
-            next_btn.click(fn=self.delay_gen_output, inputs=None, outputs=[image_output, text_output, next_btn],
+            next_btn.click(fn=self.delay_gen_output, inputs=None,
+                           outputs=[image_output, text_output, next_btn, start_autoplay_btn],
                            show_progress=False)
 
             # [To-Do] Add botton: re-start (load different people and env)
             # reset_btn.click(fn=self.reset, inputs=stu_num, outputs=[image_output, text_output], show_progress=False)
             # reset_btn.click(fn=self.reset, inputs=None, outputs=[image_output, text_output], show_progress=False)
-            reset_btn.click(fn=self.delay_reset, inputs=None, outputs=[image_output, text_output, next_btn],
+            reset_btn.click(fn=self.delay_reset, inputs=None,
+                            outputs=[image_output, text_output, next_btn, stop_autoplay_btn, start_autoplay_btn],
                             show_progress=False)
 
-            stop_autoplay_btn.click(fn=self.stop_autoplay, inputs=None, outputs=None, show_progress=False)
-            start_autoplay_btn.click(fn=self.start_autoplay, inputs=None, outputs=[image_output, text_output],
+            stop_autoplay_btn.click(fn=self.stop_autoplay, inputs=None,
+                                    outputs=[next_btn, stop_autoplay_btn, start_autoplay_btn],
+                                    show_progress=False)
+            start_autoplay_btn.click(fn=self.start_autoplay, inputs=None,
+                                     outputs=[image_output, text_output, next_btn, stop_autoplay_btn,
+                                              start_autoplay_btn],
                                      show_progress=False)
 
         demo.queue(concurrency_count=5, max_size=20).launch()
