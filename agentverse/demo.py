@@ -36,6 +36,7 @@ class UI:
         self.messages = []
         self.task = task
         self.backend = AgentVerse.from_task(task)
+        self.turns_remain = 0
         self.agent_id = {
             self.backend.agents[idx].name: idx
             for idx in range(len(self.backend.agents))
@@ -66,13 +67,15 @@ class UI:
         yield self.image_now, self.text_now, gr.Button.update(
             interactive=False
         ), gr.Button.update(interactive=True), gr.Button.update(interactive=False)
-        while self.autoplay:
+        while self.autoplay and self.turns_remain > 0:
             outputs = self.gen_output()
             self.image_now, self.text_now = outputs
             yield *outputs, gr.Button.update(
-                interactive=not self.autoplay
-            ), gr.Button.update(interactive=self.autoplay), gr.Button.update(
-                interactive=not self.autoplay
+                interactive=not self.autoplay and self.turns_remain > 0
+            ), gr.Button.update(
+                interactive=self.autoplay and self.turns_remain > 0
+            ), gr.Button.update(
+                interactive=not self.autoplay and self.turns_remain > 0
             )
 
     def delay_gen_output(self):
@@ -82,8 +85,10 @@ class UI:
         outputs = self.gen_output()
         self.image_now, self.text_now = outputs
         yield self.image_now, self.text_now, gr.Button.update(
-            interactive=True
-        ), gr.Button.update(interactive=True)
+            interactive=self.turns_remain > 0
+        ), gr.Button.update(
+            interactive=self.turns_remain > 0
+        )
 
     def delay_reset(self):
         self.autoplay = False
@@ -115,6 +120,7 @@ class UI:
         # [To-Do] Pass the parameters to reset
         """
         self.backend.reset()
+        self.turns_remain = self.backend.environment.max_turns
 
         if self.task == "prisoner_dilema":
             background = cv2.imread("./imgs/prison/case_1.png")
@@ -123,7 +129,7 @@ class UI:
             back_h, back_w, _ = background.shape
             stu_cnt = 0
             for h_begin, w_begin in itertools.product(
-                range(800, back_h, 300), range(135, back_w - 200, 200)
+                    range(800, back_h, 300), range(135, back_w - 200, 200)
             ):
                 stu_cnt += 1
                 img = cv2.imread(
@@ -151,9 +157,9 @@ class UI:
         if self.task == "prisoner_dilema":
             img = cv2.imread("./imgs/speaking.png", cv2.IMREAD_UNCHANGED)
             if (
-                len(self.messages) < 2
-                or self.messages[-1][0] == 1
-                or self.messages[-2][0] == 2
+                    len(self.messages) < 2
+                    or self.messages[-1][0] == 1
+                    or self.messages[-2][0] == 2
             ):
                 background = cv2.imread("./imgs/prison/case_1.png")
                 if data[0]["message"] != "":
@@ -174,7 +180,7 @@ class UI:
                 img = cv2.imread("./imgs/speaking.png", cv2.IMREAD_UNCHANGED)
                 cover_img(background, img, (370, 1250))
             for h_begin, w_begin in itertools.product(
-                range(800, back_h, 300), range(135, back_w - 200, 200)
+                    range(800, back_h, 300), range(135, back_w - 200, 200)
             ):
                 stu_cnt += 1
                 if stu_cnt <= self.stu_num:
@@ -240,13 +246,14 @@ class UI:
             else:
                 avatar = self.get_avatar((sender - 1) % 11 + 1)
             message = (
-                f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
-                f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
-                f'<div style="background-color: gray; color: white; padding: 10px; border-radius: 10px; max-width: 70%;">'
-                f"{msg}"
-                f"</div></div>" + message
+                    f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
+                    f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
+                    f'<div style="background-color: gray; color: white; padding: 10px; border-radius: 10px; max-width: 70%;">'
+                    f"{msg}"
+                    f"</div></div>" + message
             )
         message = '<div style="height:600px;overflow:auto;">' + message + "</div>"
+        self.turns_remain -= 1
         return [self.gen_img(data), message]
 
     def launch(self):
@@ -260,11 +267,11 @@ class UI:
                     with gr.Row():
                         reset_btn = gr.Button("Reset")
                         # next_btn = gr.Button("Next", variant="primary")
-                        next_btn = gr.Button("Next")
+                        next_btn = gr.Button("Next", interactive=False)
                         stop_autoplay_btn = gr.Button(
                             "Stop Autoplay", interactive=False
                         )
-                        start_autoplay_btn = gr.Button("Start Autoplay")
+                        start_autoplay_btn = gr.Button("Start Autoplay", interactive=False)
                 # text_output = gr.Textbox()
                 text_output = gr.HTML(self.reset()[1])
 
