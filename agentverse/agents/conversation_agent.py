@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import bdb
 from string import Template
 from typing import TYPE_CHECKING, List
 
@@ -8,9 +9,6 @@ from agentverse.message import Message
 
 from . import agent_registry
 from .base import BaseAgent
-
-if TYPE_CHECKING:
-    from agentverse.environments.base import BaseEnvironment
 
 
 @agent_registry.register("conversation")
@@ -24,6 +22,8 @@ class ConversationAgent(BaseAgent):
                 response = self.llm.generate_response(prompt)
                 parsed_response = self.output_parser.parse(response)
                 break
+            except KeyboardInterrupt:
+                raise
             except Exception as e:
                 logging.error(e)
                 logging.warning("Retrying...")
@@ -51,6 +51,8 @@ class ConversationAgent(BaseAgent):
                 response = await self.llm.agenerate_response(prompt)
                 parsed_response = self.output_parser.parse(response)
                 break
+            except (KeyboardInterrupt, bdb.BdbQuit):
+                raise
             except Exception as e:
                 logging.error(e)
                 logging.warning("Retrying...")

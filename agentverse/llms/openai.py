@@ -1,4 +1,5 @@
 import logging
+import time
 import os
 from typing import Dict, List, Optional, Union
 
@@ -8,6 +9,8 @@ from agentverse.llms.base import LLMResult
 
 from . import llm_registry
 from .base import BaseChatModel, BaseCompletionModel, BaseModelArgs
+
+logger = logging.getLogger(__name__)
 
 try:
     import openai
@@ -102,7 +105,7 @@ class OpenAIChat(BaseChatModel):
             response = openai.ChatCompletion.create(
                 messages=messages, **self.args.dict()
             )
-        except OpenAIError as error:
+        except (OpenAIError, KeyboardInterrupt) as error:
             raise
         return LLMResult(
             content=response["choices"][0]["message"]["content"],
@@ -112,13 +115,12 @@ class OpenAIChat(BaseChatModel):
         )
 
     async def agenerate_response(self, prompt: str) -> LLMResult:
-
         messages = self._construct_messages(prompt)
         try:
             response = await openai.ChatCompletion.acreate(
                 messages=messages, **self.args.dict()
             )
-        except OpenAIError as error:
+        except (OpenAIError, KeyboardInterrupt) as error:
             raise
         return LLMResult(
             content=response["choices"][0]["message"]["content"],
@@ -126,3 +128,43 @@ class OpenAIChat(BaseChatModel):
             recv_tokens=response["usage"]["completion_tokens"],
             total_tokens=response["usage"]["total_tokens"],
         )
+
+
+def get_embedding(text: str, attempts=3) -> List[float]:
+    attempt = 0
+    while attempt < attempts:
+        try:
+            text = text.replace("\n", " ")
+            embedding = openai.Embedding.create(
+                input=[text], model="text-embedding-ada-002"
+            )["data"][0]["embedding"]
+            return embedding
+        except Exception as e:
+            attempt += 1
+            logger.error(f"Error {e} when requesting openai models. Retrying")
+            time.sleep(10)
+    logger.warning(
+        f"get_embedding() failed after {attempts} attempts. returning empty response"
+    )
+
+
+def chat(
+    context, MAX_OUTPUT_TOKEN_LEN=1024, temperature=0.1, attemps=5, stop=None
+) -> str:
+    if isinstance(context, str):
+        context = [{"role": "user", "content": context}]
+    attempt = 0
+    while attempt < attemps:
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=context,
+                stop=stop,
+            )
+            return response["choices"][0]["message"]["content"].strip()
+        except Exception as e:
+            attempt += 1
+            logger.error(f"Error {e} when requesting openai models. Retrying")
+            time.sleep(10)
+    logger.warning(f"chat() failed after {attemps} attempts. returning empty response")
+    return ""

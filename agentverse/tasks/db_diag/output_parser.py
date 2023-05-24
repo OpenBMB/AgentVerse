@@ -12,8 +12,8 @@ from agentverse.parser import OutputParser
 from agentverse.llms.base import LLMResult
 
 
-@output_parser_registry.register("nlp_classroom_3players_withtool_nolc")
-class NlpClassroom3PlayersWithtoolNolcParser(OutputParser):
+@output_parser_registry.register("db_diag")
+class DBDiag(OutputParser):
     def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
         text = output.content
         cleaned_output = text.strip()

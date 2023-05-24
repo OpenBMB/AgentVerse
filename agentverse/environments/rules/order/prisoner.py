@@ -24,11 +24,9 @@ class PrisonerOrder(BaseOrder):
     # try police, prisoner1 prisoner2 first
 
     last_prisoner_index: int = 1
-    switch_func: dict = {1 : 2,2 : 1}
-
+    switch_func: dict = {1: 2, 2: 1}
 
     def get_next_agent_idx(self, environment: BaseEnvironment) -> List[int]:
-
         if len(environment.last_messages) == 0:
             # If the game just begins or , we let only the police speak
             return [0]

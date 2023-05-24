@@ -14,17 +14,15 @@ class PrisonerDescriber(BaseDescriber):
     switch_func = {
         "Both Suspects": "Suspect2",
         "Suspect1": "Suspect2",
-        "Suspect2": "Suspect1"
+        "Suspect2": "Suspect1",
     }
     receiver: str = "Both Suspects"
 
     def get_env_description(self, environment: BaseEnvironment) -> List[str]:
-
         if environment.cnt_turn == 0:
             environment.agents[0].set_receiver({"all"})
             environment.agents[1].set_receiver({"Police", "Suspect1"})
             environment.agents[2].set_receiver({"Police", "Suspect2"})
-
 
         # only police have to choose to talk to suspect1 or suspect
         description = []

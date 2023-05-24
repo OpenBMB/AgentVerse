@@ -58,12 +58,6 @@ export class TownScene extends Scene {
 
     this.keySpace = this.input.keyboard!.addKey("SPACE");
 
-    // Player
-    this.player = new Player(this, 256, 256);
-    this.physics.add.collider(this.player, this.wallLayer);
-    this.physics.add.collider(this.player, this.treeLayer);
-    this.physics.add.collider(this.player, this.houseLayer);
-
     // NPC
     this.npcGroup = this.add.group();
     var npcPoints = this.map.filterObjects("npcs", (npc) => {
@@ -80,6 +74,12 @@ export class TownScene extends Scene {
     this.physics.add.collider(this.npcGroup, this.wallLayer);
     this.physics.add.collider(this.npcGroup, this.treeLayer);
     this.physics.add.collider(this.npcGroup, this.houseLayer);
+
+    // Player
+    this.player = new Player(this, 256, 250);
+    this.physics.add.collider(this.player, this.wallLayer);
+    this.physics.add.collider(this.player, this.treeLayer);
+    this.physics.add.collider(this.player, this.houseLayer);
     this.physics.add.collider(this.player, this.npcGroup);
 
     this.keySpace.on("up", () => {
@@ -144,7 +144,7 @@ export class TownScene extends Scene {
         width: width * 0.6,
         height: height * 0.3,
         type: "textarea",
-        text: "Input your words",
+        text: "",
         color: "#ffffff",
         border: 2,
         backgroundColor: "#" + COLOR_DARK.toString(16),

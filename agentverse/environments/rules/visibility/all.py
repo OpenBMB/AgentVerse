@@ -12,5 +12,6 @@ if TYPE_CHECKING:
 @VisibilityRegistry.register("all")
 class AllVisibility(BaseVisibility):
     """All the messages can be seen by all the agents"""
+
     def update_visible_agents(self, environment: BaseEnvironment):
         pass
