@@ -66,7 +66,6 @@ agents:
       ${personality}
       ${relationship_with_another}
       [IMPORTANT!]
-      - Your primary goal is trying to make Yourself innocent and reduce your sentence as far as possible in this dilemma.
       - When you hear Police saying "Attention!", you are going to made your final decision and Please start with "My final decision is:".
     memory:
       memory_type: chat_history
@@ -86,7 +85,6 @@ agents:
       ${personality}
       ${relationship_with_another}
       [IMPORTANT!]
-      - Your primary goal is trying to make Yourself innocent and reduce your sentence as far as possible in this dilemma.
       - When you hear Police saying "Attention!", you are going to made your final decision and Please start with "My final decision is:".
     memory:
       memory_type: chat_history

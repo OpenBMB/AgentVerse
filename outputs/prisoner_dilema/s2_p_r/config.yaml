@@ -58,8 +58,8 @@ agents:
       max_tokens: 200
   - agent_type: prisoner
     name: Suspect1
-    personality: "You are a Sophisticated Egoist, you always seek for your personal interests best"
-    relationship_with_another: "Suspect2 has ever betrayed on you"
+    personality: ""
+    relationship_with_another: ""
     role_description: |-
       You are Suspect1 !!! You are going to match wits and courage with Suspect2 to come out victorious in this interrogation.
       You will have to talk to Police several times and only the final decision will count.
@@ -78,8 +78,8 @@ agents:
       max_tokens: 100
   - agent_type: prisoner
     name: Suspect2
-    personality: ""
-    relationship_with_another: ""
+    personality: "You are a Sophisticated Egoist, you always seek for your personal interests best"
+    relationship_with_another: "Suspect1 has ever betrayed on you"
     role_description: |-
       You are Suspect2 !!! You are going to match wits and courage with Suspect1 to come out victorious in this interrogation.
       You will have to talk to Police several times and only the final decision will count.
