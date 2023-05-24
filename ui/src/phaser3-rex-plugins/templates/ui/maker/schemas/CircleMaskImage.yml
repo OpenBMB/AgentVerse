@@ -1,0 +1,22 @@
+$type: CircleMaskImage
+name:
+
+key:
+frame:
+width:
+height:
+maskType:
+radius:
+# radius:
+#     tl:
+#     tr:
+#     bl:
+#     br:
+
+tint:
+alpha:
+visible:
+flipX:
+flipY:
+cropResize:
+

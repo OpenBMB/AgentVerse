@@ -1,0 +1,28 @@
+$type: Label
+name:
+
+width:
+height:
+orientation:
+
+# Relace child data by game objct
+background:
+icon:
+text:
+action:
+# ----
+
+iconMask:
+expandTextWidth:
+expandTextHeight:
+actionMask:
+align:
+space:
+    left:
+    right:
+    top:
+    bottom:
+    icon:
+    text:
+
+draggable:

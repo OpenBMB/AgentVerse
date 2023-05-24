@@ -10,9 +10,12 @@ from .base import BaseSelector
 if TYPE_CHECKING:
     from agentverse.environments import BaseEnvironment
 
+
 @SelectorRegistry.register("classroom")
 class ClassroomSelector(BaseSelector):
-    def select_message(self, environment: BaseEnvironment, messages: List[Message]) -> List[Message]:
+    def select_message(
+        self, environment: BaseEnvironment, messages: List[Message]
+    ) -> List[Message]:
         selected = []
         for message in messages:
             if message.sender.startswith("Student"):
@@ -30,7 +33,11 @@ class ClassroomSelector(BaseSelector):
 
         # If some student speak while the professor is speaking, then
         # we brutely discard the student's message in this turn
-        if len(selected) > 1 and selected[0].sender.startswith("Professor") and selected[0].content != "":
+        if (
+            len(selected) > 1
+            and selected[0].sender.startswith("Professor")
+            and selected[0].content != ""
+        ):
             filtered_selected = []
             filtered_selected.append(selected[0])
             for message in selected[1:]:

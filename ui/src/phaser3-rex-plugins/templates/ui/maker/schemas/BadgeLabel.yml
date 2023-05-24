@@ -1,0 +1,27 @@
+$type: BadgeLabel
+name:
+
+width:
+height:
+
+# Relace child data by game objct
+background:
+main:
+leftTop:
+centerTop:
+rightTop:
+leftCenter:
+center:
+rightCenter:
+leftBottom:
+centerBottom:
+rightBottom:
+# ----
+
+space:
+    left:
+    right:
+    top:
+    bottom:
+
+draggable:
