@@ -15,6 +15,9 @@ import {
   Click,
 } from "../../phaser3-rex-plugins/templates/ui/ui-components";
 import UIPlugin from "../../phaser3-rex-plugins/templates/ui/ui-plugin";
+import BoardPlugin from "../../phaser3-rex-plugins/plugins/board-plugin";
+import { PathFinder } from "../../phaser3-rex-plugins/plugins/board-components";
+import { TileXYType } from "../../phaser3-rex-plugins/plugins/board/types/Position";
 
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
@@ -32,14 +35,25 @@ export class TownScene extends Scene {
   private player: Player;
   private npcGroup: GameObjects.Group;
   private keySpace: Phaser.Input.Keyboard.Key;
+  private keyEnter: Phaser.Input.Keyboard.Key;
   private rexUI: UIPlugin;
+  private rexBoard: BoardPlugin;
+  private board: BoardPlugin.Board;
+  private pathFinder: PathFinder;
 
   constructor() {
     super("town-scene");
   }
 
   create(): void {
-    // Background
+    this.keySpace = this.input.keyboard!.addKey("SPACE");
+    this.keyEnter = this.input.keyboard!.addKey("ENTER");
+    this.initMap();
+    this.initSprite();
+    this.initCamera();
+  }
+
+  initMap(): void {
     this.map = this.make.tilemap({
       key: "town",
       tileWidth: 16,
@@ -55,21 +69,42 @@ export class TownScene extends Scene {
     this.wallLayer.setCollisionByProperty({ collides: true });
     this.treeLayer.setCollisionByProperty({ collides: true });
     this.houseLayer.setCollisionByProperty({ collides: true });
+    this.board = this.rexBoard.createBoardFromTilemap(this.map);
+    this.board.getAllChess().forEach((chess) => {
+      var collide = ["wall", "tree", "house"].includes(chess.layer.name);
+      if (collide && chess.index != -1) {
+        chess.rexChess.setBlocker();
+      }
+    });
+    this.pathFinder = this.rexBoard.add.pathFinder({
+      occupiedTest: true,
+      blockerTest: true,
+      pathMode: "straight",
+      cacheCost: true,
+    });
+  }
 
-    this.keySpace = this.input.keyboard!.addKey("SPACE");
-
+  initSprite(): void {
     // NPC
     this.npcGroup = this.add.group();
     var npcPoints = this.map.filterObjects("npcs", (npc) => {
       return npc.type === "npc";
     });
-    var npcs = npcPoints.map((npc) => {
-      var id_property = npc.properties.filter((property) => {
+    var npcs = npcPoints.map((npcPoint) => {
+      var id_property = npcPoint.properties.filter((property) => {
         return property.name === "id";
       });
-      this.npcGroup.add(
-        new NPC(this, npc.x, npc.y, npc.name, id_property[0].value)
+      var tileXY = this.board.worldXYToTileXY(npcPoint.x, npcPoint.y);
+      var npc = new NPC(
+        this,
+        this.board,
+        npcPoint.x,
+        npcPoint.y,
+        npcPoint.name,
+        id_property[0].value
       );
+      this.board.addChess(npc, tileXY.x, tileXY.y, 0, true);
+      this.npcGroup.add(npc);
     });
     this.physics.add.collider(this.npcGroup, this.wallLayer);
     this.physics.add.collider(this.npcGroup, this.treeLayer);
@@ -77,6 +112,8 @@ export class TownScene extends Scene {
 
     // Player
     this.player = new Player(this, 256, 250);
+    var tileXY = this.board.worldXYToTileXY(this.player.x, this.player.y);
+    // this.board.addChess(this.player, tileXY.x, tileXY.y, 0, true);
     this.physics.add.collider(this.player, this.wallLayer);
     this.physics.add.collider(this.player, this.treeLayer);
     this.physics.add.collider(this.player, this.houseLayer);
@@ -90,6 +127,18 @@ export class TownScene extends Scene {
         this.createInputBox(npc);
       }
     });
+    var scene = this;
+    this.keyEnter.on("up", () => {
+      var npc = this.npcGroup.getChildren()[0] as NPC;
+      var npc_chess = this.board.worldXYToChess(npc.x, npc.y);
+      this.pathFinder.setChess(npc_chess);
+      var tmp = this.board.chessToTileXYZ(npc_chess);
+      var path = this.pathFinder.findPath({
+        x: tmp.x + 3,
+        y: tmp.y - 6,
+      } as TileXYType);
+      npc.moveAlongPath(path);
+    });
 
     this.physics.world.setBounds(
       0,
@@ -97,8 +146,9 @@ export class TownScene extends Scene {
       this.groundLayer.width + this.player.width,
       this.groundLayer.height
     );
+  }
 
-    // Camera;
+  initCamera(): void {
     this.cameras.main.setSize(this.game.scale.width, this.game.scale.height);
     this.cameras.main.setBounds(
       0,
@@ -236,7 +286,6 @@ export class TownScene extends Scene {
       },
       loop: true,
     });
-    debugger;
     fetch("http://127.0.0.1:10002/chat", {
       method: "POST",
       headers: {
