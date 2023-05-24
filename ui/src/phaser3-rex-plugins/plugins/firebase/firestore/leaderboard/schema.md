@@ -1,0 +1,14 @@
+- <randomID>
+    - `userID` - Unique ID of owner
+    - `boardID` - Unique ID of board, optional
+    - `tag` - Custom filter tag, optional
+    - `tagD` - Updated day of day score, filter key of day mode
+    - `tagW` - Updated week of week score, filter key of week mode
+    - `tagM` - Updated month of month score, filter key of month mode
+    - `tagY` - Updated year of year score, filter key of year mode
+    - `scoreD` - Day score, sorting key of day mode
+    - `scoreW` - Week score, sorting key of week mode
+    - `scoreM` - Month score, sorting key of month mode
+    - `scoreY` - Year score, sorting key of year mode
+    - `userName` - Name of the owner, optional
+    - ...

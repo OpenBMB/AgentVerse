@@ -24,7 +24,7 @@
 
 - 🛠 **Tools (Plugins) Utilization**: AgentVerse supports the multi-agent environments with tools. Currently, AgentVerse supports tools provided in [BMTools](https://github.com/OpenBMB/BMTools). 
 
-- 🤖 **Supports a Wide Range of LLMs**: Our framework is built on top of [LangChain](https://github.com/hwchase17/langchain), which supports a wide range of different large language models. You can also easily customize your own LLM by referring to the [LangChain documentation](https://python.langchain.com/en/latest/modules/models/llms/examples/custom_llm.html).
+- 🤖 **Supports a Wide Range of LLMs**: You can easily customize your own LLM by implementing a new LLM by inheriting and extending our BaseLLM class (tutorial coming soon).
 
 ### 🗓 Coming Soon
 
@@ -119,7 +119,7 @@ By abstracting the environment into these five components, we have created a hig
 
 ### Agent
 
-Another fundamental component is the agent. The agent in our framework is built on LangChain. Thanks for the wide variety of LLMs supported in LangChain, our framework can takes in different LLM as the backend of the agent.
+Another fundamental component is the agent. Currently we provide two types of agents: **ConversationAgent** and **ToolAgent**. You can also customize your own agent by inheriting BaseAgent class (tutorial coming soon).
 
 
 
@@ -145,7 +145,7 @@ First, we need to create a task directory and write our configuration file for t
 ```yaml
 # config.yaml
 environment:
-  env_type: base				# Use the basic environment provided in AgentVerse
+  env_type: basic				# Use the basic environment provided in AgentVerse
   max_turns: 10					# Specify the maximum number of dialogue turns
   rule:
     order:
@@ -153,11 +153,11 @@ environment:
     visibility:
       type: all					# Each message can be seen by all agents
     selector:
-      type: base				# Basic selector (do not select)
+      type: basic				# Basic selector (do not select)
     updater:
-      type: base				# Basic updater (update the message to all agents)
+      type: basic				# Basic updater (update the message to all agents)
     describer:
-      type: base				# Basic describer (no description)
+      type: basic				# Basic describer (no description)
 ```
 
 This configuration specifies that we will use the basic environment provided in AgentVerse, with a maximum of 10 dialogue turns. We'll use the sequential order, with all messages visible to all agents. We won't be using any selectors, our updater will update the messages to all the agents and our describer will provide no description.
@@ -170,25 +170,24 @@ Next, we'll configure the agents. In the `config.yaml` file, we'll add the confi
 # config.yaml
 agents:
   -
-    agent_type: chat
+    agent_type: conversation
     name: Professor Micheal		# Name of the agent
     role_description: You are Prof. Micheal, ...	# Description of the agent
     memory: 
-      memory_type: chat_message_history		# Will store all the chat history
-    prefix_prompt: *prefix_prompt
-    format_prompt: *format_prompt
-    suffix_prompt: *suffix_prompt
+      memory_type: chat_history		# Will store all the chat history
+    prompt_template: *professor_prompt
     llm:
-      llm_type: text-davinci-003
+      llm_type: text-davinci-003    # Will use OpenAICompletion LLM
+      model: text-davinci-003       # The argument passed to the api call
       temperature: 0.7
       max_tokens: 250
 ```
 
-In this example, we'll use the `chat` agent type. We've given the agent a name and a description, and we'll store the chat history in memory. We've also provided a pr	ompt for the agent, divided into three parts: `prefix_prompt`, `format_prompt`, and `suffix_prompt`. These will be concatenated to form the final prompt given to the agent.
+In this example, we'll use the `conversation` agent type. We've given the agent a name and a description, and we'll store the chat history in memory. We've also provided a prompt template with placeholders marked as ${placeholder}. These will be instantiated by the `_fill_prompt_template` method of the agent.
 
 ##### 3. Writing an Output Parser
 
-The next step is to write a simple parser for your agent's response. Because you have specified the output format in `format_prompt`, you need to provide a corresponding parser. In this example, we let the model to output in the following format
+The next step is to write a simple parser for your agent's response. Because you may have specified the output format in your prompt template, you need to provide a corresponding parser. In this example, we inform the model to output in the following format in our prompt template
 
 ```
 Action: Speak
@@ -201,11 +200,11 @@ With these steps, we've successfully built a simple classroom environment and cu
 
 ### Customization Guide for More Complex Environments
 
-While we provide a basic framework for building environments with our five rule components, more complex environments may require further customization. Here are some steps you can take to customize your environment:
+While we provide a basic framework for building environments with our five rule components, more complex environments may require further customization. A detailed documentation and tutorial is coming soon. Here we briefly introduce some steps you can take to customize your environment:
 
 1. **Customize the five rule components**. Each rule component has an interface, allowing you to customize its behavior to suit your specific needs. It's important to note that these components are not necessarily independent and can interact through the `rule_params` dictionary in the environment. You can create your own rule components and integrate them with the existing ones to build more complex interactions between agents.
-2. **Customize the environment itself**. Our `base` environment provides a default execution order for the five rule components that is suitable for most cases, but you can inherit the `BaseEnvironment` class and write your own `run` method to implement a more sophisticated execution order.
-3. **Customize the agent**. Depending on your specific use case, you may also need to customize the `Agent` class. For example, you may want to use your local LLM as  your agents or create agents with specialized knowledge or skills.
+2. **Customize the environment itself**. Our `basic` environment provides a default execution order for the five rule components that is suitable for most cases, but you can inherit the `BaseEnvironment` class and write your own `run` method to implement a more sophisticated execution order.
+3. **Customize the agent**. Depending on your specific use case, you may also need to customize the `Agent` class. For example, you may want to use your local LLM as your agents or create agents with specialized knowledge or skills.
 
 
 
@@ -220,3 +219,4 @@ Here's a brief overview of each example:
 3. `nlp_classroom_9players_group`: This example introduces group discussions. The professor can launch a group discussion when necessary, and students can only interact with other students in the same group during the group discussion.
 4. `nlp_classroom_3players_withtool`: Students in this classroom can use Bing search API when listening to the class.
 5. `math_problem_2players_tools`: A simple example demonstrating how two agents can use the WolframAlpha API to play an arithmetic game.
+6. `prisoner_dilema`: A simple example showing how LLMs handle the prisoner dilema.

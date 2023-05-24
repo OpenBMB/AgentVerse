@@ -1,0 +1,29 @@
+$type: Buttons
+name:
+
+width:
+height:
+orientation:
+buttonsType:
+
+# Relace child data by game objct
+background:
+buttons:
+    - $type:
+      # ...
+# ----
+
+rtl:
+expand:
+align:
+click:
+    mode:
+    clickInterval:
+space:
+    left:
+    right:
+    top:
+    bottom:
+    item:
+
+draggable:

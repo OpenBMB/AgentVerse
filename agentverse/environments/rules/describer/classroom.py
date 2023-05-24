@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List
+from string import Template
 
 from . import describer_registry as DescriberRegistry
-from .base import BaseDescriber
+from .basic import BasicDescriber
 
 if TYPE_CHECKING:
     from agentverse.environments import BaseEnvironment
 
 
 @DescriberRegistry.register("classroom")
-class ClassroomDescriber(BaseDescriber):
+class ClassroomDescriber(BasicDescriber):
     start_prompt: str
     end_prompt: str
 
@@ -18,7 +19,7 @@ class ClassroomDescriber(BaseDescriber):
         if not environment.rule_params.get("is_grouped", False):
             if environment.rule_params.get("is_grouped_ended", False):
                 # If the group discussion is just ended
-                environment.rule_params['is_grouped_ended'] = False
+                environment.rule_params["is_grouped_ended"] = False
                 return [self.end_prompt for _ in range(len(environment.agents))]
             else:
                 return super().get_env_description(environment)
@@ -28,7 +29,11 @@ class ClassroomDescriber(BaseDescriber):
                 # Professor will not participate in group discussion
                 description.append("")
             else:
-                description.append(self.start_prompt.format(receiver_name=", ".join(agent.receiver)))
+                description.append(
+                    Template(self.start_prompt).safe_substitute(
+                        {"receiver_name": ", ".join(agent.receiver)}
+                    )
+                )
         return description
 
     def reset(self) -> None:

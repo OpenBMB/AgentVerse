@@ -1,14 +1,17 @@
-import logging
-from string import Template
-from typing import List, NamedTuple, Optional, Union
+from __future__ import annotations
 
-from agentverse.llms import BaseChatModel, BaseCompletionModel, BaseLLM
-from agentverse.memory import BaseMemory
+import logging
+import bdb
+from string import Template
+from typing import TYPE_CHECKING, List
+
 from agentverse.message import Message
-from agentverse.parser import OutputParseError, OutputParser
+
+from . import agent_registry
 from .base import BaseAgent
 
 
+@agent_registry.register("conversation")
 class ConversationAgent(BaseAgent):
     def step(self, env_description: str = "") -> Message:
         prompt = self._fill_prompt_template(env_description)
@@ -19,6 +22,8 @@ class ConversationAgent(BaseAgent):
                 response = self.llm.generate_response(prompt)
                 parsed_response = self.output_parser.parse(response)
                 break
+            except KeyboardInterrupt:
+                raise
             except Exception as e:
                 logging.error(e)
                 logging.warning("Retrying...")
@@ -46,6 +51,8 @@ class ConversationAgent(BaseAgent):
                 response = await self.llm.agenerate_response(prompt)
                 parsed_response = self.output_parser.parse(response)
                 break
+            except (KeyboardInterrupt, bdb.BdbQuit):
+                raise
             except Exception as e:
                 logging.error(e)
                 logging.warning("Retrying...")
@@ -70,18 +77,18 @@ class ConversationAgent(BaseAgent):
         - ${agent_name}: the name of the agent
         - ${env_description}: the description of the environment
         - ${role_description}: the description of the role of the agent
+        - ${chat_history}: the chat history of the agent
         """
         input_arguments = {
             "agent_name": self.name,
             "env_description": env_description,
             "role_description": self.role_description,
+            "chat_history": self.memory.to_string(add_sender_prefix=True),
         }
-        chat_history = self.memory.to_string(add_sender_prefix=True)
-        input_arguments["chat_history"] = chat_history
         return Template(self.prompt_template).safe_substitute(input_arguments)
 
-    def add_message_to_memory(self, message: Message) -> None:
-        self.memory.add_message(message)
+    def add_message_to_memory(self, messages: List[Message]) -> None:
+        self.memory.add_message(messages)
 
     def reset(self) -> None:
         """Reset the agent"""

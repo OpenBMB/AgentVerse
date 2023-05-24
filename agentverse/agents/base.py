@@ -1,28 +1,13 @@
 import logging
 from abc import abstractmethod
-from typing import List, Set, Union, NamedTuple
+from typing import List, NamedTuple, Set, Union
 
 from pydantic import BaseModel, Field
 
 from agentverse.llms import BaseLLM
-from agentverse.memory import BaseMemory
+from agentverse.memory import BaseMemory, ChatHistoryMemory
 from agentverse.message import Message
 from agentverse.parser import OutputParser
-
-
-class AgentAction(NamedTuple):
-    """Agent's action to take."""
-
-    tool: str
-    tool_input: Union[str, dict]
-    log: str
-
-
-class AgentFinish(NamedTuple):
-    """Agent's return value."""
-
-    return_values: dict
-    log: str
 
 
 class BaseAgent(BaseModel):
@@ -31,7 +16,7 @@ class BaseAgent(BaseModel):
     output_parser: OutputParser
     prompt_template: str
     role_description: str = Field(default="")
-    memory: BaseMemory = Field(default_factory=BaseMemory)
+    memory: BaseMemory = Field(default_factory=ChatHistoryMemory)
     max_retry: int = Field(default=3)
     receiver: Set[str] = Field(default=set({"all"}))
     async_mode: bool = Field(default=True)
@@ -52,11 +37,11 @@ class BaseAgent(BaseModel):
         pass
 
     @abstractmethod
-    def add_message_to_memory(self, message: Message) -> None:
+    def add_message_to_memory(self, messages: List[Message]) -> None:
         """Add a message to the memory"""
         pass
 
-    def get_receiver(self) -> List[str]:
+    def get_receiver(self) -> Set[str]:
         return self.receiver
 
     def set_receiver(self, receiver: Union[Set[str], str]) -> None:

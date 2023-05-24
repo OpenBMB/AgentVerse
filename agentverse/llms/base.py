@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field
 from abc import abstractmethod
 from typing import Dict
+
+from pydantic import BaseModel, Field
+
 
 class LLMResult(BaseModel):
     content: str
@@ -8,8 +10,10 @@ class LLMResult(BaseModel):
     recv_tokens: int
     total_tokens: int
 
+
 class BaseModelArgs(BaseModel):
     pass
+
 
 class BaseLLM(BaseModel):
     args: BaseModelArgs = Field(default_factory=BaseModelArgs)
@@ -23,8 +27,10 @@ class BaseLLM(BaseModel):
     def agenerate_response(self, **kwargs) -> LLMResult:
         pass
 
+
 class BaseChatModel(BaseLLM):
     pass
+
 
 class BaseCompletionModel(BaseLLM):
     pass

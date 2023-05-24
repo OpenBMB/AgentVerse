@@ -1,16 +1,16 @@
-import asyncio
-import logging
-from typing import Any, Dict, List
+from __future__ import annotations
+
 from abc import abstractmethod
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from pydantic import BaseModel
 
 # from agentverse.agents.agent import Agent
-from agentverse.agents.conversation_agent import BaseAgent
-from agentverse.environments.rules.base import Rule
-from agentverse.message import Message
 
-from . import env_registry as EnvironmentRegistry
+if TYPE_CHECKING:
+    from agentverse.agents.base import BaseAgent
+    from agentverse.environments.rules.base import Rule
+    from agentverse.message import Message
 
 
 class BaseEnvironment(BaseModel):

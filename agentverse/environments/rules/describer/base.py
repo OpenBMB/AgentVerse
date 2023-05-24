@@ -13,7 +13,9 @@ if TYPE_CHECKING:
 
 class BaseDescriber(BaseModel):
     @abstractmethod
-    def get_env_description(self, environment: BaseEnvironment) -> List[str]:
+    def get_env_description(
+        self, environment: BaseEnvironment, *args, **kwargs
+    ) -> List[str]:
         """Return the environment description for each agent"""
         pass
 

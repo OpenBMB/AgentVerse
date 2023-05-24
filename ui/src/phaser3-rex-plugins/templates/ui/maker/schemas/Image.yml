@@ -1,0 +1,14 @@
+$type: Image
+name:
+
+key:
+frame:
+width:
+height:
+
+tint:
+alpha:
+visible:
+flipX:
+flipY:
+cropResize:

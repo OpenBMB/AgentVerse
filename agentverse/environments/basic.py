@@ -36,9 +36,9 @@ class BasicEnvironment(BaseEnvironment):
         rule_config = rule
         order_config = rule_config.get("order", {"type": "sequential"})
         visibility_config = rule_config.get("visibility", {"type": "all"})
-        selector_config = rule_config.get("selector", {"type": "base"})
-        updater_config = rule_config.get("updater", {"type": "base"})
-        describer_config = rule_config.get("describer", {"type": "base"})
+        selector_config = rule_config.get("selector", {"type": "basic"})
+        updater_config = rule_config.get("updater", {"type": "basic"})
+        describer_config = rule_config.get("describer", {"type": "basic"})
         rule = Rule(
             order_config,
             visibility_config,

@@ -1,0 +1,73 @@
+$type: TextArea
+name:
+
+width:
+height:
+
+content:
+
+# Relace child data by game objct
+background:
+
+text:
+textWidth:
+textHeight:
+textMask:
+alwaysScrollable:
+
+slider:
+    background:
+    track:
+    indicator:
+    thumb:
+    input:
+    position:
+    adaptThumbSize:
+    minThumbSize:
+
+    buttons:
+        top:
+        bottom:
+        left:
+        right:
+        step:
+
+scroller:
+    threshold:
+    slidingDeceleration:
+    backDeceleration:
+    pointerOutRelease:
+
+mouseWheelScroller: false
+#mouseWheelScroller:
+#    focus:
+#    speed:
+
+clamplChildOY: false
+
+header:
+footer:
+# ----
+
+space:
+    left:
+    right:
+    top:
+    bottom:
+    text:
+        left:
+        right:
+        top:
+        bottom:
+    header:
+    footer:
+
+expand:
+    header:
+    footer:
+
+align:
+    header:
+    footer:
+
+draggable:

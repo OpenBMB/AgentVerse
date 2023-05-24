@@ -1,0 +1,37 @@
+$type: Pages
+name:
+
+width:
+height:
+space:
+    left:
+    right:
+    top:
+    bottom:
+
+draggable:
+
+# Relace child data by game objct
+background:
+    - $child:
+      padding:
+          left:
+          right:
+          top:
+          bottom:
+children:
+    - $child:
+          $type:
+          # ...
+      key:
+      align:
+      offsetX:
+      offsetY:
+      padding:
+          left:
+          right:
+          top:
+          bottom:
+      expand:
+      minWidth:
+      minHeight:

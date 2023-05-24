@@ -1,0 +1,63 @@
+$type: GridSizer
+name:
+
+width:
+height:
+column:
+row:
+columnProportions:
+rowProportions:
+space:
+    left:
+    right:
+    top:
+    bottom:
+    column:
+    row:
+    indentLeftOdd:
+    indentLeftEven:
+    indentTopOdd:
+    indentTopEven:
+
+draggable:
+
+# Relace child data by game objct
+background:
+    - $child:
+        $type:
+        # ...  
+      padding:
+          left:
+          right:
+          top:
+          bottom:
+children:
+    - $child:
+        $type:
+        # ...  
+      column:
+      row:
+      align:
+      padding:
+          left:
+          right:
+          top:
+          bottom:
+      expand:
+      key:
+
+# Optional
+createCellContainerCallback:
+    child:
+        $type:
+        # ...
+    column:
+    row:
+    align:
+    padding:
+        left:
+        right:
+        top:
+        bottom:
+    expand:
+    key:

@@ -1,11 +1,14 @@
 import logging
 import time
 import os
-from pydantic import Field, BaseModel
-from typing import List, Optional, Union, Dict
+from typing import Dict, List, Optional, Union
+
+from pydantic import BaseModel, Field
 
 from agentverse.llms.base import LLMResult
-from .base import BaseModelArgs, BaseChatModel, BaseCompletionModel
+
+from . import llm_registry
+from .base import BaseChatModel, BaseCompletionModel, BaseModelArgs
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +49,7 @@ class OpenAICompletionArgs(OpenAIChatArgs):
     best_of: int = Field(default=1)
 
 
+@llm_registry.register("text-davinci-003")
 class OpenAICompletion(BaseCompletionModel):
     args: OpenAICompletionArgs = Field(default_factory=OpenAICompletionArgs)
 
@@ -77,12 +81,15 @@ class OpenAICompletion(BaseCompletionModel):
         )
 
 
+@llm_registry.register("gpt-3.5-turbo")
+@llm_registry.register("gpt-4")
 class OpenAIChat(BaseChatModel):
     args: OpenAIChatArgs = Field(default_factory=OpenAIChatArgs)
 
     def __init__(self, max_retry: int = 3, **kwargs):
         args = OpenAIChatArgs()
         args = args.dict()
+
         for k, v in args.items():
             args[k] = kwargs.pop(k, v)
         if len(kwargs) > 0:
@@ -94,7 +101,12 @@ class OpenAIChat(BaseChatModel):
 
     def generate_response(self, prompt: str) -> LLMResult:
         messages = self._construct_messages(prompt)
-        response = openai.ChatCompletion.create(messages=messages, **self.args.dict())
+        try:
+            response = openai.ChatCompletion.create(
+                messages=messages, **self.args.dict()
+            )
+        except (OpenAIError, KeyboardInterrupt) as error:
+            raise
         return LLMResult(
             content=response["choices"][0]["message"]["content"],
             send_tokens=response["usage"]["prompt_tokens"],
@@ -108,7 +120,7 @@ class OpenAIChat(BaseChatModel):
             response = await openai.ChatCompletion.acreate(
                 messages=messages, **self.args.dict()
             )
-        except OpenAIError as error:
+        except (OpenAIError, KeyboardInterrupt) as error:
             raise
         return LLMResult(
             content=response["choices"][0]["message"]["content"],

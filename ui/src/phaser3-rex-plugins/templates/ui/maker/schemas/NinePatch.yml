@@ -1,0 +1,17 @@
+$type: NinePatch
+name:
+
+key: 
+columns: [20, undefined, 20]
+rows: [20, undefined, 20]
+stretchMode:
+width:
+height:
+preserveRatio:
+maxFixedPartScale:
+
+tint:
+alpha:
+visible:
+flipX:
+flipY:

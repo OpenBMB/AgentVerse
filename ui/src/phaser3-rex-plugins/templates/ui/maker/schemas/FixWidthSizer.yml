@@ -1,0 +1,41 @@
+$type: FixWidthSizer
+name:
+
+width:
+height:
+space:
+    left:
+    right:
+    top:
+    bottom:
+    item:
+    line:
+    indentLeftOdd:
+    indentLeftEven:
+    indentTopOdd:
+    indentTopEven:
+rtl:
+align:
+
+draggable:
+
+# Relace child data by game objct
+background:
+    - $child:
+        $type:
+        # ... 
+      padding:
+          left:
+          right:
+          top:
+          bottom:
+children:
+    - $child:
+        $type:
+        # ... 
+      padding:
+          left:
+          right:
+          top:
+          bottom:
+      key:
