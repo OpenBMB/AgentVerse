@@ -1,3 +1,10 @@
+import os
+
+os.environ["http_proxy"] = "http://127.0.0.1:7890"
+os.environ["https_proxy"] = "http://127.0.0.1:7890"
+os.environ["all_proxy"] = "socks5://127.0.0.1:7890"
+
+
 import datetime
 import logging
 import random
@@ -11,11 +18,12 @@ from pydantic import Field
 from agentverse.llms.openai import get_embedding, chat
 from agentverse.memory.base import BaseMemory
 from agentverse.agents import BaseAgent
+from agentverse.environments.base import BaseEnvironment
 from agentverse.memory.memory_element.LongtermMemoryElement import LongtermMemoryElement
 from agentverse.memory.memory_element.Reflection import Reflection
 from agentverse.message import Message
 from agentverse.memory.memory_element.BaseMemoryElement import BaseMemoryElement
-
+from agentverse.memory.utils.Planner import Planner
 
 IMPORTANCE_PROMPT = """On the scale of 1 to 10, where 1 is purely mundane \
 (e.g., brushing teeth, making bed) and 10 is \
@@ -73,8 +81,10 @@ class ReflectionMemory(BaseMemory):
 
     """
     agent: Optional[BaseAgent] = None
+    environment: Optional[BaseEnvironment] = None
     importance_threshold: int = Field(default=100)
     memories: List[LongtermMemoryElement] = Field(default_factory=list)
+    planner: Planner = None
     accumulated_importance: int = Field(default=0)
 
     def __init__(self, **kwargs) -> None:
@@ -89,6 +99,13 @@ class ReflectionMemory(BaseMemory):
 
         self.memories = []
 
+        # TODO add argument in agent - (daily_plans, current_time)
+        self.planner = Planner(daily_plans=list(self.agent.whole_day_plan.values())[0],
+                               agent=self.agent,
+                               current_time=self.agent.current_time,
+                               environment=self.environment)
+        self.add_plan(content=self.planner.get_whole_day_plan_text(), time=self.agent.current_time)
+
         # TODO: load last time memory from file
         # currently, we just initialize blank memory
 
@@ -99,6 +116,7 @@ class ReflectionMemory(BaseMemory):
                     break
                 self.accumulated_importance += m.importance
 
+
     def add_message(self, message: Message, time: dt) -> None:
         """
         Add a message into longterm memory as LongtermMemory object.
@@ -107,6 +125,16 @@ class ReflectionMemory(BaseMemory):
         self.add_memory(
             LongtermMemoryElement.create_from_message(
                 message=message,
+                subject=self.agent,
+                time=time,
+            )
+        )
+
+    def add_plan(self, content: str, time: dt) -> None:
+
+        self.add_memory(
+            LongtermMemoryElement.create_longterm_memory(
+                content=content,
                 subject=self.agent,
                 time=time,
             )
@@ -274,7 +302,23 @@ class ReflectionMemory(BaseMemory):
 
 
 if __name__ == "__main__":
-    memory = ReflectionMemory(agent=None)
+    from agentverse.initialization import load_agent, load_environment, prepare_task_config
+
+    task_config = prepare_task_config("alice_home")
+    agents = []
+    for agent_configs in task_config["agents"]:
+        agent = load_agent(agent_configs)
+        agents.append(agent)
+
+    # Build the environment
+    env_config = task_config["environment"]
+    env_config["agents"] = agents
+    environment = load_environment(env_config)
+    memory = ReflectionMemory(agent=agents[0], environment=environment)
+    # get next plan
+    next_plan = memory.planner.get_next_plan()
+    next_next_plan = memory.planner.get_next_plan()
+
     message_list = [
         Message(content="I am a student"),
         Message(content="I am drunk"),

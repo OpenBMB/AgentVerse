@@ -1,20 +1,18 @@
 prompts:
-  format_prompt: &format_prompt |-
+  prompt: &prompt |-
     When responding, please output a response in the following format with two fields Action and Action Input:
     Action: Speak
     Action Input: (You should put what you want to speak use here)
 
-  prefix_prompt: &prefix_prompt |-
     Assume that you are in a university classroom and it is Natural Language Processing module. You start by introducing themselves. Below is the description of your role.
 
-  suffix_prompt: &suffix_prompt |-
     Here is the conversation history
     {chat_history}
 
     You should now give your response based on the above history. Remember to give your response STRICTLY in the above response format. Do not add any additional field or line break to your response!
 
 
-name: alice home
+name: alice_home
 
 environment:
   env_type: env_OPR
@@ -23,19 +21,19 @@ environment:
   size: [
         200,
         150
-  ],
-  time_delta: 120,  # in seconds
+  ]
+  time_delta: 120  # in seconds
   rule:
     order:
       type: sequential
     visibility:
       type: all
     selector:
-      type: base
+      type: basic
     updater:
-      type: base
+      type: basic
     describer:
-      type: base
+      type: basic
 
 agents:
   -
@@ -54,14 +52,13 @@ agents:
         Alice is learning to play the piano and practices every day after school.
         Alice's favorite food is pizza, and she loves trying out different toppings and combinations
     memory: 
-      memory_type: chat_message_history  # change later
-    prefix_prompt: *prefix_prompt
-    format_prompt: *format_prompt
-    suffix_prompt: *suffix_prompt
+      memory_type: chat_history  # change later
+    prompt_template: *prompt
     llm:
       llm_type: text-davinci-003
       temperature: 0.3
       max_tokens: 1024
+    current_time: "2023-04-01 07:00:00"
     whole_day_plan: {
         "2023-04-01": [
           "wake up and complete the morning routine at 7:00 am",
@@ -95,14 +92,13 @@ agents:
         Bob's favorite food is barbecue ribs, and he loves to cook them on his smoker on the weekends.
         Bob is proud of his daughter Alice's talent for drawing and encourages her to pursue her passion.
     memory: 
-      memory_type: chat_message_history
-    prefix_prompt: *prefix_prompt
-    format_prompt: *format_prompt
-    suffix_prompt: *suffix_prompt
+      memory_type: chat_history
+    prompt_template: *prompt
     llm:
       llm_type: text-davinci-003
       temperature: 0.3
       max_tokens: 1024
+    current_time: "2023-04-01 07:00:00"
     whole_day_plan: {
         "2023-04-01": [
           "wake up and have breakfast with his family at 6:30 am",
@@ -116,6 +112,6 @@ agents:
           "work on his car restoration project in the garage until 10:00 pm",
           "and then get ready for bed at 10:30 pm."
         ]
-    },
+    }
 
 tools: ~

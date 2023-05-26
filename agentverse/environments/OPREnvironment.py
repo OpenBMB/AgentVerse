@@ -3,6 +3,9 @@ import logging
 from typing import Any, Dict, List
 
 from datetime import datetime as dt
+import datetime
+
+from pydantic import Field
 
 from agentverse.agents.conversation_agent import BaseAgent
 from agentverse.environments.rules.base import Rule
@@ -11,6 +14,7 @@ from agentverse.message import Message
 from . import env_registry as EnvironmentRegistry
 from .base import BaseEnvironment
 
+from pydantic import validator
 
 @EnvironmentRegistry.register("env_OPR")
 class OPREnvironment(BaseEnvironment):
@@ -35,15 +39,21 @@ class OPREnvironment(BaseEnvironment):
     last_messages: List[Message] = []
     rule_params: Dict = {}
     current_time: dt = dt.now()
-    time_delta: dt = dt.timedelta(minutes=1)
+    time_delta: int = 120
+    #
+
+    # @validator("time_delta")
+    # def convert_str_to_timedelta(cls, string):
+    #
+    #     return datetime.timedelta(seconds=int(string))
 
     def __init__(self, rule, **kwargs):
         rule_config = rule
         order_config = rule_config.get("order", {"type": "sequential"})
         visibility_config = rule_config.get("visibility", {"type": "all"})
-        selector_config = rule_config.get("selector", {"type": "base"})
-        updater_config = rule_config.get("updater", {"type": "base"})
-        describer_config = rule_config.get("describer", {"type": "base"})
+        selector_config = rule_config.get("selector", {"type": "basic"})
+        updater_config = rule_config.get("updater", {"type": "basic"})
+        describer_config = rule_config.get("describer", {"type": "basic"})
         rule = Rule(
             order_config,
             visibility_config,
@@ -51,6 +61,7 @@ class OPREnvironment(BaseEnvironment):
             updater_config,
             describer_config,
         )
+
         super().__init__(rule=rule, **kwargs)
 
     async def step(self) -> List[Message]:
