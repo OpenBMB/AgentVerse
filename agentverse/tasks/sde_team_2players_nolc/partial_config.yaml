@@ -1,4 +1,4 @@
-  prompts:
+prompts:
   prompt: &prompt |-
     You are working in a programming team to solve a python code implementation problem.
 
@@ -10,6 +10,8 @@
     You are a professional coding assistant. You will be given a function signature and docstring (in <problem>). You should copy the import statement, the function signature first and then finish the function body. Before writing any code, you should first think about the task and write down your thoughts in <thought>. Then you can write your code in <code>.
 
     Your submitted code (in <current code>) will be tested on a series of unit tests. You will be given the feedback (in <unit test feedback>) of the test, together with the review of your code (in <code review>) of a professional code reviewer. You can use these feedbacks to refine your code. The refinement will take multiple iterations. You can use the <thought> to record your thoughts during the refinement.
+
+    The unit tests have been prepared. DO NOT generate unit tests!
 
     Here is the steps of the code writing and refinement process:
     1 - generate <thought>
@@ -62,7 +64,7 @@
                     return [i, j]
 
     <unit test feedback>:
-    {"is_passing": false, "feedback": "Tested passed:\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\nassert two_sum([3, 5, 2, 7], 9) == [2, 3]\n\nTests failed:\nassert two_sum([3, 2, 4], 6) == [1, 2] # output: [0, 0]"}
+    {"is_passing": false, "feedback": "Tested passed:\n\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\n\nassert two_sum([3, 5, 2, 7], 9) == [2, 3]\n\nTests failed:\n\nassert two_sum([3, 2, 4], 6) == [1, 2] # output: [0, 0]"}
 
     <code review>:
     The previous code is not correct. It failed all the tests. The second for loop should start from i + 1.
@@ -81,7 +83,7 @@
 
     [Start of new task]:
 
-    Now please solve the following problem.
+    Now please solve the following problem. DO NOT generate unit tests.
   
   code_reviewer_role_prompt: &code_reviewer_role_prompt |
     You are a professional code reviewer. You will be given a function signature and docstring in <problem>. A code writer has submitted his completion in <submitted code>.
@@ -114,7 +116,7 @@
                     return [i, j]
 
     <unit test feedback>:
-    {"is_passing": false, "feedback": "Tested passed:\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\nassert two_sum([3, 5, 2, 7], 9) == [2, 3]\n\nTests failed:\nassert two_sum([3, 2, 4], 6) == [1, 2] # output: [0, 0]"}
+    {"is_passing": false, "feedback": "Tested passed:\n\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\n\nassert two_sum([3, 5, 2, 7], 9) == [2, 3]\n\nTests failed:\n\nassert two_sum([3, 2, 4], 6) == [1, 2] # output: [0, 0]"}
 
     <code review>:
     The previous code is not correct. It failed all the tests. The second for loop should start from i + 1.
@@ -127,6 +129,7 @@ environment:
   env_type: sde_team_given_tests
   max_turns: 5
   task_name: HumanEval/0
+  # experiment_name: 2player_temperature-0.0
   unit_tests: None
   rule:
     order:

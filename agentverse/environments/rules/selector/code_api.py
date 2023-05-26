@@ -4,6 +4,7 @@ import ast
 import json
 import astunparse
 import concurrent.futures
+import traceback
 
 
 def get_call_str(assert_statement: str) -> str:
@@ -13,11 +14,14 @@ def get_call_str(assert_statement: str) -> str:
 def get_output(func: str, assert_statement: str) -> str:
     try:
         func_call = get_call_str(assert_statement)
-        exec(func, globals())
-        output = eval(func_call)
-        return output
-    except Exception as e:
-        return str(e)
+        try:
+            exec(func, globals())
+            output = eval(func_call)
+            return output
+        except Exception as e:
+            return str(e)
+    except:
+        return "get_call_str error"
 
 def worker(code, globals=None, locals=None):
     old_stdout = sys.stdout
@@ -35,7 +39,8 @@ def worker(code, globals=None, locals=None):
         stdout = redirected_output.getvalue()
         return stdout, globals, locals
     except Exception as e:
-        return f"Error: {e}", globals, locals
+        trace_str = traceback.format_exc()
+        return f"Error: {trace_str}", globals, locals
     finally:
         sys.stdout = old_stdout  # restore the original stdout
         
@@ -73,30 +78,20 @@ def execute_unit_tests(func_impl: str, tests: str) -> str:
         elif output.startswith("Error: "):
             # print(output)
             func_output = get_output(func_impl, tests[i])
+            if func_output == "get_call_str error":
+                func_output = output
             failed_tests += [f"{tests[i]} # output: {func_output}"]
             is_passing = False
         else:
             success_tests += [tests[i]]
                 
-    feedback = "Tested passed:"
+    feedback = "Tested passed:\n\n"
     for test in success_tests:
-        feedback += f"\n{test}"
-    feedback += "\n\nTests failed:"
+        feedback += f"{test}\n\n"
+    feedback += "Tests failed:\n\n"
     for test in failed_tests:
-        feedback += f"\n{test}"
+        feedback += f"{test}\n\n"
         
     return json.dumps({"is_passing": is_passing, 
             "feedback": feedback})
 
-if __name__ == "__main__":
-    code = """
-from typing import List
-
-def two_sum(nums: List[int], target: int) -> List[int]:
-    for i in range(len(nums)):
-        for j in range(len(nums)):
-            if nums[i] + nums[j] == target:
-                return [i, j]
-"""
-    tests = ["assert two_sum([2, 7, 11, 15], 9) == [0, 1]", "assert two_sum([3, 2, 4], 6) == [1, 2]", "assert two_sum([3, 5, 2, 7], 9) == [2, 3]"]
-    print(execute_unit_tests(code, tests))
