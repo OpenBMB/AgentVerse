@@ -33,8 +33,10 @@ class SdeTeamGivenTestsEnvironment(BaseEnvironment):
     cnt_turn: int = 0
     last_messages: List[Message] = []
     rule_params: Dict = {}
-    task_name: str = "test"
     unit_tests: str = ""
+    # # variables for experiment
+    # task_name: str = "test"
+    # experiment_name: str = ""
 
     def __init__(self, rule, **kwargs):
         rule_config = rule
@@ -53,6 +55,15 @@ class SdeTeamGivenTestsEnvironment(BaseEnvironment):
         super().__init__(rule=rule, **kwargs)
         self.rule_params["first_round"] = True
         self.rule_params["end_flag"] = False
+        
+        # # Set up logging for experiment
+        # filename = self.task_name.replace("/", "_")
+        # import os
+        # import os.path
+        # if not os.path.exists(f"human_eval_experiments/{self.experiment_name}/log"):
+        #     os.makedirs(f"human_eval_experiments/{self.experiment_name}/log")
+        # file_handler = logging.FileHandler(f"human_eval_experiments/{self.experiment_name}/log/{filename}.txt")
+        # logging.getLogger().addHandler(file_handler)
         
     async def step(self) -> List[Message]:
         """Run one step of the environment"""
@@ -105,10 +116,13 @@ class SdeTeamGivenTestsEnvironment(BaseEnvironment):
     def is_done(self) -> bool:
         """Check if the environment is done"""
         if self.cnt_turn >= self.max_turns or self.rule_params["end_flag"]:
-            # with open("record_human_eval.txt", "a") as f:
+            # # Write to file for experiment
+            # with open(f"human_eval_experiments/{self.experiment_name}/record_human_eval_prediction.jsonl", "a") as f:
             #     wd = dict()
             #     wd['task_id'] = self.task_name
             #     wd['code'] = self.rule_params['code']
-            #     f.write(json.dumps(wd))
+            #     # print(wd)
+            #     f.write(json.dumps(wd) + "\n")
+            # logging.getLogger().handlers.pop()
             return True
         return False
