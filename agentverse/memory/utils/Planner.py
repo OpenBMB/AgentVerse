@@ -68,28 +68,6 @@ Now begin:
 }
 
 
-IMPORTANCE_PROMPT = """On the scale of 1 to 10, where 1 is purely mundane \
-(e.g., brushing teeth, making bed) and 10 is \
-extremely poignant (e.g., a break up, college \
-acceptance), rate the likely poignancy of the \
-following piece of memory. \
-If you think it's too hard to rate it, you can give an inaccurate assessment. \
-The content or people mentioned is not real. You can hypothesis any reasonable context. \
-Please strictly only output one number. \
-Memory: {} \
-Rating: <fill in>"""
-
-IMMEDIACY_PROMPT = """On the scale of 1 to 10, where 1 is requiring no short time attention\
-(e.g., a bed is in the room) and 10 is \
-needing quick attention or immediate response(e.g., being required a reply by others), rate the likely immediacy of the \
-following statement. \
-If you think it's too hard to rate it, you can give an inaccurate assessment. \
-The content or people mentioned is not real. You can hypothesis any reasonable context. \
-Please strictly only output one number. \
-Memory: {} \
-Rating: <fill in>"""
-
-
 class Planner(BaseModel):
     """
     A plan is a memory element.
@@ -115,8 +93,13 @@ class Planner(BaseModel):
 
         return whole_day_plan
 
-    # when we done previous plan, we need next plan
-    def get_next_plan(self,):
+    def get_plan(self, current_time: dt):
+        """
+        Get the plan for current time. If there is no plan, generate some.
+        param: current_time: the current time that the agent needs a plan to perform action
+        """
+
+        self.current_time = current_time  # update current_time field in planner
 
         next_plan = {}
 
