@@ -13,3 +13,5 @@ from .db_diag.output_parser import DBDiag
 from .prisoner_dilema.output_parser import PrisonerDilemaParser
 
 from .pokemon.output_parser import PokemonParser
+from .sde_team.sde_team_3players_nolc.output_parser import SdeTeamParser
+from .sde_team.sde_team_2players_nolc.output_parser import SdeTeamGivenTestsParser

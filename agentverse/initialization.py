@@ -69,6 +69,12 @@ def prepare_task_config(task):
                 and task != "__pycache__"
             ):
                 all_tasks.append(task)
+                for subtask in os.listdir(os.path.join(all_task_dir, task)):
+                    if (
+                        os.path.isdir(os.path.join(all_task_dir, task, subtask))
+                        and subtask != "__pycache__"
+                    ):
+                        all_tasks.append(f"{task}/{subtask}")
         raise ValueError(f"Task {task} not found. Available tasks: {all_tasks}")
     if not os.path.exists(config_path):
         raise ValueError(
