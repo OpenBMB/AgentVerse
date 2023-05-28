@@ -9,5 +9,4 @@ opencv-python
 gradio
 httpx[socks]
 git+https://github.com/OpenBMB/BMTools.git
-
-
+icecream
