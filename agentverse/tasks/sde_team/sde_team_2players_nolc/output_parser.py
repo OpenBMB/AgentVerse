@@ -14,5 +14,6 @@ from agentverse.utils import AgentAction, AgentFinish
 
 @output_parser_registry.register("sde_team/sde_team_2players_nolc")
 class SdeTeamGivenTestsParser(OutputParser):
-    def parse(self, agent, env, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+    #def parse(self, agent, env, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
         return AgentFinish({"output": output.content}, output.content)
