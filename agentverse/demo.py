@@ -49,6 +49,8 @@ class UI:
     def get_avatar(self, idx):
         if self.task == "prisoner_dilema":
             img = cv2.imread(f"./imgs/prison/{idx}.png")
+        elif self.task == "db_diag":
+            img = cv2.imread(f"./imgs/db_diag/{idx}.png")
         else:
             img = cv2.imread(f"./imgs/{idx}.png")
         base64_str = cv2.imencode(".png", img)[1].tostring()
@@ -124,6 +126,8 @@ class UI:
 
         if self.task == "prisoner_dilema":
             background = cv2.imread("./imgs/prison/case_1.png")
+        elif self.task == "db_diag":
+            background = cv2.imread("./imgs/db_diag/background.png")
         else:
             background = cv2.imread("./imgs/background.png")
             back_h, back_w, _ = background.shape
@@ -172,6 +176,15 @@ class UI:
                 cover_img(background, img, (550, 480))
             if data[2]["message"] != "":
                 cover_img(background, img, (550, 880))
+        elif self.task == "db_diag":
+            background = cv2.imread("./imgs/db_diag/background.png")
+            img = cv2.imread("./imgs/db_diag/speaking.png", cv2.IMREAD_UNCHANGED)
+            if data[0]["message"] != "":
+                cover_img(background, img, (20, 176))
+            if data[1]["message"] != "":
+                cover_img(background, img, (65, 110))
+            if data[2]["message"] != "":
+                cover_img(background, img, (115, 110))
         else:
             background = cv2.imread("./imgs/background.png")
             back_h, back_w, _ = background.shape
