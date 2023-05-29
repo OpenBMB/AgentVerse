@@ -15,6 +15,9 @@ if TYPE_CHECKING:
 @OrderRegistry.register("sde_team_given_tests")
 class SdeTeamGivenTestsOrder(BaseOrder):
     """The order for a code problem solving given unit tests
+    0 - code writer
+    1 - code tester
+    2 - code reviewer
     """
     next_agent_idx: int = 0
     
@@ -23,5 +26,10 @@ class SdeTeamGivenTestsOrder(BaseOrder):
             self.next_agent_idx = 1
             return [0]
         elif self.next_agent_idx == 1:
-            self.next_agent_idx = 0
+            self.next_agent_idx = 2
             return [1]
+        elif self.next_agent_idx == 2:
+            self.next_agent_idx = 0
+            return [2]
+        else:
+            raise ValueError("Invalid next_agent_idx: {}".format(self.next_agent_idx))

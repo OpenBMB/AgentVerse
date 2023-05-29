@@ -3,7 +3,7 @@ agents:
   llm:
     llm_type: gpt-3.5-turbo
     max_tokens: 1024
-    temperature: 0.1
+    temperature: 0.0
   memory:
     memory_type: sde_team
   name: code_writer
@@ -68,8 +68,33 @@ agents:
 - agent_type: conversation
   llm:
     llm_type: gpt-3.5-turbo
+    max_tokens: 256
+    temperature: 0.0
+  memory:
+    memory_type: sde_team
+  name: code_tester
+  prompt_template: 'You are working in a programming team to solve a python code implementation
+    problem.
+
+
+    ${role_description}
+
+
+    ${chat_history}'
+  receiver:
+  - code_writer
+  - code_reviewer
+  role_description: 'You are a code tester. You will be given a python function and
+    some unit tests. You are required to run the unit tests on the function and provide
+    the execution feedback.
+
+    '
+  verbose: true
+- agent_type: conversation
+  llm:
+    llm_type: gpt-3.5-turbo
     max_tokens: 1024
-    temperature: 0.1
+    temperature: 0.0
   memory:
     memory_type: sde_team
   name: code_reviewer
@@ -87,33 +112,35 @@ agents:
     \ signature and docstring in <problem>. A code writer has submitted his completion\
     \ in <submitted code>.\nThe code has been executed on a series of unit tests.\
     \ The execution feedback is provided in <unit test feedback>. Your job is to write\
-    \ a code review in <code review> to help the code writer improve his code.\n\n\
-    The following is an examples.\n\n[Example]:\n\n<problem>:\nfrom typing import\
-    \ List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n\"\"\" Given\
-    \ an array of integers nums and an integer target, return indices of the two numbers\
-    \ such that they add up to target.\nYou may assume that each input would have\
-    \ exactly one solution, and you may not use the same element twice. \nThe answer\
-    \ should be in an ascending order.\n>>> two_sum([2,7,11,15], 9)\n[0, 1]\n>>> two_sum([3,2,4],\
-    \ 6)\n[1, 2]\n\"\"\"\n\n<current code>:\nfrom typing import List\n\ndef two_sum(nums:\
-    \ List[int], target: int) -> List[int]:\n    for i in range(len(nums)):\n    \
-    \    for j in range(len(nums)):\n            if nums[i] + nums[j] == target:\n\
-    \                return [i, j]\n\n<unit test feedback>:\n{\"is_passing\": false,\
-    \ \"feedback\": \"Tested passed:\\n\\nassert two_sum([2, 7, 11, 15], 9) == [0,\
-    \ 1]\\n\\nassert two_sum([3, 5, 2, 7], 9) == [2, 3]\\n\\nTests failed:\\n\\nassert\
-    \ two_sum([3, 2, 4], 6) == [1, 2] # output: [0, 0]\"}\n\n<code review>:\nThe previous\
-    \ code is not correct. It failed all the tests. The second for loop should start\
-    \ from i + 1.\n\n[Start of new task]:\n\nNow please review the following submitted\
-    \ code.\n\n\n<problem>:\nfrom typing import List\n\n\ndef separate_paren_groups(paren_string:\
-    \ str) -> List[str]:\n    \"\"\" Input to this function is a string containing\
-    \ multiple groups of nested parentheses. Your goal is to\n    separate those group\
-    \ into separate strings and return the list of those.\n    Separate groups are\
-    \ balanced (each open brace is properly closed) and not nested within each other\n\
-    \    Ignore any spaces in the input string.\n    >>> separate_paren_groups('(\
-    \ ) (( )) (( )( ))')\n    ['()', '(())', '(()())']\n    \"\"\"\n"
+    \ a code review in <code review> to help the code writer improve his code. Do\
+    \ NOT propose to generate more unit tests.\n\nThe following is an examples.\n\n\
+    [Example]:\n\n<problem>:\nfrom typing import List\n\ndef two_sum(nums: List[int],\
+    \ target: int) -> List[int]:\n\"\"\" Given an array of integers nums and an integer\
+    \ target, return indices of the two numbers such that they add up to target.\n\
+    You may assume that each input would have exactly one solution, and you may not\
+    \ use the same element twice. \nThe answer should be in an ascending order.\n\
+    >>> two_sum([2,7,11,15], 9)\n[0, 1]\n>>> two_sum([3,2,4], 6)\n[1, 2]\n\"\"\"\n\
+    \n<current code>:\nfrom typing import List\n\ndef two_sum(nums: List[int], target:\
+    \ int) -> List[int]:\n    for i in range(len(nums)):\n        for j in range(len(nums)):\n\
+    \            if nums[i] + nums[j] == target:\n                return [i, j]\n\n\
+    <unit test feedback>:\n{\"is_passing\": false, \"feedback\": \"Tested passed:\\\
+    n\\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\\n\\nassert two_sum([3, 5, 2,\
+    \ 7], 9) == [2, 3]\\n\\nTests failed:\\n\\nassert two_sum([3, 2, 4], 6) == [1,\
+    \ 2] # output: [0, 0]\"}\n\n<code review>:\nThe previous code is not correct.\
+    \ It failed all the tests. The second for loop should start from i + 1.\n\n[Start\
+    \ of new task]:\n\nNow please review the following submitted code. Do NOT propose\
+    \ to generate more unit tests.\n\n\n<problem>:\nfrom typing import List\n\n\n\
+    def separate_paren_groups(paren_string: str) -> List[str]:\n    \"\"\" Input to\
+    \ this function is a string containing multiple groups of nested parentheses.\
+    \ Your goal is to\n    separate those group into separate strings and return the\
+    \ list of those.\n    Separate groups are balanced (each open brace is properly\
+    \ closed) and not nested within each other\n    Ignore any spaces in the input\
+    \ string.\n    >>> separate_paren_groups('( ) (( )) (( )( ))')\n    ['()', '(())',\
+    \ '(()())']\n    \"\"\"\n"
   verbose: true
 environment:
   env_type: sde_team_given_tests
-  max_turns: 5
+  max_turns: 15
   rule:
     describer:
       type: basic
@@ -137,22 +164,28 @@ prompts:
     \ his completion in <submitted code>.\nThe code has been executed on a series\
     \ of unit tests. The execution feedback is provided in <unit test feedback>. Your\
     \ job is to write a code review in <code review> to help the code writer improve\
-    \ his code.\n\nThe following is an examples.\n\n[Example]:\n\n<problem>:\nfrom\
-    \ typing import List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n\
-    \"\"\" Given an array of integers nums and an integer target, return indices of\
-    \ the two numbers such that they add up to target.\nYou may assume that each input\
-    \ would have exactly one solution, and you may not use the same element twice.\
-    \ \nThe answer should be in an ascending order.\n>>> two_sum([2,7,11,15], 9)\n\
-    [0, 1]\n>>> two_sum([3,2,4], 6)\n[1, 2]\n\"\"\"\n\n<current code>:\nfrom typing\
-    \ import List\n\ndef two_sum(nums: List[int], target: int) -> List[int]:\n   \
-    \ for i in range(len(nums)):\n        for j in range(len(nums)):\n           \
-    \ if nums[i] + nums[j] == target:\n                return [i, j]\n\n<unit test\
-    \ feedback>:\n{\"is_passing\": false, \"feedback\": \"Tested passed:\\n\\nassert\
-    \ two_sum([2, 7, 11, 15], 9) == [0, 1]\\n\\nassert two_sum([3, 5, 2, 7], 9) ==\
-    \ [2, 3]\\n\\nTests failed:\\n\\nassert two_sum([3, 2, 4], 6) == [1, 2] # output:\
-    \ [0, 0]\"}\n\n<code review>:\nThe previous code is not correct. It failed all\
-    \ the tests. The second for loop should start from i + 1.\n\n[Start of new task]:\n\
-    \nNow please review the following submitted code.\n"
+    \ his code. Do NOT propose to generate more unit tests.\n\nThe following is an\
+    \ examples.\n\n[Example]:\n\n<problem>:\nfrom typing import List\n\ndef two_sum(nums:\
+    \ List[int], target: int) -> List[int]:\n\"\"\" Given an array of integers nums\
+    \ and an integer target, return indices of the two numbers such that they add\
+    \ up to target.\nYou may assume that each input would have exactly one solution,\
+    \ and you may not use the same element twice. \nThe answer should be in an ascending\
+    \ order.\n>>> two_sum([2,7,11,15], 9)\n[0, 1]\n>>> two_sum([3,2,4], 6)\n[1, 2]\n\
+    \"\"\"\n\n<current code>:\nfrom typing import List\n\ndef two_sum(nums: List[int],\
+    \ target: int) -> List[int]:\n    for i in range(len(nums)):\n        for j in\
+    \ range(len(nums)):\n            if nums[i] + nums[j] == target:\n           \
+    \     return [i, j]\n\n<unit test feedback>:\n{\"is_passing\": false, \"feedback\"\
+    : \"Tested passed:\\n\\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\\n\\nassert\
+    \ two_sum([3, 5, 2, 7], 9) == [2, 3]\\n\\nTests failed:\\n\\nassert two_sum([3,\
+    \ 2, 4], 6) == [1, 2] # output: [0, 0]\"}\n\n<code review>:\nThe previous code\
+    \ is not correct. It failed all the tests. The second for loop should start from\
+    \ i + 1.\n\n[Start of new task]:\n\nNow please review the following submitted\
+    \ code. Do NOT propose to generate more unit tests.\n"
+  code_tester_role_prompt: 'You are a code tester. You will be given a python function
+    and some unit tests. You are required to run the unit tests on the function and
+    provide the execution feedback.
+
+    '
   code_writer_role_prompt: "You are a professional coding assistant. You will be given\
     \ a function signature and docstring (in <problem>). You should copy the import\
     \ statement, the function signature first and then finish the function body. Before\
