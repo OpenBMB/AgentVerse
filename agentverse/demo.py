@@ -1,5 +1,6 @@
 import base64
 import itertools
+import json
 from typing import Dict, List, Tuple
 
 import cv2
@@ -33,6 +34,7 @@ class UI:
         init a UI.
         default number of students is 0
         """
+        self.solution_now = ""
         self.messages = []
         self.task = task
         self.backend = AgentVerse.from_task(task)
@@ -66,12 +68,12 @@ class UI:
 
     def start_autoplay(self):
         self.autoplay = True
-        yield self.image_now, self.text_now, gr.Button.update(
+        yield self.image_now, self.text_now, self.solution_now, gr.Button.update(
             interactive=False
         ), gr.Button.update(interactive=True), gr.Button.update(interactive=False)
         while self.autoplay and self.turns_remain > 0:
             outputs = self.gen_output()
-            self.image_now, self.text_now = outputs
+            self.image_now, self.text_now, self.solution_now = outputs
             yield *outputs, gr.Button.update(
                 interactive=not self.autoplay and self.turns_remain > 0
             ), gr.Button.update(
@@ -81,12 +83,12 @@ class UI:
             )
 
     def delay_gen_output(self):
-        yield self.image_now, self.text_now, gr.Button.update(
+        yield self.image_now, self.text_now, self.solution_now, gr.Button.update(
             interactive=False
         ), gr.Button.update(interactive=False)
         outputs = self.gen_output()
-        self.image_now, self.text_now = outputs
-        yield self.image_now, self.text_now, gr.Button.update(
+        self.image_now, self.text_now, self.solution_now = outputs
+        yield self.image_now, self.text_now, self.solution_now, gr.Button.update(
             interactive=self.turns_remain > 0
         ), gr.Button.update(
             interactive=self.turns_remain > 0
@@ -94,10 +96,11 @@ class UI:
 
     def delay_reset(self):
         self.autoplay = False
-        self.image_now, self.text_now = self.reset()
+        self.image_now, self.text_now, self.solution_now = self.reset()
         return (
             self.image_now,
             self.text_now,
+            self.solution_now,
             gr.Button.update(interactive=True),
             gr.Button.update(interactive=False),
             gr.Button.update(interactive=True),
@@ -146,7 +149,7 @@ class UI:
                     (h_begin - 30 if img.shape[0] > 190 else h_begin, w_begin),
                 )
         self.messages = []
-        return [cv2.cvtColor(background, cv2.COLOR_BGR2RGB), ""]
+        return [cv2.cvtColor(background, cv2.COLOR_BGR2RGB), "", ""]
 
     def gen_img(self, data: List[Dict]):
         """
@@ -222,9 +225,14 @@ class UI:
         _format = [{"message": "", "sender": idx} for idx in range(len(self.agent_id))]
 
         for message in messages:
-            _format[self.agent_id[message.sender]]["message"] = "[{}]: {}".format(
-                message.sender, message.content
-            )
+            if self.task == "db_diag":
+                content_json = json.loads(message.content)
+                content_json["speak"] = f"[{message.sender}]: {content_json['speak']}"
+                _format[self.agent_id[message.sender]]["message"] = json.dumps(content_json)
+            else:
+                _format[self.agent_id[message.sender]]["message"] = "[{}]: {}".format(
+                    message.sender, message.content
+                )
         return _format
 
     def gen_output(self):
@@ -242,22 +250,37 @@ class UI:
         # [To-Do]; Check the message from the backend: only 1 person can speak
         """
 
-        # If the backend cannot handle this error, use the following code.
-        message = ""
-        """
-        for item in data:
-            if item["message"] not in ["", "[RaiseHand]"]:
-                message = item["message"]
-                break
-        """
         for item in data:
             if item["message"] not in ["", "[RaiseHand]"]:
                 self.messages.append((item["sender"], item["message"]))
+
+        message, solution = self.gen_message()
+        self.turns_remain -= 1
+        return [self.gen_img(data), message, solution]
+
+    def gen_message(self):
+        # If the backend cannot handle this error, use the following code.
+        message = ""
+        """
+                for item in data:
+                    if item["message"] not in ["", "[RaiseHand]"]:
+                        message = item["message"]
+                        break
+                """
+        solution = ""
         for sender, msg in self.messages:
             if sender == 0:
                 avatar = self.get_avatar(0)
             else:
                 avatar = self.get_avatar((sender - 1) % 11 + 1)
+            if self.task == "db_diag":
+                msg_json = json.loads(msg)
+                if msg_json["knowledge"] == "":
+                    msg = msg_json["speak"]
+                else:
+                    msg = f'{msg_json["speak"]}<hr style="margin: 5px 0">{msg_json["knowledge"]}'
+                if msg_json["solution"] != "":
+                    solution = msg_json["solution"]
             message = (
                     f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
                     f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
@@ -266,8 +289,17 @@ class UI:
                     f"</div></div>" + message
             )
         message = '<div style="height:600px;overflow:auto;">' + message + "</div>"
-        self.turns_remain -= 1
-        return [self.gen_img(data), message]
+        return message, solution
+
+    def submit(self, message: str):
+        """
+        submit message to backend
+        :param message: message
+        :return: [new image, new message]
+        """
+        self.backend.submit(message)
+        self.messages.append((-1, message))
+        return self.gen_img([{"message": ""}] * len(self.agent_id)), self.gen_message()
 
     def launch(self):
         """
@@ -292,11 +324,17 @@ class UI:
             # stu_num = gr.Number(label="Student Number", precision=0)
             # stu_num = self.stu_num
 
+            solutions = gr.Markdown()
+            user_msg = gr.Textbox()
+            submit_btn = gr.Button("Submit", variant="primary")
+
+            submit_btn.click(fn=self.submit, inputs=user_msg, outputs=[image_output, text_output], show_progress=False)
+
             # next_btn.click(fn=self.gen_output, inputs=None, outputs=[image_output, text_output], show_progress=False)
             next_btn.click(
                 fn=self.delay_gen_output,
                 inputs=None,
-                outputs=[image_output, text_output, next_btn, start_autoplay_btn],
+                outputs=[image_output, text_output, solutions, next_btn, start_autoplay_btn],
                 show_progress=False,
             )
 
@@ -309,6 +347,7 @@ class UI:
                 outputs=[
                     image_output,
                     text_output,
+                    solutions,
                     next_btn,
                     stop_autoplay_btn,
                     start_autoplay_btn,
@@ -328,6 +367,7 @@ class UI:
                 outputs=[
                     image_output,
                     text_output,
+                    solutions,
                     next_btn,
                     stop_autoplay_btn,
                     start_autoplay_btn,
