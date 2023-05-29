@@ -1,31 +1,50 @@
 prompts:
   prompt: &prompt |-
-    When responding, please output a response in the following format with two fields Action and Action Input:
-    Action: Speak
-    Action Input: (You should put what you want to speak use here)
+    Now you are act for as an agent named ${agent_name} in a virtual world. You might need to performing reaction to the observation. Your mission to take the agent as yourself and directly provide what the agent will do to the observations based on the following information:
+    (1) The agent's description: ${summary}
+    (2) Current time is ${current_time}
+    (3) Your current status is ${status}
 
-    Assume that you are in a university classroom and it is Natural Language Processing module. You start by introducing themselves. Below is the description of your role.
+    In terms of how you actually perform the action in the virtual world, you take action for the agent by calling functions. Currently, there are the following functions that can be called.
 
-    Here is the conversation history
-    {chat_history}
+    - act(description, target=None): do some action. `description` describes the action, set `description` to None for not act. `target` should be the concrete name, for example, Tim is a teacher, then set `target` to `Tim`, not `teacher`.
+    - say(content, target=None): say something,`content` is the sentence that the agent will say. **Do not say to yourself, neither to inanimate objects.**
+    - move(description): move to somewhere. `description` describes the movement, set description to None for not move.
+    - do_nothing(): Do nothing. There is nothing that you like to respond to, this will make you stick to your original status and plan.
 
-    You should now give your response based on the above history. Remember to give your response STRICTLY in the above response format. Do not add any additional field or line break to your response!
+    Some actions may not be needed in this situation. Call one function at a time, please give a thought before calling these actions, i.e., use the following format strictly:
 
+    Thought: None of the observation attract my attention, I need to:
+    Action: do_nothing()
+    [or]
+    Thought: due to `xxx`, I need to:
+    Action: say("hello", target="Alice")
+    [or]
+    Thought: due to `xxx`, I need to:
+    Action: act(None)
+    [or]
+    Thought: due to `xxx`, I need to:
+    Action: move(None)
+    [or]
+    Thought: I think I've finished my action as the agent.
+    Action: end()
+
+    Now begin your actions as the agent. Remember only write one function call after `Action:`
 
 name: alice_home
 
 environment:
   env_type: env_OPR
   max_turns: 1000000
-  current_time: "2023-04-01 07:00:00"
   size: [
         200,
         150
   ]
-  time_delta: 120  # in seconds
+  current_time: "2023-04-01 07:00:00"
+  time_delta: 1800  # in seconds
   rule:
     order:
-      type: sequential
+      type: concurrent
     visibility:
       type: all
     selector:
@@ -43,37 +62,19 @@ agents:
     role_description:  |-
         Alice is a 10-year-old student at Town Elementary School.",
         Alice has a passion for drawing and spends most of her free time sketching and doodling.
-        Alice finds educational television programs to be dull and uninteresting.
-        Alice's father's name is Bob, and he works as a mechanic at the local car dealership.
-        Alice's mother's name is Carot, and she is a nurse at the nearby hospital.
-        Alice has a younger sister named Lily, who is 6 years old and also attends Town Elementary School.
-        Alice enjoys playing soccer with her friends during recess and after school.
-        Alice is a fan of science fiction books and loves reading about space exploration and aliens.
-        Alice is learning to play the piano and practices every day after school.
-        Alice's favorite food is pizza, and she loves trying out different toppings and combinations
     memory: 
-      memory_type: chat_history  # change later
+      memory_type: OPR  # change later
     prompt_template: *prompt
     llm:
-      llm_type: text-davinci-003
+      model: "gpt-4"
+      llm_type: gpt-4
       temperature: 0.3
       max_tokens: 1024
     current_time: "2023-04-01 07:00:00"
     whole_day_plan: {
         "2023-04-01": [
           "wake up and complete the morning routine at 7:00 am",
-          "have breakfast with her family at 8:00 am", 
-          "attend school and participate in classes from 9:00 am to 12:00 pm",
-          "have lunch at school with her friends at 12:30 pm",
-          "return home at 1:00 pm and watch her favorite TV show", 
-          "practice playing the piano for 30 minutes at 2:00 pm",
-          "work on her drawing skills for an hour at 3:00 pm",
-          "go out for a 30-minute jog around the neighborhood at 4:00 pm",
-          "help her mother prepare dinner at 5:00 pm",
-          "have dinner with her family at 6:00 pm", 
-          "complete her homework and review her lessons for the next day from 7:00 pm to 8:30 pm",
-          "read a book for pleasure from 8:30 pm to 9:00 pm", 
-          "and then get ready for bed at 9:30 pm."
+          "have breakfast with her family at 8:00 am",
         ]
     }
   -
@@ -82,20 +83,12 @@ agents:
     traits: hard-working, friendly, knowledgeable
     role_description: |-
         Bob is a 42-year-old mechanic who works at the local car dealership.
-        Bob is known for his expertise in engine repairs and his friendly demeanor with customers.
-        Bob is married to Carot, who works as a nurse at the nearby hospital.
-        Bob has two children: Alice, who is 13 years old and loves to draw, and Lily, who is 6 years old and enjoys playing with dolls.
-        Bob enjoys restoring old cars in his free time and has a collection of classic cars in his garage.
-        Bob is a fan of football and enjoys watching games with his friends at the local sports bar.
-        Bob is always willing to help out his neighbors with car trouble or home repairs.
-        Bob is planning a family vacation to the beach this summer and is excited to spend time with his family.
-        Bob's favorite food is barbecue ribs, and he loves to cook them on his smoker on the weekends.
-        Bob is proud of his daughter Alice's talent for drawing and encourages her to pursue her passion.
     memory: 
-      memory_type: chat_history
+      memory_type: OPR
     prompt_template: *prompt
     llm:
-      llm_type: text-davinci-003
+      model: "gpt-4"
+      llm_type: gpt-4
       temperature: 0.3
       max_tokens: 1024
     current_time: "2023-04-01 07:00:00"
@@ -103,14 +96,6 @@ agents:
         "2023-04-01": [
           "wake up and have breakfast with his family at 6:30 am",
           "drive to work and arrive at the car dealership at 8:00 am",
-          "work on fixing cars and helping customers until lunchtime",
-          "have lunch at the nearby diner at 12:00 pm",
-          "watch TV with Alice at 1:00 pm return to work and continue fixing cars until 5:00 pm",
-          "drive home and help his wife prepare dinner at 5:30 pm",
-          "have dinner with his family at 6:00 pm",
-          "relax and watch TV with his family until 8:00 pm",
-          "work on his car restoration project in the garage until 10:00 pm",
-          "and then get ready for bed at 10:30 pm."
         ]
     }
 

@@ -5,7 +5,7 @@ An agent based upon Observation-Planning-Reflection architecture.
 from logging import getLogger
 
 from abc import abstractmethod
-from typing import List, Set, Union, NamedTuple
+from typing import List, Set, Union, NamedTuple, TYPE_CHECKING
 
 from pydantic import BaseModel, Field, validator
 
@@ -22,53 +22,14 @@ from agentverse.agents.base import BaseAgent
 from datetime import datetime as dt
 import datetime
 
-
 from . import agent_registry
+from string import Template
+
 
 logger = getLogger(__file__)
 
-REACTION_PROMPT = """Now you are act for as an agent named {name} in a virtual world. You might need to performing reaction to the observation. Your mission to take the agent as yourself and directly provide what the agent will do to the observations based on the following information:
-(1) The agent's description: {summary}
-(2) Current time is {time}
-(3) Your current status is {status}
-(4) Your memory is {context}
-
-Now the observation has two types, incomming observation is the ones that other does to you, you are more likely to react to them.  Background observation are the background, which does not need to be responded. For example, view an alarm clock does not imply turning it off. However, some background observation might trigger your attention, like an alarming clock or a firing book.
-
-So now:
-The incoming observation is {observation}
-The Some background observation is {background_observation}.
-
-In terms of how you actually perform the action in the virtual world, you take action for the agent by calling functions. Currently, there are the following functions that can be called.
-
-- act(description, target=None): do some action. `description` describes the action, set `description` to None for not act. `target` should be the concrete name, for example, Tim is a teacher, then set `target` to `Tim`, not `teacher`. 
-- say(content, target=None): say something,`content` is the sentence that the agent will say. **Do not say to yourself, neither to inanimate objects.**
-- move(description): move to somewhere. `description` describes the movement, set description to None for not move.
-- do_nothing(): Do nothing. There is nothing that you like to respond to, this will make you stick to your original status and plan.
-
-Some actions may not be needed in this situation. Call one function at a time, please give a thought before calling these actions, i.e., use the following format strictly:
-            
-Thought: None of the observation attract my attention, I need to:
-Action: do_nothing()
-Observation: [Observations omited]
-[or]
-Thought: due to observation `xxx`, I need to:
-Action: say("hello", target="Alice")
-Observation: [Observations omited]
-[or]
-Thought: due to observation `xxx`, I need to:
-Action: act(None)
-Observation: [Observations omited]
-[or]
-Thought: due to observation `xxx`, I need to:
-Action: move(None)
-Observation: [Observations omited]
-[or]
-Thought: I think I've finished my action as the agent. 
-Action: end()
-Observation:
-
-Now begin your actions as the agent. Remember only write one function call after `Action:` """,
+if TYPE_CHECKING:
+    from agentverse.environments.base import BaseEnvironment
 
 
 @agent_registry.register("OPR")
@@ -77,6 +38,16 @@ class AgentOPR(BaseAgent):
     current_time: str = None,
     traits: str = None,
     whole_day_plan: dict = Field(default_factory=dict)
+    environment: "BaseEnvironment" = None
+    step_cnt: int = 0
+    summary_interval: int = 10
+    reflection_interval: int = 10
+
+    status: str = Field(default=None, description="what the agent is doing according to whole_day_plan")
+    status_start_time: dt = Field(default=None)
+    status_duration: int = Field(default=0,
+                                      description="we use this field and current time to check when to get_plan in func:`check_status_passive` ")
+
 
     @validator('current_time')
     def convert_str_to_dt(cls, current_time):
@@ -101,41 +72,49 @@ class AgentOPR(BaseAgent):
         )
 
         # To ensure the proper functioning of the agent, the memory, plan, and summary cannot be empty. Therefore, it is necessary to perform an initialization similar to what should be done at the beginning of each day.
-        self.minimal_init()
+        # self.minimal_init()
 
         # before we handle any observation, we first check the status.
-        self.check_status_passive()
+        # self.check_status_passive()
 
-        self.observe()
+        # self.observe()
 
-        if self.might_react():
-            self.react()
-
-        if self.movement:
-            self.analysis_movement_target(self.movement_description)
-
-        # 3.5 add observation to memory
-        for ob in self.incoming_observation:
-            self.long_term_memory.add(ob, self.current_time, ["observation"])
-        self.incoming_observation = []  # empty the incoming observation
+        # if self.might_react():
+        #     self.react()
+        #
+        # if self.movement:
+        #     self.analysis_movement_target(self.movement_description)
+        #
+        # # 3.5 add observation to memory
+        # for ob in self.incoming_observation:
+        #     self.long_term_memory.add(ob, self.current_time, ["observation"])
+        # self.incoming_observation = []  # empty the incoming observation
 
         # 4. Periodic fixed work of reflection and summary (tentatively set to be done every 100 logical frames).
 
-        self.step_cnt += 1
-        if self.step_cnt % self.summary_interval == 0:
-            self.generate_summary(self.current_time)
+    # TODO chimin
 
-        if self.step_cnt % self.reflection_interval == 0:
-            self.reflect(self.current_time)
+    def check_status_passive(self, ):
+        """Check if the current status needs to be finished. If so, examine the plan and initiate the next action.
+        """
+        if self.status_start_time is None: # fixing empty start time
+            self.status_start_time = self.current_time
 
-        return
+        if self.status_start_time+datetime.timedelta(self.status_duration) <= self.current_time:
+            next_plan = self.memory.planner.get_plan(current_time=self.current_time)
+            self.status_start_time = self.current_time
+            self.status = next_plan['status']
+            self.status_duration = next_plan['duration']
+        else:
+            logger.debug(f"{self.name} don't change status by plan: {self.status_start_time}, {datetime.timedelta(self.status_duration)}, {self.current_time}")
 
-
-
-    #TODO chimin
-
-    async def astep(self, env_description: str = "") -> Message:
+    async def astep(self, current_time: dt,env_description: str = "") -> Message:
         """Asynchronous version of step"""
+        #use environment's time to update agent's time
+        self.current_time = current_time
+        # Before the agent step, we check current status,
+        self.check_status_passive()
+
         prompt = self._fill_prompt_template(env_description)
 
         parsed_response = None
@@ -143,9 +122,16 @@ class AgentOPR(BaseAgent):
             try:
                 response = await self.llm.agenerate_response(prompt)
                 parsed_response = self.output_parser.parse(response)
+
+                if 'say(' in parsed_response.return_values["output"]:
+                    reaction, target = eval("self._" + parsed_response.return_values["output"].strip())
+                elif 'act(' in parsed_response.return_values["output"]:
+                    reaction, target = eval("self._" + parsed_response.return_values["output"].strip())
+                elif 'do_nothing(' in parsed_response.return_values["output"]:
+                    reaction, target = None, None
+
                 break
-            except (KeyboardInterrupt, bdb.BdbQuit):
-                raise
+
             except Exception as e:
                 logger.error(e)
                 logger.warning("Retrying...")
@@ -154,25 +140,82 @@ class AgentOPR(BaseAgent):
         if parsed_response is None:
             logger.error(f"{self.name} failed to generate valid response.")
 
+
+
+
         message = Message(
             content=""
-            if parsed_response is None
-            else parsed_response.return_values["output"],
+            if reaction is None
+            else reaction,
             sender=self.name,
-            receiver=self.get_receiver(),
+            receiver=self.get_receiver() if target is None else target,
         )
+
+        # TODO currently, summary is not added back to memory while reflection is
+        self.step_cnt += 1
+
+        if self.step_cnt % self.summary_interval == 0:
+            self.memory.summary = self.memory.generate_summary(self.current_time)
+
+        if self.step_cnt % self.reflection_interval == 0:
+            _ = self.reflect(self.current_time)
+
         return message
+
+    def _act(self, description=None, target=None):
+        if description is None:
+            return ""
+        if target is None:
+            reaction_content = f"{self.name} performs action: '{description}'."
+        else:
+            reaction_content = f"{self.name} performs action to {target}: '{description}'."
+        # self.environment.broadcast_observations(self, target, reaction_content)
+
+
+        return reaction_content, target
+
+    def _say(self, description, target=None):
+        if description is None:
+            return ""
+        if target is None:
+            reaction_content = f"{self.name} says: '{description}'."
+        else:
+            reaction_content = f"{self.name} says to {target}: '{description}'."
+        # self.environment.broadcast_observations(self, target, reaction_content)
+        return reaction_content, target
+
+
+    def _fill_prompt_template(self, env_description: str = "") -> str:
+        """Fill the placeholders in the prompt template
+
+        In the conversation agent, three placeholders are supported:
+        - ${agent_name}: the name of the agent
+        - ${env_description}: the description of the environment
+        - ${role_description}: the description of the role of the agent
+        - ${chat_history}: the chat history of the agent
+        """
+        input_arguments = {
+            "agent_name": self.name,
+            "summary": self.memory.summary,
+            "current_time": self.current_time,
+            "status": self.status,
+            "env_description": env_description,
+        }
+        return Template(self.prompt_template).safe_substitute(input_arguments)
 
     # TODO call longtermmemory element
     def add_message_to_memory(self, messages: List[Message]) -> None:
-        self.memory.add_message(messages)
+        for message in messages:
+            self.memory.add_message(message, time=self.current_time)
 
     # Should call this when status changed, plan==status
     def add_plan_to_memory(self,) -> None:
         self.memory.add_plan(content=self.status, time=self.current_time)
 
-    def reset(self) -> None:
+    def reset(self, environment: "BaseEnvironment") -> None:
         """Reset the agent"""
-        self.memory.reset()
+        self.environment = environment
+
+        self.memory.reset(environment=environment, agent=self)
         # TODO: reset receiver
 

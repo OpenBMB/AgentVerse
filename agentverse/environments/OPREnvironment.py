@@ -67,8 +67,6 @@ class OPREnvironment(BaseEnvironment):
     async def step(self) -> List[Message]:
         """Run one step of the environment"""
 
-        self.tick_tock()
-
         logging.log(logging.INFO, f"Tick tock. Current time: {self.current_time}")
 
         # Get the next agent index
@@ -79,7 +77,7 @@ class OPREnvironment(BaseEnvironment):
 
         # Generate the next message
         messages = await asyncio.gather(
-            *[self.agents[i].astep(env_descriptions[i]) for i in agent_ids]
+            *[self.agents[i].astep(self.current_time, env_descriptions[i]) for i in agent_ids]
         )
 
         # Some rules will select certain messages from all the messages
@@ -95,6 +93,9 @@ class OPREnvironment(BaseEnvironment):
 
         self.cnt_turn += 1
 
+        # update current_time
+        self.tick_tock()
+
         return selected_messages
 
     def print_messages(self, messages: List[Message]) -> None:
@@ -106,8 +107,9 @@ class OPREnvironment(BaseEnvironment):
         """Reset the environment"""
         self.cnt_turn = 0
         self.rule.reset()
+        BaseAgent.update_forward_refs()
         for agent in self.agents:
-            agent.reset()
+            agent.reset(environment=self)
 
     def is_done(self) -> bool:
         """Check if the environment is done"""
@@ -115,4 +117,4 @@ class OPREnvironment(BaseEnvironment):
 
     def tick_tock(self) -> None:
         """Increment the time"""
-        self.current_time = self.current_time + self.time_delta
+        self.current_time = self.current_time + datetime.timedelta(seconds=self.time_delta)

@@ -5,14 +5,14 @@ from pydantic import Field, BaseModel
 from agentverse.memory.memory_element.BaseMemoryElement import BaseMemoryElement
 from agentverse.llms.base import BaseLLM
 from agentverse.llms.openai import get_embedding
+from typing import Optional, TYPE_CHECKING
 from agentverse.agents.base import BaseAgent
-from typing import Optional
+from agentverse.environments.base import BaseEnvironment
 from logging import getLogger
 import json
 
-from agentverse.environments.base import BaseEnvironment
-
 logger = getLogger(__file__)
+
 
 planner_prompt_template = {
 
@@ -164,7 +164,7 @@ class Planner(BaseModel):
                 # would call self.write_plan and return desired dict
                 new_plan = eval("self." + plan)
             except:
-                logger.warning("{}'s generated plan contains error format: {}".format(self.agent.name, plan))
+                logger.warning("{}'s generated immediate plan contains error format: {}".format(self.agent.name, plan))
                 continue
             immediately_plans.append(new_plan)
 
@@ -194,7 +194,7 @@ class Planner(BaseModel):
                 # will call chunk_plan and update self.hourly plan
                 eval("self."+plan)
             except:
-                logger.warning("{}'s generated plan contains error format: {}".format(self.agent.name, plan))
+                logger.warning("{}'s generated rough plan contains error format: {}".format(self.agent.name, plan))
                 continue
 
 

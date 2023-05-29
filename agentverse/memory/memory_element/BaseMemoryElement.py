@@ -3,8 +3,7 @@ import numpy as np
 
 from abc import abstractclassmethod
 from pydantic import BaseModel, Field
-
-from agentverse.agents import BaseAgent
+from typing import TYPE_CHECKING, Any
 
 from datetime import datetime as dt
 
@@ -18,6 +17,8 @@ SAVE_OPTIONS = (
     orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_SERIALIZE_DATACLASS | orjson.OPT_INDENT_2
 )
 
+if TYPE_CHECKING:
+    from agentverse.agents.base import BaseAgent
 
 class BaseMemoryElement(BaseModel):
     """
@@ -25,18 +26,40 @@ class BaseMemoryElement(BaseModel):
     TODO: later make Message inherit this MemoryElement
     """
 
-    content: str = Field(default="")
-    subject: BaseAgent = Field(default=None)
-    embedding: list[float] = Field(default_factory=list)
-    create_time: dt = Field(default=None)
-    last_access_time: dt = Field(default=None)
+    content: str = None
+    subject: "BaseAgent" = None
+    embedding: list[float] = []
+    create_time: dt = None
+    last_access_time: dt = None
+    importance: int = 0
+    immediacy: int = 0
+
+    def __init__(self,
+                 content: str,
+                 subject: "BaseAgent",
+                 embedding: list[float],
+                 create_time: dt,
+                 last_access_time: dt,
+                 importance: int,
+                 immediacy: int,
+                 **kwargs):
+
+        super().__init__(**kwargs)
+        self.content = content
+        self.subject = subject
+        self.embedding = embedding
+        self.create_time = create_time
+        self.last_access_time = last_access_time
+        self.importance = importance
+        self.immediacy = immediacy
+
 
     @classmethod
     def create_memory(
         cls,
         content: str,
         time: dt,
-        subject: BaseAgent = None,
+        subject: "BaseAgent" = None,
         embedding: np.ndarray = None,
     ):
         embedding = get_embedding(content) if embedding is None else embedding

@@ -10,20 +10,20 @@ import logging
 import random
 import numpy as np
 
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Union, TYPE_CHECKING
 from datetime import datetime as dt
 from sklearn.metrics.pairwise import cosine_similarity
-from pydantic import Field
+from pydantic import Field, BaseModel
 
 from agentverse.llms.openai import get_embedding, chat
 from agentverse.memory.base import BaseMemory
-from agentverse.agents import BaseAgent
 from agentverse.environments.base import BaseEnvironment
 from agentverse.memory.memory_element.LongtermMemoryElement import LongtermMemoryElement
 from agentverse.memory.memory_element.Reflection import Reflection
 from agentverse.message import Message
 from agentverse.memory.memory_element.BaseMemoryElement import BaseMemoryElement
-from agentverse.memory.utils.Planner import Planner
+
+from . import memory_registry
 
 IMPORTANCE_PROMPT = """On the scale of 1 to 10, where 1 is purely mundane \
 (e.g., brushing teeth, making bed) and 10 is \
@@ -51,28 +51,12 @@ INSIGHT_PROMPT = """What at most 5 high-level insights can you infer from \
 the above statements? Only output insights with high confidence. 
 example format: insight (because of 1, 5, 3)"""
 
-
-def get_questions(texts):
-    prompt = "\n".join(texts) + "\n" + QUESTION_PROMPT
-    result = chat(prompt)
-    questions = [q for q in result.split("\n") if len(q.strip()) > 0]
-    questions = questions[:3]
-    return questions
+if TYPE_CHECKING:
+    from agentverse.agents import BaseAgent
+    from agentverse.memory.utils.Planner import Planner
 
 
-def get_insights(statements):
-    prompt = ""
-    for i, st in enumerate(statements):
-        prompt += str(i + 1) + ". " + st + "\n"
-    prompt += INSIGHT_PROMPT
-    result = chat(prompt)
-    insights = [isg for isg in result.split("\n") if len(isg.strip()) > 0][:5]
-    insights = [".".join(i.split(".")[1:]) for i in insights]
-    # remove insight pointers for now
-    insights = [i.split("(")[0].strip() for i in insights]
-    return insights
-
-
+@memory_registry.register("OPR")
 class ReflectionMemory(BaseMemory):
     # on load, load our database
     """
@@ -80,42 +64,54 @@ class ReflectionMemory(BaseMemory):
     importance_threshold: the threshold for deciding whether to do reflection
 
     """
-    agent: Optional[BaseAgent] = None
+    agent: "BaseAgent" = None
     environment: Optional[BaseEnvironment] = None
     importance_threshold: int = Field(default=100)
     memories: List[LongtermMemoryElement] = Field(default_factory=list)
-    planner: Planner = None
+    planner: "Planner" = None
+    summary: str = None
     accumulated_importance: int = Field(default=0)
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self,
+                 agent: "BaseAgent" = None,
+                 environment: Optional[BaseEnvironment] = None,
+                 importance_threshold: int = 100,
+                 memories: List[LongtermMemoryElement] = [],
+                 planner: "Planner" = None,
+                 summary: str = None,
+                 accumulated_importance: int = 0,
+                 **kwargs) -> None:
+
         super().__init__(**kwargs)
         clear_memory = True  # TODO: add this to arguments
 
-        # the least importance threshold for reflection.
-        # TODO: add none-default value in the yaml config file
-        self.importance_threshold = getattr(
-            self.agent, "importance_threshold", self.importance_threshold
-        )
+        self.agent = agent
+        self.environment = environment
+        self.importance_threshold = importance_threshold
+        self.memories = memories
+        self.planner = planner
+        self.summary = summary
+        self.accumulated_importance = accumulated_importance
 
-        self.memories = []
 
-        # TODO add argument in agent - (daily_plans, current_time)
-        self.planner = Planner(daily_plans=list(self.agent.whole_day_plan.values())[0],
-                               agent=self.agent,
-                               current_time=self.agent.current_time,
-                               environment=self.environment)
-        self.add_plan(content=self.planner.get_whole_day_plan_text(), time=self.agent.current_time)
+    def get_questions(self, texts):
+        prompt = "\n".join(texts) + "\n" + QUESTION_PROMPT
+        result = self.agent.llm.generate_response(prompt)
+        questions = [q for q in result.split("\n") if len(q.strip()) > 0]
+        questions = questions[:3]
+        return questions
 
-        # TODO: load last time memory from file
-        # currently, we just initialize blank memory
-
-        self.accumulated_importance = 0
-        if len(self.memories) > 0:
-            for m in self.memories:
-                if isinstance(m, Reflection):
-                    break
-                self.accumulated_importance += m.importance
-
+    def get_insights(self, statements):
+        prompt = ""
+        for i, st in enumerate(statements):
+            prompt += str(i + 1) + ". " + st + "\n"
+        prompt += INSIGHT_PROMPT
+        result = self.agent.llm.generate_response(prompt)
+        insights = [isg for isg in result.split("\n") if len(isg.strip()) > 0][:5]
+        insights = [".".join(i.split(".")[1:]) for i in insights]
+        # remove insight pointers for now
+        insights = [i.split("(")[0].strip() for i in insights]
+        return insights
 
     def add_message(self, message: Message, time: dt) -> None:
         """
@@ -130,7 +126,7 @@ class ReflectionMemory(BaseMemory):
             )
         )
 
-    def add_plan(self, content: str, time: dt) -> None:
+    def add_content(self, content: str, time: dt) -> None:
 
         self.add_memory(
             LongtermMemoryElement.create_longterm_memory(
@@ -139,9 +135,6 @@ class ReflectionMemory(BaseMemory):
                 time=time,
             )
         )
-
-    def reset(self) -> None:
-        self.memories = []
 
     def add_memory(self, memory: LongtermMemoryElement) -> None:
         """
@@ -292,6 +285,95 @@ class ReflectionMemory(BaseMemory):
                 )
             )  # This will add a Reflection instance instead of LongtermMemory instance
         return insights
+    
+    def generate_summary(self, time: dt):
+        """
+                # Generating summary for myself
+                :return: summary string
+                """
+
+        qResList1 = self.query(f"{self.agent.name}'s core characteristics", 10, time)
+        qResList2 = self.query(f"{self.agent.name}'s current daily occupation", 10, time)
+        qResList3 = self.query(f"{self.agent.name}'s feeling about his recent progress in life", 10, time)
+
+        q1, q2, q3 = map(lambda k: '\n'.join(k), (qResList1, qResList2, qResList3))
+
+        query1 = f"""
+                How would one describe {self.agent.name}'s core characteristics given the following statements? If the information is not enough, just output DONTKNOW. Otherwise, directly output the answer. 
+                {q1}
+                """
+        result1 = self.agent.llm.generate_response(query1)
+        if "DONTKNOW" in result1.content:
+            result1.content = ""
+
+        query2 = f"""
+                What is {self.agent.name}'s current occupation plan given the following statements? If the information is not enough, just output DONTKNOW. Otherwise, directly output the answer. 
+                {q2}
+                """
+
+        result2 = self.agent.llm.generate_response(query2)
+        if "DONTKNOW" in result2.content:
+            result2.content = ""
+
+        query3 = f"""
+                What might be {self.agent.name}'s feeling about his recent progress in life given the following statements? If the information is not enough, just output DONTKNOW. Otherwise, directly output the answer. 
+                {q3}
+                """
+
+        result3 = self.agent.llm.generate_response(query3)
+        if "DONTKNOW" in result3.content:
+            result3.content = ""
+
+        # BasicInfo = f"""\
+        # Name: {self.agent.name}
+        # Innate traits: {self.agent.traits}"""
+
+        self.summary = '\n'.join([result1.content, result2.content, result3.content])
+        return self.summary
+
+    def reset(self, environment: "BaseEnvironment", agent: "BaseAgent") -> None:
+
+        from agentverse.memory.utils.Planner import Planner
+        # Whole the initial work can only be done here
+        self.agent = agent
+        self.environment = environment
+
+        # self.agent.update_forward_refs()
+        # self.environment.update_forward_refs()
+
+        # the least importance threshold for reflection.
+        # TODO: add none-default value in the yaml config file
+        self.importance_threshold = getattr(
+            self.agent, "importance_threshold", self.importance_threshold
+        )
+
+        self.memories = []
+
+        # add initial_plan and description (including traits, role_description) to memory at first
+        # and generate summary immediately.
+        # Note that unlike chat_history memory, we do not always put the whole memory in prompt, we only put summary
+        self.planner = Planner(daily_plans=list(self.agent.whole_day_plan.values())[0],
+                               agent=self.agent,
+                               current_time=self.environment.current_time,
+                               environment=self.environment)
+        Planner.update_forward_refs()
+        self.add_content(content=self.planner.get_whole_day_plan_text(), time=self.environment.current_time)
+        self.add_content(content=self.agent.traits, time=self.environment.current_time)
+        for per_role_description in self.agent.role_description.split("\n"):
+            self.add_content(content=per_role_description, time=self.environment.current_time)
+
+        self.summary = self.generate_summary(time=self.environment.current_time)
+
+        # TODO: load last time memory from file
+        # currently, we just initialize blank memory
+
+        self.accumulated_importance = 0
+        if len(self.memories) > 0:
+            for m in self.memories:
+                if isinstance(m, Reflection):
+                    break
+                self.accumulated_importance += m.importance
+    
 
     def __repr__(self) -> str:
         memory_string = "\n".join([str(memory) for memory in self.memories])
@@ -316,8 +398,8 @@ if __name__ == "__main__":
     environment = load_environment(env_config)
     memory = ReflectionMemory(agent=agents[0], environment=environment)
     # get next plan
-    next_plan = memory.planner.get_next_plan()
-    next_next_plan = memory.planner.get_next_plan()
+    next_plan = memory.planner.get_plan(current_time=dt.now())
+    next_next_plan = memory.planner.get_plan(current_time=dt.now() + datetime.timedelta(minutes=80))
 
     message_list = [
         Message(content="I am a student"),

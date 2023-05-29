@@ -3,10 +3,16 @@ import re
 from pydantic import Field
 from datetime import datetime as dt
 
-from agentverse.agents.base import BaseAgent
 from agentverse.llms.openai import chat, get_embedding
 from agentverse.message import Message
+
 from agentverse.memory.memory_element.BaseMemoryElement import BaseMemoryElement
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from agentverse.agents.base import BaseAgent
+
 
 
 IMPORTANCE_PROMPT = """On the scale of 1 to 10, where 1 is purely mundane \
@@ -31,17 +37,18 @@ Memory: {} \
 Rating: <fill in>"""
 
 
+
 class LongtermMemoryElement(BaseMemoryElement):
     """
     A LongtermMemory is a memory element
       with importance and immediacy.
     """
 
-    importance: int = Field(default=0)
-    immediacy: int = Field(default=0)
-
     @classmethod
-    def create_longterm_memory(cls, content: str, time: dt, subject: BaseAgent = None):
+    def create_longterm_memory(cls, content: str, time: dt, subject: "BaseAgent" = None):
+
+        # LongtermMemoryElement.update_forward_refs()
+
         importance = cls.get_importance(content)
         immediacy = cls.get_immediacy(content)
         return cls(
@@ -55,7 +62,7 @@ class LongtermMemoryElement(BaseMemoryElement):
         )
 
     @classmethod
-    def create_from_memory_element(cls, memory_element: BaseMemoryElement):
+    def create_from_memory_element(cls, memory_element: "BaseMemoryElement"):
         importance = cls.get_importance(memory_element.content)
         immediacy = cls.get_immediacy(memory_element.content)
         return cls(
@@ -69,7 +76,7 @@ class LongtermMemoryElement(BaseMemoryElement):
         )
 
     @classmethod
-    def create_from_message(cls, message: Message, subject: BaseAgent, time: dt):
+    def create_from_message(cls, message: Message, subject: "BaseAgent", time: dt):
         importance = cls.get_importance(message.content)
         immediacy = cls.get_immediacy(message.content)
         embedding = get_embedding(message.content)

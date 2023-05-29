@@ -11,7 +11,7 @@ parser = ArgumentParser()
 
 
 
-parser.add_argument("--task", type=str, default="nlp_classroom_3players")
+parser.add_argument("--task", type=str, default="alice_home")
 
 args = parser.parse_args()
 agentverse = AgentVerse.from_task(args.task)
