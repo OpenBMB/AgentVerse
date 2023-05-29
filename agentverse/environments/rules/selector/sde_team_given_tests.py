@@ -35,23 +35,22 @@ class SdeTeamGivenTestsSelector(BaseSelector):
         if last_sender == "code_writer":
             cur_code = extract(selected[0].content, "<code>:")
             environment.rule_params["code"] = cur_code
+            selected[0].content = f"<current code>:\n{cur_code}"
+        
+        elif last_sender == "code_tester":
             
             from .code_api import execute_unit_tests
             feedback = execute_unit_tests(environment.rule_params["code"], eval(environment.unit_tests))
-            
             environment.rule_params["feedback"] = feedback
-            selected[0].content = f"<current code>:\n\n{cur_code}\n\n<unit test feedback>:\n{feedback}"
+            selected[0].content = f"<unit test feedback>:\n{feedback}"
+            
             f_dict = json.loads(feedback)
             if f_dict["is_passing"]:
                 environment.rule_params["end_flag"] = True
-        
+            
         elif last_sender == "code_reviewer":
             code_review = selected[0].content
             cur_code = environment.rule_params["code"]
-            selected[0].content = f"<current code>:\n\n{cur_code}\n\n{code_review}"
-            feedback = environment.rule_params["feedback"]
-            f_dict = json.loads(feedback)
-            if f_dict["is_passing"]:
-                environment.rule_params["end_flag"] = True
+            selected[0].content = f"{code_review}"
 
         return selected

@@ -22,8 +22,14 @@ class SdeTeamMemory(BaseMemory):
 
     def add_message(self, messages: List[Message]) -> None:
         new_lines = "\n".join([message.content for message in messages])
-        # self.update_buffer(new_lines)
-        self.buffer = new_lines
+        if messages[0].sender == "code_writer":
+            self.buffer = new_lines
+        elif messages[0].sender == "code_tester":
+            self.buffer += "\n\n"
+            self.buffer += new_lines
+        elif messages[0].sender == "code_reviewer":
+            self.buffer += "\n\n"
+            self.buffer += new_lines
 
     def to_string(self, *args, **kwargs) -> str:
         return self.buffer

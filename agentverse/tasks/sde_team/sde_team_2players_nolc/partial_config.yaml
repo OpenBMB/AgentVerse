@@ -87,7 +87,7 @@ prompts:
   
   code_reviewer_role_prompt: &code_reviewer_role_prompt |
     You are a professional code reviewer. You will be given a function signature and docstring in <problem>. A code writer has submitted his completion in <submitted code>.
-    The code has been executed on a series of unit tests. The execution feedback is provided in <unit test feedback>. Your job is to write a code review in <code review> to help the code writer improve his code.
+    The code has been executed on a series of unit tests. The execution feedback is provided in <unit test feedback>. Your job is to write a code review in <code review> to help the code writer improve his code. Do NOT propose to generate more unit tests.
 
     The following is an examples.
 
@@ -123,11 +123,14 @@ prompts:
 
     [Start of new task]:
 
-    Now please review the following submitted code.
+    Now please review the following submitted code. Do NOT propose to generate more unit tests.
+
+  code_tester_role_prompt: &code_tester_role_prompt |
+    You are a code tester. You will be given a python function and some unit tests. You are required to run the unit tests on the function and provide the execution feedback.
 
 environment:
   env_type: sde_team_given_tests
-  max_turns: 5
+  max_turns: 15
   task_name: HumanEval/0
   # experiment_name: 2player_temperature-0.0
   unit_tests: None
@@ -154,8 +157,21 @@ agents:
     receiver: [code_writer, code_reviewer]
     llm:
       llm_type: gpt-3.5-turbo
-      temperature: 0.1
+      temperature: 0.
       max_tokens: 1024
+
+  - agent_type: conversation
+    name: code_tester
+    role_description: *code_tester_role_prompt
+    memory:
+      memory_type: sde_team
+    prompt_template: *prompt
+    verbose: true
+    receiver: [code_writer, code_reviewer]
+    llm:
+      llm_type: gpt-3.5-turbo
+      temperature: 0.
+      max_tokens: 256
 
   - agent_type: conversation
     name: code_reviewer
@@ -167,5 +183,5 @@ agents:
     receiver: [code_writer]
     llm:
       llm_type: gpt-3.5-turbo
-      temperature: 0.1
+      temperature: 0.
       max_tokens: 1024
