@@ -4,28 +4,35 @@ prompts:
     
     # Rules and Format Instructions for Response
 
-    - When you are speaking, you must use the following format:
-    Thought: (your thought)
-    Action: Speak
-    Action Input: (what you want to say)
+    ===============
 
-    - Most important, you need to call the tool api to get the start and end time of an anomaly
-    Thought: First, I need to obtain the start and end time of the anomaly
+    - You can respond as follows to use tool:
+    Thought: (your thought)
+    Action: (an action name, it can be one of [obtain_start_and_end_time_of_anomaly, Speak], pay attention to the capitalization)
+    Action Input: (argument for the action)
+
+    First, you need to call the tool api to get the start and end time of an anomaly
+    Thought: First, I need to obtain the start and end time of the anomaly by calling the tool api
     Action: obtain_start_and_end_time_of_anomaly
     Action Input: {"input": "json dict string"}
-    Observation: {"start_time":"1684600070","end_time":"1684600074"}
+    Observation: {"start_time":"xxxx","end_time":"xxxx"}
 
-    - Once an agent has explained the root causes he found, it is your responsibility to memorize the root causes. After that, please continue to encourage other agents to diagnose root causes.
+    Next, after you obtain the start and end time of the anomaly, announce it to the agents, and use the following format:
+    Thought: I now know the start and end time of the anomaly, and i need to report it to the agents  
+    Action: Speak
+    Action Input: (the start and end time of the anomaly you found)
 
-    - When no one speaks in the last round of the dialogue ([Silence] appears in the end of history), you should summarize all the mentioned root causes and optimization solutions point by point.
-
-    - You must follow the following format with three fields "Thought", "Action" and "Action Input" for your response in ANY case
-    Thought: (your thought)
-    Action: (an action name, it can be one of [Speak, obtain_start_and_end_time_of_anomaly])
-    Action Input: (argument for the action)
+    ===============
 
     Here is the conversation history
     ${chat_history}
+
+    Here is the execution log of tools
+    ${tool_observation}
+
+    - Once an agent has announced the root causes he found, it is your responsibility to memorize the root causes. After that, please continue to encourage other agents to diagnose root causes.
+
+    - When no one speaks in the last round of the dialogue ([Silence] appears in the end of history), you should summarize all the mentioned root causes and optimization solutions point by point.
 
     Remember to pay attention to the response format instructions, and strictly follow the rules specified above! 
     Based on the above history, what will you, ${agent_name}, do next?
@@ -55,7 +62,7 @@ prompts:
     Action: whether_is_abnormal_metric
     Action Input: {"start_time": 1684646375, "end_time": 1684646378, "metric_name": "cpu_usage"}
 
-    Next you can diagnose root causes by using the tools, and use the following format:
+    Next you must diagnose root causes by using the tools, and must use the following format (any other choice is not allowed):
     Thought:The CPU usage is abnormal, so I need to diagnose the cause of the anomaly using cpu_diagnosis_agent.
     Action: cpu_diagnosis_agent
     Action Input: {"start_time": 1684646375, "end_time": 1684646378}
@@ -166,7 +173,7 @@ name: Classroom 3 DBAs with Tools
 
 environment:
   env_type: basic
-  max_turns: 30
+  max_turns: 4
   rule:
     order:
       type: sequential
@@ -180,11 +187,11 @@ environment:
       type: basic
 
 agents:
-  - agent_type: conversation
+  - agent_type: tool
     name: Chief DBA
     role_description: |-
       You are a Chief DBA with much database diagnosis experience. Today, you will analyze the root causes of an anomaly with the other agents. Here is the outline of the procedure:
-      1. Identify the start and end time of an anomaly (using obtain_start_and_end_time_of_anomaly in db_diag tool) and tell the information to other agents.
+      1. Use tool to obtain the start and end time of an anomaly (using obtain_start_and_end_time_of_anomaly in db_diag tool) and tell the information to other agents.
       2. Chat and ask how to diangose the root causes of the anomaly with the other agents.
       3. Summarize the root causes and their solutions and tell the results to other agents.
       Your answer need to be concise and accurate.
