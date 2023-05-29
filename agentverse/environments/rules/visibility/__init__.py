@@ -9,3 +9,4 @@ from .all import AllVisibility
 from .classroom import ClassroomVisibility
 from .oneself import OneselfVisibility
 from .prisoner import PrisonerVisibility
+from .pokemon import PokemonVisibility

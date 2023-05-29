@@ -14,8 +14,8 @@ export class Player extends Actor {
     this.initKeyboard();
 
     // PHYSICS
-    this.getBody().setSize(14, 21);
-    this.getBody().setOffset(0, 0);
+    this.getBody().setSize(14, 16);
+    this.getBody().setOffset(0, 5);
 
     // ANIMATIONS
     this.initAnimations();
@@ -54,6 +54,7 @@ export class Player extends Actor {
     if (!pressed_flag && this.anims.isPlaying) {
       this.anims.setCurrentFrame(this.anims.currentAnim!.frames[0]);
     }
+    this.depth = this.y + 0.5 * this.height;
   }
 
   initKeyboard(): void {
