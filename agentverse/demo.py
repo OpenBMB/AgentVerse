@@ -145,6 +145,8 @@ class UI:
             background = cv2.imread("./imgs/prison/case_1.png")
         elif self.task == "db_diag":
             background = cv2.imread("./imgs/db_diag/background.png")
+        elif "sde" in self.task:
+            background = cv2.imread("./imgs/sde/background.png")
         else:
             background = cv2.imread("./imgs/background.png")
             back_h, back_w, _ = background.shape
@@ -203,6 +205,15 @@ class UI:
                 cover_img(background, img, (65, 110))
             if data[2]["message"] != "":
                 cover_img(background, img, (115, 110))
+        elif "sde" in self.task:
+            background = cv2.imread("./imgs/sde/background.png")
+            img = cv2.imread("./imgs/sde/speaking.png", cv2.IMREAD_UNCHANGED)
+            if data[0]["message"] != "":
+                cover_img(background, img, (400, 800))
+            if data[1]["message"] != "":
+                cover_img(background, img, (400, 800))
+            if data[2]["message"] != "":
+                cover_img(background, img, (400, 800))
         else:
             background = cv2.imread("./imgs/background.png")
             back_h, back_w, _ = background.shape
@@ -260,23 +271,6 @@ class UI:
                 _format[self.agent_id[message.sender]]["message"] = "[{}]: {}".format(
                     message.sender, message.content
                 )
-
-
-            '''
-            if "sde" in self.task:
-                if message.sender == "code_tester":
-                    #print(111111111)
-                    #print(message.content)
-                    #import pdb; pdb.set_trace()
-                    #print(self.task)
-                    pre_message, message = message.content.split("\n")
-                    message = pre_message + json.loads(message)["feedback"]
-                    #print(222222222)
-            '''
-
-        #print(111111111)
-        #print(_format)
-        #print(222222222)
 
         return _format
 
