@@ -108,7 +108,7 @@ class AgentOPR(BaseAgent):
         else:
             logger.debug(f"{self.name} don't change status by plan: {self.status_start_time}, {datetime.timedelta(self.status_duration)}, {self.current_time}")
 
-    async def astep(self, current_time: dt,env_description: str = "") -> Message:
+    async def astep(self, current_time: dt, env_description: str = "") -> Message:
         """Asynchronous version of step"""
         #use environment's time to update agent's time
         self.current_time = current_time

@@ -18,5 +18,7 @@ from .prisoner_dilema.s2_p_r.output_parser import PrisonerDilemaParser
 from .prisoner_dilema.no_goal_s1.output_parser import PrisonerDilemaParser
 
 from .pokemon.output_parser import PokemonParser
-
 from .alice_home.output_parser import AliceHomeParser
+from .sde_team.sde_team_3players_nolc.output_parser import SdeTeamParser
+from .sde_team.sde_team_2players_nolc.output_parser import SdeTeamGivenTestsParser
+

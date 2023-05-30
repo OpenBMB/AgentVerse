@@ -86,13 +86,15 @@ cd BMTools
 python setup.py develop
 -->
 
-### Launch the Demo Locally
+### CLI Example
 
 We have provided several basic examples that demonstrate the potential of our framework for constructing multi-agent environments. One such example is a classroom scenario where one agent assumes the role of the professor while the other eight agents act as students.
 
 ```shell
 python3 main.py --task nlp_classroom_9players
 ```
+
+### Local Website Demo
 
 We also have a local website demo for this environment. You can launch it with
 
