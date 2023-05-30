@@ -244,10 +244,40 @@ class UI:
                 content_json = json.loads(message.content)
                 content_json["speak"] = f"[{message.sender}]: {content_json['speak']}"
                 _format[self.agent_id[message.sender]]["message"] = json.dumps(content_json)
+            elif "sde" in self.task:
+                if message.sender == "code_tester":
+                    pre_message, message_ = message.content.split("\n")
+                    message_ = "{}\n{}".format(pre_message, json.loads(message_)["feedback"])
+                    _format[self.agent_id[message.sender]]["message"] = "[{}]: {}".format(
+                        message.sender, message_
+                    )
+                else:
+                    _format[self.agent_id[message.sender]]["message"] = "[{}]: {}".format(
+                        message.sender, message.content
+                    )
+
             else:
                 _format[self.agent_id[message.sender]]["message"] = "[{}]: {}".format(
                     message.sender, message.content
                 )
+
+
+            '''
+            if "sde" in self.task:
+                if message.sender == "code_tester":
+                    #print(111111111)
+                    #print(message.content)
+                    #import pdb; pdb.set_trace()
+                    #print(self.task)
+                    pre_message, message = message.content.split("\n")
+                    message = pre_message + json.loads(message)["feedback"]
+                    #print(222222222)
+            '''
+
+        #print(111111111)
+        #print(_format)
+        #print(222222222)
+
         return _format
 
     def gen_output(self):
