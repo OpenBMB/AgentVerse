@@ -40,8 +40,8 @@ class AgentOPR(BaseAgent):
     whole_day_plan: dict = Field(default_factory=dict)
     environment: "BaseEnvironment" = None
     step_cnt: int = 0
-    summary_interval: int = 10
-    reflection_interval: int = 10
+    summary_interval: int = 5
+    reflection_interval: int = 5
 
     status: str = Field(default=None, description="what the agent is doing according to whole_day_plan")
     status_start_time: dt = Field(default=None)
@@ -117,7 +117,7 @@ class AgentOPR(BaseAgent):
 
         prompt = self._fill_prompt_template(env_description)
 
-        parsed_response = None
+        parsed_response, reaction, target = None, None, None
         for i in range(self.max_retry):
             try:
                 response = await self.llm.agenerate_response(prompt)
@@ -129,6 +129,9 @@ class AgentOPR(BaseAgent):
                     reaction, target = eval("self._" + parsed_response.return_values["output"].strip())
                 elif 'do_nothing(' in parsed_response.return_values["output"]:
                     reaction, target = None, None
+                else:
+                    raise Exception(f"no valid parsed_response detected, "
+                                    f"cur response {parsed_response.return_values['output']}")
 
                 break
 
@@ -143,12 +146,14 @@ class AgentOPR(BaseAgent):
 
 
 
+
+
         message = Message(
             content=""
             if reaction is None
             else reaction,
             sender=self.name,
-            receiver=self.get_receiver() if target is None else target,
+            receiver=self.get_receiver() if target is None else self.get_valid_receiver(target),
         )
 
         # TODO currently, summary is not added back to memory while reflection is
@@ -158,7 +163,7 @@ class AgentOPR(BaseAgent):
             self.memory.summary = self.memory.generate_summary(self.current_time)
 
         if self.step_cnt % self.reflection_interval == 0:
-            _ = self.reflect(self.current_time)
+            _ = self.memory.reflect(self.current_time)
 
         return message
 
@@ -184,6 +189,17 @@ class AgentOPR(BaseAgent):
         # self.environment.broadcast_observations(self, target, reaction_content)
         return reaction_content, target
 
+    def get_valid_receiver(self, target: str) -> set():
+
+        all_agents_name = []
+        for agent in self.environment.agents:
+            all_agents_name.append(agent.name)
+
+        if not (target in all_agents_name):
+            return {"all"}
+        else:
+            return {target}
+
 
     def _fill_prompt_template(self, env_description: str = "") -> str:
         """Fill the placeholders in the prompt template
@@ -197,6 +213,8 @@ class AgentOPR(BaseAgent):
         input_arguments = {
             "agent_name": self.name,
             "summary": self.memory.summary,
+            "plan": self.memory.planner.get_whole_day_plan_text(),
+            "event_memory": self.memory.get_memory_plain_text(),
             "current_time": self.current_time,
             "status": self.status,
             "env_description": env_description,

@@ -113,6 +113,16 @@ class ReflectionMemory(BaseMemory):
         insights = [i.split("(")[0].strip() for i in insights]
         return insights
 
+    def get_memory_plain_text(self):
+
+        memories = []
+        for message in self.memories:
+            memories.append(message.content)
+
+        return "\n".join(memories)
+
+
+
     def add_message(self, message: Message, time: dt) -> None:
         """
         Add a message into longterm memory as LongtermMemory object.
@@ -272,9 +282,9 @@ class ReflectionMemory(BaseMemory):
             return "reflection reject: empty memories"
 
         memories_of_interest = self.memories[-100:]
-        questions = get_questions([m.content for m in memories_of_interest])
+        questions = self.get_questions([m.content for m in memories_of_interest])
         statements = self.query(questions, len(questions) * 10, time)
-        insights = get_insights(statements)
+        insights = self.get_insights(statements)
         logging.info(self.agent.name + f" Insights: {insights}")
         for insight in insights:
             self.add_memory(
