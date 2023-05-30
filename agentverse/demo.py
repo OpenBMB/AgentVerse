@@ -309,12 +309,16 @@ class UI:
                             self.solution_status[4] = True
                 if msg_json["knowledge"] != "":
                     msg = f'{msg}<hr style="margin: 5px 0">{msg_json["knowledge"]}'
+            else:
+                msg = msg.replace("<", "&lt;")
+                msg = msg.replace(">", "&gt;")
             message += (
-                    f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
-                    f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
-                    f'<div style="background-color: gray; color: white; padding: 10px; border-radius: 10px; max-width: 70%;">'
-                    f"{msg}"
-                    f"</div></div>"
+                f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
+                f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
+                f'<div style="background-color: gray; color: white; padding: 10px; border-radius: 10px;'
+                f'max-width: 70%;white-space:pre">'
+                f"{msg}"
+                f"</div></div>"
             )
         message = '<div id="divDetail" style="height:600px;overflow:auto;">' + message + "</div>"
         return message
