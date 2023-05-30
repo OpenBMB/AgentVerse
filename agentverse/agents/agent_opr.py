@@ -143,10 +143,8 @@ class AgentOPR(BaseAgent):
         if parsed_response is None:
             logger.error(f"{self.name} failed to generate valid response.")
 
-
-
-
-
+        if reaction is None:
+            reaction = "Keep doing last action ..."
 
         message = Message(
             content=""

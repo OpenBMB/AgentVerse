@@ -97,6 +97,7 @@ class ReflectionMemory(BaseMemory):
     def get_questions(self, texts):
         prompt = "\n".join(texts) + "\n" + QUESTION_PROMPT
         result = self.agent.llm.generate_response(prompt)
+        result = result.content
         questions = [q for q in result.split("\n") if len(q.strip()) > 0]
         questions = questions[:3]
         return questions
@@ -107,6 +108,7 @@ class ReflectionMemory(BaseMemory):
             prompt += str(i + 1) + ". " + st + "\n"
         prompt += INSIGHT_PROMPT
         result = self.agent.llm.generate_response(prompt)
+        result = result.content
         insights = [isg for isg in result.split("\n") if len(isg.strip()) > 0][:5]
         insights = [".".join(i.split(".")[1:]) for i in insights]
         # remove insight pointers for now
