@@ -12,6 +12,10 @@
     </a>
 </p>
 
+<p align="center">
+<img src="./imgs/title.png" width="512">
+</p>
+
 🤖 **AgentVerse** 🪐 provides a flexible framework that simplifies the process of building custom multi-agent environments for large language models (LLMs). Our framework is designed to enable researchers to quickly build and customize their own environments with minimal effort, allowing them to focus on their research rather than implementation details.
 
 ---
@@ -43,7 +47,8 @@ We have created a video showcasing simple interactions between LLMs, with a LLM 
 ### [![Demo video](https://i.imgur.com/vKb2F1B.png)](https://youtu.be/9JCVfzMFhaM)
 -->
 
-![image](imgs/multiagent-min.gif)
+<!-- ![image](imgs/multiagent-min.gif) -->
+![image](https://www.dropbox.com/s/hzy0gb4v3z4nluk/multiagent-min.gif)
 
 
 
