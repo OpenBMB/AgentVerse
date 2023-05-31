@@ -79,36 +79,44 @@ class UI:
             gr.Button.update(interactive=False),
             gr.Button.update(interactive=True),
             gr.Button.update(interactive=False),
-            *[gr.Button.update(visible=statu) for statu in self.solution_status]
+            *[gr.Button.update(visible=statu) for statu in self.solution_status],
+            gr.Box.update(visible=any(self.solution_status)),
         )
 
         while self.autoplay and self.turns_remain > 0:
             outputs = self.gen_output()
             self.image_now, self.text_now = outputs
 
-            yield *outputs, gr.Button.update(
-                interactive=not self.autoplay and self.turns_remain > 0
-            ), gr.Button.update(
-                interactive=self.autoplay and self.turns_remain > 0
-            ), gr.Button.update(
-                interactive=not self.autoplay and self.turns_remain > 0
-            ), *[gr.Button.update(visible=statu) for statu in self.solution_status]
+            yield (
+                *outputs,
+                gr.Button.update(interactive=not self.autoplay and self.turns_remain > 0),
+                gr.Button.update(interactive=self.autoplay and self.turns_remain > 0),
+                gr.Button.update(interactive=not self.autoplay and self.turns_remain > 0),
+                *[gr.Button.update(visible=statu) for statu in self.solution_status],
+                gr.Box.update(visible=any(self.solution_status))
+            )
 
     def delay_gen_output(self):
-        yield self.image_now, self.text_now, gr.Button.update(
-            interactive=False
-        ), gr.Button.update(
-            interactive=False
-        ), *[gr.Button.update(visible=statu) for statu in self.solution_status]
+        yield (
+            self.image_now,
+            self.text_now,
+            gr.Button.update(interactive=False),
+            gr.Button.update(interactive=False),
+            *[gr.Button.update(visible=statu) for statu in self.solution_status],
+            gr.Box.update(visible=any(self.solution_status))
+        )
 
         outputs = self.gen_output()
         self.image_now, self.text_now = outputs
 
-        yield self.image_now, self.text_now, gr.Button.update(
-            interactive=self.turns_remain > 0
-        ), gr.Button.update(
-            interactive=self.turns_remain > 0
-        ), *[gr.Button.update(visible=statu) for statu in self.solution_status]
+        yield (
+            self.image_now,
+            self.text_now,
+            gr.Button.update(interactive=self.turns_remain > 0),
+            gr.Button.update(interactive=self.turns_remain > 0),
+            *[gr.Button.update(visible=statu) for statu in self.solution_status],
+            gr.Box.update(visible=any(self.solution_status))
+        )
 
     def delay_reset(self):
         self.autoplay = False
@@ -119,7 +127,8 @@ class UI:
             gr.Button.update(interactive=True),
             gr.Button.update(interactive=False),
             gr.Button.update(interactive=True),
-            *[gr.Button.update(visible=statu) for statu in self.solution_status]
+            *[gr.Button.update(visible=statu) for statu in self.solution_status],
+            gr.Box.update(visible=any(self.solution_status))
         )
 
     def reset(self, stu_num=0):
@@ -320,21 +329,30 @@ class UI:
                 self.solution_status = [False] * self.tot_solutions
                 msg = msg_json["diagnose"]
                 if msg_json["solution"] != "":
-                    solution = msg_json["solution"]
+                    solution: List[str] = msg_json["solution"]
                     for solu in solution:
-                        msg = f"{msg}<br>{solu}"
                         if "query" in solu or "queries" in solu:
                             self.solution_status[0] = True
+                            solu = solu.replace("query", '<span style="color:yellow;">query</span>')
+                            solu = solu.replace("queries", '<span style="color:yellow;">queries</span>')
                         if "join" in solu:
                             self.solution_status[1] = True
+                            solu = solu.replace("join", '<span style="color:yellow;">join</span>')
                         if "index" in solu:
                             self.solution_status[2] = True
+                            solu = solu.replace("index", '<span style="color:yellow;">index</span>')
                         if "system configuration" in solu:
                             self.solution_status[3] = True
+                            solu = solu.replace("system configuration",
+                                                '<span style="color:yellow;">system configuration</span>')
                         if "monitor" in solu or "Monitor" in solu or "Investigate" in solu:
                             self.solution_status[4] = True
+                            solu = solu.replace("monitor", '<span style="color:yellow;">monitor</span>')
+                            solu = solu.replace("Monitor", '<span style="color:yellow;">Monitor</span>')
+                            solu = solu.replace("Investigate", '<span style="color:yellow;">Investigate</span>')
+                        msg = f"{msg}<br>{solu}"
                 if msg_json["knowledge"] != "":
-                    msg = f'{msg}<hr style="margin: 5px 0">{msg_json["knowledge"]}'
+                    msg = f'{msg}<hr style="margin: 5px 0"><span style="font-style: italic">{msg_json["knowledge"]}<span>'
             else:
                 msg = msg.replace("<", "&lt;")
                 msg = msg.replace(">", "&gt;")
@@ -375,12 +393,15 @@ class UI:
                             "Stop Autoplay", interactive=False
                         )
                         start_autoplay_btn = gr.Button("Start Autoplay", interactive=False)
-                    with gr.Row():
-                        rewrite_slow_query_btn = gr.Button("Rewrite Slow Query", visible=False)
-                        add_query_hints_btn = gr.Button("Add Query Hints", visible=False)
-                        update_indexes_btn = gr.Button("Update Indexes", visible=False)
-                        tune_parameters_btn = gr.Button("Tune Parameters", visible=False)
-                        gather_more_info_btn = gr.Button("Gather More Info", visible=False)
+                    with gr.Box(visible=False) as solutions:
+                        with gr.Column():
+                            gr.HTML("Optimization Solutions:")
+                            with gr.Row():
+                                rewrite_slow_query_btn = gr.Button("Rewrite Slow Query", visible=False)
+                                add_query_hints_btn = gr.Button("Add Query Hints", visible=False)
+                                update_indexes_btn = gr.Button("Update Indexes", visible=False)
+                                tune_parameters_btn = gr.Button("Tune Parameters", visible=False)
+                                gather_more_info_btn = gr.Button("Gather More Info", visible=False)
                 # text_output = gr.Textbox()
                 text_output = gr.HTML(self.reset()[1])
 
@@ -406,7 +427,8 @@ class UI:
                     add_query_hints_btn,
                     update_indexes_btn,
                     tune_parameters_btn,
-                    gather_more_info_btn
+                    gather_more_info_btn,
+                    solutions
                 ],
                 show_progress=False,
             )
@@ -427,7 +449,8 @@ class UI:
                     add_query_hints_btn,
                     update_indexes_btn,
                     tune_parameters_btn,
-                    gather_more_info_btn
+                    gather_more_info_btn,
+                    solutions
                 ],
                 show_progress=False,
             )
@@ -451,7 +474,8 @@ class UI:
                     add_query_hints_btn,
                     update_indexes_btn,
                     tune_parameters_btn,
-                    gather_more_info_btn
+                    gather_more_info_btn,
+                    solutions
                 ],
                 show_progress=False,
             )
