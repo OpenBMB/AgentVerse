@@ -50,9 +50,9 @@ class UI:
         self.solution_status = [False] * self.tot_solutions
 
     def get_avatar(self, idx):
-        if idx < 0:
-            return ""
-        if self.task == "prisoner_dilema":
+        if idx == -1:
+            img = cv2.imread("./imgs/db_diag/-1.png")
+        elif self.task == "prisoner_dilema":
             img = cv2.imread(f"./imgs/prison/{idx}.png")
         elif self.task == "db_diag":
             img = cv2.imread(f"./imgs/db_diag/{idx}.png")
@@ -356,13 +356,13 @@ class UI:
             else:
                 msg = msg.replace("<", "&lt;")
                 msg = msg.replace(">", "&gt;")
-            message += (
+            message = (
                 f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
                 f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
                 f'<div style="background-color: gray; color: white; padding: 10px; border-radius: 10px;'
                 f'max-width: 70%; white-space: pre-wrap">'
                 f"{msg}"
-                f"</div></div>"
+                f"</div></div>" + message
             )
         message = '<div id="divDetail" style="height:600px;overflow:auto;">' + message + "</div>"
         return message
@@ -374,7 +374,7 @@ class UI:
         :return: [new image, new message]
         """
         self.backend.submit(message)
-        self.messages.append((-1, message))
+        self.messages.append((-1, f"[User]: {message}"))
         return self.gen_img([{"message": ""}] * len(self.agent_id)), self.gen_message()
 
     def launch(self):
