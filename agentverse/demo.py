@@ -56,6 +56,8 @@ class UI:
             img = cv2.imread(f"./imgs/prison/{idx}.png")
         elif self.task == "db_diag":
             img = cv2.imread(f"./imgs/db_diag/{idx}.png")
+        elif "sde" in self.task:
+            img = cv2.imread(f"./imgs/sde/{idx}.png")
         else:
             img = cv2.imread(f"./imgs/{idx}.png")
         base64_str = cv2.imencode(".png", img)[1].tostring()
@@ -200,20 +202,20 @@ class UI:
             background = cv2.imread("./imgs/db_diag/background.png")
             img = cv2.imread("./imgs/db_diag/speaking.png", cv2.IMREAD_UNCHANGED)
             if data[0]["message"] != "":
-                cover_img(background, img, (20, 176))
+                cover_img(background, img, (750, 80))
             if data[1]["message"] != "":
-                cover_img(background, img, (65, 110))
+                cover_img(background, img, (310, 220))
             if data[2]["message"] != "":
-                cover_img(background, img, (115, 110))
+                cover_img(background, img, (522, 11))
         elif "sde" in self.task:
             background = cv2.imread("./imgs/sde/background.png")
             img = cv2.imread("./imgs/sde/speaking.png", cv2.IMREAD_UNCHANGED)
             if data[0]["message"] != "":
-                cover_img(background, img, (400, 800))
+                cover_img(background, img, (692, 330))
             if data[1]["message"] != "":
-                cover_img(background, img, (400, 800))
+                cover_img(background, img, (692, 660))
             if data[2]["message"] != "":
-                cover_img(background, img, (400, 800))
+                cover_img(background, img, (692, 990))
         else:
             background = cv2.imread("./imgs/background.png")
             back_h, back_w, _ = background.shape
@@ -252,8 +254,8 @@ class UI:
 
         for message in messages:
             if self.task == "db_diag":
-                content_json = json.loads(message.content)
-                content_json["speak"] = f"[{message.sender}]: {content_json['speak']}"
+                content_json: dict = message.content
+                content_json["diagnose"] = f"[{message.sender}]: {content_json['diagnose']}"
                 _format[self.agent_id[message.sender]]["message"] = json.dumps(content_json)
             elif "sde" in self.task:
                 if message.sender == "code_tester":
@@ -316,20 +318,20 @@ class UI:
             if self.task == "db_diag":
                 msg_json = json.loads(msg)
                 self.solution_status = [False] * self.tot_solutions
-                msg = msg_json["speak"]
+                msg = msg_json["diagnose"]
                 if msg_json["solution"] != "":
                     solution = msg_json["solution"]
                     for solu in solution:
                         msg = f"{msg}<br>{solu}"
-                        if "rewrite slow query" in solu:
+                        if "query" in solu or "queries" in solu:
                             self.solution_status[0] = True
-                        if "add query hints" in solu:
+                        if "join" in solu:
                             self.solution_status[1] = True
-                        if "update indexes" in solu:
+                        if "index" in solu:
                             self.solution_status[2] = True
-                        if "tune parameters" in solu:
+                        if "system configuration" in solu:
                             self.solution_status[3] = True
-                        if "gather more information" in solu:
+                        if "monitor" in solu or "Monitor" in solu or "Investigate" in solu:
                             self.solution_status[4] = True
                 if msg_json["knowledge"] != "":
                     msg = f'{msg}<hr style="margin: 5px 0">{msg_json["knowledge"]}'
@@ -340,7 +342,7 @@ class UI:
                 f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
                 f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
                 f'<div style="background-color: gray; color: white; padding: 10px; border-radius: 10px;'
-                f'max-width: 70%;white-space:pre">'
+                f'max-width: 70%; white-space: pre-wrap">'
                 f"{msg}"
                 f"</div></div>"
             )
