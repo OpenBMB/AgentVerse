@@ -409,10 +409,13 @@ class UI:
             # stu_num = gr.Number(label="Student Number", precision=0)
             # stu_num = self.stu_num
 
-            user_msg = gr.Textbox()
-            submit_btn = gr.Button("Submit", variant="primary")
+            if self.task == "db_diag":
+                user_msg = gr.Textbox()
+                submit_btn = gr.Button("Submit", variant="primary")
 
-            submit_btn.click(fn=self.submit, inputs=user_msg, outputs=[image_output, text_output], show_progress=False)
+                submit_btn.click(fn=self.submit, inputs=user_msg, outputs=[image_output, text_output], show_progress=False)
+            else:
+                pass
 
             # next_btn.click(fn=self.gen_output, inputs=None, outputs=[image_output, text_output], show_progress=False)
             next_btn.click(

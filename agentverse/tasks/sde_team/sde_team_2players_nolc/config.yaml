@@ -1,7 +1,8 @@
 agents:
 - agent_type: conversation
   llm:
-    llm_type: gpt-3.5-turbo
+    llm_type: gpt-4
+    model: "gpt-4"
     max_tokens: 1024
     temperature: 0.0
   memory:
@@ -67,7 +68,8 @@ agents:
   verbose: true
 - agent_type: conversation
   llm:
-    llm_type: gpt-3.5-turbo
+    llm_type: gpt-4
+    model: "gpt-4"
     max_tokens: 256
     temperature: 0.0
   memory:
@@ -92,7 +94,8 @@ agents:
   verbose: true
 - agent_type: conversation
   llm:
-    llm_type: gpt-3.5-turbo
+    llm_type: gpt-4
+    model: "gpt-4"
     max_tokens: 1024
     temperature: 0.0
   memory:
