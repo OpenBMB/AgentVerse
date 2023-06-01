@@ -3,24 +3,13 @@ from typing import Dict, List
 
 import yaml
 from bmtools.agent.singletool import import_all_apis, load_single_tools
-from langchain.agents import Agent as langchainAgent
 
-# from langchain.chat_models import ChatOpenAI
-# from langchain.chat_models.base import BaseChatModel
-# from langchain.llms import OpenAI
-# from langchain.llms.base import BaseLLM
-from agentverse.llms import OpenAICompletion, OpenAIChat, llm_registry
+from agentverse.llms import llm_registry
 
-# from langchain.memory import ChatMessageHistory
-from langchain.memory.prompt import _DEFAULT_SUMMARIZER_TEMPLATE
-from langchain.prompts import PromptTemplate
-
-# from agentverse.agents import Agent
-from agentverse.agents import agent_registry
+from agentverse.agents import agent_registry, BaseAgent
 from agentverse.environments import BaseEnvironment, env_registry
 from agentverse.memory import memory_registry
 
-# from agentverse.memory.memory import SummaryMemory
 from agentverse.parser import output_parser_registry
 
 
@@ -50,7 +39,7 @@ def load_environment(env_config: Dict) -> BaseEnvironment:
     return env_registry.build(env_type, **env_config)
 
 
-def load_agent(agent_config: Dict) -> langchainAgent:
+def load_agent(agent_config: Dict) -> BaseAgent:
     agent_type = agent_config.pop("agent_type", "conversation")
     agent = agent_registry.build(agent_type, **agent_config)
     return agent

@@ -1,5 +1,4 @@
 pyyaml
-langchain>=0.0.155
 fastapi
 uvicorn
 py3langid
