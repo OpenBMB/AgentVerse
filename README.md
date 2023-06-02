@@ -16,19 +16,22 @@
 <img src="./imgs/title.png" width="512">
 </p>
 
-🤖 **AgentVerse** 🪐 provides a flexible framework that simplifies the process of building custom multi-agent environments for large language models (LLMs). Our framework is designed to enable researchers to quickly build and customize their own environments with minimal effort, allowing them to focus on their research rather than implementation details.
+**AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
 
 ---
 
 ### ✨ Features
 
-- 🥳 **Efficient Environment Building:** Our framework offers a set of fundamental building blocks for creating a multi-agent environment with ease. With just a few lines in a configuration file, you can effortlessly construct simple environments such as a chat room for LLMs. This process involves specifying the environment's settings and prompts for LLMs, empowering researchers like you to focus on experimentation and analysis rather than wrestling with environment setup.
+- 🥳 **Efficient Environment Building:** Our framework provides a collection of essential building blocks for effortlessly creating a multi-agent environment. With only a few lines in a configuration file, you can easily construct basic environments such as a chat room for LLMs. This process entails defining the environment's settings and prompts for LLMs, enabling researchers like you to concentrate on experimentation and analysis.
 
-- ⚙️ **Customizable Components**: AgentVerse abstracts the multi-agent environment into five functional modules and defined their respective interfaces. For complex environments that cannot be built directly using the basic modules provided in AgentVerse, you can customize one or more of the interfaces in the five functional modules to quickly build your own multi-agent environment according to your needs. 
+- ⚙️ **Customizable Components**: AgentVerse simplifies the multi-agent environment by dividing it into five functional modules and defining their respective interfaces. For complex environments that cannot be constructed directly using the basic modules offered in AgentVerse, you can customize one or more of the interfaces within these five functional modules to efficiently create your own multi-agent environment according to your requirements.
 
 - 🛠 **Tools (Plugins) Utilization**: AgentVerse supports the multi-agent environments with tools. Currently, AgentVerse supports tools provided in [BMTools](https://github.com/OpenBMB/BMTools). 
 
-- 🤖 **Supports a Wide Range of LLMs**: You can easily customize your own LLM by implementing a new LLM by inheriting and extending our BaseLLM class (tutorial coming soon).
+- 🤖 **Supports a Wide Range of LLMs**: AgentVerse is compatible with custom LLMs. You can inherit and extend our BaseLLM class to accomplish this objective. (tutorial coming soon).
+
+### 📰 What's New
+- [2023/5/1] [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched.
 
 ### 🗓 Coming Soon
 
@@ -37,17 +40,42 @@
 - [ ] Support more sophisticated memory for conversation history
 - [ ] Add support for local LLM
 - [ ] Auto-generate UI based on the given multi-agent environment
-- [ ] ...
 
-### 👾 A Simple Demo Video
 
-We have created a video showcasing simple interactions between LLMs, with a LLM acting as the professor and others as students in a lecture on Transformer architecture. 
+### 👾 Simple Demo Video
 
+We demonstrate the following cases that are expertly crafted by AgentVerse.
 <!--
 ### [![Demo video](https://i.imgur.com/vKb2F1B.png)](https://youtu.be/9JCVfzMFhaM)
 -->
+<!--![image](imgs/multiagent-min.gif)-->
 
-![image](imgs/multiagent-min.gif)
+- **NLP classroom**: In the NLP class, the professor and students engage in interactive communication. When students have a question, they raise their hands and patiently wait for the professor to call on them. Only after being called on by the professor, students can speak and ask their questions.
+
+https://github.com/OpenBMB/AgentVerse/assets/11704492/6ea07850-595e-4a28-a82e-f863011353c2
+
+
+- **Prisoner Dilemma**: A prisoner's Dilemma is a thought experiment that challenges two completely rational agents to a dilemma: they can cooperate with their partner for mutual benefit or betray their partner ("defect") for individual reward.
+
+https://github.com/OpenBMB/AgentVerse/assets/11704492/017c46e5-c738-4fca-9352-b008e2d518bd
+
+
+- **Software Design**: 
+
+https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4e54661626a
+
+
+- **Database Analyst (DBA)**: In this system DBA diagnosis scenario, the Chief DBA monitors the database system for anomalies. If detected, the memory and CPU agents are alerted to analyze root causes and suggest optimization solutions. The Chief DBA then provides a summarized diagnosis to the user, who can also contribute by giving instructions or evaluating the effectiveness of proposed solutions.
+
+https://github.com/OpenBMB/AgentVerse/assets/11704492/c633419d-afbb-47d4-bb12-6bb512e7af3a
+
+
+- **Pokemon**: In the game, agents can visit shops, train their Pokémon at the gym, and interact with one another. As a player, you take on the role of an agent and can engage with others at any time. There are 6 characters in the Pokémon environment: [May](https://bulbapedia.bulbagarden.net/wiki/May_(game)), [Professor Birch](https://bulbapedia.bulbagarden.net/wiki/Professor_Birch), [Steven Stone](https://bulbapedia.bulbagarden.net/wiki/Steven_Stone), [Maxie](https://bulbapedia.bulbagarden.net/wiki/Maxie), [Archie](https://bulbapedia.bulbagarden.net/wiki/Archie) and [Joseph](https://bulbapedia.bulbagarden.net/wiki/Mr._Stone). 
+
+https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f155e95782e7
+
+
+
 
 
 
@@ -102,7 +130,7 @@ python setup.py develop
 
 ### CLI Example
 
-We have provided several basic examples that demonstrate the potential of our framework for constructing multi-agent environments. One such example is a classroom scenario where one agent assumes the role of the professor while the other eight agents act as students.
+The given content presents a framework for creating multi-agent environments, with a classroom scenario as an example. In this scenario, there are nine agents, one playing the role of a professor and the other eight as students, showcasing the framework's potential.
 
 ```shell
 python3 main.py --task nlp_classroom_9players
@@ -110,7 +138,7 @@ python3 main.py --task nlp_classroom_9players
 
 ### Local Website Demo
 
-We also have a local website demo for this environment. You can launch it with
+We also provide a local website demo for this environment. You can launch it with
 
 ```shell
 python3 main_demo.py --task nlp_classroom_9players
@@ -226,13 +254,16 @@ While we provide a basic framework for building environments with our five rule 
 
 ## 🔎 Examples
 
-Currently, we offer five simple examples in the `agentverse/tasks` directory, each demonstrating different possibilities of our framework. While the performance of these examples may not be optimal due to limited prompt engineering, they are intended to showcase the capabilities of our framework, such as allowing the use of tools.
+Currently, we offer some simple examples in the `agentverse/tasks` directory, each demonstrating different possibilities of our framework. While the performance of these examples may not be optimal due to limited prompt engineering, they are intended to showcase the capabilities of our framework, such as allowing the use of tools.
 
 Here's a brief overview of each example:
 
-1. `nlp_classroom_3players`: An example demonstrating the simplicity of building a classroom with sequential speaking order.
-2. `nlp_classroom_9players`: This classroom introduces several. Here, students can raise their hand when they have a question, and the professor can call on the students to let them ask. Students are only allowed to speak after they are called on.
-3. `nlp_classroom_9players_group`: This example introduces group discussions. The professor can launch a group discussion when necessary, and students can only interact with other students in the same group during the group discussion.
+1. `nlp_classroom_3players`: This example illustrates a simple case in which agents will speak in sequential order. 
+2. `nlp_classroom_9players`: This is an NLP class example. Here, students can raise their hand when they have a question, and the professor can call on the students to let them ask. Students are only allowed to speak after they are called on.
+3. `nlp_classroom_9players_group`: This example showcases group discussions. The professor may initiate a group discussion when needed, and students can exclusively interact with fellow students within the same group during the discussion.
 4. `nlp_classroom_3players_withtool`: Students in this classroom can use Bing search API when listening to the class.
 5. `math_problem_2players_tools`: A simple example demonstrating how two agents can use the WolframAlpha API to play an arithmetic game.
-6. `prisoner_dilema`: A simple example showing how LLMs handle the prisoner dilema.
+6. `prisoner_dilema`: The Prisoner's Dilemma is a thought experiment involving two rational agents facing a choice between cooperating for mutual benefit or betraying their partner for individual gain.
+7. `db_diag`: The Chief DBA monitors (agents) the database system for anomalies and alerts memory and CPU agents if any are detected. They (agents) analyze root causes and suggest optimization solutions. The Chief DBA (agent) provides a diagnosis summary to the user, who can give instructions or evaluate the proposed solutions' effectiveness.
+8. `sde_team`:
+9. `pokemon`:  This example intimates Pokemon game.
