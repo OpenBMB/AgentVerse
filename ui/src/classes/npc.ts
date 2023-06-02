@@ -174,7 +174,7 @@ export class NPC extends Actor {
           2,
           20,
           COLOR_PRIMARY,
-          0.5
+          0.7
         ),
         text: scene.rexUI.wrapExpandText(
           scene.add.text(0, 0, text, {

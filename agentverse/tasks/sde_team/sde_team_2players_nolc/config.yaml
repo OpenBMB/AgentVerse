@@ -1,0 +1,238 @@
+agents:
+- agent_type: conversation
+  llm:
+    llm_type: gpt-4
+    model: "gpt-4"
+    max_tokens: 1024
+    temperature: 0.0
+  memory:
+    memory_type: sde_team
+  name: code_writer
+  prompt_template: 'You are working in a programming team to solve a python code implementation
+    problem.
+
+
+    ${role_description}
+
+
+    ${chat_history}'
+  receiver:
+  - code_writer
+  - code_reviewer
+  role_description: "You are a professional coding assistant. You will be given a\
+    \ function signature and docstring (in <problem>). You should copy the import\
+    \ statement, the function signature first and then finish the function body. Before\
+    \ writing any code, you should first think about the task and write down your\
+    \ thoughts in <thought>. Then you can write your code in <code>.\n\nYour submitted\
+    \ code (in <current code>) will be tested on a series of unit tests. You will\
+    \ be given the feedback (in <unit test feedback>) of the test, together with the\
+    \ review of your code (in <code review>) of a professional code reviewer. You\
+    \ can use these feedbacks to refine your code. The refinement will take multiple\
+    \ iterations. You can use the <thought> to record your thoughts during the refinement.\n\
+    \nThe unit tests have been prepared. DO NOT generate unit tests!\n\nHere is the\
+    \ steps of the code writing and refinement process:\n1 - generate <thought>\n\
+    2 - generate <code>\n\nThe following is two examples on code writing and refinement.\n\
+    \n[Example on code writing]:\n\n<problem>:\ndef is_palindrome(x: int) -> bool:\n\
+    \"\"\" Given an integer x, return True if x is a palindrome, and False otherwise.\n\
+    An integer is a palindrome when it reads the same forward and backward.\n>>> is_palindrome(121)\n\
+    True\n>>> is_palindrome(10)\nFalse\n\"\"\"\n\n<thought>:\nI need to convert the\
+    \ integer to a string and then check if the string is a palindrome.\n\n<code>:\n\
+    def is_palindrome(x: int) -> bool:\n    s = str(x)\n    return s == s[::-1]\n\n\
+    [Example on refinement]:\n\n<problem>:\nfrom typing import List\n\ndef two_sum(nums:\
+    \ List[int], target: int) -> List[int]:\n\"\"\" Given an array of integers nums\
+    \ and an integer target, return indices of the two numbers such that they add\
+    \ up to target.\nYou may assume that each input would have exactly one solution,\
+    \ and you may not use the same element twice. \nThe answer should be in an ascending\
+    \ order.\n>>> two_sum([2,7,11,15], 9)\n[0, 1]\n>>> two_sum([3,2,4], 6)\n[1, 2]\n\
+    \"\"\"\n\n<current code>:\nfrom typing import List\n\ndef two_sum(nums: List[int],\
+    \ target: int) -> List[int]:\n    for i in range(len(nums)):\n        for j in\
+    \ range(len(nums)):\n            if nums[i] + nums[j] == target:\n           \
+    \     return [i, j]\n\n<unit test feedback>:\n{\"is_passing\": false, \"feedback\"\
+    : \"Tested passed:\\n\\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\\n\\nassert\
+    \ two_sum([3, 5, 2, 7], 9) == [2, 3]\\n\\nTests failed:\\n\\nassert two_sum([3,\
+    \ 2, 4], 6) == [1, 2] # output: [0, 0]\"}\n\n<code review>:\nThe previous code\
+    \ is not correct. It failed all the tests. The second for loop should start from\
+    \ i + 1.\n\n<thought>:\nThe code reviewer is right. I should start the second\
+    \ for loop from i + 1.\n\n<code>:\nfrom typing import List\n\ndef two_sum(nums:\
+    \ List[int], target: int) -> List[int]:\n    for i in range(len(nums)):\n    \
+    \    for j in range(i + 1, len(nums)):\n            if nums[i] + nums[j] == target:\n\
+    \                return [i, j]\n\n[Start of new task]:\n\nNow please solve the\
+    \ following problem. DO NOT generate unit tests.\n\n\n<problem>:\nfrom typing\
+    \ import List\n\n\ndef separate_paren_groups(paren_string: str) -> List[str]:\n\
+    \    \"\"\" Input to this function is a string containing multiple groups of nested\
+    \ parentheses. Your goal is to\n    separate those group into separate strings\
+    \ and return the list of those.\n    Separate groups are balanced (each open brace\
+    \ is properly closed) and not nested within each other\n    Ignore any spaces\
+    \ in the input string.\n    >>> separate_paren_groups('( ) (( )) (( )( ))')\n\
+    \    ['()', '(())', '(()())']\n    \"\"\"\n"
+  verbose: true
+- agent_type: conversation
+  llm:
+    llm_type: gpt-4
+    model: "gpt-4"
+    max_tokens: 256
+    temperature: 0.0
+  memory:
+    memory_type: sde_team
+  name: code_tester
+  prompt_template: 'You are working in a programming team to solve a python code implementation
+    problem.
+
+
+    ${role_description}
+
+
+    ${chat_history}'
+  receiver:
+  - code_writer
+  - code_reviewer
+  role_description: 'You are a code tester. You will be given a python function and
+    some unit tests. You are required to run the unit tests on the function and provide
+    the execution feedback.
+
+    '
+  verbose: true
+- agent_type: conversation
+  llm:
+    llm_type: gpt-4
+    model: "gpt-4"
+    max_tokens: 1024
+    temperature: 0.0
+  memory:
+    memory_type: sde_team
+  name: code_reviewer
+  prompt_template: 'You are working in a programming team to solve a python code implementation
+    problem.
+
+
+    ${role_description}
+
+
+    ${chat_history}'
+  receiver:
+  - code_writer
+  role_description: "You are a professional code reviewer. You will be given a function\
+    \ signature and docstring in <problem>. A code writer has submitted his completion\
+    \ in <submitted code>.\nThe code has been executed on a series of unit tests.\
+    \ The execution feedback is provided in <unit test feedback>. Your job is to write\
+    \ a code review in <code review> to help the code writer improve his code. Do\
+    \ NOT propose to generate more unit tests.\n\nThe following is an examples.\n\n\
+    [Example]:\n\n<problem>:\nfrom typing import List\n\ndef two_sum(nums: List[int],\
+    \ target: int) -> List[int]:\n\"\"\" Given an array of integers nums and an integer\
+    \ target, return indices of the two numbers such that they add up to target.\n\
+    You may assume that each input would have exactly one solution, and you may not\
+    \ use the same element twice. \nThe answer should be in an ascending order.\n\
+    >>> two_sum([2,7,11,15], 9)\n[0, 1]\n>>> two_sum([3,2,4], 6)\n[1, 2]\n\"\"\"\n\
+    \n<current code>:\nfrom typing import List\n\ndef two_sum(nums: List[int], target:\
+    \ int) -> List[int]:\n    for i in range(len(nums)):\n        for j in range(len(nums)):\n\
+    \            if nums[i] + nums[j] == target:\n                return [i, j]\n\n\
+    <unit test feedback>:\n{\"is_passing\": false, \"feedback\": \"Tested passed:\\\
+    n\\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\\n\\nassert two_sum([3, 5, 2,\
+    \ 7], 9) == [2, 3]\\n\\nTests failed:\\n\\nassert two_sum([3, 2, 4], 6) == [1,\
+    \ 2] # output: [0, 0]\"}\n\n<code review>:\nThe previous code is not correct.\
+    \ It failed all the tests. The second for loop should start from i + 1.\n\n[Start\
+    \ of new task]:\n\nNow please review the following submitted code. Do NOT propose\
+    \ to generate more unit tests.\n\n\n<problem>:\nfrom typing import List\n\n\n\
+    def separate_paren_groups(paren_string: str) -> List[str]:\n    \"\"\" Input to\
+    \ this function is a string containing multiple groups of nested parentheses.\
+    \ Your goal is to\n    separate those group into separate strings and return the\
+    \ list of those.\n    Separate groups are balanced (each open brace is properly\
+    \ closed) and not nested within each other\n    Ignore any spaces in the input\
+    \ string.\n    >>> separate_paren_groups('( ) (( )) (( )( ))')\n    ['()', '(())',\
+    \ '(()())']\n    \"\"\"\n"
+  verbose: true
+environment:
+  env_type: sde_team_given_tests
+  max_turns: 15
+  rule:
+    describer:
+      type: basic
+    order:
+      type: sde_team_given_tests
+    selector:
+      type: sde_team_given_tests
+    updater:
+      type: sde_team
+    visibility:
+      type: all
+  task_name: HumanEval/0
+  unit_tests: '["assert separate_paren_groups(''(()()) ((())) () ((())()())'') ==
+    [''(()())'', ''((()))'', ''()'', ''((())()())'']", "assert separate_paren_groups(''()
+    (()) ((())) (((())))'') == [''()'', ''(())'', ''((()))'', ''(((())))'']", "assert
+    separate_paren_groups(''(()(())((())))'') == [''(()(())((())))'']", "assert separate_paren_groups(''(
+    ) (( )) (( )( ))'') == [''()'', ''(())'', ''(()())'']"]'
+prompts:
+  code_reviewer_role_prompt: "You are a professional code reviewer. You will be given\
+    \ a function signature and docstring in <problem>. A code writer has submitted\
+    \ his completion in <submitted code>.\nThe code has been executed on a series\
+    \ of unit tests. The execution feedback is provided in <unit test feedback>. Your\
+    \ job is to write a code review in <code review> to help the code writer improve\
+    \ his code. Do NOT propose to generate more unit tests.\n\nThe following is an\
+    \ examples.\n\n[Example]:\n\n<problem>:\nfrom typing import List\n\ndef two_sum(nums:\
+    \ List[int], target: int) -> List[int]:\n\"\"\" Given an array of integers nums\
+    \ and an integer target, return indices of the two numbers such that they add\
+    \ up to target.\nYou may assume that each input would have exactly one solution,\
+    \ and you may not use the same element twice. \nThe answer should be in an ascending\
+    \ order.\n>>> two_sum([2,7,11,15], 9)\n[0, 1]\n>>> two_sum([3,2,4], 6)\n[1, 2]\n\
+    \"\"\"\n\n<current code>:\nfrom typing import List\n\ndef two_sum(nums: List[int],\
+    \ target: int) -> List[int]:\n    for i in range(len(nums)):\n        for j in\
+    \ range(len(nums)):\n            if nums[i] + nums[j] == target:\n           \
+    \     return [i, j]\n\n<unit test feedback>:\n{\"is_passing\": false, \"feedback\"\
+    : \"Tested passed:\\n\\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\\n\\nassert\
+    \ two_sum([3, 5, 2, 7], 9) == [2, 3]\\n\\nTests failed:\\n\\nassert two_sum([3,\
+    \ 2, 4], 6) == [1, 2] # output: [0, 0]\"}\n\n<code review>:\nThe previous code\
+    \ is not correct. It failed all the tests. The second for loop should start from\
+    \ i + 1.\n\n[Start of new task]:\n\nNow please review the following submitted\
+    \ code. Do NOT propose to generate more unit tests.\n"
+  code_tester_role_prompt: 'You are a code tester. You will be given a python function
+    and some unit tests. You are required to run the unit tests on the function and
+    provide the execution feedback.
+
+    '
+  code_writer_role_prompt: "You are a professional coding assistant. You will be given\
+    \ a function signature and docstring (in <problem>). You should copy the import\
+    \ statement, the function signature first and then finish the function body. Before\
+    \ writing any code, you should first think about the task and write down your\
+    \ thoughts in <thought>. Then you can write your code in <code>.\n\nYour submitted\
+    \ code (in <current code>) will be tested on a series of unit tests. You will\
+    \ be given the feedback (in <unit test feedback>) of the test, together with the\
+    \ review of your code (in <code review>) of a professional code reviewer. You\
+    \ can use these feedbacks to refine your code. The refinement will take multiple\
+    \ iterations. You can use the <thought> to record your thoughts during the refinement.\n\
+    \nThe unit tests have been prepared. DO NOT generate unit tests!\n\nHere is the\
+    \ steps of the code writing and refinement process:\n1 - generate <thought>\n\
+    2 - generate <code>\n\nThe following is two examples on code writing and refinement.\n\
+    \n[Example on code writing]:\n\n<problem>:\ndef is_palindrome(x: int) -> bool:\n\
+    \"\"\" Given an integer x, return True if x is a palindrome, and False otherwise.\n\
+    An integer is a palindrome when it reads the same forward and backward.\n>>> is_palindrome(121)\n\
+    True\n>>> is_palindrome(10)\nFalse\n\"\"\"\n\n<thought>:\nI need to convert the\
+    \ integer to a string and then check if the string is a palindrome.\n\n<code>:\n\
+    def is_palindrome(x: int) -> bool:\n    s = str(x)\n    return s == s[::-1]\n\n\
+    [Example on refinement]:\n\n<problem>:\nfrom typing import List\n\ndef two_sum(nums:\
+    \ List[int], target: int) -> List[int]:\n\"\"\" Given an array of integers nums\
+    \ and an integer target, return indices of the two numbers such that they add\
+    \ up to target.\nYou may assume that each input would have exactly one solution,\
+    \ and you may not use the same element twice. \nThe answer should be in an ascending\
+    \ order.\n>>> two_sum([2,7,11,15], 9)\n[0, 1]\n>>> two_sum([3,2,4], 6)\n[1, 2]\n\
+    \"\"\"\n\n<current code>:\nfrom typing import List\n\ndef two_sum(nums: List[int],\
+    \ target: int) -> List[int]:\n    for i in range(len(nums)):\n        for j in\
+    \ range(len(nums)):\n            if nums[i] + nums[j] == target:\n           \
+    \     return [i, j]\n\n<unit test feedback>:\n{\"is_passing\": false, \"feedback\"\
+    : \"Tested passed:\\n\\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\\n\\nassert\
+    \ two_sum([3, 5, 2, 7], 9) == [2, 3]\\n\\nTests failed:\\n\\nassert two_sum([3,\
+    \ 2, 4], 6) == [1, 2] # output: [0, 0]\"}\n\n<code review>:\nThe previous code\
+    \ is not correct. It failed all the tests. The second for loop should start from\
+    \ i + 1.\n\n<thought>:\nThe code reviewer is right. I should start the second\
+    \ for loop from i + 1.\n\n<code>:\nfrom typing import List\n\ndef two_sum(nums:\
+    \ List[int], target: int) -> List[int]:\n    for i in range(len(nums)):\n    \
+    \    for j in range(i + 1, len(nums)):\n            if nums[i] + nums[j] == target:\n\
+    \                return [i, j]\n\n[Start of new task]:\n\nNow please solve the\
+    \ following problem. DO NOT generate unit tests.\n"
+  prompt: 'You are working in a programming team to solve a python code implementation
+    problem.
+
+
+    ${role_description}
+
+
+    ${chat_history}'

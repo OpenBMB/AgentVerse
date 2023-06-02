@@ -4,12 +4,16 @@
     <p>A Framework for Multi-LLM Environment Simulation</p>
 </h3>
 <p align="center">
-    <a href="">
+    <a href="https://github.com/OpenBMB/AgentVerse/blob/main/LICENSE">
         <img alt="License: Apache2" src="https://img.shields.io/badge/License-Apache_2.0-green.svg">
     </a>
-    <a href="https://www.python.org/downloads/release/python-3816">
-        <img alt="Documentation" src="https://img.shields.io/badge/python-3.8+-blue.svg">
+    <a href="https://www.python.org/downloads/release/python-3916/">
+        <img alt="Documentation" src="https://img.shields.io/badge/python-3.9+-blue.svg">
     </a>
+</p>
+
+<p align="center">
+<img src="./imgs/title.png" width="512">
 </p>
 
 🤖 **AgentVerse** 🪐 provides a flexible framework that simplifies the process of building custom multi-agent environments for large language models (LLMs). Our framework is designed to enable researchers to quickly build and customize their own environments with minimal effort, allowing them to focus on their research rather than implementation details.
@@ -51,7 +55,8 @@ We have created a video showcasing simple interactions between LLMs, with a LLM 
 
 - [🚀 Getting Started](#-getting-started)
   - [Installation](#installation)
-  - [Launch the Demo Locally](#launch-the-demo-locally)
+  - [CLI Example](#cli-example)
+  - [Local Website Demo](#local-website-demo)
 - [💡 Philosophy](#-philosophy)
   - [Environment](#environment)
   - [Agent](#agent)
@@ -71,12 +76,21 @@ We have created a video showcasing simple interactions between LLMs, with a LLM 
 
 ```bash
 # Install the dependencies
-git clone https://github.com/OpenBMB/AgentVerse.git
+git clone https://github.com/OpenBMB/AgentVerse.git --depth 1
 pip install -r requirements.txt
+
+cd ../
+git clone 
+git+https://github.com/OpenBMB/BMTools.git
+cd BMTools
+pip install -r requirements.txt
+python setup.py develop
 
 # Export your OpenAI API key
 export OPENAI_API_KEY="your_api_key_here"
 ```
+
+Some users have reported problems installing the `orjson` required by `gradio`. One simple workaround is to install it with Anaconda `conda install -c conda-forge orjson`.
 
 <!--
 # Install BMTools
@@ -86,13 +100,15 @@ cd BMTools
 python setup.py develop
 -->
 
-### Launch the Demo Locally
+### CLI Example
 
 We have provided several basic examples that demonstrate the potential of our framework for constructing multi-agent environments. One such example is a classroom scenario where one agent assumes the role of the professor while the other eight agents act as students.
 
 ```shell
 python3 main.py --task nlp_classroom_9players
 ```
+
+### Local Website Demo
 
 We also have a local website demo for this environment. You can launch it with
 
