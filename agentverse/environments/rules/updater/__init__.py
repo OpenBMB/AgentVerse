@@ -6,3 +6,4 @@ from .base import BaseUpdater
 from .basic import BasicUpdater
 from .classroom import ClassroomUpdater
 from .sde_team import SdeTeamUpdater
+from .pokemon import PokemonUpdater
