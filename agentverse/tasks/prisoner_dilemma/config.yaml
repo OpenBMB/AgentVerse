@@ -2,7 +2,7 @@ prompts:
   prompt: &prompt |-
     There are three people (Police, Suspect1, Suspect2) in the scene.
 
-    You are now simultating a famous experiments called prisoner's dilema.
+    You are now simultating a famous experiments called prisoner's dilemma.
 
     Below is the description of your role. ${role_description}
 
@@ -16,10 +16,10 @@ prompts:
     ${env_description}
     What will you, ${agent_name}, speak at this round ? Please give your response based on the above history. Remember to give your response STRICTLY in the above response format. Do not add any additional field or line break to your response!
 
-name: prisoner_dilema
+name: prisoner_dilemma
 
 environment:
-  env_type: prisoner_dilema
+  env_type: prisoner_dilemma
   max_turns: 8
   rule:
     order:

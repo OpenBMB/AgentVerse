@@ -11,10 +11,10 @@ from . import env_registry as EnvironmentRegistry
 from .basic import BasicEnvironment
 
 
-@EnvironmentRegistry.register("prisoner_dilema")
-class PrisonerDilemaEnvironment(BasicEnvironment):
+@EnvironmentRegistry.register("prisoner_dilemma")
+class PrisonerDilemmaEnvironment(BasicEnvironment):
     """
-    An environment for prisoner dilema.
+    An environment for prisoner dilemma.
     """
 
     async def step(self) -> List[Message]:

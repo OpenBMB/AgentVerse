@@ -13,8 +13,8 @@ if TYPE_CHECKING:
     from agentverse.environments.base import BaseEnvironment
 
 
-@output_parser_registry.register("prisoner_dilema")
-class PrisonerDilemaParser(OutputParser):
+@output_parser_registry.register("prisoner_dilemma")
+class PrisonerDilemmaParser(OutputParser):
     # make sure 1 1 2 2 3 3
     cur_round: int = 1
     encounter_cur_round: bool = False

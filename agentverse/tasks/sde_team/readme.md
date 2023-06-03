@@ -1,6 +1,6 @@
 # SDE team 🧑🏾‍💻👩‍💻🧑🏻‍💻
 
-In this task, LLMs work as a software development team to solve code implementation problem. We have simulated two scenarios *sde_team/sde_team_2players_nolc* and *sde_team/sde_team_3players_nolc*.
+In this task, LLMs work as a software development team to solve code implementation problem. We have simulated two scenarios *sde_team/sde_team_2players* and *sde_team/sde_team_3players*.
 
 The performance on [HumanEval](https://github.com/openai/human-eval) is shown below.
 
@@ -12,14 +12,14 @@ The performance on [HumanEval](https://github.com/openai/human-eval) is shown be
 | GPT-4*                          | 0.67      |
 | ChatGPT (gpt-3.5-turbo)*        | 0.573     |
 | &nbsp;&nbsp;&nbsp;&nbsp;+ Self-collaboration*         | 0.744     |
-| Our *sde_team/sde_team_2players_nolc* (gpt-3.5-turbo) | **0.799**     |
+| Our *sde_team/sde_team_2players* (gpt-3.5-turbo) | **0.799**     |
 
 *: Results are from [Self-collaboration](https://arxiv.org/abs/2304.07590). The methods in the table all employed the provided unit tests.
 
-Our *sde_team/sde_team_2players_nolc* shares the similar spirit as Self-collaboration at the moment. We are working to introduce more features in this repo! 
+Our *sde_team/sde_team_2players* shares the similar spirit as Self-collaboration at the moment. We are working to introduce more features in this repo! 
 
 
-## *sde_team/sde_team_2players_nolc*
+## *sde_team/sde_team_2players*
 
 In this case, we are simulating a code generation problem that a python function body is required to be generated given function signature, doc string and unit tests. In the following, we will elaborate the details.
 
@@ -41,7 +41,7 @@ Code reviewer will write professional review for the submitted code. The submitt
 
 #### Provide problem and unit tests
 
-The code problem and unit tests should be given in `agentverse/tasks/sde_team/sde_team_2players_nolc/code_problem.json`. Here is an example.
+The code problem and unit tests should be given in `agentverse/tasks/sde_team/sde_team_2players/code_problem.json`. Here is an example.
 
 ```json
 {
@@ -57,10 +57,10 @@ The code problem and unit tests should be given in `agentverse/tasks/sde_team/sd
 
 #### Build the configuration file
 
-Run `agentverse/tasks/sde_team/sde_team_2players_nolc/build_config.py` to generate `config.yaml`.
+Run `agentverse/tasks/sde_team/sde_team_2players/build_config.py` to generate `config.yaml`.
 
 ```bash
-cd agentverse/tasks/sde_team/sde_team_2players_nolc/
+cd agentverse/tasks/sde_team/sde_team_2players/
 python build_config.py
 ```
 
@@ -73,7 +73,7 @@ from agentverse.agentverse import AgentVerse
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
-parser.add_argument("--task", type=str, default="sde_team/sde_team_2players_nolc")
+parser.add_argument("--task", type=str, default="sde_team/sde_team_2players")
 
 args = parser.parse_args()
 agentverse = AgentVerse.from_task(args.task)
@@ -159,9 +159,9 @@ def separate_paren_groups(paren_string: str) -> List[str]:
 {"is_passing": true, "feedback": "Tested passed:\nassert separate_paren_groups('(()()) ((())) () ((())()())') == ['(()())', '((()))', '()', '((())()())']\nassert separate_paren_groups('() (()) ((())) (((())))') == ['()', '(())', '((()))', '(((())))']\nassert separate_paren_groups('(()(())((())))') == ['(()(())((())))']\nassert separate_paren_groups('( ) (( )) (( )( ))') == ['()', '(())', '(()())']\n\nTests failed:"}
 ```
 
-## *sde_team/sde_team_3players_nolc*
+## *sde_team/sde_team_3players*
 
-Different from *sde_team/sde_team_2players_nolc*, we additionally introduce a role to automatically generate unit tests.
+Different from *sde_team/sde_team_2players*, we additionally introduce a role to automatically generate unit tests.
 
 - *unit test generator*: generate a series of unit test cases for the coding problem.
 

@@ -52,7 +52,7 @@ class UI:
     def get_avatar(self, idx):
         if idx == -1:
             img = cv2.imread("./imgs/db_diag/-1.png")
-        elif self.task == "prisoner_dilema":
+        elif self.task == "prisoner_dilemma":
             img = cv2.imread(f"./imgs/prison/{idx}.png")
         elif self.task == "db_diag":
             img = cv2.imread(f"./imgs/db_diag/{idx}.png")
@@ -152,7 +152,7 @@ class UI:
         self.backend.reset()
         self.turns_remain = self.backend.environment.max_turns
 
-        if self.task == "prisoner_dilema":
+        if self.task == "prisoner_dilemma":
             background = cv2.imread("./imgs/prison/case_1.png")
         elif self.task == "db_diag":
             background = cv2.imread("./imgs/db_diag/background.png")
@@ -189,7 +189,7 @@ class UI:
         # if len(data) != self.stu_num:
         if len(data) != self.stu_num + 1:
             raise gr.Error("data length is not equal to the total number of students.")
-        if self.task == "prisoner_dilema":
+        if self.task == "prisoner_dilemma":
             img = cv2.imread("./imgs/speaking.png", cv2.IMREAD_UNCHANGED)
             if (
                     len(self.messages) < 2
