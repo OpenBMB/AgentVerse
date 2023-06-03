@@ -1,7 +1,6 @@
 import asyncio
 import logging
 from typing import Any, Dict, List
-from icecream import ic
 import json
 
 from agentverse.agents.conversation_agent import BaseAgent

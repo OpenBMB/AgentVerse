@@ -7,5 +7,4 @@ openai
 opencv-python
 gradio
 httpx[socks]
-icecream
 astunparse
