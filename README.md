@@ -20,7 +20,7 @@
 
 ---
 
-### ✨ Features
+## ✨ Features
 
 - 🥳 **Efficient Environment Building:** Our framework provides a collection of essential building blocks for effortlessly creating a multi-agent environment. With only a few lines in a configuration file, you can easily construct basic environments such as a chat room for LLMs. This process entails defining the environment's settings and prompts for LLMs, enabling researchers like you to concentrate on experimentation and analysis.
 
@@ -28,10 +28,10 @@
 
 - 🛠 **Tools (Plugins) Utilization**: AgentVerse supports the multi-agent environments with tools. Currently, AgentVerse supports tools provided in [BMTools](https://github.com/OpenBMB/BMTools). 
 
-### 📰 What's New
+## 📰 What's New
 - [2023/5/1] [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched.
 
-### 🗓 Coming Soon
+## 🗓 Coming Soon
 
 - [ ] Demonstrate how to use AgentVerse to support the behavior of agents in a [sandbox environment GPT-World](https://github.com/ShengdingHu/GPT-World)
 - [ ] Add documentation
@@ -40,7 +40,7 @@
 - [ ] Auto-generate UI based on the given multi-agent environment
 
 
-### 👾 Simple Demo Video
+## 👾 Simple Demo Video
 
 We demonstrate the following cases that are expertly crafted by AgentVerse.
 <!--
@@ -48,56 +48,60 @@ We demonstrate the following cases that are expertly crafted by AgentVerse.
 -->
 <!--![image](imgs/multiagent-min.gif)-->
 
+<!-- - **NLP Classroom**: -->
 
+#### NLP Classroom
+In the NLP class, the professor and students engage in interactive communication. When students have a question, they raise their hands and patiently wait for the professor to call on them. Only after being called on by the professor, students can speak and ask their questions.
 
-- **NLP Classroom**: In the NLP class, the professor and students engage in interactive communication. When students have a question, they raise their hands and patiently wait for the professor to call on them. Only after being called on by the professor, students can speak and ask their questions.
-
-https://github.com/OpenBMB/AgentVerse/assets/11704492/6ea07850-595e-4a28-a82e-f863011353c2
-
-Use the following command to launch the NLP Classroom example
+Use the following command to launch the NLP Classroom example:
 ```bash
 python main_demo.py --task nlp_classroom_9players
 ```
 
-- **Prisoner Dilemma**: A prisoner's Dilemma is a thought experiment that challenges two completely rational agents to a dilemma: they can cooperate with their partner for mutual benefit or betray their partner ("defect") for individual reward.
+https://github.com/OpenBMB/AgentVerse/assets/11704492/6ea07850-595e-4a28-a82e-f863011353c2
 
-https://github.com/OpenBMB/AgentVerse/assets/11704492/017c46e5-c738-4fca-9352-b008e2d518bd
 
-Use the following command to launch the Prisoner Dilemma example
+#### Prisoner Dilemma
+A prisoner's Dilemma is a thought experiment that challenges two completely rational agents to a dilemma: they can cooperate with their partner for mutual benefit or betray their partner ("defect") for individual reward.
+
+Use the following command to launch the Prisoner Dilemma example:
 ```bash
 python main_demo.py --task prisoner_dilemma
 ```
 
+https://github.com/OpenBMB/AgentVerse/assets/11704492/017c46e5-c738-4fca-9352-b008e2d518bd
 
-- **Software Design**: In the Software Design example, a code writer, a code tester and a code reviewer collaborate on the code generation problem. Given a problem, the code writer first composes the code implementation. The code tester runs the unit tests and provides the feedback. The code viewer then generates a review. After collecting the test feedback and review, the code writer iteratively refines the code.
 
-https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4e54661626a
+#### Software Design
+In the Software Design example, a code writer, a code tester and a code reviewer collaborate on the code generation problem. Given a problem, the code writer first composes the code implementation. The code tester runs the unit tests and provides the feedback. The code viewer then generates a review. After collecting the test feedback and review, the code writer iteratively refines the code.
 
-Use the following command to launch the Software Design example
+Use the following command to launch the Software Design example:
 ```bash
 python main_demo.py --task sde_team/sde_team_2players
 ```
 
+https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4e54661626a
 
-- **[Database Administrator (DBA)](https://github.com/zhouxh19/AgentVerse_for_Database_Diagnosis)**: In the database diagnosis scenario, the Chief DBA monitors the database system for anomalies. If detected, the memory and CPU agents are alerted to analyze root causes and suggest optimization solutions. The Chief DBA then provides a summarized diagnosis to the user, who can also contribute by giving instructions or evaluating the effectiveness of proposed solutions.
 
-https://github.com/OpenBMB/AgentVerse/assets/11704492/c633419d-afbb-47d4-bb12-6bb512e7af3a
+#### [Database Administrator (DBA)](https://github.com/zhouxh19/AgentVerse_for_Database_Diagnosis)
+In the database diagnosis scenario, the Chief DBA monitors the database system for anomalies. If detected, the memory and CPU agents are alerted to analyze root causes and suggest optimization solutions. The Chief DBA then provides a summarized diagnosis to the user, who can also contribute by giving instructions or evaluating the effectiveness of proposed solutions.
 
-You should first configure the [database tool](https://github.com/OpenBMB/BMTools/blob/main/bmtools/tools/db_diag/readme.md) in BMTools, and launch the BMTools server according to the [guidance](https://github.com/OpenBMB/BMTools/tree/main#211-local-tools). Then use the following command to launch the Database Administrator example
+You should first configure the [database tool](https://github.com/OpenBMB/BMTools/blob/main/bmtools/tools/db_diag/readme.md) in BMTools, and launch the BMTools server according to the [guidance](https://github.com/OpenBMB/BMTools/tree/main#211-local-tools). Then use the following command to launch the Database Administrator example:
 ```bash
 python main_demo.py --task db_diag
 ```
 
+https://github.com/OpenBMB/AgentVerse/assets/11704492/c633419d-afbb-47d4-bb12-6bb512e7af3a
 
-- **Pokemon**: In the game, agents can visit shops, train their Pokémon at the gym, and interact with one another. As a player, you take on the role of an agent and can engage with others at any time. There are 6 characters in the Pokémon environment who appeared in Pokemon Emerald: [May](https://bulbapedia.bulbagarden.net/wiki/May_(game)), [Professor Birch](https://bulbapedia.bulbagarden.net/wiki/Professor_Birch), [Steven Stone](https://bulbapedia.bulbagarden.net/wiki/Steven_Stone), [Maxie](https://bulbapedia.bulbagarden.net/wiki/Maxie), [Archie](https://bulbapedia.bulbagarden.net/wiki/Archie) and [Joseph](https://bulbapedia.bulbagarden.net/wiki/Mr._Stone). 
 
-https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f155e95782e7
+#### Pokemon
+In the game, agents can visit shops, train their Pokémon at the gym, and interact with one another. As a player, you take on the role of an agent and can engage with others at any time. There are 6 characters in the Pokémon environment who appeared in Pokemon Emerald: [May](https://bulbapedia.bulbagarden.net/wiki/May_(game)), [Professor Birch](https://bulbapedia.bulbagarden.net/wiki/Professor_Birch), [Steven Stone](https://bulbapedia.bulbagarden.net/wiki/Steven_Stone), [Maxie](https://bulbapedia.bulbagarden.net/wiki/Maxie), [Archie](https://bulbapedia.bulbagarden.net/wiki/Archie) and [Joseph](https://bulbapedia.bulbagarden.net/wiki/Mr._Stone). 
 
-To launch the Pokemon game, first launch a local server with the following command
+To launch the Pokemon game, first launch a local server with the following command:
 ```bash
 uvicorn pokemon_server:app --reload --port 10002
 ```
-Then open another terminal in the project's root path and run the following command
+Then open another terminal in the project's root path and run the following command:
 ```bash
 cd ui
 # If you do not have npm installed, you need to install it before running the following commands 
@@ -107,7 +111,11 @@ npm run watch
 ```
 Wait for the compilation to complete, and have fun!
 
-### Contents
+https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f155e95782e7
+
+
+
+## Contents
 
 - [🚀 Getting Started](#-getting-started)
   - [Installation](#installation)
