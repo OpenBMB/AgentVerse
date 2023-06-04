@@ -298,5 +298,5 @@ Here's a brief overview of each example:
 5. `math_problem_2players_tools`: A simple example demonstrating how two agents can use the WolframAlpha API to play an arithmetic game.
 6. `prisoner_dilema`: The Prisoner's Dilemma is a thought experiment involving two rational agents facing a choice between cooperating for mutual benefit or betraying their partner for individual gain.
 7. `db_diag`: The Chief DBA monitors (agents) the database system for anomalies and alerts memory and CPU agents if any are detected. They (agents) analyze root causes and suggest optimization solutions. The Chief DBA (agent) provides a diagnosis summary to the user, who can give instructions or evaluate the proposed solutions' effectiveness.
-8. `sde_team`: In the SDE team, code writer, code tester and code reviewer collaborate on the code generation problem. Given a problem, the code writer first composes the code implementation. The code tester runs the unit tests and provides the feedback. The code viewer then generates a review. After collecting the test feedback and review, the code write iteratively refines the code.
+8. `sde_team`: In the SDE team, code writer, code tester and code reviewer collaborate on the code generation problem. 
 9. `pokemon`:  This example intimates Pokemon game.
