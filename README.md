@@ -29,7 +29,8 @@
 - 🛠 **Tools (Plugins) Utilization**: AgentVerse supports the multi-agent environments with tools. Currently, AgentVerse supports tools provided in [BMTools](https://github.com/OpenBMB/BMTools). 
 
 ## 📰 What's New
-- [2023/5/1] [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched.
+- [2023/6/5] We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun 🎉!
+- [2023/5/1] [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched 🚀!
 
 ## 🗓 Coming Soon
 
