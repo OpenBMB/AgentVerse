@@ -168,3 +168,4 @@ frontend
 
 g_push.sh
 raw/
+!ui/src/**
