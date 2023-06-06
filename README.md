@@ -29,8 +29,8 @@
 - 🛠 **Tools (Plugins) Utilization**: AgentVerse supports the multi-agent environments with tools. Currently, AgentVerse supports tools provided in [BMTools](https://github.com/OpenBMB/BMTools). 
 
 ## 📰 What's New
-- [2023/6/5] We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun 🎉!
-- [2023/5/1] [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched 🚀!
+- [2023/6/5] 🎉 We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun!
+- [2023/5/1] 🚀 [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched!
 
 ## 🗓 Coming Soon
 
@@ -107,10 +107,11 @@ Then open another terminal in the project's root path and run the following comm
 cd ui
 # If you do not have npm installed, you need to install it before running the following commands 
 # https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+# We have tested on npm@9.6.4, node@20.0.0
 npm install
 npm run watch
 ```
-Wait for the compilation to complete, and have fun!
+Wait for the compilation to complete, and have fun! (WASD for moving around, and SPACE for launching a conversation.)
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f155e95782e7
 
