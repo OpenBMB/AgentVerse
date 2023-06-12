@@ -8,3 +8,4 @@ opencv-python
 gradio
 httpx[socks]
 astunparse
+langchain
