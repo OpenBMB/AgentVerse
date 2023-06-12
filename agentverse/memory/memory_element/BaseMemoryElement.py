@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 import numpy as np
 
@@ -27,7 +29,7 @@ class BaseMemoryElement(BaseModel):
     """
 
     content: str = None
-    subject: "BaseAgent" = None
+    subject: BaseAgent = None
     embedding: list[float] = []
     create_time: dt = None
     last_access_time: dt = None
@@ -36,7 +38,7 @@ class BaseMemoryElement(BaseModel):
 
     def __init__(self,
                  content: str,
-                 subject: "BaseAgent",
+                 subject: BaseAgent,
                  embedding: list[float],
                  create_time: dt,
                  last_access_time: dt,
@@ -59,7 +61,7 @@ class BaseMemoryElement(BaseModel):
         cls,
         content: str,
         time: dt,
-        subject: "BaseAgent" = None,
+        subject: BaseAgent = None,
         embedding: np.ndarray = None,
     ):
         embedding = get_embedding(content) if embedding is None else embedding

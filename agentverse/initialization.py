@@ -52,17 +52,6 @@ def load_environment(env_config: Dict) -> BaseEnvironment:
 
 def load_agent(agent_config: Dict) -> langchainAgent:
     agent_type = agent_config.pop("agent_type", "conversation")
-    # <<<<<<< HEAD
-    #     if agent_type == "conversation":
-    #         # agent = Agent.from_llm_and_tools(**agent_config)
-    #         agent = ConversationAgent(**agent_config)
-    #     elif agent_type == "OPR":
-    #         from agentverse.agents.agent_opr import AgentOPR
-
-    #         agent = AgentOPR(**agent_config)
-    #     else:
-    #         raise NotImplementedError("Agent type {} not found".format(agent_type))
-    # =======
     agent = agent_registry.build(agent_type, **agent_config)
     return agent
 

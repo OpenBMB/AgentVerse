@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 An agent based upon Observation-Planning-Reflection architecture.
 """
@@ -38,7 +40,7 @@ class AgentOPR(BaseAgent):
     current_time: str = None,
     traits: str = None,
     whole_day_plan: dict = Field(default_factory=dict)
-    environment: "BaseEnvironment" = None
+    environment: BaseEnvironment = None
     step_cnt: int = 0
     summary_interval: int = 5
     reflection_interval: int = 5
@@ -228,7 +230,7 @@ class AgentOPR(BaseAgent):
     def add_plan_to_memory(self,) -> None:
         self.memory.add_plan(content=self.status, time=self.current_time)
 
-    def reset(self, environment: "BaseEnvironment") -> None:
+    def reset(self, environment: BaseEnvironment) -> None:
         """Reset the agent"""
         self.environment = environment
 

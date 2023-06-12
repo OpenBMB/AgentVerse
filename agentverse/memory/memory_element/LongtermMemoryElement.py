@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import re
 from pydantic import Field
@@ -45,7 +47,7 @@ class LongtermMemoryElement(BaseMemoryElement):
     """
 
     @classmethod
-    def create_longterm_memory(cls, content: str, time: dt, subject: "BaseAgent" = None):
+    def create_longterm_memory(cls, content: str, time: dt, subject: BaseAgent = None):
 
         # LongtermMemoryElement.update_forward_refs()
 
@@ -76,7 +78,7 @@ class LongtermMemoryElement(BaseMemoryElement):
         )
 
     @classmethod
-    def create_from_message(cls, message: Message, subject: "BaseAgent", time: dt):
+    def create_from_message(cls, message: Message, subject: BaseAgent, time: dt):
         importance = cls.get_importance(message.content)
         immediacy = cls.get_immediacy(message.content)
         embedding = get_embedding(message.content)

@@ -1,9 +1,4 @@
-import os
-
-os.environ["http_proxy"] = "http://127.0.0.1:7890"
-os.environ["https_proxy"] = "http://127.0.0.1:7890"
-os.environ["all_proxy"] = "socks5://127.0.0.1:7890"
-
+from __future__ import annotations
 
 import datetime
 import logging
@@ -56,7 +51,7 @@ if TYPE_CHECKING:
     from agentverse.memory.utils.Planner import Planner
 
 
-@memory_registry.register("OPR")
+@memory_registry.register("reflection")
 class ReflectionMemory(BaseMemory):
     # on load, load our database
     """
@@ -64,7 +59,7 @@ class ReflectionMemory(BaseMemory):
     importance_threshold: the threshold for deciding whether to do reflection
 
     """
-    agent: "BaseAgent" = None
+    agent: BaseAgent = None
     environment: Optional[BaseEnvironment] = None
     importance_threshold: int = Field(default=100)
     memories: List[LongtermMemoryElement] = Field(default_factory=list)
@@ -73,7 +68,7 @@ class ReflectionMemory(BaseMemory):
     accumulated_importance: int = Field(default=0)
 
     def __init__(self,
-                 agent: "BaseAgent" = None,
+                 agent: BaseAgent = None,
                  environment: Optional[BaseEnvironment] = None,
                  importance_threshold: int = 100,
                  memories: List[LongtermMemoryElement] = [],
@@ -343,7 +338,7 @@ class ReflectionMemory(BaseMemory):
         self.summary = '\n'.join([result1.content, result2.content, result3.content])
         return self.summary
 
-    def reset(self, environment: "BaseEnvironment", agent: "BaseAgent") -> None:
+    def reset(self, environment: BaseEnvironment, agent: BaseAgent) -> None:
 
         from agentverse.memory.utils.Planner import Planner
         # Whole the initial work can only be done here

@@ -13,6 +13,7 @@ prompts:
     - say(content, target=None): say something,`content` is the sentence that the agent will say. **Do not say to yourself, neither to inanimate objects.**
 
 
+
     Call one function at a time, please give a thought before calling these actions, i.e., use the following format strictly:
 
     [OPTION 1]
@@ -72,7 +73,7 @@ agents:
       Alice is learning to play the piano and practices every day after school.
       Alice's favorite food is pizza, and she loves trying out different toppings and combinations
     memory: 
-      memory_type: OPR  # change later
+      memory_type: reflection  # change later
     prompt_template: *prompt
     llm:
       model: "gpt-4"
@@ -115,7 +116,7 @@ agents:
       Bob's favorite food is barbecue ribs, and he loves to cook them on his smoker on the weekends.
       Bob is proud of his daughter Alice's talent for drawing and encourages her to pursue her passion.
     memory: 
-      memory_type: OPR
+      memory_type: reflection
     prompt_template: *prompt
     llm:
       model: "gpt-4"

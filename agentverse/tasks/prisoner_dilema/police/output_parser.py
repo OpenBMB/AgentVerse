@@ -19,7 +19,7 @@ class PrisonerDilemaParser(OutputParser):
     cur_round: int = 1
     encounter_cur_round: bool = False
 
-    def parse(self, agent: "BaseAgent", environment: "BaseEnvironment", output: LLMResult) -> Union[AgentAction, AgentFinish]:
+    def parse(self, agent: BaseAgent, environment: BaseEnvironment, output: LLMResult) -> Union[AgentAction, AgentFinish]:
 
         text = output.content
         cleaned_output = text.strip()
