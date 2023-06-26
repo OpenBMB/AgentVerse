@@ -1,0 +1,124 @@
+prompts:
+  prompt: &prompt |-
+    Now you are at the cross roads, and there are a few Cars in this scenario as well, Your goal is to cross the roads to the exit without crushing with other cars, that is, Never move to the cell where there is a car.
+
+    The scenario is a ${grids_dim} * ${grids_dim} grids, and the crossroads are set in the middle of grids as follows:
+
+    [[1,1,0,0,1,1],
+     [1,1,0,0,1,1],
+     [0,0,0,0,0,0],
+     [0,0,0,0,0,0],
+     [1,1,0,0,1,1],
+     [1,1,0,0,1,1]]
+
+    The coordinate of top left corner is [0,0], and the coordinate of the bottom right corner is [5,5]. 0 in the matrics means that it is a road, and 1 means that it is blocked.
+    Note that [0,0], [0,1], [1,0], [1,1], [0,4], [0,5], [1,4], [1,5], [4,0], [4,1], [5,0], [5,1], [4,4], [4,5], [5,4], [5,5] is blocked that you can never move on.
+
+    In terms of how you actually perform the action in this scenerio, you take action for the agent by calling functions. Currently, there are the following functions that can be called.
+    - brake(): You are going to stop moving to avoid crush.
+    - move(direction): `direction` describes the direction you are going to move to. The direction can only be one of the following four lists: [1,0], [-1,0], [0,1], [0,-1] which mean four different direction respectively.
+
+    Call one function at a time, please give a thought before calling these actions .
+    For examples:
+
+    [OPTION 1]
+    Thought: I am now at the coordinate [3,1] and Car_Two is at [3,3], it might move([0,-1]) to [3,2] at this step, so it's better for me to move([0,-1]) to [3,0].
+    Action: move([0,1])
+
+    [OPTION 2]
+    Thought: I am now at the coordinate [3,4] and there is one car at [2,4] and one car at [3,5], I am not sure how they will move at this step, so I choose to brake and wait for them to move first.
+    Action: brake()
+
+    [OPTION 3]
+    Thought: I am now at the coordinate [3,1] and Car_Two is at [3,4], which is three cell away from me, so I donot worry about it, I will move([0,1]) to [3,2].
+    Action: move([0,1])
+
+
+    ${role_description}
+
+    Here is other cars' action history so far:
+    ${chat_history}
+    ${env_description}
+
+    Pay attention to other cars' action history and try to figure out their intention of next movement.
+
+    Your current coordinate is ${coordinate}, and other cars' coordinate is ${others_coordinate}
+
+    What will you, ${agent_name}, do next?
+
+environment:
+  env_type: traffic
+  max_turns: 100
+  grids_dim: 6
+  rule:
+    order:
+      type: concurrent
+    visibility:
+      type: oneself
+    selector:
+      type: basic
+    updater:
+      type: traffic_all
+    describer:
+      type: basic
+
+agents:
+  - agent_type: traffic
+    name: Car_One
+    coordinate: [2,0]
+    role_description: |-
+      You are Car_One, You are now at the left end of the road, Your goal is to reach one of the following exit : [0,2], [0,3], [2,5], [3,5], [5,2], [5,3].
+      You need to be sensitive to your own coordinate and other cars' coordinate by other cars' course of action carefully in order not to collision with them in the same cell.
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-4
+      model: 'gpt-4'
+      temperature: 0.7
+      max_tokens: 1024
+  - agent_type: traffic
+    name: Car_Two
+    coordinate: [0,2]
+    role_description: |-
+      You are Car_Two, You are now at the top end of the road, Your goal is to reach one of the following exit :[2,0], [3,0], [2,5], [3,5], [5,2], [5,3].
+      You need to be sensitive to your own coordinate and other cars' coordinate by other cars' course of action carefully in order not to collision with them in the same cell.
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-4
+      model: 'gpt-4'
+      temperature: 0.7
+      max_tokens: 1024
+  - agent_type: traffic
+    name: Car_Three
+    coordinate: [2,5]
+    role_description: |-
+      You are Car_Three, You are now at the right end of the road, Your goal is to reach one of the following exit :[2,0], [3,0], [0,2], [0,3], [5,2], [5,3].
+      You need to be sensitive to your own coordinate and other cars' coordinate by other cars' course of action carefully in order not to collision with them in the same cell.
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-4
+      model: 'gpt-4'
+      temperature: 0.7
+      max_tokens: 1024
+  - agent_type: traffic
+    name: Car_Four
+    coordinate: [5,2]
+    role_description: |-
+      You are Car_Four, You are now at the bottom end of the road, Your goal is to reach one of the following exit :[2,0], [3,0], [0,2], [0,3], [2,5], [3,5].
+      You need to be sensitive to your own coordinate and other cars' coordinate by other cars' course of action carefully in order not to collision with them in the same cell.
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-4
+      model: 'gpt-4'
+      temperature: 0.7
+      max_tokens: 1024
+
+
+tools:

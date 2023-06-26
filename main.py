@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 
 parser = ArgumentParser()
 
-parser.add_argument("--task", type=str, default="alice_home")
+parser.add_argument("--task", type=str, default="traffic_junction")
 
 
 args = parser.parse_args()
