@@ -9,7 +9,7 @@ from .pokemon import PokemonEnvironment
 from .prisoner_dilema import PrisonerDilemaEnvironment
 from .traffic_junction import TrafficEnvironment
 
-from .OPREnvironment import OPREnvironment
+from .reflection import ReflectionEnvironment
 
 from .sde_team import SdeTeamEnvironment
 from .sde_team_given_tests import SdeTeamGivenTestsEnvironment

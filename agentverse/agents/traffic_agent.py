@@ -170,8 +170,6 @@ class TrafficAgent(BaseAgent):
         else:
             return False
 
-
-
     def _brake(self, ) -> bool:
         # do nothing but brake
         return False

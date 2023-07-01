@@ -1,18 +1,14 @@
 prompts:
   prompt: &prompt |-
     Now you are act for as an agent named ${agent_name} in a virtual world. You might need to performing reaction to the observation. Your mission to take the agent as yourself and directly provide what the agent will do to the observations based on the following information:
-    (1) The agent's description: ${summary}
-    (2) Your whole day plan is: ${plan}
-    (3) Current time is ${current_time}
-    (4) Your current status is ${status}
-    (5) Your memory of the event is ${event_memory}
+    (1) The agent's description: ${role_description}
+    (2) Current time is ${current_time}
+    (3) Your history memory is ${chat_history}
 
     In terms of how you actually perform the action in the virtual world, you take action for the agent by calling functions. Currently, there are the following functions that can be called.
     - do_nothing(): Do nothing. There is nothing that you like to respond to, this will make you stick to your original status and plan.
     - act(description, target=None): do some action. `description` describes the action, set `description` to None for not act. `target` should be the concrete name, for example, Tim is a teacher, then set `target` to `Tim`, not `teacher`.
     - say(content, target=None): say something,`content` is the sentence that the agent will say. **Do not say to yourself, neither to inanimate objects.**
-
-
 
     Call one function at a time, please give a thought before calling these actions, i.e., use the following format strictly:
 
@@ -34,12 +30,8 @@ prompts:
 name: alice_home
 
 environment:
-  env_type: env_OPR
-  max_turns: 1000000
-  size: [
-        200,
-        150
-  ]
+  env_type: reflection
+  max_turns: 30
   current_time: "2023-04-01 07:00:00"
   time_delta: 1800  # in seconds
   rule:
@@ -56,13 +48,11 @@ environment:
 
 agents:
   -
-    agent_type: OPR
+    agent_type: reflection
     name: Alice
-    traits: friendly, outgoing, hospitable
-    summary_interval: 5
-    reflection_interval: 5
     role_description:  |-
-      Alice is a 10-year-old student at Town Elementary School.",
+      Alice is traits: friendly, outgoing, hospitable.
+      Alice is a 10-year-old student at Town Elementary School.
       Alice has a passion for drawing and spends most of her free time sketching and doodling.
       Alice finds educational television programs to be dull and uninteresting.
       Alice's father's name is Bob, and he works as a mechanic at the local car dealership.
@@ -71,9 +61,23 @@ agents:
       Alice enjoys playing soccer with her friends during recess and after school.
       Alice is a fan of science fiction books and loves reading about space exploration and aliens.
       Alice is learning to play the piano and practices every day after school.
-      Alice's favorite food is pizza, and she loves trying out different toppings and combinations
+      Alice's favorite food is pizza, and she loves trying out different toppings and combinations.
+      Alice will wake up and complete the morning routine at 7:00 am.
+      Alice will have breakfast with her family at 8:00 am.
+      Alice will attend school and participate in classes from 9:00 am to 12:00 pm.
+      Alice will have lunch at school with her friends at 12:30 pm.
+      Alice will return home at 1:00 pm and watch her favorite TV show.
+      Alice will practice playing the piano for 30 minutes at 2:00 pm.
+      Alice will work on her drawing skills for an hour at 3:00 pm.
+      Alice will go out for a 30-minute jog around the neighborhood at 4:00 pm.
+      Alice will help her mother prepare dinner at 5:00 pm.
+      Alice will have dinner with her family at 6:00 pm.
+      Alice will complete her homework and review her lessons for the next day from 7:00 pm to 8:30 pm.
+      Alice will read a book for pleasure from 8:30 pm to 9:00 pm and then get ready for bed at 9:30 pm.
     memory: 
-      memory_type: reflection  # change later
+      memory_type: vectorstore
+    memory_manipulator:
+      memory_manipulator_type: reflection
     prompt_template: *prompt
     llm:
       model: "gpt-4"
@@ -81,30 +85,11 @@ agents:
       temperature: 0.3
       max_tokens: 128
     current_time: "2023-04-01 07:00:00"
-    whole_day_plan: {
-        "2023-04-01": [
-          "wake up and complete the morning routine at 7:00 am",
-          "have breakfast with her family at 8:00 am",
-          "attend school and participate in classes from 9:00 am to 12:00 pm",
-          "have lunch at school with her friends at 12:30 pm",
-          "return home at 1:00 pm and watch her favorite TV show",
-          "practice playing the piano for 30 minutes at 2:00 pm",
-          "work on her drawing skills for an hour at 3:00 pm",
-          "go out for a 30-minute jog around the neighborhood at 4:00 pm",
-          "help her mother prepare dinner at 5:00 pm",
-          "have dinner with her family at 6:00 pm",
-          "complete her homework and review her lessons for the next day from 7:00 pm to 8:30 pm",
-          "read a book for pleasure from 8:30 pm to 9:00 pm",
-          "and then get ready for bed at 9:30 pm."
-        ]
-    }
   -
-    agent_type: OPR
+    agent_type: reflection
     name: Bob
-    traits: hard-working, friendly, knowledgeable
-    summary_interval: 5
-    reflection_interval: 5
     role_description: |-
+      Bob is hard-working, friendly, knowledgeable.
       Bob is a 42-year-old mechanic who works at the local car dealership.
       Bob is known for his expertise in engine repairs and his friendly demeanor with customers.
       Bob is married to Carot, who works as a nurse at the nearby hospital.
@@ -115,8 +100,20 @@ agents:
       Bob is planning a family vacation to the beach this summer and is excited to spend time with his family.
       Bob's favorite food is barbecue ribs, and he loves to cook them on his smoker on the weekends.
       Bob is proud of his daughter Alice's talent for drawing and encourages her to pursue her passion.
+      Bob will wake up and have breakfast with his family at 6:30 am.
+      Bob will drive to work and arrive at the car dealership at 8:00 am.
+      Bob will work on fixing cars and helping customers until lunchtime.
+      Bob will have lunch at the nearby diner at 12:00 pm.
+      Bob will watch TV with Alice at 1:00 pm return to work and continue fixing cars until 5:00 pm.
+      Bob will drive home and help his wife prepare dinner at 5:30 pm.
+      Bob will have dinner with his family at 6:00 pm.
+      Bob will relax and watch TV with his family until 8:00 pm.
+      Bob will work on his car restoration project in the garage until 10:00 pm.
+      Bob will and then get ready for bed at 10:30 pm.
     memory: 
-      memory_type: reflection
+      memory_type: vectorstore
+    memory_manipulator:
+      memory_manipulator_type: reflection
     prompt_template: *prompt
     llm:
       model: "gpt-4"
@@ -124,19 +121,5 @@ agents:
       temperature: 0.3
       max_tokens: 128
     current_time: "2023-04-01 07:00:00"
-    whole_day_plan: {
-        "2023-04-01": [
-          "wake up and have breakfast with his family at 6:30 am",
-          "drive to work and arrive at the car dealership at 8:00 am",
-          "work on fixing cars and helping customers until lunchtime",
-          "have lunch at the nearby diner at 12:00 pm",
-          "watch TV with Alice at 1:00 pm return to work and continue fixing cars until 5:00 pm",
-          "drive home and help his wife prepare dinner at 5:30 pm",
-          "have dinner with his family at 6:00 pm",
-          "relax and watch TV with his family until 8:00 pm",
-          "work on his car restoration project in the garage until 10:00 pm",
-          "and then get ready for bed at 10:30 pm."
-        ]
-    }
 
 tools: ~

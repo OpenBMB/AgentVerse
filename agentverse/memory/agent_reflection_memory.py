@@ -10,11 +10,11 @@ from datetime import datetime as dt
 from sklearn.metrics.pairwise import cosine_similarity
 from pydantic import Field, BaseModel
 
-from agentverse.llms.openai import get_embedding, chat
+from agentverse.llms.openai import get_embedding
 from agentverse.memory.base import BaseMemory
 from agentverse.environments.base import BaseEnvironment
 from agentverse.memory.memory_element.LongtermMemoryElement import LongtermMemoryElement
-from agentverse.memory.memory_element.Reflection import Reflection
+# from agentverse.memory.memory_element.Reflection import Reflection
 from agentverse.message import Message
 from agentverse.memory.memory_element.BaseMemoryElement import BaseMemoryElement
 

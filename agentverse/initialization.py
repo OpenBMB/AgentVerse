@@ -19,6 +19,7 @@ from langchain.prompts import PromptTemplate
 from agentverse.agents import agent_registry
 from agentverse.environments import BaseEnvironment, env_registry
 from agentverse.memory import memory_registry
+from agentverse.memory_manipulator import memory_manipulator_registry
 
 # from agentverse.memory.memory import SummaryMemory
 from agentverse.parser import output_parser_registry
@@ -33,6 +34,10 @@ def load_llm(llm_config: Dict):
 def load_memory(memory_config: Dict):
     memory_type = memory_config.pop("memory_type", "chat_history")
     return memory_registry.build(memory_type, **memory_config)
+
+def load_memory_manipulator(memory_manipulator_config: Dict):
+    memory_manipulator_type = memory_manipulator_config.pop("memory_manipulator_type", "basic")
+    return memory_manipulator_registry.build(memory_manipulator_type, **memory_manipulator_config)
 
 
 def load_tools(tool_config: List[Dict]):
@@ -92,6 +97,10 @@ def prepare_task_config(task):
             agent_configs["tool_memory"] = load_memory(agent_configs["tool_memory"])
         llm = load_llm(agent_configs.get("llm", "text-davinci-003"))
         agent_configs["llm"] = llm
+
+        memory_manipulator = load_memory_manipulator(agent_configs.get("memory_manipulator", {}))
+        agent_configs["memory_manipulator"] = memory_manipulator
+
         agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
 
         agent_configs["output_parser"] = task_config["output_parser"]

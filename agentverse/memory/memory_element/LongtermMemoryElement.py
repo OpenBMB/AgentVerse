@@ -5,7 +5,7 @@ import re
 from pydantic import Field
 from datetime import datetime as dt
 
-from agentverse.llms.openai import chat, get_embedding
+from agentverse.llms.openai import get_embedding
 from agentverse.message import Message
 
 from agentverse.memory.memory_element.BaseMemoryElement import BaseMemoryElement

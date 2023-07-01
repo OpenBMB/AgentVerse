@@ -16,8 +16,8 @@ from .base import BaseEnvironment
 
 from pydantic import validator
 
-@EnvironmentRegistry.register("env_OPR")
-class OPREnvironment(BaseEnvironment):
+@EnvironmentRegistry.register("reflection")
+class ReflectionEnvironment(BaseEnvironment):
     """
     Environment used in Observation-Planning-Reflection agent architecture.
 
