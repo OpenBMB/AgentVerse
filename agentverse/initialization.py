@@ -4,7 +4,7 @@ import os
 from typing import Dict, List, TYPE_CHECKING
 
 import yaml
-from bmtools.agent.singletool import import_all_apis, load_single_tools
+#from bmtools.agent.singletool import import_all_apis, load_single_tools
 
 from agentverse.llms import llm_registry
 
