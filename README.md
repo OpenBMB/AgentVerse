@@ -119,6 +119,16 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 
 ## Contents
 
+- [✨ Features](#-features)
+- [📰 What's New](#-whats-new)
+- [🗓 Coming Soon](#-coming-soon)
+- [👾 Simple Demo Video](#-simple-demo-video)
+    - [NLP Classroom](#nlp-classroom)
+    - [Prisoner Dilemma](#prisoner-dilemma)
+    - [Software Design](#software-design)
+    - [Database Administrator (DBA)](#database-administrator-dba)
+    - [Pokemon](#pokemon)
+- [Contents](#contents)
 - [🚀 Getting Started](#-getting-started)
   - [Installation](#installation)
   - [CLI Example](#cli-example)
@@ -141,21 +151,30 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 ### Installation
 
 ```bash
-# Install the dependencies
+pip install -U agentverse
+```
+Or you can install the package by manually cloning the latest repository
+```bash
 git clone https://github.com/OpenBMB/AgentVerse.git --depth 1
+cd AgentVerse
 pip install -r requirements.txt
+```
+Some users have reported problems installing the `orjson` required by `gradio`. One simple workaround is to install it with Anaconda `conda install -c conda-forge orjson`.
 
-cd ../
-git clone git+https://github.com/OpenBMB/BMTools.git
-cd BMTools
-pip install -r requirements.txt
-python setup.py develop
-
+You also need to export your OpenAI API key as follows
+```bash
 # Export your OpenAI API key
 export OPENAI_API_KEY="your_api_key_here"
 ```
 
-Some users have reported problems installing the `orjson` required by `gradio`. One simple workaround is to install it with Anaconda `conda install -c conda-forge orjson`.
+If you want to use the tools provided by BMTools, you need to install BMTools as follows:
+```bash
+git clone git+https://github.com/OpenBMB/BMTools.git
+cd BMTools
+pip install -r requirements.txt
+python setup.py develop
+```
+
 
 <!--
 # Install BMTools
