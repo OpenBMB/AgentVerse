@@ -1,6 +1,6 @@
 # Database Diagnosis
 
-Inherited from *nlp_classroom_3players_withtool_nolc*
+Inherited from *nlp_classroom_3players_withtool*
 
 ### Changes
 

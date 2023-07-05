@@ -103,7 +103,7 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14, 13, 14,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 6, 5, 6,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14, 13, 14,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 8, 5, 6, 5, 6,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 8, 5, 6, 5, 6,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 15, 16, 13, 14, 13, 14,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 5, 6, 5, 6, 5, 6,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 13, 14, 13, 14, 13, 14,
@@ -234,6 +234,72 @@
         }, 
         {
          "draworder":"topdown",
+         "id":11,
+         "name":"location",
+         "objects":[
+                {
+                 "height":40.6666666666666,
+                 "id":21,
+                 "name":"Bike Store",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":56.6666666666667,
+                 "x":195.333333333333,
+                 "y":420
+                }, 
+                {
+                 "height":23.3333333333333,
+                 "id":22,
+                 "name":"Pok\u00e9mon Center",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":74.6666666666666,
+                 "x":323.333333333333,
+                 "y":276.666666666667
+                }, 
+                {
+                 "height":28,
+                 "id":23,
+                 "name":"Pok\u00e9mon Gym",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":76.6666666666666,
+                 "x":465.333333333333,
+                 "y":306
+                }, 
+                {
+                 "height":26.6666666666667,
+                 "id":24,
+                 "name":"Shop",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":58.6666666666667,
+                 "x":434.666666666667,
+                 "y":418
+                }, 
+                {
+                 "height":40,
+                 "id":25,
+                 "name":"Park",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":73.3333333333333,
+                 "x":195.333333333333,
+                 "y":276
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":10,
          "name":"npcs",
          "objects":[
@@ -252,8 +318,8 @@
                  "type":"npc",
                  "visible":true,
                  "width":0,
-                 "x":215.333333333333,
-                 "y":251.333333333333
+                 "x":208,
+                 "y":240
                 }, 
                 {
                  "height":0,
@@ -270,8 +336,8 @@
                  "type":"npc",
                  "visible":true,
                  "width":0,
-                 "x":422.666666666667,
-                 "y":300
+                 "x":480,
+                 "y":304
                 }, 
                 {
                  "height":0,
@@ -288,8 +354,8 @@
                  "type":"npc",
                  "visible":true,
                  "width":0,
-                 "x":343.333333333333,
-                 "y":426.666666666667
+                 "x":240,
+                 "y":240
                 }, 
                 {
                  "height":0,
@@ -306,8 +372,8 @@
                  "type":"npc",
                  "visible":true,
                  "width":0,
-                 "x":151.333333333333,
-                 "y":154
+                 "x":335.5,
+                 "y":272
                 }, 
                 {
                  "height":0,
@@ -324,8 +390,8 @@
                  "type":"npc",
                  "visible":true,
                  "width":0,
-                 "x":407.333333333333,
-                 "y":138.666666666667
+                 "x":449,
+                 "y":416
                 }, 
                 {
                  "height":0,
@@ -342,8 +408,8 @@
                  "type":"npc",
                  "visible":true,
                  "width":0,
-                 "x":455.333333333333,
-                 "y":155.333333333333
+                 "x":224,
+                 "y":416
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -351,8 +417,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":11,
- "nextobjectid":18,
+ "nextlayerid":12,
+ "nextobjectid":26,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
@@ -3551,7 +3617,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3560,7 +3626,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3569,7 +3635,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3578,7 +3644,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3587,7 +3653,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3596,7 +3662,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3912,7 +3978,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3921,7 +3987,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3930,7 +3996,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3939,7 +4005,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3948,7 +4014,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3966,7 +4032,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -3975,7 +4041,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12184,7 +12250,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12193,7 +12259,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12202,7 +12268,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12256,7 +12322,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12265,7 +12331,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12274,7 +12340,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12328,7 +12394,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12337,7 +12403,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12400,7 +12466,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12409,7 +12475,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -12418,7 +12484,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {

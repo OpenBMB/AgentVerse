@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import json
 from typing import Union
 
 from agentverse.parser import OutputParser, LLMResult
@@ -19,11 +20,17 @@ class PokemonParser(OutputParser):
         cleaned_output = re.sub(r"\n+", "\n", cleaned_output)
         cleaned_output = cleaned_output.split("\n")
         if not (
-            len(cleaned_output) == 2
+            len(cleaned_output) == 3
             and cleaned_output[0].startswith("Thought:")
-            and cleaned_output[1].startswith("Speak:")
+            and cleaned_output[1].startswith("Action:")
+            and cleaned_output[2].startswith("Action Input:")
         ):
-            raise OutputParserError("Output Format Error")
-        action = cleaned_output[0][len("Thought:") :].strip()
-        action_input = cleaned_output[1][len("Speak:") :].strip()
-        return AgentFinish({"output": action_input}, text)
+            raise OutputParserError(text)
+        action = cleaned_output[1][len("Action:") :].strip()
+        action_input = cleaned_output[2][len("Action Input:") :].strip()
+        try:
+            action_input = json.loads(action_input)
+        except json.JSONDecodeError:
+            raise OutputParserError(text)
+        action_input["action"] = action
+        return AgentFinish({"output": json.dumps(action_input)}, text)

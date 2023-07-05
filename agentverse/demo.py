@@ -50,12 +50,14 @@ class UI:
         self.solution_status = [False] * self.tot_solutions
 
     def get_avatar(self, idx):
-        if idx < 0:
-            return ""
-        if self.task == "prisoner_dilema":
+        if idx == -1:
+            img = cv2.imread("./imgs/db_diag/-1.png")
+        elif self.task == "prisoner_dilemma":
             img = cv2.imread(f"./imgs/prison/{idx}.png")
         elif self.task == "db_diag":
             img = cv2.imread(f"./imgs/db_diag/{idx}.png")
+        elif "sde" in self.task:
+            img = cv2.imread(f"./imgs/sde/{idx}.png")
         else:
             img = cv2.imread(f"./imgs/{idx}.png")
         base64_str = cv2.imencode(".png", img)[1].tostring()
@@ -77,36 +79,44 @@ class UI:
             gr.Button.update(interactive=False),
             gr.Button.update(interactive=True),
             gr.Button.update(interactive=False),
-            *[gr.Button.update(visible=statu) for statu in self.solution_status]
+            *[gr.Button.update(visible=statu) for statu in self.solution_status],
+            gr.Box.update(visible=any(self.solution_status)),
         )
 
         while self.autoplay and self.turns_remain > 0:
             outputs = self.gen_output()
             self.image_now, self.text_now = outputs
 
-            yield *outputs, gr.Button.update(
-                interactive=not self.autoplay and self.turns_remain > 0
-            ), gr.Button.update(
-                interactive=self.autoplay and self.turns_remain > 0
-            ), gr.Button.update(
-                interactive=not self.autoplay and self.turns_remain > 0
-            ), *[gr.Button.update(visible=statu) for statu in self.solution_status]
+            yield (
+                *outputs,
+                gr.Button.update(interactive=not self.autoplay and self.turns_remain > 0),
+                gr.Button.update(interactive=self.autoplay and self.turns_remain > 0),
+                gr.Button.update(interactive=not self.autoplay and self.turns_remain > 0),
+                *[gr.Button.update(visible=statu) for statu in self.solution_status],
+                gr.Box.update(visible=any(self.solution_status))
+            )
 
     def delay_gen_output(self):
-        yield self.image_now, self.text_now, gr.Button.update(
-            interactive=False
-        ), gr.Button.update(
-            interactive=False
-        ), *[gr.Button.update(visible=statu) for statu in self.solution_status]
+        yield (
+            self.image_now,
+            self.text_now,
+            gr.Button.update(interactive=False),
+            gr.Button.update(interactive=False),
+            *[gr.Button.update(visible=statu) for statu in self.solution_status],
+            gr.Box.update(visible=any(self.solution_status))
+        )
 
         outputs = self.gen_output()
         self.image_now, self.text_now = outputs
 
-        yield self.image_now, self.text_now, gr.Button.update(
-            interactive=self.turns_remain > 0
-        ), gr.Button.update(
-            interactive=self.turns_remain > 0
-        ), *[gr.Button.update(visible=statu) for statu in self.solution_status]
+        yield (
+            self.image_now,
+            self.text_now,
+            gr.Button.update(interactive=self.turns_remain > 0),
+            gr.Button.update(interactive=self.turns_remain > 0),
+            *[gr.Button.update(visible=statu) for statu in self.solution_status],
+            gr.Box.update(visible=any(self.solution_status))
+        )
 
     def delay_reset(self):
         self.autoplay = False
@@ -117,7 +127,8 @@ class UI:
             gr.Button.update(interactive=True),
             gr.Button.update(interactive=False),
             gr.Button.update(interactive=True),
-            *[gr.Button.update(visible=statu) for statu in self.solution_status]
+            *[gr.Button.update(visible=statu) for statu in self.solution_status],
+            gr.Box.update(visible=any(self.solution_status))
         )
 
     def reset(self, stu_num=0):
@@ -141,10 +152,12 @@ class UI:
         self.backend.reset()
         self.turns_remain = self.backend.environment.max_turns
 
-        if self.task == "prisoner_dilema":
+        if self.task == "prisoner_dilemma":
             background = cv2.imread("./imgs/prison/case_1.png")
         elif self.task == "db_diag":
             background = cv2.imread("./imgs/db_diag/background.png")
+        elif "sde" in self.task:
+            background = cv2.imread("./imgs/sde/background.png")
         else:
             background = cv2.imread("./imgs/background.png")
             back_h, back_w, _ = background.shape
@@ -176,7 +189,7 @@ class UI:
         # if len(data) != self.stu_num:
         if len(data) != self.stu_num + 1:
             raise gr.Error("data length is not equal to the total number of students.")
-        if self.task == "prisoner_dilema":
+        if self.task == "prisoner_dilemma":
             img = cv2.imread("./imgs/speaking.png", cv2.IMREAD_UNCHANGED)
             if (
                     len(self.messages) < 2
@@ -198,11 +211,20 @@ class UI:
             background = cv2.imread("./imgs/db_diag/background.png")
             img = cv2.imread("./imgs/db_diag/speaking.png", cv2.IMREAD_UNCHANGED)
             if data[0]["message"] != "":
-                cover_img(background, img, (20, 176))
+                cover_img(background, img, (750, 80))
             if data[1]["message"] != "":
-                cover_img(background, img, (65, 110))
+                cover_img(background, img, (310, 220))
             if data[2]["message"] != "":
-                cover_img(background, img, (115, 110))
+                cover_img(background, img, (522, 11))
+        elif "sde" in self.task:
+            background = cv2.imread("./imgs/sde/background.png")
+            img = cv2.imread("./imgs/sde/speaking.png", cv2.IMREAD_UNCHANGED)
+            if data[0]["message"] != "":
+                cover_img(background, img, (692, 330))
+            if data[1]["message"] != "":
+                cover_img(background, img, (692, 660))
+            if data[2]["message"] != "":
+                cover_img(background, img, (692, 990))
         else:
             background = cv2.imread("./imgs/background.png")
             back_h, back_w, _ = background.shape
@@ -241,13 +263,26 @@ class UI:
 
         for message in messages:
             if self.task == "db_diag":
-                content_json = json.loads(message.content)
-                content_json["speak"] = f"[{message.sender}]: {content_json['speak']}"
+                content_json: dict = message.content
+                content_json["diagnose"] = f"[{message.sender}]: {content_json['diagnose']}"
                 _format[self.agent_id[message.sender]]["message"] = json.dumps(content_json)
+            elif "sde" in self.task:
+                if message.sender == "code_tester":
+                    pre_message, message_ = message.content.split("\n")
+                    message_ = "{}\n{}".format(pre_message, json.loads(message_)["feedback"])
+                    _format[self.agent_id[message.sender]]["message"] = "[{}]: {}".format(
+                        message.sender, message_
+                    )
+                else:
+                    _format[self.agent_id[message.sender]]["message"] = "[{}]: {}".format(
+                        message.sender, message.content
+                    )
+
             else:
                 _format[self.agent_id[message.sender]]["message"] = "[{}]: {}".format(
                     message.sender, message.content
                 )
+
         return _format
 
     def gen_output(self):
@@ -292,29 +327,42 @@ class UI:
             if self.task == "db_diag":
                 msg_json = json.loads(msg)
                 self.solution_status = [False] * self.tot_solutions
-                msg = msg_json["speak"]
+                msg = msg_json["diagnose"]
                 if msg_json["solution"] != "":
-                    solution = msg_json["solution"]
+                    solution: List[str] = msg_json["solution"]
                     for solu in solution:
-                        msg = f"{msg}<br>{solu}"
-                        if "rewrite slow query" in solu:
+                        if "query" in solu or "queries" in solu:
                             self.solution_status[0] = True
-                        if "add query hints" in solu:
+                            solu = solu.replace("query", '<span style="color:yellow;">query</span>')
+                            solu = solu.replace("queries", '<span style="color:yellow;">queries</span>')
+                        if "join" in solu:
                             self.solution_status[1] = True
-                        if "update indexes" in solu:
+                            solu = solu.replace("join", '<span style="color:yellow;">join</span>')
+                        if "index" in solu:
                             self.solution_status[2] = True
-                        if "tune parameters" in solu:
+                            solu = solu.replace("index", '<span style="color:yellow;">index</span>')
+                        if "system configuration" in solu:
                             self.solution_status[3] = True
-                        if "gather more information" in solu:
+                            solu = solu.replace("system configuration",
+                                                '<span style="color:yellow;">system configuration</span>')
+                        if "monitor" in solu or "Monitor" in solu or "Investigate" in solu:
                             self.solution_status[4] = True
+                            solu = solu.replace("monitor", '<span style="color:yellow;">monitor</span>')
+                            solu = solu.replace("Monitor", '<span style="color:yellow;">Monitor</span>')
+                            solu = solu.replace("Investigate", '<span style="color:yellow;">Investigate</span>')
+                        msg = f"{msg}<br>{solu}"
                 if msg_json["knowledge"] != "":
-                    msg = f'{msg}<hr style="margin: 5px 0">{msg_json["knowledge"]}'
-            message += (
-                    f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
-                    f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
-                    f'<div style="background-color: gray; color: white; padding: 10px; border-radius: 10px; max-width: 70%;">'
-                    f"{msg}"
-                    f"</div></div>"
+                    msg = f'{msg}<hr style="margin: 5px 0"><span style="font-style: italic">{msg_json["knowledge"]}<span>'
+            else:
+                msg = msg.replace("<", "&lt;")
+                msg = msg.replace(">", "&gt;")
+            message = (
+                f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
+                f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
+                f'<div style="background-color: gray; color: white; padding: 10px; border-radius: 10px;'
+                f'max-width: 70%; white-space: pre-wrap">'
+                f"{msg}"
+                f"</div></div>" + message
             )
         message = '<div id="divDetail" style="height:600px;overflow:auto;">' + message + "</div>"
         return message
@@ -326,7 +374,7 @@ class UI:
         :return: [new image, new message]
         """
         self.backend.submit(message)
-        self.messages.append((-1, message))
+        self.messages.append((-1, f"[User]: {message}"))
         return self.gen_img([{"message": ""}] * len(self.agent_id)), self.gen_message()
 
     def launch(self):
@@ -345,12 +393,15 @@ class UI:
                             "Stop Autoplay", interactive=False
                         )
                         start_autoplay_btn = gr.Button("Start Autoplay", interactive=False)
-                    with gr.Row():
-                        rewrite_slow_query_btn = gr.Button("Rewrite Slow Query", visible=False)
-                        add_query_hints_btn = gr.Button("Add Query Hints", visible=False)
-                        update_indexes_btn = gr.Button("Update Indexes", visible=False)
-                        tune_parameters_btn = gr.Button("Tune Parameters", visible=False)
-                        gather_more_info_btn = gr.Button("Gather More Info", visible=False)
+                    with gr.Box(visible=False) as solutions:
+                        with gr.Column():
+                            gr.HTML("Optimization Solutions:")
+                            with gr.Row():
+                                rewrite_slow_query_btn = gr.Button("Rewrite Slow Query", visible=False)
+                                add_query_hints_btn = gr.Button("Add Query Hints", visible=False)
+                                update_indexes_btn = gr.Button("Update Indexes", visible=False)
+                                tune_parameters_btn = gr.Button("Tune Parameters", visible=False)
+                                gather_more_info_btn = gr.Button("Gather More Info", visible=False)
                 # text_output = gr.Textbox()
                 text_output = gr.HTML(self.reset()[1])
 
@@ -358,10 +409,13 @@ class UI:
             # stu_num = gr.Number(label="Student Number", precision=0)
             # stu_num = self.stu_num
 
-            user_msg = gr.Textbox()
-            submit_btn = gr.Button("Submit", variant="primary")
+            if self.task == "db_diag":
+                user_msg = gr.Textbox()
+                submit_btn = gr.Button("Submit", variant="primary")
 
-            submit_btn.click(fn=self.submit, inputs=user_msg, outputs=[image_output, text_output], show_progress=False)
+                submit_btn.click(fn=self.submit, inputs=user_msg, outputs=[image_output, text_output], show_progress=False)
+            else:
+                pass
 
             # next_btn.click(fn=self.gen_output, inputs=None, outputs=[image_output, text_output], show_progress=False)
             next_btn.click(
@@ -376,7 +430,8 @@ class UI:
                     add_query_hints_btn,
                     update_indexes_btn,
                     tune_parameters_btn,
-                    gather_more_info_btn
+                    gather_more_info_btn,
+                    solutions
                 ],
                 show_progress=False,
             )
@@ -397,7 +452,8 @@ class UI:
                     add_query_hints_btn,
                     update_indexes_btn,
                     tune_parameters_btn,
-                    gather_more_info_btn
+                    gather_more_info_btn,
+                    solutions
                 ],
                 show_progress=False,
             )
@@ -421,7 +477,8 @@ class UI:
                     add_query_hints_btn,
                     update_indexes_btn,
                     tune_parameters_btn,
-                    gather_more_info_btn
+                    gather_more_info_btn,
+                    solutions
                 ],
                 show_progress=False,
             )

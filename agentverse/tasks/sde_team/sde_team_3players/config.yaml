@@ -1,0 +1,252 @@
+prompts:
+  prompt: &prompt |-
+    You are working in a programming team to solve a python code implementation problem.
+
+    ${role_description}
+
+    ${chat_history}
+  
+  code_writer_role_prompt: &code_writer_role_prompt |
+    You are a professional coding assistant. You will be given a function signature and docstring (in <problem>). You should copy the import statement, the function signature first and then finish the function body. Before writing any code, you should first think about the task and write down your thoughts in <thought>. Then you can write your code in <code>.
+
+    Your submitted code (in <current code>) will be tested on a series of unit tests. You will be given the feedback (in <unit test feedback>) of the test, together with the review of your code (in <code review>) of a professional code reviewer. You can use these feedbacks to refine your code. The refinement will take multiple iterations. You can use the <thought> to record your thoughts during the refinement.
+
+    Here is the steps of the code writing and refinement process:
+    1 - generate <thought>
+    2 - generate <code>
+
+    The following is two examples on code writing and refinement.
+
+    [Example on code writing]:
+
+    <problem>:
+    def is_palindrome(x: int) -> bool:
+    """ Given an integer x, return True if x is a palindrome, and False otherwise.
+    An integer is a palindrome when it reads the same forward and backward.
+    >>> is_palindrome(121)
+    True
+    >>> is_palindrome(10)
+    False
+    """
+
+    <thought>:
+    I need to convert the integer to a string and then check if the string is a palindrome.
+
+    <code>:
+    def is_palindrome(x: int) -> bool:
+        s = str(x)
+        return s == s[::-1]
+
+    [Example on refinement]:
+
+    <problem>:
+    from typing import List
+
+    def two_sum(nums: List[int], target: int) -> List[int]:
+    """ Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+    You may assume that each input would have exactly one solution, and you may not use the same element twice. 
+    The answer should be in an ascending order.
+    >>> two_sum([2,7,11,15], 9)
+    [0, 1]
+    >>> two_sum([3,2,4], 6)
+    [1, 2]
+    """
+
+    <current code>:
+    from typing import List
+
+    def two_sum(nums: List[int], target: int) -> List[int]:
+        for i in range(len(nums)):
+            for j in range(len(nums)):
+                if nums[i] + nums[j] == target:
+                    return [i, j]
+
+    <unit test feedback>:
+    {"is_passing": false, "feedback": "Tested passed:\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\nassert two_sum([3, 5, 2, 7], 9) == [2, 3]\n\nTests failed:\nassert two_sum([3, 2, 4], 6) == [1, 2] # output: [0, 0]"}
+
+    <code review>:
+    The previous code is not correct. It failed all the tests. The second for loop should start from i + 1.
+
+    <thought>:
+    The code reviewer is right. I should start the second for loop from i + 1.
+
+    <code>:
+    from typing import List
+
+    def two_sum(nums: List[int], target: int) -> List[int]:
+        for i in range(len(nums)):
+            for j in range(i + 1, len(nums)):
+                if nums[i] + nums[j] == target:
+                    return [i, j]
+
+    [Start of new task]:
+
+    Now please solve the following problem.
+
+    <problem>:
+    def longestPalindrome(self, s: str) -> str:
+    """ Given a string s, return the longest palindromic substring in s.
+    >>> longestPalindrome("babcsd")
+    "bab"
+    >>> longestPalindrome("cbxxbd")
+    "bxxb"
+    """
+    
+  
+  code_reviewer_role_prompt: &code_reviewer_role_prompt |
+    You are a professional code reviewer. You will be given a function signature and docstring in <problem>. A code writer has submitted his completion in <submitted code>.
+    The code has been executed on a series of unit tests. The execution feedback is provided in <unit test feedback>. Your job is to write a code review in <code review> to help the code writer improve his code.
+
+    The following is an examples.
+
+    [Example]:
+
+    <problem>:
+    from typing import List
+
+    def two_sum(nums: List[int], target: int) -> List[int]:
+    """ Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+    You may assume that each input would have exactly one solution, and you may not use the same element twice. 
+    The answer should be in an ascending order.
+    >>> two_sum([2,7,11,15], 9)
+    [0, 1]
+    >>> two_sum([3,2,4], 6)
+    [1, 2]
+    """
+
+    <current code>:
+    from typing import List
+
+    def two_sum(nums: List[int], target: int) -> List[int]:
+        for i in range(len(nums)):
+            for j in range(len(nums)):
+                if nums[i] + nums[j] == target:
+                    return [i, j]
+
+    <unit test feedback>:
+    {"is_passing": false, "feedback": "Tested passed:\nassert two_sum([2, 7, 11, 15], 9) == [0, 1]\nassert two_sum([3, 5, 2, 7], 9) == [2, 3]\n\nTests failed:\nassert two_sum([3, 2, 4], 6) == [1, 2] # output: [0, 0]"}
+
+    <code review>:
+    The previous code is not correct. It failed all the tests. The second for loop should start from i + 1.
+
+    [Start of new task]:
+
+    Now please review the following submitted code.
+
+    <problem>:
+    def longestPalindrome(self, s: str) -> str:
+    """ Given a string s, return the longest palindromic substring in s.
+    >>> longestPalindrome("babcsd")
+    "bab"
+    >>> longestPalindrome("cbxxbd")
+    "bxxb"
+    """
+    
+
+  unit_test_generator_role_prompt: &unit_test_generator_role_prompt |
+    You are a code tester that produces unit test case. You will be given a function signature and docstring in <problem>.  Your job is to reason and write ONE unit test case in <unit test> to test the code.
+
+    Here is the steps to write a unit test case.
+    1 - compose a valid input in <input> 
+    2 - given the <input>, generate <thought on output>
+    3 - generate the correct expected output <output>
+    4 - generate the assertion statement <unit test>
+
+    The following is an examples.
+
+    [Example]:
+
+    <problem>:
+    from typing import List
+
+    def two_sum(nums: List[int], target: int) -> List[int]:
+    """ Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+    You may assume that each input would have exactly one solution, and you may not use the same element twice. 
+    The answer should be in an ascending order.
+    >>> two_sum([2,7,11,15], 9)
+    [0, 1]
+    >>> two_sum([3,2,4], 6)
+    [1, 2]
+    """
+
+    <input>:
+    [5, 7, 1, 9, 3], 14
+
+    <thought on output>:
+    The output should be a list of two indices that sum up to 14. 5 (index 0) + 9 (index 3) = 14. So the output should be [0, 3].
+
+    <output>:
+    [0, 3]
+
+    <unit test>:
+    assert two_sum([5, 7, 1, 9, 3], 14) == [0, 3]
+
+    [Start of new task]:
+
+    Now please write a unit test case for the following problem. There are serveral guys doing the same task, you should try to compose a unique test case.
+
+    <problem>:
+    def longestPalindrome(self, s: str) -> str:
+    """ Given a string s, return the longest palindromic substring in s.
+    >>> longestPalindrome("babcsd")
+    "bab"
+    >>> longestPalindrome("cbxxbd")
+    "bxxb"
+    """
+    
+# tools: &tools
+#   - tool_name: "execute_unit_tests"
+#     tool_url: "http://127.0.0.1:8079/tools/execute_unit_tests/"
+
+environment:
+  env_type: sde_team
+  max_turns: 5
+  task_name: HumanEval/0
+  rule:
+    order:
+      type: sde_team
+    visibility:
+      type: all
+    selector:
+      type: sde_team
+    updater:
+      type: sde_team
+    describer:
+      type: basic
+
+agents:
+  - agent_type: conversation
+    name: code_writer
+    role_description: *code_writer_role_prompt
+    memory:
+      memory_type: sde_team
+    prompt_template: *prompt
+    verbose: true
+    receiver: [code_writer, code_reviewer]
+    llm:
+      llm_type: gpt-3.5-turbo
+      temperature: 0.3
+      max_tokens: 1024
+
+  - agent_type: conversation
+    name: code_reviewer
+    role_description: *code_reviewer_role_prompt
+    memory:
+      memory_type: sde_team
+    prompt_template: *prompt
+    verbose: true
+    receiver: [code_writer]
+    llm:
+      llm_type: gpt-3.5-turbo
+      temperature: 0.3
+      max_tokens: 1024
+
+  - agent_type: conversation
+    name: unit_test_generator
+    role_description: *unit_test_generator_role_prompt
+    prompt_template: *prompt
+    verbose: true
+    llm:
+      llm_type: gpt-3.5-turbo
+      temperature: 1.0
+      max_tokens: 1024
