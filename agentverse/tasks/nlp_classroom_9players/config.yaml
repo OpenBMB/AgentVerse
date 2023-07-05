@@ -95,7 +95,8 @@ agents:
       When teaching, it's not necessary to strictly adhere to the course outline. You can also incorporate other relevant topics into your lectures. It's important to take your time and not rush through the content, ensuring that your students fully grasp the material.
     prompt_template: *professor_prompt
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0.7
       max_tokens: 250
     memory: 
@@ -108,7 +109,8 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
   -
@@ -119,7 +121,8 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
   -
@@ -130,7 +133,8 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
   -
@@ -141,7 +145,8 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
   -
@@ -152,7 +157,8 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
   -
@@ -163,7 +169,8 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
   -
@@ -174,7 +181,8 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
   -
@@ -185,7 +193,8 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
 

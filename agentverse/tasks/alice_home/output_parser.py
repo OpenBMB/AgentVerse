@@ -3,10 +3,8 @@ from __future__ import annotations
 import re
 from typing import Union
 
-# from langchain.agents import AgentOutputParser
 from agentverse.parser import OutputParser, LLMResult
 
-# from langchain.schema import AgentAction, AgentFinish
 from agentverse.utils import AgentAction, AgentFinish
 
 from agentverse.parser import OutputParserError, output_parser_registry
@@ -21,13 +19,11 @@ class AliceHomeParser(OutputParser):
         cleaned_output = cleaned_output.split("\n")
         if not (
             len(cleaned_output) == 2
-            and cleaned_output[0].startswith("Action:")
-            and cleaned_output[1].startswith("Action Input:")
+            and cleaned_output[0].startswith("Thought:")
+            and cleaned_output[1].startswith("Action:")
         ):
             raise OutputParserError(text)
-        action = cleaned_output[0][len("Action:") :].strip()
-        action_input = cleaned_output[1][len("Action Input:") :].strip()
-        if action == "Speak":
-            return AgentFinish({"output": action_input}, text)
-        else:
-            raise OutputParserError(text)
+
+        action = cleaned_output[1][len("Action:"):].strip()
+
+        return AgentFinish({"output": action}, text)

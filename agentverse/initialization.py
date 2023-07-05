@@ -1,27 +1,26 @@
+from __future__ import annotations
+
 import os
-from typing import Dict, List
+from typing import Dict, List, TYPE_CHECKING
 
 import yaml
-from bmtools.agent.singletool import import_all_apis, load_single_tools
-from langchain.agents import Agent as langchainAgent
+try:
+    from bmtools.agent.singletool import import_all_apis, load_single_tools
+except:
+    print("BMTools is not installed, tools cannot be used. To install BMTools, \
+         please follow the instruction in the README.md file.")
 
-# from langchain.chat_models import ChatOpenAI
-# from langchain.chat_models.base import BaseChatModel
-# from langchain.llms import OpenAI
-# from langchain.llms.base import BaseLLM
-from agentverse.llms import OpenAICompletion, OpenAIChat, llm_registry
+from agentverse.llms import llm_registry
 
-# from langchain.memory import ChatMessageHistory
-from langchain.memory.prompt import _DEFAULT_SUMMARIZER_TEMPLATE
-from langchain.prompts import PromptTemplate
-
-# from agentverse.agents import Agent
 from agentverse.agents import agent_registry
 from agentverse.environments import BaseEnvironment, env_registry
 from agentverse.memory import memory_registry
+from agentverse.memory_manipulator import memory_manipulator_registry
 
-# from agentverse.memory.memory import SummaryMemory
 from agentverse.parser import output_parser_registry
+
+if TYPE_CHECKING:
+    from agentverse.agents import BaseAgent
 
 
 def load_llm(llm_config: Dict):
@@ -33,6 +32,10 @@ def load_llm(llm_config: Dict):
 def load_memory(memory_config: Dict):
     memory_type = memory_config.pop("memory_type", "chat_history")
     return memory_registry.build(memory_type, **memory_config)
+
+def load_memory_manipulator(memory_manipulator_config: Dict):
+    memory_manipulator_type = memory_manipulator_config.pop("memory_manipulator_type", "basic")
+    return memory_manipulator_registry.build(memory_manipulator_type, **memory_manipulator_config)
 
 
 def load_tools(tool_config: List[Dict]):
@@ -50,19 +53,8 @@ def load_environment(env_config: Dict) -> BaseEnvironment:
     return env_registry.build(env_type, **env_config)
 
 
-def load_agent(agent_config: Dict) -> langchainAgent:
+def load_agent(agent_config: Dict) -> BaseAgent:
     agent_type = agent_config.pop("agent_type", "conversation")
-    # <<<<<<< HEAD
-    #     if agent_type == "conversation":
-    #         # agent = Agent.from_llm_and_tools(**agent_config)
-    #         agent = ConversationAgent(**agent_config)
-    #     elif agent_type == "OPR":
-    #         from agentverse.agents.agent_opr import AgentOPR
-
-    #         agent = AgentOPR(**agent_config)
-    #     else:
-    #         raise NotImplementedError("Agent type {} not found".format(agent_type))
-    # =======
     agent = agent_registry.build(agent_type, **agent_config)
     return agent
 
@@ -80,6 +72,12 @@ def prepare_task_config(task):
                 and task != "__pycache__"
             ):
                 all_tasks.append(task)
+                for subtask in os.listdir(os.path.join(all_task_dir, task)):
+                    if (
+                        os.path.isdir(os.path.join(all_task_dir, task, subtask))
+                        and subtask != "__pycache__"
+                    ):
+                        all_tasks.append(f"{task}/{subtask}")
         raise ValueError(f"Task {task} not found. Available tasks: {all_tasks}")
     if not os.path.exists(config_path):
         raise ValueError(
@@ -97,6 +95,10 @@ def prepare_task_config(task):
             agent_configs["tool_memory"] = load_memory(agent_configs["tool_memory"])
         llm = load_llm(agent_configs.get("llm", "text-davinci-003"))
         agent_configs["llm"] = llm
+
+        memory_manipulator = load_memory_manipulator(agent_configs.get("memory_manipulator", {}))
+        agent_configs["memory_manipulator"] = memory_manipulator
+
         agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
 
         agent_configs["output_parser"] = task_config["output_parser"]

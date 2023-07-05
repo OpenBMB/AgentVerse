@@ -1,12 +1,34 @@
 prompts:
   prompt: &prompt |-
     Now you are in the world of Pokémon Emerald, living as one of the characters. Brendan, a key character in the Pokémon Emerald world, will interact with you during your journey. Pay close attention to his conversations and respond authentically as your character. Your choices and dialogue will shape the course of your adventure. When you give your response, you should always output in the following format:
-    
     Thought: (your thought here)
-    Speak: (your words here)
+    Action: (an action name, can be Speak, MoveTo, or other actions)
+    Action Input: (the arguments for the action in json format, and NOTHING else)
+
+    For example, when you would like to talk to person XX, you can output in the following format:
+    Thought: (your thought here)
+    Action: Speak
+    Action Input: {"to": "XX", "text": "..."}
+
+    When you would like to do something in the current place, you can output in the following format:
+    Thought: (your thought here)
+    Action: (action_name)
+    Action Input: {"last_time": "xx minutes"}
+
+    When you would like to move to another place, you can output in the following format:
+    Thought: (your thought here)
+    Action: MoveTo
+    Action Input: {"to": "name_of_the_place"}
+
+    The places you can go include:
+    - Pokémon Center: The Pokémon Center is a place where you can get your Pokémon healed. A Pokémon Center is completely free of charge and is found in most major cities.
+    - Shop: The Shop is a place where you can buy the daily necessities.
+    - Bike Store: The Bike Store is a place where you can buy a bike.
+    - Park: The Park is a place where you can relax yourself. Many residents in the town like to go there to chat with others.
+    - Pokémon Gym: The Pokémon Gym is a place where Pokémon Trainers can battle Gym Leaders to earn Badges. These Badges serve as proof of a Trainer's skill and are necessary to enter the Pokémon League, which is a tournament where Trainers compete to become the regional Champion.
     
     ${role_description} 
-    Now, immerse yourself in this vibrant world and let your character's personality shine through your responses to Brendan. Good luck!
+    Now, immerse yourself in this vibrant world and let your character's personality shine. Good luck!
 
     Here is the conversation history so far:
     ${chat_history}
@@ -17,15 +39,37 @@ prompts:
 environment:
   env_type: pokemon
   max_turns: 10000000
+  locations:
+    - name: Pokémon Center
+      # description: The Pokémon Center is a place where you can get your Pokémon healed. A Pokémon Center is completely free of charge and is found in most major cities.
+      init_agents: 
+        - Maxie
+    - name: Shop
+      # description: The Shop is a place where you can buy the daily necessities.
+      init_agents: 
+        - Archie
+    - name: Bike Store
+      # description: The Bike Store is a place where you can buy a bike.
+      init_agents: 
+        - Joseph
+    - name: Park
+      # description: The Park is a place where you can relax yourself. Many residents in the town like to go there to chat with others.
+      init_agents: 
+        - May
+        - Birch
+    - name: Pokémon Gym
+      # description: The Pokémon Gym is a place where Pokémon Trainers can battle Gym Leaders to earn Badges. These Badges serve as proof of a Trainer's skill and are necessary to enter the Pokémon League, which is a tournament where Trainers compete to become the regional Champion.
+      init_agents: 
+        - Steven
   rule:
     order:
       type: sequential
     visibility:
-      type: oneself
+      type: pokemon
     selector:
-      type: basic
+      type: pokemon
     updater:
-      type: basic
+      type: pokemon
     describer:
       type: pokemon
 
@@ -45,6 +89,9 @@ agents:
       model: 'gpt-3.5-turbo'
       temperature: 0.7
       max_tokens: 1024
+      stop: |+
+
+        
   - agent_type: conversation
     name: Birch
     role_description: |-
@@ -60,6 +107,9 @@ agents:
       model: gpt-3.5-turbo
       temperature: 0.7
       max_tokens: 1024
+      stop: |+
+
+        
   - agent_type: conversation
     name: Steven
     role_description: |-
@@ -75,6 +125,9 @@ agents:
       model: gpt-3.5-turbo
       temperature: 0.7
       max_tokens: 1024
+      stop: |+
+
+        
   - agent_type: conversation
     name: Maxie
     role_description: |-
@@ -90,6 +143,9 @@ agents:
       model: gpt-3.5-turbo
       temperature: 0.7
       max_tokens: 1024
+      stop: |+
+
+        
   - agent_type: conversation
     name: Archie
     role_description: |-
@@ -105,6 +161,9 @@ agents:
       model: gpt-3.5-turbo
       temperature: 0.7
       max_tokens: 1024
+      stop: |+
+
+        
   - agent_type: conversation
     name: Joseph
     role_description: |-
@@ -120,5 +179,7 @@ agents:
       model: gpt-3.5-turbo
       temperature: 0.7
       max_tokens: 1024
+      stop: |+
 
+        
 tools:

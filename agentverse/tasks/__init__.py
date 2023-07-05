@@ -10,13 +10,10 @@ from .nlp_classroom_3players_withtool.output_parser import (
 from .nlp_classroom_9players_group.output_parser import NlpClassroom9PlayersGroupParser
 from .db_diag.output_parser import DBDiag
 
-from .prisoner_dilema.output_parser import PrisonerDilemaParser
-from .prisoner_dilema.base.output_parser import PrisonerDilemaParser
-from .prisoner_dilema.s1_p_r.output_parser import PrisonerDilemaParser
-from .prisoner_dilema.police.output_parser import PrisonerDilemaParser
-from .prisoner_dilema.s2_p_r.output_parser import PrisonerDilemaParser
-from .prisoner_dilema.no_goal_s1.output_parser import PrisonerDilemaParser
+from .prisoner_dilemma.output_parser import PrisonerDilemmaParser
 
 from .pokemon.output_parser import PokemonParser
+from .sde_team.sde_team_3players.output_parser import SdeTeamParser
+from .sde_team.sde_team_2players.output_parser import SdeTeamGivenTestsParser
 
 from .alice_home.output_parser import AliceHomeParser

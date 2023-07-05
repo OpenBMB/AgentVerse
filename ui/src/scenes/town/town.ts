@@ -1,12 +1,5 @@
 import * as Phaser from "phaser";
-import {
-  Scene,
-  Tilemaps,
-  GameObjects,
-  Physics,
-  Input,
-  Math as Mathph,
-} from "phaser";
+import { Scene, Tilemaps, GameObjects, Physics, Math as Mathph } from "phaser";
 import { Player } from "../../classes/player";
 import { NPC } from "../../classes/npc";
 import { DIRECTION } from "../../utils";
@@ -15,12 +8,16 @@ import {
   Click,
 } from "../../phaser3-rex-plugins/templates/ui/ui-components";
 import UIPlugin from "../../phaser3-rex-plugins/templates/ui/ui-plugin";
-
-const COLOR_PRIMARY = 0x4e342e;
-const COLOR_LIGHT = 0x7b5e57;
-const COLOR_DARK = 0x260e04;
+import BoardPlugin from "../../phaser3-rex-plugins/plugins/board-plugin";
+import { PathFinder } from "../../phaser3-rex-plugins/plugins/board-components";
+import { TileXYType } from "../../phaser3-rex-plugins/plugins/board/types/Position";
+import { shuffle } from "../../utils";
+import { COLOR_DARK, COLOR_LIGHT, COLOR_PRIMARY } from "../../constants";
 
 export class TownScene extends Scene {
+  private timeFrame: number = 0;
+  private isQuerying: boolean = false;
+
   private map: Tilemaps.Tilemap;
   private tileset: Tilemaps.Tileset;
   private groundLayer: Tilemaps.TilemapLayer;
@@ -32,14 +29,102 @@ export class TownScene extends Scene {
   private player: Player;
   private npcGroup: GameObjects.Group;
   private keySpace: Phaser.Input.Keyboard.Key;
-  private rexUI: UIPlugin;
+  private keyEnter: Phaser.Input.Keyboard.Key;
+  public rexUI: UIPlugin;
+  public rexBoard: BoardPlugin;
+  private board: BoardPlugin.Board;
+  private pathFinder: PathFinder;
 
   constructor() {
     super("town-scene");
   }
 
   create(): void {
-    // Background
+    this.keySpace = this.input.keyboard!.addKey("SPACE");
+    this.keyEnter = this.input.keyboard!.addKey("ENTER");
+    this.initMap();
+    this.initSprite();
+    this.initCamera();
+    // this.add.grid(0, 0, 1024, 1024, 16, 16, 0x000000).setAlpha(0.1);
+  }
+
+  update(time, delta): void {
+    this.timeFrame += delta;
+    this.player.update();
+
+    this.npcGroup.getChildren().forEach(function (npc) {
+      (npc as NPC).update();
+    });
+    if (this.timeFrame > 5000) {
+      if (!this.isQuerying) {
+        this.isQuerying = true;
+        var allNpcs = this.npcGroup.getChildren();
+        var shouldUpdate = [];
+
+        for (let i = 0; i < this.npcGroup.getLength(); i++) {
+          // for (let i = 0; i < 1; i++) {
+          if (
+            !(allNpcs[i] as NPC).isMoving() &&
+            !(allNpcs[i] as NPC).isTalking()
+          ) {
+            shouldUpdate.push(i);
+          }
+        }
+
+        fetch("http://127.0.0.1:10002/make_decision", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({
+            agent_ids: shouldUpdate,
+          }),
+        }).then((response) => {
+          response.json().then((data) => {
+            this.npcGroup.getChildren().forEach(function (npc) {
+              (npc as NPC).destroyTextBox();
+            });
+            for (let i = 0; i < data.length; i++) {
+              var npc = allNpcs[shouldUpdate[i]] as NPC;
+              if (data[i].content == "") continue;
+              var content = JSON.parse(data[i].content);
+              switch (content.action) {
+                case "MoveTo":
+                  var tile = this.getRandomTileAtLocation(content.to);
+                  if (tile == undefined) break;
+                  npc.destroyTextBox();
+                  this.moveNPC(shouldUpdate[i], tile, undefined, content.to);
+                  break;
+                case "Speak":
+                  var ret = this.getNPCNeighbor(content.to);
+                  var tile = ret[0];
+                  var finalDirection = ret[1];
+                  var listener = ret[2];
+                  if (tile == undefined) break;
+                  this.moveNPC(
+                    shouldUpdate[i],
+                    tile,
+                    finalDirection,
+                    undefined,
+                    listener
+                  );
+                  npc.setTextBox(content.text);
+                  break;
+                default:
+                  npc.setTextBox("[" + content.action + "]");
+                  break;
+              }
+            }
+            this.isQuerying = false;
+          });
+        });
+      }
+      this.timeFrame = 0;
+    }
+  }
+
+  initMap(): void {
     this.map = this.make.tilemap({
       key: "town",
       tileWidth: 16,
@@ -55,41 +140,94 @@ export class TownScene extends Scene {
     this.wallLayer.setCollisionByProperty({ collides: true });
     this.treeLayer.setCollisionByProperty({ collides: true });
     this.houseLayer.setCollisionByProperty({ collides: true });
+    this.board = this.rexBoard.createBoardFromTilemap(this.map);
+    this.board.getAllChess().forEach((chess) => {
+      var collide = ["wall", "tree", "house"].includes(chess.layer.name);
+      if (collide && chess.index != -1) {
+        chess.rexChess.setBlocker();
+      }
+    });
+    this.pathFinder = this.rexBoard.add.pathFinder({
+      occupiedTest: true,
+      blockerTest: true,
+      pathMode: "straight",
+      cacheCost: true,
+    });
+  }
 
-    this.keySpace = this.input.keyboard!.addKey("SPACE");
-
+  initSprite(): void {
     // NPC
     this.npcGroup = this.add.group();
     var npcPoints = this.map.filterObjects("npcs", (npc) => {
       return npc.type === "npc";
     });
-    var npcs = npcPoints.map((npc) => {
-      var id_property = npc.properties.filter((property) => {
-        return property.name === "id";
+    for (let i = 0; i < npcPoints.length; i++) {
+      var npcPoint = this.map.findObject("npcs", (npc) => {
+        for (let j = 0; j < npc.properties.length; j++) {
+          if (npc.properties[j].name === "id") {
+            return npc.properties[j].value === i;
+          }
+        }
       });
-      this.npcGroup.add(
-        new NPC(this, npc.x, npc.y, npc.name, id_property[0].value)
+      var tileXY = this.board.worldXYToTileXY(npcPoint.x, npcPoint.y);
+      var npc = new NPC(
+        this,
+        this.board,
+        npcPoint.x,
+        npcPoint.y,
+        npcPoint.name,
+        npcPoint.properties[0].value
       );
-    });
+      this.board.addChess(npc, tileXY.x, tileXY.y, 0, true);
+      this.physics.add.collider(npc, this.npcGroup);
+      this.npcGroup.add(npc);
+    }
+
     this.physics.add.collider(this.npcGroup, this.wallLayer);
     this.physics.add.collider(this.npcGroup, this.treeLayer);
     this.physics.add.collider(this.npcGroup, this.houseLayer);
+    // this.physics.add.collider(this.npcGroup, this.npcGroup);
 
     // Player
-    this.player = new Player(this, 256, 250);
+    this.player = new Player(this, 288, 240);
     this.physics.add.collider(this.player, this.wallLayer);
     this.physics.add.collider(this.player, this.treeLayer);
     this.physics.add.collider(this.player, this.houseLayer);
-    this.physics.add.collider(this.player, this.npcGroup);
+    this.physics.add.collider(
+      this.player,
+      this.npcGroup,
+      (player: Player, npc: NPC) => {
+        npc.pauseMoving();
+        var checkResumeWalk = this.time.addEvent({
+          delay: 1000,
+          callback: () => {
+            const nearbyDistance = 1.1 * Math.max(player.width, player.height);
+            var distance = Mathph.Distance.Between(
+              player.x,
+              player.y,
+              npc.x,
+              npc.y
+            );
+            if (distance > nearbyDistance) {
+              npc.resumeMoving();
+              checkResumeWalk.destroy();
+            }
+          },
+        });
+      }
+    );
 
     this.keySpace.on("up", () => {
       var ret = getNearbyNPC(this.player, this.npcGroup);
       var npc = ret[0];
       if (npc) {
+        npc = npc as NPC;
         (npc as NPC).changeDirection(ret[1]);
+        (npc as NPC).setTalking(true);
         this.createInputBox(npc);
       }
     });
+    // this.keyEnter.on("up", () => {});
 
     this.physics.world.setBounds(
       0,
@@ -97,8 +235,9 @@ export class TownScene extends Scene {
       this.groundLayer.width + this.player.width,
       this.groundLayer.height
     );
+  }
 
-    // Camera;
+  initCamera(): void {
     this.cameras.main.setSize(this.game.scale.width, this.game.scale.height);
     this.cameras.main.setBounds(
       0,
@@ -108,13 +247,6 @@ export class TownScene extends Scene {
     );
     this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
     this.cameras.main.setZoom(4);
-  }
-
-  update(): void {
-    this.player.update();
-    this.npcGroup.getChildren().forEach(function (npc) {
-      (npc as NPC).update();
-    });
   }
 
   disableKeyboard(): void {
@@ -236,7 +368,6 @@ export class TownScene extends Scene {
       },
       loop: true,
     });
-    debugger;
     fetch("http://127.0.0.1:10002/chat", {
       method: "POST",
       headers: {
@@ -251,16 +382,18 @@ export class TownScene extends Scene {
       }),
     }).then((response) => {
       response.json().then((data) => {
-        console.log(data);
+        // console.log(data);
         timer.destroy();
         waitingBox.destroy();
+        var content = JSON.parse(data.content);
         var responseBox = this.createTextBox()
-          .start(data.content, 50)
+          .start(content.text, 25)
           .on("complete", () => {
             this.enableKeyboard();
-            this.input.keyboard.on("keyup", () => {
+            this.input.keyboard.on("keydown", () => {
               responseBox.destroy();
-              this.input.keyboard.off("keyup");
+              this.input.keyboard.off("keydown");
+              (npc as NPC).setTalking(false);
             });
           });
       });
@@ -307,8 +440,96 @@ export class TownScene extends Scene {
       })
       .setScale(0.25, 0.25)
       .setOrigin(0)
+      .setDepth(Number.MAX_SAFE_INTEGER)
       .layout();
     return textBox;
+  }
+
+  getRandomTileAtLocation(location_name: string): TileXYType {
+    var location = this.map.findObject("location", function (object) {
+      return object.name == location_name;
+    });
+    var x = location.x;
+    var y = location.y;
+    var width = location.width;
+    var height = location.height;
+    var cnt = 0;
+    debugger;
+    do {
+      if (cnt > 10) {
+        console.log("Failed to find a random tile");
+        return null;
+      }
+      var worldX = Math.floor(Math.random() * width) + x;
+      var worldY = Math.floor(Math.random() * height) + y;
+      var tile = this.board.worldXYToTileXY(worldX, worldY);
+      cnt++;
+    } while (
+      this.board.hasBlocker(tile.x, tile.y) || // has wall
+      this.board.tileXYToChessArray(tile.x, tile.y).length !=
+        this.map.layers.length // has npc
+    );
+    return tile;
+  }
+
+  getNPCNeighbor(npc_name: string): [TileXYType, number, NPC] {
+    var npc = this.npcGroup.getChildren().find((npc) => {
+      return (npc as NPC).name == npc_name;
+    }) as NPC;
+    var npcTile = this.board.worldXYToTileXY(npc.x, npc.y);
+    var directions = [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ];
+    var order = shuffle([0, 1, 2, 3]);
+    var tileX = undefined;
+    var tileY = undefined;
+    for (let i = 0; i < 4; i++) {
+      var direction = directions[order[i]];
+      var tmpX = npcTile.x + direction[0];
+      var tmpY = npcTile.y + direction[1];
+      if (
+        !this.board.hasBlocker(tmpX, tmpY) && // no wall
+        this.board.tileXYToChessArray(tmpX, tmpY).length ==
+          this.map.layers.length // no npc)
+      ) {
+        tileX = tmpX;
+        tileY = tmpY;
+        break;
+      }
+    }
+    var finalDirection = DIRECTION.DOWN;
+    if (direction[0] == 0 && direction[1] == 1) {
+      finalDirection = DIRECTION.UP;
+    } else if (direction[0] == 0 && direction[1] == -1) {
+      finalDirection = DIRECTION.DOWN;
+    } else if (direction[0] == 1 && direction[1] == 0) {
+      finalDirection = DIRECTION.LEFT;
+    } else if (direction[0] == -1 && direction[1] == 0) {
+      finalDirection = DIRECTION.RIGHT;
+    }
+    return [{ x: tileX, y: tileY }, finalDirection, npc];
+  }
+
+  moveNPC(
+    npcId: number,
+    tile,
+    finalDirection: number = undefined,
+    targetLocation: string = undefined,
+    targetNPC: NPC = undefined
+  ): void {
+    var npc = this.npcGroup.getChildren()[npcId] as NPC;
+    var npc_chess = this.board.worldXYToChess(npc.x, npc.y);
+    this.pathFinder.setChess(npc_chess);
+    // var tmp = this.board.chessToTileXYZ(npc_chess);
+    var path = this.pathFinder.findPath({
+      x: tile.x,
+      y: tile.y,
+    } as TileXYType);
+    npc.setTargetNPC(targetNPC);
+    npc.moveAlongPath(path, finalDirection, targetLocation);
   }
 }
 

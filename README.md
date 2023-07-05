@@ -4,54 +4,135 @@
     <p>A Framework for Multi-LLM Environment Simulation</p>
 </h3>
 <p align="center">
-    <a href="">
+    <a href="https://github.com/OpenBMB/AgentVerse/blob/main/LICENSE">
         <img alt="License: Apache2" src="https://img.shields.io/badge/License-Apache_2.0-green.svg">
     </a>
-    <a href="https://www.python.org/downloads/release/python-3816">
-        <img alt="Documentation" src="https://img.shields.io/badge/python-3.8+-blue.svg">
+    <a href="https://www.python.org/downloads/release/python-3916/">
+        <img alt="Documentation" src="https://img.shields.io/badge/python-3.9+-blue.svg">
     </a>
 </p>
 
-🤖 **AgentVerse** 🪐 provides a flexible framework that simplifies the process of building custom multi-agent environments for large language models (LLMs). Our framework is designed to enable researchers to quickly build and customize their own environments with minimal effort, allowing them to focus on their research rather than implementation details.
+<p align="center">
+<img src="./imgs/title.png" width="512">
+</p>
+
+**AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
 
 ---
 
-### ✨ Features
+## ✨ Features
 
-- 🥳 **Efficient Environment Building:** Our framework offers a set of fundamental building blocks for creating a multi-agent environment with ease. With just a few lines in a configuration file, you can effortlessly construct simple environments such as a chat room for LLMs. This process involves specifying the environment's settings and prompts for LLMs, empowering researchers like you to focus on experimentation and analysis rather than wrestling with environment setup.
+- 🥳 **Efficient Environment Building:** Our framework provides a collection of essential building blocks for effortlessly creating a multi-agent environment. With only a few lines in a configuration file, you can easily construct basic environments such as a chat room for LLMs. This process entails defining the environment's settings and prompts for LLMs, enabling researchers like you to concentrate on experimentation and analysis.
 
-- ⚙️ **Customizable Components**: AgentVerse abstracts the multi-agent environment into five functional modules and defined their respective interfaces. For complex environments that cannot be built directly using the basic modules provided in AgentVerse, you can customize one or more of the interfaces in the five functional modules to quickly build your own multi-agent environment according to your needs. 
+- ⚙️ **Customizable Components**: AgentVerse simplifies the multi-agent environment by dividing it into five functional modules and defining their respective interfaces. For complex environments that cannot be constructed directly using the basic modules offered in AgentVerse, you can customize one or more of the interfaces within these five functional modules to efficiently create your own multi-agent environment according to your requirements.
 
 - 🛠 **Tools (Plugins) Utilization**: AgentVerse supports the multi-agent environments with tools. Currently, AgentVerse supports tools provided in [BMTools](https://github.com/OpenBMB/BMTools). 
 
-- 🤖 **Supports a Wide Range of LLMs**: You can easily customize your own LLM by implementing a new LLM by inheriting and extending our BaseLLM class (tutorial coming soon).
+## 📰 What's New
+- [2023/6/5] 🎉 We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun!
+- [2023/5/1] 🚀 [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched!
 
-### 🗓 Coming Soon
+## 🗓 Coming Soon
 
 - [ ] Demonstrate how to use AgentVerse to support the behavior of agents in a [sandbox environment GPT-World](https://github.com/ShengdingHu/GPT-World)
 - [ ] Add documentation
 - [ ] Support more sophisticated memory for conversation history
 - [ ] Add support for local LLM
 - [ ] Auto-generate UI based on the given multi-agent environment
-- [ ] ...
 
-### 👾 A Simple Demo Video
 
-We have created a video showcasing simple interactions between LLMs, with a LLM acting as the professor and others as students in a lecture on Transformer architecture. 
+## 👾 Simple Demo Video
 
+We demonstrate the following cases that are expertly crafted by AgentVerse.
 <!--
 ### [![Demo video](https://i.imgur.com/vKb2F1B.png)](https://youtu.be/9JCVfzMFhaM)
 -->
+<!--![image](imgs/multiagent-min.gif)-->
 
-![image](imgs/multiagent-min.gif)
+<!-- - **NLP Classroom**: -->
+
+#### NLP Classroom
+In the NLP class, the professor and students engage in interactive communication. When students have a question, they raise their hands and patiently wait for the professor to call on them. Only after being called on by the professor, students can speak and ask their questions.
+
+Use the following command to launch the NLP Classroom example:
+```bash
+python main_demo.py --task nlp_classroom_9players
+```
+
+https://github.com/OpenBMB/AgentVerse/assets/11704492/6ea07850-595e-4a28-a82e-f863011353c2
+
+
+#### Prisoner Dilemma
+A prisoner's Dilemma is a thought experiment that challenges two completely rational agents to a dilemma: they can cooperate with their partner for mutual benefit or betray their partner ("defect") for individual reward.
+
+Use the following command to launch the Prisoner Dilemma example:
+```bash
+python main_demo.py --task prisoner_dilemma
+```
+
+https://github.com/OpenBMB/AgentVerse/assets/11704492/017c46e5-c738-4fca-9352-b008e2d518bd
+
+
+#### Software Design
+In the Software Design example, a code writer, a code tester and a code reviewer collaborate on the code generation problem. Given a problem, the code writer first composes the code implementation. The code tester runs the unit tests and provides the feedback. The code viewer then generates a review. After collecting the test feedback and review, the code writer iteratively refines the code.
+
+Use the following command to launch the Software Design example:
+```bash
+python main_demo.py --task sde_team/sde_team_2players
+```
+
+https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4e54661626a
+
+
+#### [Database Administrator (DBA)](https://github.com/zhouxh19/AgentVerse_for_Database_Diagnosis)
+In the database diagnosis scenario, the Chief DBA monitors the database system for anomalies. If detected, the memory and CPU agents are alerted to analyze root causes and suggest optimization solutions. The Chief DBA then provides a summarized diagnosis to the user, who can also contribute by giving instructions or evaluating the effectiveness of proposed solutions.
+
+You should first configure the [database tool](https://github.com/OpenBMB/BMTools/blob/main/bmtools/tools/db_diag/readme.md) in BMTools, and launch the BMTools server according to the [guidance](https://github.com/OpenBMB/BMTools/tree/main#211-local-tools). Then use the following command to launch the Database Administrator example:
+```bash
+python main_demo.py --task db_diag
+```
+
+https://github.com/OpenBMB/AgentVerse/assets/11704492/c633419d-afbb-47d4-bb12-6bb512e7af3a
+
+
+#### Pokemon
+In the game, agents can visit shops, train their Pokémon at the gym, and interact with one another. As a player, you take on the role of an agent and can engage with others at any time. There are 6 characters in the Pokémon environment who appeared in Pokemon Emerald: [May](https://bulbapedia.bulbagarden.net/wiki/May_(game)), [Professor Birch](https://bulbapedia.bulbagarden.net/wiki/Professor_Birch), [Steven Stone](https://bulbapedia.bulbagarden.net/wiki/Steven_Stone), [Maxie](https://bulbapedia.bulbagarden.net/wiki/Maxie), [Archie](https://bulbapedia.bulbagarden.net/wiki/Archie) and [Joseph](https://bulbapedia.bulbagarden.net/wiki/Mr._Stone). 
+
+To launch the Pokemon game, first launch a local server with the following command:
+```bash
+uvicorn pokemon_server:app --reload --port 10002
+```
+Then open another terminal in the project's root path and run the following command:
+```bash
+cd ui
+# If you do not have npm installed, you need to install it before running the following commands 
+# https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+# We have tested on npm@9.6.4, node@20.0.0
+npm install
+npm run watch
+```
+Wait for the compilation to complete, and have fun! (WASD for moving around, and SPACE for launching a conversation.)
+
+https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f155e95782e7
 
 
 
-### Contents
+## Contents
 
+- [✨ Features](#-features)
+- [📰 What's New](#-whats-new)
+- [🗓 Coming Soon](#-coming-soon)
+- [👾 Simple Demo Video](#-simple-demo-video)
+    - [NLP Classroom](#nlp-classroom)
+    - [Prisoner Dilemma](#prisoner-dilemma)
+    - [Software Design](#software-design)
+    - [Database Administrator (DBA)](#database-administrator-dba)
+    - [Pokemon](#pokemon)
+- [Contents](#contents)
 - [🚀 Getting Started](#-getting-started)
   - [Installation](#installation)
-  - [Launch the Demo Locally](#launch-the-demo-locally)
+  - [CLI Example](#cli-example)
+  - [Local Website Demo](#local-website-demo)
 - [💡 Philosophy](#-philosophy)
   - [Environment](#environment)
   - [Agent](#agent)
@@ -70,13 +151,30 @@ We have created a video showcasing simple interactions between LLMs, with a LLM 
 ### Installation
 
 ```bash
-# Install the dependencies
-git clone https://github.com/OpenBMB/AgentVerse.git
+pip install -U agentverse
+```
+Or you can install the package by manually cloning the latest repository
+```bash
+git clone https://github.com/OpenBMB/AgentVerse.git --depth 1
+cd AgentVerse
 pip install -r requirements.txt
+```
+Some users have reported problems installing the `orjson` required by `gradio`. One simple workaround is to install it with Anaconda `conda install -c conda-forge orjson`.
 
+You also need to export your OpenAI API key as follows
+```bash
 # Export your OpenAI API key
 export OPENAI_API_KEY="your_api_key_here"
 ```
+
+If you want to use the tools provided by BMTools, you need to install BMTools as follows:
+```bash
+git clone git+https://github.com/OpenBMB/BMTools.git
+cd BMTools
+pip install -r requirements.txt
+python setup.py develop
+```
+
 
 <!--
 # Install BMTools
@@ -86,15 +184,17 @@ cd BMTools
 python setup.py develop
 -->
 
-### Launch the Demo Locally
+### CLI Example
 
-We have provided several basic examples that demonstrate the potential of our framework for constructing multi-agent environments. One such example is a classroom scenario where one agent assumes the role of the professor while the other eight agents act as students.
+You can create a multi-agent environments provided by us. Using the classroom scenario as an example. In this scenario, there are nine agents, one playing the role of a professor and the other eight as students.
 
 ```shell
 python3 main.py --task nlp_classroom_9players
 ```
 
-We also have a local website demo for this environment. You can launch it with
+### Local Website Demo
+
+We also provide a local website demo for this environment. You can launch it with
 
 ```shell
 python3 main_demo.py --task nlp_classroom_9players
@@ -120,8 +220,6 @@ By abstracting the environment into these five components, we have created a hig
 ### Agent
 
 Another fundamental component is the agent. Currently we provide two types of agents: **ConversationAgent** and **ToolAgent**. You can also customize your own agent by inheriting BaseAgent class (tutorial coming soon).
-
-
 
 ## ✍️ Customize Your Own Environment
 
@@ -178,7 +276,7 @@ agents:
     prompt_template: *professor_prompt
     llm:
       llm_type: text-davinci-003    # Will use OpenAICompletion LLM
-      model: text-davinci-003       # The argument passed to the api call
+      model: text-davinci-003       # The arguments passed to the api call
       temperature: 0.7
       max_tokens: 250
 ```
@@ -204,19 +302,22 @@ While we provide a basic framework for building environments with our five rule 
 
 1. **Customize the five rule components**. Each rule component has an interface, allowing you to customize its behavior to suit your specific needs. It's important to note that these components are not necessarily independent and can interact through the `rule_params` dictionary in the environment. You can create your own rule components and integrate them with the existing ones to build more complex interactions between agents.
 2. **Customize the environment itself**. Our `basic` environment provides a default execution order for the five rule components that is suitable for most cases, but you can inherit the `BaseEnvironment` class and write your own `run` method to implement a more sophisticated execution order.
-3. **Customize the agent**. Depending on your specific use case, you may also need to customize the `Agent` class. For example, you may want to use your local LLM as your agents or create agents with specialized knowledge or skills.
+3. **Customize the agent**. Depending on your specific use case, you may also need to inherite the `BaseAgent` class. For example, you may want to use your local LLM as your agents or create agents with specialized knowledge or skills.
 
 
 
 ## 🔎 Examples
 
-Currently, we offer five simple examples in the `agentverse/tasks` directory, each demonstrating different possibilities of our framework. While the performance of these examples may not be optimal due to limited prompt engineering, they are intended to showcase the capabilities of our framework, such as allowing the use of tools.
+Currently, we offer some simple examples in the `agentverse/tasks` directory, each demonstrating different possibilities of our framework. While the performance of these examples may not be optimal due to limited prompt engineering, they are intended to showcase the capabilities of our framework, such as allowing the use of tools.
 
 Here's a brief overview of each example:
 
-1. `nlp_classroom_3players`: An example demonstrating the simplicity of building a classroom with sequential speaking order.
-2. `nlp_classroom_9players`: This classroom introduces several. Here, students can raise their hand when they have a question, and the professor can call on the students to let them ask. Students are only allowed to speak after they are called on.
-3. `nlp_classroom_9players_group`: This example introduces group discussions. The professor can launch a group discussion when necessary, and students can only interact with other students in the same group during the group discussion.
+1. `nlp_classroom_3players`: This example illustrates a simple case in which agents will speak in sequential order. 
+2. `nlp_classroom_9players`: This is an NLP class example. Here, students can raise their hand when they have a question, and the professor can call on the students to let them ask. Students are only allowed to speak after they are called on.
+3. `nlp_classroom_9players_group`: This example showcases group discussions. The professor may initiate a group discussion when needed, and students can exclusively interact with fellow students within the same group during the discussion.
 4. `nlp_classroom_3players_withtool`: Students in this classroom can use Bing search API when listening to the class.
 5. `math_problem_2players_tools`: A simple example demonstrating how two agents can use the WolframAlpha API to play an arithmetic game.
-6. `prisoner_dilema`: A simple example showing how LLMs handle the prisoner dilema.
+6. `prisoner_dilema`: The Prisoner's Dilemma is a thought experiment involving two rational agents facing a choice between cooperating for mutual benefit or betraying their partner for individual gain.
+7. `db_diag`: The Chief DBA monitors (agents) the database system for anomalies and alerts memory and CPU agents if any are detected. They (agents) analyze root causes and suggest optimization solutions. The Chief DBA (agent) provides a diagnosis summary to the user, who can give instructions or evaluate the proposed solutions' effectiveness.
+8. `sde_team`: In the SDE team, code writer, code tester and code reviewer collaborate on the code generation problem. 
+9. `pokemon`:  This example intimates Pokemon game.

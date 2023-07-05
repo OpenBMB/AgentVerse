@@ -1,46 +1,41 @@
 import setuptools
-import os
-import os
+from setuptools.command.develop import develop
+import subprocess
 
+# with open("requirements.txt", "r") as f:
+#     requirements = f.read().splitlines()
 
-requires = """
-"""
+with open("README.md", "r", encoding='utf8') as fh:
+    long_description = fh.read()
 
-
-def get_requirements():
-    ret = [x for x in requires.split("\n") if len(x) > 0]
-    print("requirements:", ret)
-    return ret
-
-
-# path = os.path.dirname(os.path.abspath(__file__))
-# requires =  get_requirements(path)
-
-with open("README.md", "r") as f:
-    setuptools.setup(
-        name="agentverse",
-        version="0.0.1",
-        description="rovides a flexible framework that simplifies the process of building custom multi-agent environments for large language models (LLMs).",
-        long_description=open("README.md", "r", encoding="utf-8").read(),
-        long_description_content_type="text/markdown",
-        author="",
-        author_email="",
-        license="Apache",
-        url="",
-        keywords=["Agent", "WestWord"],
-        python_requires="~=3.8",
-        install_requires=get_requirements(),
-        package_dir={"agentverse": "agentverse"},
-        package_data={},
-        include_package_data=True,
-        packages=setuptools.find_packages(),
-        classifiers=[
-            "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 3.8",
-            "Intended Audience :: Developers",
-            "Intended Audience :: Education",
-            "Intended Audience :: Science/Research",
-            "License :: OSI Approved :: Apache Software License",
-            "Operating System :: OS Independent",
-        ],
-    )
+setuptools.setup(
+    name="agentverse",
+    version="0.1.3",
+    author="OpenBMB",
+    author_email="chenweize1998@gmail.com",
+    description="A versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs).",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/OpenBMB/AgentVerse",
+    packages=setuptools.find_packages(),
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        'License :: OSI Approved :: Apache Software License',
+        "Operating System :: OS Independent",
+    ],
+    python_requires=">=3.9",
+    install_requires=[
+        "PyYAML",
+        "fastapi",
+        "uvicorn",
+        "py3langid",
+        "iso-639",
+        "openai",
+        "opencv-python",
+        "gradio",
+        "httpx[socks]",
+        "astunparse",
+        "langchain",
+    ],
+    include_package_data = True,
+)
