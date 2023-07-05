@@ -97,20 +97,6 @@ class ReflectionAgent(BaseAgent):
 
         return message
 
-    def check_status_passive(self, ):
-        """Check if the current status needs to be finished. If so, examine the plan and initiate the next action.
-        """
-        if self.status_start_time is None: # fixing empty start time
-            self.status_start_time = self.current_time
-
-        if self.status_start_time+datetime.timedelta(self.status_duration) <= self.current_time:
-            next_plan = self.memory.planner.get_plan(current_time=self.current_time)
-            self.status_start_time = self.current_time
-            self.status = next_plan['status']
-            self.status_duration = next_plan['duration']
-        else:
-            logger.debug(f"{self.name} don't change status by plan: {self.status_start_time}, {datetime.timedelta(self.status_duration)}, {self.current_time}")
-
     async def astep(self, current_time: dt, env_description: str = "") -> Message:
         """Asynchronous version of step"""
         #use environment's time to update agent's time
@@ -215,10 +201,6 @@ class ReflectionAgent(BaseAgent):
 
     def add_message_to_memory(self, messages: List[Message]) -> None:
         self.memory.add_message(messages)
-
-    # Should call this when status changed, plan==status
-    def add_plan_to_memory(self,) -> None:
-        self.memory.add_plan(content=self.status, time=self.current_time)
 
     def reset(self, environment: BaseEnvironment) -> None:
         """Reset the agent"""
