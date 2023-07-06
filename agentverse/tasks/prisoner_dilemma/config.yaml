@@ -19,13 +19,8 @@ prompts:
 name: prisoner_dilemma
 
 environment:
-<<<<<<< HEAD:agentverse/tasks/prisoner_dilema/config.yaml
-  env_type: prisoner_dilema
-  max_turns: 12
-=======
   env_type: prisoner_dilemma
-  max_turns: 8
->>>>>>> main:agentverse/tasks/prisoner_dilemma/config.yaml
+  max_turns: 12
   rule:
     order:
       type: prisoner
