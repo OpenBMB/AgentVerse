@@ -32,7 +32,7 @@ name: alice_home
 environment:
   env_type: reflection
   max_turns: 30
-  current_time: "2023-04-01 07:00:00"
+  current_time: "2023-04-01 09:30:00"
   time_delta: 1800  # in seconds
   rule:
     order:
@@ -77,14 +77,14 @@ agents:
     memory: 
       memory_type: vectorstore
     memory_manipulator:
-      memory_manipulator_type: reflection
+      memory_manipulator_type: plan
     prompt_template: *prompt
     llm:
       model: "gpt-4"
       llm_type: gpt-4
       temperature: 0.3
       max_tokens: 128
-    current_time: "2023-04-01 07:00:00"
+      current_time: "2023-04-01 09:30:00"
   -
     agent_type: reflection
     name: Bob
@@ -120,6 +120,6 @@ agents:
       llm_type: gpt-4
       temperature: 0.3
       max_tokens: 128
-    current_time: "2023-04-01 07:00:00"
+    current_time: "2023-04-01 09:30:00"
 
 tools: ~
