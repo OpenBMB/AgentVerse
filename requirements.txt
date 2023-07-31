@@ -9,3 +9,4 @@ gradio
 httpx[socks]
 astunparse
 langchain
+scikit-learn
