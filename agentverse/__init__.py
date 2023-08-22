@@ -9,6 +9,7 @@ from .environments.rules.selector import selector_registry
 from .environments.rules.updater import updater_registry
 from .environments.rules.visibility import visibility_registry
 from .agentverse import AgentVerse
+from .agentversepipeline import AgentVersePipeline
 from .initialization import (
     prepare_task_config,
     load_agent,

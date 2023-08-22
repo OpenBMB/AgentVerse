@@ -5,11 +5,13 @@ from typing import TYPE_CHECKING, List, Tuple
 from . import updater_registry as UpdaterRegistry
 from .base import BaseUpdater
 from agentverse.message import Message
+from agentverse.logging import get_logger
 
 if TYPE_CHECKING:
     from agentverse.environments import BaseEnvironment
     from agentverse.agents import BaseAgent
 
+logger = get_logger(__name__)
 
 @UpdaterRegistry.register("basic")
 class BasicUpdater(BaseUpdater):
@@ -49,6 +51,7 @@ class BasicUpdater(BaseUpdater):
     def add_message_to_all_agents(
         self, agents: List[BaseAgent], message: Message
     ) -> bool:
+        print(message.receiver)
         if "all" in message.receiver:
             # If receiver is all, then add the message to all agents
             for agent in agents:
@@ -63,7 +66,10 @@ class BasicUpdater(BaseUpdater):
                     receiver_set.remove(agent.name)
             if len(receiver_set) > 0:
                 missing_receiver = ", ".join(list(receiver_set))
-                raise ValueError(
+                #raise ValueError(
+                #    "Receiver {} not found. Message discarded".format(missing_receiver)
+                #)
+                logger.warning(
                     "Receiver {} not found. Message discarded".format(missing_receiver)
                 )
             return True

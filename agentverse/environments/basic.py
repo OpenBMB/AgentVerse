@@ -1,11 +1,14 @@
 import asyncio
-import logging
+#import logging
+from agentverse.logging import get_logger
 from typing import Any, Dict, List
 
 # from agentverse.agents.agent import Agent
 from agentverse.agents.conversation_agent import BaseAgent
 from agentverse.environments.rules.base import Rule
 from agentverse.message import Message
+
+logger = get_logger(__name__)
 
 from . import env_registry as EnvironmentRegistry
 from .base import BaseEnvironment
@@ -80,7 +83,8 @@ class BasicEnvironment(BaseEnvironment):
     def print_messages(self, messages: List[Message]) -> None:
         for message in messages:
             if message is not None:
-                logging.info(f"{message.sender}: {message.content}")
+                #logging.info(f"{message.sender}: {message.content}")
+                logger.info(f"{message.sender}: {message.content}")
 
     def reset(self) -> None:
         """Reset the environment"""

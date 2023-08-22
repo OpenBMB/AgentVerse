@@ -21,7 +21,7 @@ class PrisonerDilemmaParser(OutputParser):
     encounter_cur_round: bool = False
 
     def parse(
-        self, agent: BaseAgent, environment: BaseEnvironment, output: LLMResult
+        self, agent: "BaseAgent", environment: "BaseEnvironment", output: LLMResult
     ) -> Union[AgentAction, AgentFinish]:
         text = output.content
         cleaned_output = text.strip()
@@ -37,7 +37,17 @@ class PrisonerDilemmaParser(OutputParser):
         action_input = cleaned_output[1][len("Action Input:") :].strip()
 
         if action == "Speak":
-            
+            # make sure the police count the round right
+            # if agent.name == "Police":
+            #     action_input = re.sub(r'Round (\d+)', f'Round {self.cur_round}', action_input)
+            #     self.cur_round += 1
+            #   if self.encounter_cur_round:
+            #       self.encounter_cur_round = False
+            #       self.cur_round += 1
+            #   else:
+            #       self.encounter_cur_round = True
+
+            # each time police speak is a new round
             if agent.name == "Police":
                 if environment.cnt_turn == (environment.max_turns - 4):
                     action_input = (

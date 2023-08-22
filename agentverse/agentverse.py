@@ -7,11 +7,11 @@ from agentverse.agents.conversation_agent import BaseAgent
 from agentverse.environments import BaseEnvironment
 from agentverse.initialization import load_agent, load_environment, prepare_task_config
 
-logging.basicConfig(
-    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-    datefmt="%m/%d/%Y %H:%M:%S",
-    level=logging.INFO,
-)
+# logging.basicConfig(
+#     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+#     datefmt="%m/%d/%Y %H:%M:%S",
+#     level=logging.INFO,
+# )
 
 openai_logger = logging.getLogger("openai")
 openai_logger.setLevel(logging.WARNING)

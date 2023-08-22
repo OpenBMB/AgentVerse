@@ -14,3 +14,11 @@ class AgentFinish(NamedTuple):
 
     return_values: dict
     log: str
+
+
+class AgentCriticism(NamedTuple):
+    """Agent's criticism."""
+
+    is_agree: bool
+    criticism: str
+    sender_agent: object = None

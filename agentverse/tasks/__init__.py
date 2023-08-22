@@ -16,4 +16,7 @@ from .pokemon.output_parser import PokemonParser
 from .sde_team.sde_team_3players.output_parser import SdeTeamParser
 from .sde_team.sde_team_2players.output_parser import SdeTeamGivenTestsParser
 
-from .alice_home.output_parser import AliceHomeParser
+from .pipeline_pythoncalculator.output_parser import PipelinePythoncalculatorParser
+from .pipeline_brainstorming.output_parser import PipelineBrainstormingParser
+from .pipeline_projectv.output_parser import PipelineProjectvParser
+from .pipeline_projecth.output_parser import PipelineProjecthParser

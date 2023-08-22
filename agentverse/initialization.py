@@ -15,7 +15,6 @@ from agentverse.llms import llm_registry
 from agentverse.agents import agent_registry
 from agentverse.environments import BaseEnvironment, env_registry
 from agentverse.memory import memory_registry
-from agentverse.memory_manipulator import memory_manipulator_registry
 
 from agentverse.parser import output_parser_registry
 
@@ -32,10 +31,6 @@ def load_llm(llm_config: Dict):
 def load_memory(memory_config: Dict):
     memory_type = memory_config.pop("memory_type", "chat_history")
     return memory_registry.build(memory_type, **memory_config)
-
-def load_memory_manipulator(memory_manipulator_config: Dict):
-    memory_manipulator_type = memory_manipulator_config.pop("memory_manipulator_type", "basic")
-    return memory_manipulator_registry.build(memory_manipulator_type, **memory_manipulator_config)
 
 
 def load_tools(tool_config: List[Dict]):
@@ -85,22 +80,23 @@ def prepare_task_config(task):
         )
     task_config = yaml.safe_load(open(config_path))
 
-    # Build the output parser
-    parser = output_parser_registry.build(task)
-    task_config["output_parser"] = parser
-
     for i, agent_configs in enumerate(task_config["agents"]):
         agent_configs["memory"] = load_memory(agent_configs.get("memory", {}))
         if agent_configs.get("tool_memory", None) is not None:
             agent_configs["tool_memory"] = load_memory(agent_configs["tool_memory"])
         llm = load_llm(agent_configs.get("llm", "text-davinci-003"))
         agent_configs["llm"] = llm
-
-        memory_manipulator = load_memory_manipulator(agent_configs.get("memory_manipulator", {}))
-        agent_configs["memory_manipulator"] = memory_manipulator
-
         agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
 
-        agent_configs["output_parser"] = task_config["output_parser"]
+        # Build the output parser
+        output_parser_config = agent_configs.get("output_parser", {})
+        if output_parser_config.get("type", None) == "role_assigner":
+            output_parser_config["cnt_critic_agents"] = task_config.get(
+                "cnt_critic_agents", 0
+            )
+        output_parser_name = output_parser_config.pop("type", task)
+        agent_configs["output_parser"] = output_parser_registry.build(
+            output_parser_name, **output_parser_config
+        )
 
     return task_config

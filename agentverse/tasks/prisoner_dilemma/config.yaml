@@ -20,7 +20,7 @@ name: prisoner_dilemma
 
 environment:
   env_type: prisoner_dilemma
-  max_turns: 12
+  max_turns: 8
   rule:
     order:
       type: prisoner

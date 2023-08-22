@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-import logging
+#import logging
+from agentverse.logging import get_logger
 import bdb
 from string import Template
 from typing import TYPE_CHECKING, List
@@ -10,6 +11,7 @@ from agentverse.message import Message
 from . import agent_registry
 from .base import BaseAgent
 
+logger = get_logger(__name__)
 
 @agent_registry.register("conversation")
 class ConversationAgent(BaseAgent):
@@ -48,7 +50,13 @@ class ConversationAgent(BaseAgent):
         parsed_response = None
         for i in range(self.max_retry):
             try:
+                # if self.name == "Code Reviewer":
+                logger.info(f"Prompt:\n{prompt}")
+
                 response = await self.llm.agenerate_response(prompt)
+
+                # logging.info(f"{self.name}'s request result:"
+                #              f" {response.content}")
                 parsed_response = self.output_parser.parse(response)
                 break
             except (KeyboardInterrupt, bdb.BdbQuit):
