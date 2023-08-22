@@ -308,7 +308,7 @@ While we provide a basic framework for building environments with our five rule 
 
 1. **Customize the five rule components**. Each rule component has an interface, allowing you to customize its behavior to suit your specific needs. It's important to note that these components are not necessarily independent and can interact through the `rule_params` dictionary in the environment. You can create your own rule components and integrate them with the existing ones to build more complex interactions between agents.
 2. **Customize the environment itself**. Our `basic` environment provides a default execution order for the five rule components that is suitable for most cases, but you can inherit the `BaseEnvironment` class and write your own `run` method to implement a more sophisticated execution order.
-3. **Customize the agent**. Depending on your specific use case, you may also need to inherite the `BaseAgent` class. For example, you may want to use your local LLM as your agents or create agents with specialized knowledge or skills.
+3. **Customize the agent**. Depending on your specific use case, you may also need to inherit the `BaseAgent` class. For example, you may want to use your local LLM as your agents or create agents with specialized knowledge or skills.
 
 
 
