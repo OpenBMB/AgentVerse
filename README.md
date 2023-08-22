@@ -128,3 +128,7 @@ python3 pipeline.py --task pipeline_pythoncalculator --single_agent
 LOG_LEVEL = INFO will only output the parsed response and the pipeline stage info.
 
 
+
+### Contact
+- Weize Chen: chenwz21@mails.tsinghua.edu.cn
+- Yusheng Su: yushengsu.thu@gmail.com
