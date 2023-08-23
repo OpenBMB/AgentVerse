@@ -327,3 +327,11 @@ Here's a brief overview of each example:
 7. `db_diag`: The Chief DBA monitors (agents) the database system for anomalies and alerts memory and CPU agents if any are detected. They (agents) analyze root causes and suggest optimization solutions. The Chief DBA (agent) provides a diagnosis summary to the user, who can give instructions or evaluate the proposed solutions' effectiveness.
 8. `sde_team`: In the SDE team, code writer, code tester and code reviewer collaborate on the code generation problem. 
 9. `pokemon`:  This example intimates Pokemon game.
+
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=OpenBMB/AgentVerse&type=Date)](https://star-history.com/#OpenBMB/AgentVerse&Date)
+
+
+
