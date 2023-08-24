@@ -1,18 +1,17 @@
 cnt_critic_agents: 3
 
 
-max_loop_rounds: 4
+max_loop_rounds: 2
 
 
-max_criticizing_rounds: 1
+max_criticizing_rounds: 3
 
 
 human_eval: false
 
 
 task_description: |-
-  write a simple calculator GUI using Python3.
-# build a web application of a simple calculator.
+  build a web application of a simple calculator.
 
   
 
@@ -43,16 +42,17 @@ prompts:
     ${task_description}
     
     You formerly gave the following solution
-    """
     ${former_solution}
-    """
     
-    But other critics in the group are not satisfied with it. They gave the following opinions:
-    """
+    But other critics in the group are not satisfied with it.
+    They gave the following opinions:
     ${critic_opinions}
-    """
     
-    Now you are going to give a new solution, based upon your former solution and the critics' opinions. Write the code step by step.
+    Now you are going to give a new solution,
+    based upon your former solution and the critics' opinions.
+    Please write code only!
+    
+    If no former solution or critic opinions are given, you can ignore this part, and just generate a new solution.
 
   summarizer_prompt: &summarizer_prompt |-
     You are a summarizer. 
@@ -106,13 +106,17 @@ prompts:
     Please control output code in 2048 tokens! (Write concise code)
 
   evaluator_prompt: &evaluator_prompt |-
-    You are an professional and strict code reviewer. Your task is to evaluate the solution. The code is to ${task_description}. Your task is to evaluate the codes written by the code engineers.
-    
-    Please not only give a general rating points (from 0 to 9) but also give detailed comments about where and how the code can be improved. Please consider the following aspects when you are evaluating the code:
-      1. The code should be able to run without any errors.
-      2. The code should be able to achieve the goal specified in the task description.
-      3. The code should be easy to read and understand, efficient, concise and elegant.
-      4. The code should be robust.
+    You are an professional code reviewer.
+ 
+    Your task is to evaluate the solution.
+    The code is to ${task_description}.
+    Your task is to evaluate the codes written by the code engineers.
+      Please not only give a general rating points (from 0 to 10) but also give detailed comments about where and how the code can be improved.
+      Please consider the following aspects when you are evaluating the code:
+        1. The code should be able to run without any errors.
+        2. The code should be able to achieve the goal specified in the task description.
+        3. The code should be easy to read and understand, efficient, concise and elegant.
+        4. The code should be robust.
     
     Please rate the code in the following dimensions:
         1. Completeness: Is the code snippet complete enough without unimplemented functions of methods? Is it able to run without any errors?
@@ -120,9 +124,13 @@ prompts:
         3. Readability: Is the code easy to read and understand, efficient, concise and elegant?
         4. Robustness: Is the code snippet able to handle different unexpected input or other exceptions?
     
-    In the fifth line of output, give your detailed advice for the engineers to better generate good codes. Only give high grade when it is really great.
+    0 means the idea looks like beginner's work, and 10 means the idea is perfect in that aspect, like a master.
+    
+    and then in the fifth line of output, give your detailed advice for the engineers to better generate good codes.
+    
   
-    # Output format
+    #Output format
+    You must output in the following format:
     1. Completeness: (a score between 0 and 9)
     2. Functionality: (a score between 0 and 9)
     3. Readability: (a score between 0 and 9)
@@ -138,7 +146,7 @@ name: pipeline
 
 environment:
   env_type: pipeline
-  max_loop_rounds: 4
+  max_loop_rounds: 3
   rule:
     order:
       type: sequential
@@ -154,7 +162,6 @@ environment:
 agents:
   - #role_assigner_agent:
     agent_type: role_assigner
-    max_retry: 1000
     name: role assigner
     prompt_template: *role_assigner_prompt
     memory:
@@ -162,14 +169,13 @@ agents:
     llm:
       llm_type: gpt-4
       model: "gpt-4"
-      temperature: 0.7
+      temperature: 0
       max_tokens: 256
     output_parser:
       type: role_assigner
 
   - #solver_agent:
     agent_type: solver
-    max_retry: 1000
     name: Planner
     prompt_template: [*solver_prompt, *summarizer_prompt]
     memory:
@@ -177,12 +183,11 @@ agents:
     llm:
       llm_type: gpt-4
       model: "gpt-4"
-      temperature: 0.7
+      temperature: 0
       max_tokens: 2048
 
   - #critic_agents:
     agent_type: critic
-    max_retry: 1000
     name: Critic 1
     role_description: |-
       Waiting to be assigned.
@@ -192,14 +197,13 @@ agents:
     llm:
       llm_type: gpt-4
       model: "gpt-4"
-      temperature: 0.7
-      max_tokens: 1024
+      temperature: 0
+      max_tokens: 256
     output_parser:
       type: critic
 
   - #executor_agent:
     agent_type: executor
-    max_retry: 1000
     name: Executor
     prompt_template: None
     memory:
@@ -207,12 +211,11 @@ agents:
     llm:
       llm_type: gpt-4
       model: "gpt-4"
-      temperature: 0.7
+      temperature: 0
       max_tokens: 512
 
   - #evaluator_agent:
     agent_type: evaluator
-    max_retry: 1000
     name: Evaluator
     role_description: |-
       Code Reviewer
@@ -222,8 +225,8 @@ agents:
     llm:
       llm_type: gpt-4
       model: "gpt-4"
-      temperature: 0.7
-      max_tokens: 1024
+      temperature: 0
+      max_tokens: 128
     output_parser:
       type: evaluator
       dimensions:
