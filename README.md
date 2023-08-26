@@ -348,6 +348,8 @@ If you find this repo helpful, feel free to cite us.
 ```
 
 ## Contact
+
 Weize Chen: chenwz21@mails.tsinghua.edu.cn
+
 [Yusheng Su](https://yushengsu-thu.github.io/): yushengsu.thu@gmail.com
 
