@@ -334,4 +334,20 @@ Here's a brief overview of each example:
 [![Star History Chart](https://api.star-history.com/svg?repos=OpenBMB/AgentVerse&type=Date)](https://star-history.com/#OpenBMB/AgentVerse&Date)
 
 
+## Citation
+If you find this repo helpful, feel free to cite us.
+```
+@misc{chen2023agentverse,
+      title={AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents}, 
+      author={Weize Chen and Yusheng Su and Jingwei Zuo and Cheng Yang and Chenfei Yuan and Chen Qian and Chi-Min Chan and Yujia Qin and Yaxi Lu and Ruobing Xie and Zhiyuan Liu and Maosong Sun and Jie Zhou},
+      year={2023},
+      eprint={2308.10848},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```
+
+## Contact
+Weize Chen: chenwz21@mails.tsinghua.edu.cn
+[Yusheng Su](https://yushengsu-thu.github.io/): yushengsu.thu@gmail.com
 
