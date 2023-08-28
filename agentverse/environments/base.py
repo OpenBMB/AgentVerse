@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, List
 
 from pydantic import BaseModel
 
+
 # from agentverse.agents.agent import Agent
 
 if TYPE_CHECKING:
@@ -25,6 +26,7 @@ class BaseEnvironment(BaseModel):
         last_messages: Messages from last turn
         rule_params: Variables set by the rule
     """
+
 
     agents: List[BaseAgent]
     rule: Rule
