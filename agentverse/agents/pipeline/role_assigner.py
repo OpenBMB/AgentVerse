@@ -11,6 +11,7 @@ from agentverse.message import Message
 
 from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
+
 # from agentverse.environments import PipelineEnvironment
 
 
@@ -19,10 +20,10 @@ logger = get_logger(__name__)
 
 @agent_registry.register("role_assigner")
 class RoleAssignerAgent(BaseAgent):
-    environment: object = None
-
-    def step(self, advice) -> List[str]:
-        prompt = self._fill_prompt_template(advice)
+    def step(
+        self, advice: str, task_description: str, cnt_critic_agents: int
+    ) -> List[str]:
+        prompt = self._fill_prompt_template(advice, task_description, cnt_critic_agents)
         # logger.info(f"Prompt:\n{prompt}")
         parsed_response = None
         for i in range(self.max_retry):
@@ -46,7 +47,9 @@ class RoleAssignerAgent(BaseAgent):
         """Asynchronous version of step"""
         pass
 
-    def _fill_prompt_template(self, advice) -> str:
+    def _fill_prompt_template(
+        self, advice, task_description: str, cnt_critic_agents: int
+    ) -> str:
         """Fill the placeholders in the prompt template
 
         In the role_assigner agent, three placeholders are supported:
@@ -55,8 +58,8 @@ class RoleAssignerAgent(BaseAgent):
         - ${advice}
         """
         input_arguments = {
-            "task_description": self.environment.task_description,
-            "cnt_critic_agents": self.environment.cnt_critic_agents,
+            "task_description": task_description,
+            "cnt_critic_agents": cnt_critic_agents,
             "advice": advice,
         }
         return Template(self.prompt_template).safe_substitute(input_arguments)

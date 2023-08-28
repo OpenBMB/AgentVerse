@@ -2,6 +2,7 @@ import asyncio
 from typing import Any, Dict, List, Tuple
 
 from agentverse.logging import get_logger
+
 # from agentverse.agents.agent import Agent
 from agentverse.agents.conversation_agent import BaseAgent
 from agentverse.agents.pipeline.role_assigner import RoleAssignerAgent
@@ -32,6 +33,7 @@ class PipelineEnvironment(BaseEnvironment):
         last_messages: Messages from last turn
         rule_params: Variables set by the rule
     """
+
     agents: List[BaseAgent] = None
     role_assigner: RoleAssignerAgent
     solver: SolverAgent
@@ -50,6 +52,7 @@ class PipelineEnvironment(BaseEnvironment):
     task_description: str
     human_eval: bool
     task: str
+    is_parallel: bool = True
 
     def __init__(self, rule, **kwargs):
         rule_config = rule
@@ -67,34 +70,59 @@ class PipelineEnvironment(BaseEnvironment):
         )
         super().__init__(rule=rule, **kwargs)
 
-    def role_assign(self, advice: str = "")-> List[str]:
+    def role_assign(self, advice: str = "") -> List[str]:
         """Assign roles to agents"""
-        roles = self.role_assigner.step(advice)  # role assign always before criticism
+        roles = self.role_assigner.step(
+            advice, self.task_description, self.cnt_critic_agents
+        )  # role assign always before criticism
         for i in range(self.cnt_critic_agents):
-            self.critics[i].role_description = roles[i].strip('. ')
+            self.critics[i].role_description = roles[i].strip().strip(". ")
         return roles
 
-    def solve(self, former_solution: str,
-              critic_opinions: List[Tuple[object, str]]) -> str:
+    def solve(
+        self, former_solution: str, critic_opinions: List[Tuple[object, str]]
+    ) -> str:
         """Solve: Generate solution"""
-        message = self.solver.step(former_solution, critic_opinions, False)
+        message = self.solver.step(
+            former_solution, critic_opinions, False, self.task_description
+        )
         preliminary_solution = message.content
         return preliminary_solution
 
-    def summarize(self, content: str) -> str:
+    def summarize(
+        self, former_solution: str, critic_opinions: List[Tuple[object, str]]
+    ) -> str:
         """Summarize: Generate summary"""
-        message = self.solver.step(content, [], True)
+        message = self.solver.step(
+            former_solution, critic_opinions, True, self.task_description
+        )
         summary = message.content
         return summary
 
-    async def criticize(self, preliminary_solution: str = "",
-                        advice: str = "") -> List[AgentCriticism]:
+    async def criticize(
+        self, preliminary_solution: str = "", advice: str = ""
+    ) -> List[AgentCriticism]:
         """Criticize: iterate over all critics and gather opinions"""
-        group = asyncio.gather(
-            *[self.critics[i].astep(preliminary_solution, advice)
-              for i in range(self.cnt_critic_agents)]
-        )
-        criticisms = await group
+        if self.is_parallel:
+            criticisms = await asyncio.gather(
+                *[
+                    self.critics[i].astep(
+                        preliminary_solution, advice, self.task_description
+                    )
+                    for i in range(self.cnt_critic_agents)
+                ]
+            )
+        else:
+            criticisms = []
+            for i in range(self.cnt_critic_agents):
+                criticism = await self.critics[i].astep(
+                    preliminary_solution, advice, self.task_description
+                )
+                if preliminary_solution == "No solution yet.":
+                    preliminary_solution = ""
+                preliminary_solution += f'[{criticism.sender_agent.role_description}]:\n"""\n{criticism.criticism}\n"""'
+                criticisms.append(criticism)
+
         # critic_messages = [x.content for x in critic_messages]
         return criticisms
 
@@ -105,8 +133,7 @@ class PipelineEnvironment(BaseEnvironment):
         return self.executor.step(final_solution)
 
     def evaluate(self, result: Any):
-        """evaluation stage.
-        """
+        """evaluation stage."""
         if self.human_eval:
             print("This round, LLM gave the following result:")
             print(result)
@@ -122,14 +149,16 @@ class PipelineEnvironment(BaseEnvironment):
                 novelty = int(novelty)
             except ValueError:
                 logger.error("Bad response from human evaluator!")
-            return ([comprehensiveness, detailedness, feasibility, novelty],
-                    advice)
+            return ([comprehensiveness, detailedness, feasibility, novelty], advice)
         else:
-            score, advice = self.evaluator.step(result)
+            score, advice = self.evaluator.step(result, self.task_description)
             return score, advice
 
     async def step(self) -> List[Message]:
         pass
+
+    def set_task_description(self, task_description: str = ""):
+        self.task_description = task_description
 
     def print_messages(self, messages: List[Message]) -> None:
         pass

@@ -1,10 +1,10 @@
 cnt_critic_agents: 3
 
 
-max_loop_rounds: 3
+max_loop_rounds: 4
 
 
-max_criticizing_rounds: 3
+max_criticizing_rounds: 1
 
 
 human_eval: false
@@ -37,7 +37,6 @@ prompts:
     You don't have to give the reason.
 
   solver_prompt: &solver_prompt |-
-
     You are faced with the task:
     ${task_description}
 

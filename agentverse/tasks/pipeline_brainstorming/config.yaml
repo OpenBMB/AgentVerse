@@ -1,10 +1,10 @@
 cnt_critic_agents: 3
 
 
-max_loop_rounds: 2
+max_loop_rounds: 3
 
 
-max_criticizing_rounds: 3
+max_criticizing_rounds: 1
 
 
 human_eval: false
@@ -15,7 +15,7 @@ task_description: |-
   
 
 evaluation_dimensions: |-
-  
+
 
 
 prompts:

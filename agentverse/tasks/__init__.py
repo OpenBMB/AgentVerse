@@ -20,3 +20,8 @@ from .pipeline_pythoncalculator.output_parser import PipelinePythoncalculatorPar
 from .pipeline_brainstorming.output_parser import PipelineBrainstormingParser
 from .pipeline_projectv.output_parser import PipelineProjectvParser
 from .pipeline_projecth.output_parser import PipelineProjecthParser
+from .humaneval.output_parser import *
+from .mgsm.output_parser import *
+from .responsegen.output_parser import *
+from .logic_grid.output_parser import *
+from .commongen.output_parser import *

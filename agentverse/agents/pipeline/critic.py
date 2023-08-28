@@ -16,22 +16,24 @@ logger = get_logger(__name__)
 
 @agent_registry.register("critic")
 class CriticAgent(BaseAgent):
-    environment: object = None
     def step(self, env_description: str = "") -> Message:
         pass
 
-    async def astep(self, preliminary_solution: str,
-                    advice: str = "") -> AgentCriticism:
+    async def astep(
+        self,
+        preliminary_solution: str,
+        advice: str = "No advice yet.",
+        task_description: str = "",
+    ) -> AgentCriticism:
         """Asynchronous version of step"""
-        prompt = self._fill_prompt_template(preliminary_solution, advice)
+        prompt = self._fill_prompt_template(
+            preliminary_solution, advice, task_description
+        )
         # logger.info(f"Prompt:\n{prompt}")
         parsed_response: Union[AgentCriticism, None] = None
         for i in range(self.max_retry):
             try:
-                # if self.name == "Code Reviewer":
                 response = await self.llm.agenerate_response(prompt)
-                # logger.info(f"{self.name}'s request result:"
-                #              f" {response.content}")
                 parsed_response = self.output_parser.parse(response)
                 break
             except (KeyboardInterrupt, bdb.BdbQuit):
@@ -42,13 +44,14 @@ class CriticAgent(BaseAgent):
                 continue
         if parsed_response is None:
             return AgentCriticism(True, "LLM failed.")
-        parsed_response = AgentCriticism(parsed_response.is_agree,
-                                         parsed_response.criticism,
-                                         self)
+        parsed_response = AgentCriticism(
+            parsed_response.is_agree, parsed_response.criticism, self
+        )
         return parsed_response
 
-    def _fill_prompt_template(self, preliminary_solution: str,
-                              advice: str) -> str:
+    def _fill_prompt_template(
+        self, preliminary_solution: str, advice: str, task_description: str
+    ) -> str:
         """Fill the placeholders in the prompt template
 
         In the conversation agent, three placeholders are supported:
@@ -59,7 +62,7 @@ class CriticAgent(BaseAgent):
         """
         input_arguments = {
             "role_description": self.role_description,
-            "task_description": self.environment.task_description,
+            "task_description": task_description,
             "preliminary_solution": preliminary_solution,
             "advice": advice,
         }

@@ -19,15 +19,18 @@ logger = get_logger(__name__)
 
 @agent_registry.register("solver")
 class SolverAgent(BaseAgent):
-    environment: object = None
     prompt_template: List[str]
 
-    def step(self, former_solution: str,
-             critic_opinions: List[Tuple[object, str]],
-             discussion_mode: bool = False) -> Message:
-        prompt = self._fill_prompt_template(former_solution,
-                                            critic_opinions,
-                                            discussion_mode)
+    def step(
+        self,
+        former_solution: str,
+        critic_opinions: List[Tuple[object, str]],
+        discussion_mode: bool = False,
+        task_description: str = "",
+    ) -> Message:
+        prompt = self._fill_prompt_template(
+            former_solution, critic_opinions, discussion_mode, task_description
+        )
         # logger.info(f"Prompt:\n{prompt}")
         parsed_response = None
         for i in range(self.max_retry):
@@ -58,10 +61,13 @@ class SolverAgent(BaseAgent):
         """Asynchronous version of step"""
         pass
 
-    def _fill_prompt_template(self,
-                              former_solution: str,
-                              critic_opinions: List[Tuple[object, str]],
-                              discussion_mode: bool) -> str:
+    def _fill_prompt_template(
+        self,
+        former_solution: str,
+        critic_opinions: List[Tuple[object, str]],
+        discussion_mode: bool,
+        task_description: str,
+    ) -> str:
         """Fill the placeholders in the prompt template
 
         In the role_assigner agent, three placeholders are supported:
@@ -70,10 +76,11 @@ class SolverAgent(BaseAgent):
         - ${critic_messages}
         """
         input_arguments = {
-            "task_description": self.environment.task_description,
+            "task_description": task_description,
             "former_solution": former_solution,
-            "critic_opinions": "\n".join([f"{a.role_description} said: {o}"
-                                          for a, o in critic_opinions]),
+            "critic_opinions": "\n".join(
+                [f"{a.role_description} said: {o}" for a, o in critic_opinions]
+            ),
         }
         if discussion_mode:
             template = Template(self.prompt_template[1])

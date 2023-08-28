@@ -1,0 +1,179 @@
+cnt_critic_agents: 3
+max_loop_rounds: &max_loop_rounds 3
+max_criticizing_rounds: 3
+human_eval: false
+evaluation_dimensions: |-
+
+prompts:
+  role_assigner_prompt: &role_assigner_prompt |-
+    # Role Description
+    You are the leader of a group of experts, now you need to recruit a small group of experts with diverse identity to generate coherent and grammatically correct sentences containing the following given words:
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} expert in different fields. What experts will you recruit?
+    
+    # Response Format Guidance
+    You should respond with a list of expert description. For example:
+    1. an electrical engineer specified in the filed of xxx.
+    2. an economist who is good at xxx.
+    3. a lawyer with a good knowledge of xxx.
+    ...
+    
+    Only respond with the description of each role. Do not include your reason.
+
+  solver_prompt: &solver_prompt |-
+    Can you generate a coherent and grammatically correct paragraph containing the following given words (or their variations):
+    Words: ${task_description}
+    
+    # Previous Solution
+    The paragraph you gave in the last step is:
+    ```
+    ${former_solution}
+    ```
+    
+    # Critics
+    There are some critics on the above solution:
+    ```
+    ${critic_opinions}
+    ```
+    
+    Using the these information, provide a paragraph that contains all the given words or their variations.
+
+  critic_prompt: &critic_prompt |-
+    You are in a discussion group, aiming to generate coherent and grammatically correct sentences containing the following given words (or their variations):
+    Words: ${task_description}
+
+    Below is a possible solution to the problem:
+    ```
+    ${preliminary_solution}
+    ```
+    
+    You are ${role_description}. Based on your knowledge, can you check whether the paragraph contains all the given words or their variations? When responding, you should follow the following rules:
+    1. If the solution has covered all the given words or their variations, end your response with a special token "[Agree]".
+    1. If not, double-check the above solutions, give your critics, and generate a better solution.
+
+    Now give your response.
+
+  evaluator_prompt: &evaluator_prompt |-
+    You are a reviewer who checks whether a paragraph contains all the given words (including their variations). When some words are missing, you should patiently point out, and output a score of 0. When the paragraph contains all the words, you should output a score of 1.
+  
+    # Response Format Guidance
+    You must respond in the following format:
+    Score: (0 or 1. 0 if there are some missing words, 1 if it covers all the words)
+    Advice: (point out all the missing words)
+    
+    # Words and Writer's Solution
+    Words: 
+    ${task_description}
+
+    Writer's Solution: 
+    ```
+    ${solution}
+    ```
+
+    Now carefully check the writer's solution, and give your response.
+    
+
+name: pipeline
+
+
+environment:
+  env_type: pipeline
+  max_loop_rounds: *max_loop_rounds
+  rule:
+    order:
+      type: sequential
+    visibility:
+      type: all
+    selector:
+      type: basic
+    updater:
+      type: basic
+    describer:
+      type: basic
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    name: role assigner
+    prompt_template: *role_assigner_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 256
+    output_parser:
+      type: role_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    name: Planner
+    prompt_template: [*solver_prompt, ""]
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo-16k"
+      temperature: 0
+    output_parser:
+      type: commongen
+      # max_tokens: 1024
+      # stop:
+      #   - "\ndef "
+      #   - "\nclass "
+      #   - "\nif "
+      #   - "\n\n#"
+
+  - #critic_agents:
+    agent_type: critic
+    name: Critic 1
+    role_description: |-
+      Waiting to be assigned.
+    prompt_template: *critic_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: mgsm-critic
+
+  - #executor_agent:
+    agent_type: executor
+    name: Executor
+    prompt_template: None
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
+      temperature: 0
+      max_tokens: 512
+    output_parser:
+      type: commongen
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    name: Evaluator
+    role_description: |-
+      Evaluator
+    prompt_template: *evaluator_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
+      temperature: 0
+      max_tokens: 512
+    output_parser:
+      type: humaneval-evaluator
+      dimensions:
+        - Score
+
+
+tools:
+

@@ -18,9 +18,8 @@ logger = get_logger(__name__)
 
 @agent_registry.register("evaluator")
 class EvaluatorAgent(BaseAgent):
-    environment: object = None
-    def step(self, result) -> Tuple[List[int], str]:
-        prompt = self._fill_prompt_template(result)
+    def step(self, result: str, task_description: str) -> Tuple[List[int], str]:
+        prompt = self._fill_prompt_template(result, task_description)
         # logger.info(f"Prompt:\n{prompt}")
         parsed_response = None, None
         for i in range(self.max_retry):
@@ -43,8 +42,7 @@ class EvaluatorAgent(BaseAgent):
         """Asynchronous version of step"""
         pass
 
-
-    def _fill_prompt_template(self, solution) -> str:
+    def _fill_prompt_template(self, solution: str, task_description: str) -> str:
         """Fill the placeholders in the prompt template
 
         In the role_assigner agent, three placeholders are supported:
@@ -52,7 +50,7 @@ class EvaluatorAgent(BaseAgent):
         - ${solution}
         """
         input_arguments = {
-            "task_description": self.environment.task_description,
+            "task_description": task_description,
             "solution": solution,
         }
         return Template(self.prompt_template).safe_substitute(input_arguments)

@@ -1,4 +1,4 @@
-#from agentverse.agentverse import AgentVerse
+# from agentverse.agentverse import AgentVerse
 from agentverse.agentversepipeline import AgentVersePipeline
 from agentverse.demo import UI
 from argparse import ArgumentParser
@@ -24,20 +24,9 @@ parser.add_argument("--task", type=str, default="pipeline_project")
 args = parser.parse_args()
 
 
-
-#terminal
+# terminal
 agentversepipeline = AgentVersePipeline.from_task(args.task)
-agentversepipeline.run(single_agent=args.single_agent,
-                       discussion_mode=args.discussion_mode)
-
-
-#ui
-'''
-ui = UI(args.task)
-ui.launch()
-'''
-
-
-
-
-
+agentversepipeline.run(
+    single_agent=args.single_agent,
+    discussion_mode=args.discussion_mode,
+)
