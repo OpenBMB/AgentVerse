@@ -12,11 +12,17 @@ from agentverse.logging import get_logger
 logger = get_logger(__name__)
 
 
-@output_parser_registry.register("responsegen")
+@output_parser_registry.register("responsegen/gpt-3.5")
+@output_parser_registry.register("responsegen/gpt-4")
 class ResponseGenParser(OutputParser):
     def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
         return AgentFinish({"output": output.content}, output.content)
 
+
+@output_parser_registry.register("responsegen-solver")
+class ResponseGenSolverParser(OutputParser):
+    def parse(self, output: LLMResult) -> AgentAction:
+        return output.content
 
 @output_parser_registry.register("responsegen-evaluator")
 class ResponseGenEvaluatorParser(OutputParser):

@@ -13,7 +13,7 @@ logger = get_logger(__file__)
 
 parser = ArgumentParser()
 
-parser.add_argument("--task", type=str, default="responsegen")
+parser.add_argument("--task", type=str, default="responsegen/gpt-3.5")
 parser.add_argument("--dataset_path", type=str, required=True)
 parser.add_argument("--output_path", type=str, default=None)
 parser.add_argument("--single_agent", "-s", action="store_true")
