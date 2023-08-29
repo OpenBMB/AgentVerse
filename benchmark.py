@@ -13,7 +13,7 @@ logger = get_logger(__file__)
 
 parser = ArgumentParser()
 
-parser.add_argument("--task", type=str, default="pie")
+parser.add_argument("--task", type=str, default="responsegen")
 parser.add_argument("--dataset_path", type=str, required=True)
 parser.add_argument("--output_path", type=str, default=None)
 parser.add_argument("--single_agent", "-s", action="store_true")
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     )
 
     skip_cnt = 0
-    if not args.overwrite:
+    if not args.overwrite and os.path.exists(f"{args.output_path}/results.jsonl"):
         with open(f"{args.output_path}/results.jsonl", "r") as f:
             for line in f:
                 if line.strip():
