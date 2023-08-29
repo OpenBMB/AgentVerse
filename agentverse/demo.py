@@ -6,6 +6,7 @@ from typing import Dict, List, Tuple
 import cv2
 import gradio as gr
 
+from agentverse import AgentVersePipeline
 from agentverse.agentverse import AgentVerse
 from agentverse.message import Message
 
@@ -36,7 +37,10 @@ class UI:
         """
         self.messages = []
         self.task = task
-        self.backend = AgentVerse.from_task(task)
+        if task == "pipeline_brainstorming":
+            self.backend = AgentVersePipeline.from_task(task)
+        else:
+            self.backend = AgentVerse.from_task(task)
         self.turns_remain = 0
         self.agent_id = {
             self.backend.agents[idx].name: idx
@@ -357,12 +361,12 @@ class UI:
                 msg = msg.replace("<", "&lt;")
                 msg = msg.replace(">", "&gt;")
             message = (
-                f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
-                f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
-                f'<div style="background-color: gray; color: white; padding: 10px; border-radius: 10px;'
-                f'max-width: 70%; white-space: pre-wrap">'
-                f"{msg}"
-                f"</div></div>" + message
+                    f'<div style="display: flex; align-items: center; margin-bottom: 10px;overflow:auto;">'
+                    f'<img src="{avatar}" style="width: 5%; height: 5%; border-radius: 25px; margin-right: 10px;">'
+                    f'<div style="background-color: gray; color: white; padding: 10px; border-radius: 10px;'
+                    f'max-width: 70%; white-space: pre-wrap">'
+                    f"{msg}"
+                    f"</div></div>" + message
             )
         message = '<div id="divDetail" style="height:600px;overflow:auto;">' + message + "</div>"
         return message
@@ -377,111 +381,126 @@ class UI:
         self.messages.append((-1, f"[User]: {message}"))
         return self.gen_img([{"message": ""}] * len(self.agent_id)), self.gen_message()
 
-    def launch(self):
-        """
-        start a frontend
-        """
-        with gr.Blocks() as demo:
-            with gr.Row():
-                with gr.Column():
-                    image_output = gr.Image()
-                    with gr.Row():
-                        reset_btn = gr.Button("Reset")
-                        # next_btn = gr.Button("Next", variant="primary")
-                        next_btn = gr.Button("Next", interactive=False)
-                        stop_autoplay_btn = gr.Button(
-                            "Stop Autoplay", interactive=False
-                        )
-                        start_autoplay_btn = gr.Button("Start Autoplay", interactive=False)
-                    with gr.Box(visible=False) as solutions:
-                        with gr.Column():
-                            gr.HTML("Optimization Solutions:")
-                            with gr.Row():
-                                rewrite_slow_query_btn = gr.Button("Rewrite Slow Query", visible=False)
-                                add_query_hints_btn = gr.Button("Add Query Hints", visible=False)
-                                update_indexes_btn = gr.Button("Update Indexes", visible=False)
-                                tune_parameters_btn = gr.Button("Tune Parameters", visible=False)
-                                gather_more_info_btn = gr.Button("Gather More Info", visible=False)
-                # text_output = gr.Textbox()
-                text_output = gr.HTML(self.reset()[1])
+    def launch(self, single_agent=False, discussion_mode=False):
+        if self.task == "pipeline_brainstorming":
+            with gr.Blocks() as demo:
+                chatbot = gr.Chatbot(height=800, show_label=False)
+                msg = gr.Textbox(label="Input")
 
-            # Given a botton to provide student numbers and their inf.
-            # stu_num = gr.Number(label="Student Number", precision=0)
-            # stu_num = self.stu_num
+                def respond(message, chat_history):
+                    chat_history.append((message, None))
+                    yield "", chat_history
+                    for response in self.backend.iter_run(single_agent=single_agent, discussion_mode=discussion_mode):
+                        print(response)
+                        chat_history.append((None, response))
+                        yield "", chat_history
 
-            if self.task == "db_diag":
-                user_msg = gr.Textbox()
-                submit_btn = gr.Button("Submit", variant="primary")
+                msg.submit(respond, [msg, chatbot], [msg, chatbot])
+        else:
+            with gr.Blocks() as demo:
+                with gr.Row():
+                    with gr.Column():
+                        image_output = gr.Image()
+                        with gr.Row():
+                            reset_btn = gr.Button("Reset")
+                            # next_btn = gr.Button("Next", variant="primary")
+                            next_btn = gr.Button("Next", interactive=False)
+                            stop_autoplay_btn = gr.Button(
+                                "Stop Autoplay", interactive=False
+                            )
+                            start_autoplay_btn = gr.Button("Start Autoplay", interactive=False)
+                        with gr.Box(visible=False) as solutions:
+                            with gr.Column():
+                                gr.HTML("Optimization Solutions:")
+                                with gr.Row():
+                                    rewrite_slow_query_btn = gr.Button("Rewrite Slow Query", visible=False)
+                                    add_query_hints_btn = gr.Button("Add Query Hints", visible=False)
+                                    update_indexes_btn = gr.Button("Update Indexes", visible=False)
+                                    tune_parameters_btn = gr.Button("Tune Parameters", visible=False)
+                                    gather_more_info_btn = gr.Button("Gather More Info", visible=False)
+                    # text_output = gr.Textbox()
+                    text_output = gr.HTML(self.reset()[1])
 
-                submit_btn.click(fn=self.submit, inputs=user_msg, outputs=[image_output, text_output], show_progress=False)
-            else:
-                pass
+                # Given a botton to provide student numbers and their inf.
+                # stu_num = gr.Number(label="Student Number", precision=0)
+                # stu_num = self.stu_num
 
-            # next_btn.click(fn=self.gen_output, inputs=None, outputs=[image_output, text_output], show_progress=False)
-            next_btn.click(
-                fn=self.delay_gen_output,
-                inputs=None,
-                outputs=[
-                    image_output,
-                    text_output,
-                    next_btn,
-                    start_autoplay_btn,
-                    rewrite_slow_query_btn,
-                    add_query_hints_btn,
-                    update_indexes_btn,
-                    tune_parameters_btn,
-                    gather_more_info_btn,
-                    solutions
-                ],
-                show_progress=False,
-            )
+                if self.task == "db_diag":
+                    user_msg = gr.Textbox()
+                    submit_btn = gr.Button("Submit", variant="primary")
 
-            # [To-Do] Add botton: re-start (load different people and env)
-            # reset_btn.click(fn=self.reset, inputs=stu_num, outputs=[image_output, text_output], show_progress=False)
-            # reset_btn.click(fn=self.reset, inputs=None, outputs=[image_output, text_output], show_progress=False)
-            reset_btn.click(
-                fn=self.delay_reset,
-                inputs=None,
-                outputs=[
-                    image_output,
-                    text_output,
-                    next_btn,
-                    stop_autoplay_btn,
-                    start_autoplay_btn,
-                    rewrite_slow_query_btn,
-                    add_query_hints_btn,
-                    update_indexes_btn,
-                    tune_parameters_btn,
-                    gather_more_info_btn,
-                    solutions
-                ],
-                show_progress=False,
-            )
+                    submit_btn.click(fn=self.submit, inputs=user_msg, outputs=[image_output, text_output],
+                                     show_progress=False)
+                else:
+                    pass
 
-            stop_autoplay_btn.click(
-                fn=self.stop_autoplay,
-                inputs=None,
-                outputs=[next_btn, stop_autoplay_btn, start_autoplay_btn],
-                show_progress=False,
-            )
-            start_autoplay_btn.click(
-                fn=self.start_autoplay,
-                inputs=None,
-                outputs=[
-                    image_output,
-                    text_output,
-                    next_btn,
-                    stop_autoplay_btn,
-                    start_autoplay_btn,
-                    rewrite_slow_query_btn,
-                    add_query_hints_btn,
-                    update_indexes_btn,
-                    tune_parameters_btn,
-                    gather_more_info_btn,
-                    solutions
-                ],
-                show_progress=False,
-            )
+                # next_btn.click(fn=self.gen_output, inputs=None, outputs=[image_output, text_output],
+                #                show_progress=False)
+                next_btn.click(
+                    fn=self.delay_gen_output,
+                    inputs=None,
+                    outputs=[
+                        image_output,
+                        text_output,
+                        next_btn,
+                        start_autoplay_btn,
+                        rewrite_slow_query_btn,
+                        add_query_hints_btn,
+                        update_indexes_btn,
+                        tune_parameters_btn,
+                        gather_more_info_btn,
+                        solutions
+                    ],
+                    show_progress=False,
+                )
+
+                # [To-Do] Add botton: re-start (load different people and env)
+                # reset_btn.click(fn=self.reset, inputs=stu_num, outputs=[image_output, text_output],
+                #                 show_progress=False)
+                # reset_btn.click(fn=self.reset, inputs=None, outputs=[image_output, text_output], show_progress=False)
+                reset_btn.click(
+                    fn=self.delay_reset,
+                    inputs=None,
+                    outputs=[
+                        image_output,
+                        text_output,
+                        next_btn,
+                        stop_autoplay_btn,
+                        start_autoplay_btn,
+                        rewrite_slow_query_btn,
+                        add_query_hints_btn,
+                        update_indexes_btn,
+                        tune_parameters_btn,
+                        gather_more_info_btn,
+                        solutions
+                    ],
+                    show_progress=False,
+                )
+
+                stop_autoplay_btn.click(
+                    fn=self.stop_autoplay,
+                    inputs=None,
+                    outputs=[next_btn, stop_autoplay_btn, start_autoplay_btn],
+                    show_progress=False,
+                )
+                start_autoplay_btn.click(
+                    fn=self.start_autoplay,
+                    inputs=None,
+                    outputs=[
+                        image_output,
+                        text_output,
+                        next_btn,
+                        stop_autoplay_btn,
+                        start_autoplay_btn,
+                        rewrite_slow_query_btn,
+                        add_query_hints_btn,
+                        update_indexes_btn,
+                        tune_parameters_btn,
+                        gather_more_info_btn,
+                        solutions
+                    ],
+                    show_progress=False,
+                )
 
         demo.queue(concurrency_count=5, max_size=20).launch()
         # demo.launch()

@@ -63,7 +63,6 @@ class EvaluatorParser(OutputParser):
         text = output.content
         cleaned_output = re.sub(r"\n+", "\n", text.strip())
         checks = cleaned_output.split("\n")
-        print(self.dimensions)
         patterns = [re.compile(r"(?:\d\.\s*)?" + dimension + r":\s*(\d)")
                     for dimension in self.dimensions]
         try:
