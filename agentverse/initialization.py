@@ -4,11 +4,13 @@ import os
 from typing import Dict, List, TYPE_CHECKING
 
 import yaml
+'''
 try:
     from bmtools.agent.singletool import import_all_apis, load_single_tools
 except:
     print("BMTools is not installed, tools cannot be used. To install BMTools, \
          please follow the instruction in the README.md file.")
+'''
 
 from agentverse.llms import llm_registry
 
