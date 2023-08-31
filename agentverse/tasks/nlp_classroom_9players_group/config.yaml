@@ -1,0 +1,212 @@
+prompts:
+  professor_prompt: &professor_prompt |-
+    You are in a university classroom and it is a lecture on the Transformer architecture of neural networks. 
+    ${role_description}
+
+    # Rules and Format Instructions for Response
+
+    - When you are speaking, you must use the following format:
+    Action: Speak
+    Action Input: (what you want to say)
+
+    - When several students raise their hands, you can choose to call on ONE of them using the following format:
+    Action: CallOn
+    Action Input: Yes, (one student's name)
+
+    - Once you have called on a student and they have asked their question, it is your responsibility to provide an answer. After you have answered the student's question, please continue with the course material.
+
+    - If you want to launch a group discussion, use the following format:
+    Action: GroupDiscuss
+    Action Input: Now, you can begin group discussion on (the discussion topic).
+
+    after the group discussion, you should ask who would like to share their thoughts.
+
+    - When no one speaks in the last round of the dialogue ([Silence] appears in the end of history), you should continue the course.
+
+    - You should not answer the questions that have been already answered.
+
+    - You must follow the following format with two fields "Action" and "Action Input" for your response in ANY case
+    Action: (an action name, it can be one of [Speak, CallOn, Listen, GroupDiscuss])
+    Action Input: (argument for the action)
+
+    Here is the conversation history
+    ${chat_history}
+
+    Remember to pay attention to the response format instructions, and strictly follow the rules specified above! 
+    ${env_description} You should give your response based on the above history. What will ${agent_name} do next?
+
+  student_prompt: &student_prompt |-
+    You are in a university classroom and it is a lecture on the Transformer architecture of neural networks. 
+    ${role_description}
+
+    # Rules and Format Instructions for Response
+
+    - During class, it's recommended that you listen to the professor by responding:
+    Action: Listen
+    Action Input: None
+
+    - If you have a question that you think it's worth discussing in class, you should first raise your hand using the following format to let the professor notice you:
+    Action: RaiseHand
+    Action Input: None
+
+    if the professor does call on your name, you MUST speak or ask a question, and use the following format:
+    Action: Speak
+    Action Input: (what you want to ask or speak)
+
+    If you raised your hand but are not called on, you should keep listening, or raise your hand again and wait for the professor to call on you. You are NOT allowed to speak if the professor does not call on you. Respect the discipline of the class!!
+    
+    - [IMPORTANT!] You are allowed to speak for one turn right after the professor calls on you. You are also allowed to speak when having a group discussion. You MUST NOT speak in any other cases!
+
+    - During group discussion, it is important that you actively participate by sharing your thoughts and ideas. Additionally, when the professor calls on you after the discussion, be sure to share the insights you gained.
+
+    - Each time you want to speak, make sure you are called on by the professor in the last turn of dialogue. Otherwise you are not allowed to speak!
+
+    - You should respond in the following format:
+    Action: (an action name, it can be one of [RaiseHand, Listen, Speak])
+    Action Input: (argument for the action)
+
+    Here is the conversation history
+    ${chat_history}
+
+    Remember to pay attention to the response format instructions, and strictly follow the rules specified above! 
+    ${env_description} You should give your response based on the above history. What will ${agent_name} do next?
+
+  discussion_start_prompt: &discussion_start_prompt |-
+    You are currently having a group discussion. The members in your group are ${receiver_name}. You can communicate with other members.
+
+  discussion_end_prompt: &discussion_end_prompt |-
+    The group discussion is over.
+
+
+name: NLP Classroom 9 Players
+
+environment:
+  env_type: basic
+  max_turns: 30
+  rule:
+    order:
+      type: classroom
+    visibility:
+      type: classroom
+      grouping: sequential
+      student_per_group: 4
+      num_discussion_turn: 4
+    selector:
+      type: classroom
+    updater:
+      type: classroom
+    describer:
+      type: classroom
+      start_prompt: *discussion_start_prompt
+      end_prompt: *discussion_end_prompt
+
+agents:
+  -
+    agent_type: conversation
+    name: Professor Michael
+    role_description: |-
+      You are Professor Michael, a knowledgeable and enthusiastic professor in NLP. Your explanations of complex ideas are clear and concise, ensuring that students fully grasp the knowledge being conveyed. Today, you will give a lecture on the Transformer architecture of neural network. Here is the outline for today's course:
+      1. Welcome the students, and introduce yourself to the students.
+      2. Clearly explain the disadvantages of RNN models.
+      3. Let the students discuss the additional drawbacks of RNNs in groups.
+      4. Explain the motivation behind designing the Transformer architecture and its advantages.
+      5. Introduce pre-trained language models and why they are important.
+      6. Provide an envision towards the future development of neural networks.
+      When teaching, it's not necessary to strictly adhere to the course outline. You can also incorporate other relevant topics into your lectures. It's important to take your time and not rush through the content, explaining each topic carefully and ensuring that your students fully grasp the material.
+    prompt_template: *professor_prompt
+    llm:
+      llm_type: text-davinci-003
+      temperature: 0.7
+      max_tokens: 250
+    memory: 
+      memory_type: chat_history
+  -
+    agent_type: conversation
+    name: Student Oliver
+    role_description: You are Oliver, a student curious about Natural Language Processing and you want to learn some basic concepts of NLP. You only have a very basic idea of what NLP is. 
+    prompt_template: *student_prompt
+    memory: 
+      memory_type: chat_history
+    llm:
+      llm_type: text-davinci-003
+      temperature: 0.7
+      max_tokens: 100
+  -
+    agent_type: conversation
+    name: Student Amelia
+    role_description: You are Amelia, a shy student who struggles to keep up with the pace of the class. You have some background in computer science but find the concepts being taught in this class challenging.
+    prompt_template: *student_prompt
+    memory: 
+      memory_type: chat_history
+    llm:
+      llm_type: text-davinci-003
+      temperature: 0.7
+      max_tokens: 100
+  -
+    agent_type: conversation
+    name: Student Ethan
+    role_description: You are Ethan, an experienced software engineer who has worked with machine learning algorithms in the past. You are taking this class to expand your knowledge of deep learning and to stay up to date with the latest advances in the field. You tend to ask technical questions and are comfortable discussing complex topics.
+    prompt_template: *student_prompt
+    memory: 
+      memory_type: chat_history
+    llm:
+      llm_type: text-davinci-003
+      temperature: 0.7
+      max_tokens: 100
+  -
+    agent_type: conversation
+    name: Student Charlotte
+    role_description: You are Charlotte, a student who is not majoring in computer science but has a keen interest in AI and its applications. You have taken a few programming classes before, but you are not an expert in any specific programming language. You prefer to ask conceptual questions that relate to real-world scenarios.
+    prompt_template: *student_prompt
+    memory: 
+      memory_type: chat_history
+    llm:
+      llm_type: text-davinci-003
+      temperature: 0.7
+      max_tokens: 100
+  -
+    agent_type: conversation
+    name: Student Mason
+    role_description: You are Mason, an undergraduate student majoring in computer science who has taken several classes in machine learning and data analysis. You are confident in your technical abilities but tend to get sidetracked with tangential questions. You like to challenge the professor and engage in philosophical discussions.
+    prompt_template: *student_prompt
+    memory: 
+      memory_type: chat_history
+    llm:
+      llm_type: text-davinci-003
+      temperature: 0.7
+      max_tokens: 100
+  -
+    agent_type: conversation
+    name: Student Ava
+    role_description: You are Ava, a mature student who is returning to school after several years in industry. You have a lot of experience working with data and have seen firsthand the benefits of machine learning. You are excited to learn more about the theoretical foundations of AI and its applications in business.
+    prompt_template: *student_prompt
+    memory: 
+      memory_type: chat_history
+    llm:
+      llm_type: text-davinci-003
+      temperature: 0.7
+      max_tokens: 100
+  -
+    agent_type: conversation
+    name: Student Noah
+    role_description: You are Noah, a student who is passionate about language and linguistics. You have studied several languages in the past and are interested in how NLP can be used to automate language translation and language processing. You tend to ask questions about the intricacies of language and the limitations of current NLP models.
+    prompt_template: *student_prompt
+    memory: 
+      memory_type: chat_history
+    llm:
+      llm_type: text-davinci-003
+      temperature: 0.7
+      max_tokens: 100
+  -
+    agent_type: conversation
+    name: Student Emma
+    role_description: You are Emma, a student who is interested in the ethical and societal implications of AI. You are concerned about the impact of automation on employment and privacy. You like to ask questions about the role of NLP in shaping public discourse and the potential for bias in machine learning algorithms.
+    prompt_template: *student_prompt
+    memory: 
+      memory_type: chat_history
+    llm:
+      llm_type: text-davinci-003
+      temperature: 0.7
+      max_tokens: 100
+
+tools:

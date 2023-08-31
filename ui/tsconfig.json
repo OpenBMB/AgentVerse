@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "moduleResolution": "node",
+        "lib": ["ESNext", "dom"],
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}

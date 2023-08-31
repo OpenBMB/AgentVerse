@@ -1,0 +1,39 @@
+$type: Text
+name:
+
+text: 
+fontFamily:
+fontSize:
+fontStyle:
+backgroundColor:
+color:
+stroke:
+strokeThickness:
+shadow:
+    offsetX:
+    offsetY:
+    color:
+    blur:
+    stroke:
+    fill:
+align:
+padding:
+    left:
+    right:
+    top:
+    bottom:    
+fixedWidth:
+fixedHeight:
+lineSpacing:
+maxLines:
+testString:
+wordWrap:
+    width:
+    useAdvancedWrap:
+
+tint:
+alpha:
+visible:
+flipX:
+flipY:
+cropResize:

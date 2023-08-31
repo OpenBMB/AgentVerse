@@ -1,0 +1,37 @@
+$type: ScrollBar
+name:
+
+width:
+height:
+orientation:
+
+# Relace child data by game objct
+background:
+slider:
+    background:
+    track:
+    indicator:
+    thumb:
+    input:
+    gap:
+    easeValue:
+        duration:
+        ease:
+
+buttons:
+    top:
+    bottom:
+    left:
+    right:
+    step:
+# ----
+
+space:
+    left:
+    right:
+    top:
+    bottom:
+
+enable:
+
+draggable:

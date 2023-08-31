@@ -1,0 +1,28 @@
+$type: Slider
+name:
+
+width:
+height:
+orientation:
+
+# Relace child data by game objct
+background:
+track:
+indicator:
+thumb:
+# ----
+
+input:
+value:
+gap:
+easeValue:
+    duration:
+    ease:
+space:
+    left:
+    right:
+    top:
+    bottom:
+enable:
+
+draggable:

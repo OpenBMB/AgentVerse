@@ -1,0 +1,32 @@
+$type: Knob
+name:
+
+width:
+height:
+
+barColor:
+trackColor:
+centerColor:
+thickness:
+startAngle:
+anticlockwise:
+knobDepth:
+
+# Relace child data by game objct
+background:
+text:
+# ----
+
+input:
+gap:
+easeValue:
+    duration:
+    ease:
+space:
+    left:
+    right:
+    top:
+    bottom:
+enable:
+
+draggable:

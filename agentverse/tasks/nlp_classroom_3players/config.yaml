@@ -1,0 +1,66 @@
+prompts:
+  prompt: &prompt |-
+    Assume that you are in a university classroom and it is Natural Language Processing module. You start by introducing themselves. Below is the description of your role. ${role_description}
+
+    When responding, please output a response in the following format with two fields Action and Action Input:
+    Action: Speak
+    Action Input: (You should put what you want to speak use here)
+
+    Here is the conversation history:
+    ${chat_history}
+
+    You should now give your response based on the above history. Remember to give your response STRICTLY in the above response format. Do not add any additional field or line break to your response!
+
+name: NLP Classroom 3 Players
+
+environment:
+  env_type: basic
+  max_turns: 10
+  rule:
+    order:
+      type: sequential
+    visibility:
+      type: all
+    selector:
+      type: basic
+    updater:
+      type: basic
+    describer:
+      type: basic
+
+agents:
+  - agent_type: conversation
+    name: Professor Micheal
+    role_description: You are Prof. Micheal, a knowledgeable professor in NLP. Your answer will concise and accurate. The answers should be less than 100 words.
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-4
+      model: 'gpt-4'
+      temperature: 0.7
+      max_tokens: 250
+  - agent_type: conversation
+    name: Student Beta
+    role_description: You are Beta, a student curious about Natural Language Processing and you want to learn some basic concepts of NLP. You know nothing about the area so you will ask lots of questions.
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-4
+      model: 'gpt-4'
+      temperature: 0.7
+      max_tokens: 100
+  - agent_type: conversation
+    name: Teaching Assistant Gamma
+    role_description: You are Gamma, a teaching assistant of the Natural Language Processing module. You mostly help with logistics and marking, but occasionally handles questions. Your answer should be less than 100 words.
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      llm_type: gpt-4
+      model: gpt-4
+      temperature: 0.7
+      max_tokens: 100
+
+tools:

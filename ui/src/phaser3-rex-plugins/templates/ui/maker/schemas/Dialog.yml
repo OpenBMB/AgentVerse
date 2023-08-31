@@ -1,0 +1,82 @@
+$type: Dialog
+name:
+
+width:
+height:
+
+choicesType:
+
+# Relace child data by game objct
+background:
+
+title:
+toolbarBackground:
+toolbar:
+    - $type:
+      # ...
+leftToolbarBackground:
+leftToolbar:
+    - $type:
+      # ...
+
+content:
+
+description:
+
+choicesBackground:
+choices:
+    - $type:
+      # ...
+
+actionsBackground:
+actions:
+    - $type:
+      # ...
+
+# ----
+
+space:
+    left:
+    right:
+    top:
+    bottom:
+    
+    title:
+    titleLeft:
+    titleRight:
+    content:
+    contentLeft:
+    contentRight:
+    description:
+    descriptionLeft:
+    descriptionRight:
+    choices:
+    choicesLeft:
+    choicesRight:
+    actionsLeft:
+    actionsRight:
+
+    toolbarItem:
+    leftToolbarItem:
+    choice:
+    action:
+
+expand:
+    title:
+    content:
+    description:
+    choices:
+    actions:
+
+align:
+    title:
+    content:
+    description:
+    choices:
+    actions:
+
+click:
+    mode:
+    clickInterval:
+
+draggable:
