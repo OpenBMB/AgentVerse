@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from agentverse.llms.base import LLMResult
 from agentverse.logging import get_logger
+from agentverse.message import Message
 
 from . import llm_registry
 from .base import BaseChatModel, BaseCompletionModel, BaseModelArgs
@@ -43,42 +44,42 @@ class OpenAIChatArgs(BaseModelArgs):
     frequency_penalty: int = Field(default=0)
 
 
-class OpenAICompletionArgs(OpenAIChatArgs):
-    model: str = Field(default="text-davinci-003")
-    suffix: str = Field(default="")
-    best_of: int = Field(default=1)
+# class OpenAICompletionArgs(OpenAIChatArgs):
+#     model: str = Field(default="text-davinci-003")
+#     suffix: str = Field(default="")
+#     best_of: int = Field(default=1)
 
 
-@llm_registry.register("text-davinci-003")
-class OpenAICompletion(BaseCompletionModel):
-    args: OpenAICompletionArgs = Field(default_factory=OpenAICompletionArgs)
+# @llm_registry.register("text-davinci-003")
+# class OpenAICompletion(BaseCompletionModel):
+#     args: OpenAICompletionArgs = Field(default_factory=OpenAICompletionArgs)
 
-    def __init__(self, max_retry: int = 3, **kwargs):
-        args = OpenAICompletionArgs()
-        args = args.dict()
-        for k, v in args.items():
-            args[k] = kwargs.pop(k, v)
-        if len(kwargs) > 0:
-            logging.warning(f"Unused arguments: {kwargs}")
-        super().__init__(args=args, max_retry=max_retry)
+#     def __init__(self, max_retry: int = 3, **kwargs):
+#         args = OpenAICompletionArgs()
+#         args = args.dict()
+#         for k, v in args.items():
+#             args[k] = kwargs.pop(k, v)
+#         if len(kwargs) > 0:
+#             logging.warning(f"Unused arguments: {kwargs}")
+#         super().__init__(args=args, max_retry=max_retry)
 
-    def generate_response(self, prompt: str) -> LLMResult:
-        response = openai.Completion.create(prompt=prompt, **self.args.dict())
-        return LLMResult(
-            content=response["choices"][0]["text"],
-            send_tokens=response["usage"]["prompt_tokens"],
-            recv_tokens=response["usage"]["completion_tokens"],
-            total_tokens=response["usage"]["total_tokens"],
-        )
+#     def generate_response(self, prompt: str) -> LLMResult:
+#         response = openai.Completion.create(prompt=prompt, **self.args.dict())
+#         return LLMResult(
+#             content=response["choices"][0]["text"],
+#             send_tokens=response["usage"]["prompt_tokens"],
+#             recv_tokens=response["usage"]["completion_tokens"],
+#             total_tokens=response["usage"]["total_tokens"],
+#         )
 
-    async def agenerate_response(self, prompt: str) -> LLMResult:
-        response = await openai.Completion.acreate(prompt=prompt, **self.args.dict())
-        return LLMResult(
-            content=response["choices"][0]["text"],
-            send_tokens=response["usage"]["prompt_tokens"],
-            recv_tokens=response["usage"]["completion_tokens"],
-            total_tokens=response["usage"]["total_tokens"],
-        )
+#     async def agenerate_response(self, prompt: str) -> LLMResult:
+#         response = await openai.Completion.acreate(prompt=prompt, **self.args.dict())
+#         return LLMResult(
+#             content=response["choices"][0]["text"],
+#             send_tokens=response["usage"]["prompt_tokens"],
+#             recv_tokens=response["usage"]["completion_tokens"],
+#             total_tokens=response["usage"]["total_tokens"],
+#         )
 
 
 @llm_registry.register("gpt-3.5-turbo")
@@ -96,15 +97,24 @@ class OpenAIChat(BaseChatModel):
             logging.warning(f"Unused arguments: {kwargs}")
         super().__init__(args=args, max_retry=max_retry)
 
-    def _construct_messages(self, prompt: str):
-        return [{"role": "user", "content": prompt}]
+    # def _construct_messages(self, history: List[Message]):
+    #     return history + [{"role": "user", "content": query}]
 
-    def generate_response(self, prompt: str) -> LLMResult:
-        logger.debug("Prompt:\n" + prompt)
-        messages = self._construct_messages(prompt)
+    def generate_response(
+        self,
+        prepend_prompt: str = "",
+        history: List[dict] = [],
+        append_prompt: str = "",
+    ) -> LLMResult:
+        logger.debug(prepend_prompt)
+        logger.debug(history)
+        logger.debug(append_prompt)
         try:
             response = openai.ChatCompletion.create(
-                messages=messages, **self.args.dict()
+                messages=self.construct_messages(
+                    prepend_prompt, history, append_prompt
+                ),
+                **self.args.dict(),
             )
         except (OpenAIError, KeyboardInterrupt) as error:
             raise
@@ -115,12 +125,21 @@ class OpenAIChat(BaseChatModel):
             total_tokens=response["usage"]["total_tokens"],
         )
 
-    async def agenerate_response(self, prompt: str) -> LLMResult:
-        logger.debug("Prompt:\n" + prompt)
-        messages = self._construct_messages(prompt)
+    async def agenerate_response(
+        self,
+        prepend_prompt: str = "",
+        history: List[dict] = [],
+        append_prompt: str = "",
+    ) -> LLMResult:
+        logger.debug(prepend_prompt)
+        logger.debug(history)
+        logger.debug(append_prompt)
         try:
             response = await openai.ChatCompletion.acreate(
-                messages=messages, **self.args.dict()
+                messages=self.construct_messages(
+                    prepend_prompt, history, append_prompt
+                ),
+                **self.args.dict(),
             )
         except (OpenAIError, KeyboardInterrupt) as error:
             raise
@@ -130,3 +149,15 @@ class OpenAIChat(BaseChatModel):
             recv_tokens=response["usage"]["completion_tokens"],
             total_tokens=response["usage"]["total_tokens"],
         )
+
+    def construct_messages(
+        self, prepend_prompt: str, history: List[dict], append_prompt: str
+    ):
+        messages = []
+        if prepend_prompt != "":
+            messages.append({"role": "system", "content": prepend_prompt})
+        if len(history) > 0:
+            messages += history
+        if append_prompt != "":
+            messages.append({"role": "system", "content": append_prompt})
+        return messages

@@ -6,11 +6,11 @@ from typing import TYPE_CHECKING, List
 
 from . import decision_maker_registry
 from .base import BaseDecisionMaker
-from agentverse.logging import typewriter_log
+from agentverse.logging import typewriter_log, logger
 
 if TYPE_CHECKING:
-    from agentverse.agents.base import BaseAgent
-    from agentverse.message import Message
+    from agentverse.agents import BaseAgent, SolverAgent, CriticAgent
+    from agentverse.message import Message, CriticMessage, SolverMessage
 
 
 @decision_maker_registry.register("vertical")
@@ -27,28 +27,29 @@ class VerticalDecisionMaker(BaseDecisionMaker):
         advice: str = "No advice yet.",
         *args,
         **kwargs,
-    ) -> List[Message]:
+    ) -> List[SolverMessage]:
         # Here we assume that the first agent is the solver.
         # The rest of the agents are the reviewers.
-        reviews = await asyncio.gather(
+        reviews: List[CriticMessage] = await asyncio.gather(
             *[
                 agent.astep(previous_solution, advice, task_description)
                 for agent in agents[1:]
             ]
         )
-        typewriter_log("Reviews:", Fore.YELLOW)
-        typewriter_log(
-            "\n".join(
-                [
-                    f"[{review.sender_agent.role_description}]: {review.criticism}"
-                    for review in reviews
-                ]
-            ),
+        logger.info("", "Reviews:", Fore.YELLOW)
+        logger.info(
+            "",
+            "\n".join([f"[{review.sender}]: {review.content}" for review in reviews]),
             Fore.YELLOW,
         )
 
+        nonempty_reviews = []
+        for review in reviews:
+            if not review.is_agree and review.content != "":
+                nonempty_reviews.append(review)
+        agents[0].add_message_to_memory(nonempty_reviews)
         # reviews = [(agent, review) for agent, review in zip(agents[1:], reviews)]
-        result = agents[0].step(previous_solution, reviews, advice, task_description)
+        result = agents[0].step(previous_solution, advice, task_description)
         return [result]
 
     def reset(self):

@@ -194,7 +194,7 @@ class Logger(metaclass=Singleton):
 
         if content:
             if isinstance(content, list):
-                content = " ".join(content)
+                content = "\n".join(content)
         else:
             content = ""
 
@@ -208,7 +208,7 @@ class Logger(metaclass=Singleton):
         title="",
         title_color="",
     ):
-        self._log(title, title_color, message, logging.DEBUG)
+        self._log(title, title_color, str(message), logging.DEBUG)
 
     def info(
         self,
@@ -216,7 +216,7 @@ class Logger(metaclass=Singleton):
         title="",
         title_color="",
     ):
-        self._log(title, title_color, message, logging.INFO)
+        self._log(title, title_color, str(message), logging.INFO)
 
     def warn(
         self,
@@ -224,7 +224,7 @@ class Logger(metaclass=Singleton):
         title="",
         title_color="",
     ):
-        self._log(title, title_color, message, logging.WARN)
+        self._log(title, title_color, str(message), logging.WARN)
 
     def error(self, title, message=""):
         self._log(title, Fore.RED, message, logging.ERROR)
@@ -236,9 +236,11 @@ class Logger(metaclass=Singleton):
         message: str = "",
         level=logging.INFO,
     ):
-        if message:
-            if isinstance(message, list):
-                message = " ".join(message)
+        if isinstance(message, list):
+            if len(message) > 0:
+                message = "\n".join(message)
+            else:
+                message = ""
         self.logger.log(
             level, message, extra={"title": str(title), "color": str(title_color)}
         )
@@ -291,11 +293,11 @@ class TypingConsoleHandler(logging.StreamHandler):
 
         msg = self.format(record)
         try:
-            words = msg.split()
+            words = re.split(r"(\s+)", msg)
             for i, word in enumerate(words):
                 print(word, end="", flush=True)
-                if i < len(words) - 1:
-                    print(" ", end="", flush=True)
+                # if i < len(words) - 1:
+                #     print(" ", end="", flush=True)
                 typing_speed = random.uniform(min_typing_speed, max_typing_speed)
                 time.sleep(typing_speed)
                 # type faster after each word

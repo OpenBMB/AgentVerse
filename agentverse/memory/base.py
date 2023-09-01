@@ -18,3 +18,6 @@ class BaseMemory(BaseModel):
     @abstractmethod
     def reset(self) -> None:
         pass
+
+    def to_messages(self) -> List[dict]:
+        pass

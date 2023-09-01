@@ -46,12 +46,12 @@ class MGSMEvaluatorParser(OutputParser):
                 raise ValueError("Bad score!")
             pat = re.compile(r"(?:\d.\s*)?Response:\s*(.+)", re.DOTALL)
             advice = pat.findall(cleaned_output)[0]
-            logger.info("Evaluator give the following advice:\n" + advice)
+            # logger.info("Evaluator give the following advice:\n" + advice)
         except (IndexError, ValueError):
             import pdb
 
             pdb.set_trace()
-            logger.error("Bad response from evaluator!")
+            # logger.error("Bad response from evaluator!")
             raise OutputParserError(text)
         return score, advice
 

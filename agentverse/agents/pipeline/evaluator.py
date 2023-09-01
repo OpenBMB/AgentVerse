@@ -8,7 +8,7 @@ import bdb
 from string import Template
 from typing import TYPE_CHECKING, List, Tuple
 
-from agentverse.message import Message
+from agentverse.message import EvaluatorMessage
 
 from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
@@ -19,13 +19,18 @@ logger = get_logger()
 
 @agent_registry.register("evaluator")
 class EvaluatorAgent(BaseAgent):
-    def step(self, result: str, task_description: str) -> Tuple[List[int], str]:
-        prompt = self._fill_prompt_template(result, task_description)
-        logger.debug(f"Prompt:\n{prompt}", "Evaluator", Fore.CYAN)
-        parsed_response = None, None
+    def step(self, result: str, task_description: str) -> EvaluatorMessage:
+        prepend_prompt, append_prompt = self.get_all_prompts(
+            result=result,
+            task_description=task_description,
+        )
+        history = self.memory.to_messages()
+        parsed_response = None
         for i in range(self.max_retry):
             try:
-                response = self.llm.generate_response(prompt)
+                response = self.llm.generate_response(
+                    prepend_prompt, history, append_prompt
+                )
                 parsed_response = self.output_parser.parse(response)
                 break
             except (KeyboardInterrupt, bdb.BdbQuit):
@@ -37,9 +42,16 @@ class EvaluatorAgent(BaseAgent):
 
         if parsed_response is None:
             logger.error(f"{self.name} failed to generate valid response.")
-        return parsed_response
+        message = EvaluatorMessage(
+            sender=self.name,
+            sender_agent=self,
+            score=parsed_response[0] if parsed_response is not None else 0,
+            advice=parsed_response[1] if parsed_response is not None else "",
+        )
+        return message
+        # return parsed_response
 
-    async def astep(self, solution: str) -> Message:
+    async def astep(self, solution: str) -> EvaluatorMessage:
         """Asynchronous version of step"""
         pass
 

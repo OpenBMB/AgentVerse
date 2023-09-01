@@ -8,6 +8,9 @@ from pydantic import BaseModel
 
 from abc import abstractmethod
 
+if TYPE_CHECKING:
+    from agentverse.message import SolverMessage
+
 
 class BaseDecisionMaker(BaseModel):
     """
@@ -23,7 +26,7 @@ class BaseDecisionMaker(BaseModel):
         advice: str = "No advice yet.",
         *args,
         **kwargs,
-    ) -> List[str]:
+    ) -> SolverMessage:
         pass
 
     def reset(self):

@@ -6,7 +6,8 @@ from . import role_assigner_registry
 from .base import BaseRoleAssigner
 
 if TYPE_CHECKING:
-    from agentverse.agents.base import BaseAgent
+    from agentverse.message import RoleAssignerMessage
+    from agentverse.agents import CriticAgent, RoleAssignerAgent
 
 
 @role_assigner_registry.register("role_description")
@@ -19,23 +20,26 @@ class DescriptionAssigner(BaseRoleAssigner):
 
     def step(
         self,
-        role_assigner: BaseAgent,
-        group_members: List[BaseAgent],
+        role_assigner: RoleAssignerAgent,
+        group_members: List[CriticAgent],
         advice: str = "No advice yet.",
         task_description: str = "",
         *args,
         **kwargs,
-    ) -> List[BaseAgent]:
+    ) -> List[CriticAgent]:
         assert task_description != ""
         assert self.cnt_agents > 0
 
         roles = role_assigner.step(advice, task_description, self.cnt_agents)
-        if len(roles) != len(group_members):
+        if len(roles.content) != len(group_members):
             raise ValueError(
-                f"Number of roles ({len(roles)}) and number of group members ({len(group_members)}) do not match."
+                f"Number of roles ({len(roles.content)}) and number of group members ({len(group_members)}) do not match."
             )
-        for role, member in zip(roles, group_members):
-            member.role_description = role.strip().strip(".")
+        for role, member in zip(roles.content, group_members):
+            description = role.strip().strip(".")
+            member.role_description = description
+            member.name = description
+
         return group_members
 
     def reset(self):

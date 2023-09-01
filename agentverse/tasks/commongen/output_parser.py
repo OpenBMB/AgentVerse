@@ -63,9 +63,9 @@ class CommongenEvaluatorParser(OutputParser):
                         score.append(bool(pattern.findall(check)[0]))
                         break
             advice = re.findall(r"(?:\d.\s*)?Advice:\s*(.+)", checks[-1])[0]
-            logger.info("Evaluator give the following advice:\n" + advice)
+            # logger.info("Evaluator give the following advice:\n" + advice)
         except (IndexError, ValueError):
-            logger.error("Bad response from evaluator!")
+            # logger.error("Bad response from evaluator!")
             raise OutputParserError(text)
         return score[0], advice
 

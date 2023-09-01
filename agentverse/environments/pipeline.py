@@ -17,7 +17,7 @@ from agentverse.environments.role_assigner import (
     role_assigner_registry,
 )
 from agentverse.logging import logger, typewriter_log
-from agentverse.message import Message
+from agentverse.message import Message, SolverMessage
 
 
 from . import env_registry as EnvironmentRegistry
@@ -120,7 +120,7 @@ class PipelineEnvironment(BaseModel):
         agents = self.role_assign(advice)
         logs.append({"module": "Role Assigner", "content": agents})
         description = "\n".join([agent.role_description for agent in agents])
-        typewriter_log(f"Role Assignment:\n{description}", Fore.CYAN)
+        logger.info("", f"Role Assignment:\n{description}", Fore.CYAN)
         # ================== EXPERT RECRUITMENT ==================
 
         # ================== DECISION MAKING ==================
@@ -130,14 +130,14 @@ class PipelineEnvironment(BaseModel):
         # TODO: make it more general
         plan = plan[0].content
         logs.append({"module": "Decision Maker", "content": plan})
-        typewriter_log(f"Decision Plan:\n{plan}", Fore.YELLOW)
+        logger.info("", f"Decision Plan:\n{plan}", Fore.YELLOW)
         # ================== DECISION MAKING ==================
 
         # ================== EXECUTION ==================
         result = self.execute(plan)
         logs.append({"module": "Executor", "content": result})
-        typewriter_log(f"Execution Result:", Fore.GREEN)
-        typewriter_log(result, Fore.GREEN)
+        logger.info("", f"Execution Result:", Fore.GREEN)
+        logger.info("", result, Fore.GREEN)
         # ================== EXECUTION ==================
 
         # ================== EVALUATION ==================
@@ -148,8 +148,8 @@ class PipelineEnvironment(BaseModel):
                 "content": f"Evaluation result: Score: {score}\nAdvice: {advice}",
             }
         )
-        typewriter_log(
-            f"Evaluation result:\nScore: {score}\nAdvice: {advice}", Fore.YELLOW
+        logger.info(
+            "", f"Evaluation result:\nScore: {score}\nAdvice: {advice}", Fore.YELLOW
         )
 
         if score is not None and (
@@ -158,11 +158,11 @@ class PipelineEnvironment(BaseModel):
         ):
             # TODO: 8 is an arbitrary threshold
             logs.append({"agent": "system", "content": "Good score! Accept!"})
-            typewriter_log(f"Good score! Accept! Final Result:\n{result}", Fore.GREEN)
+            logger.info("", f"Good score! Accept! Final Result:\n{result}", Fore.GREEN)
             self.success = True
         else:
             logs.append({"agent": "system", "content": "Bad score! Reject!"})
-            typewriter_log("Bad score! Reject!", Fore.RED)
+            logger.info("", "Bad score! Reject!", Fore.RED)
         self.cnt_turn += 1
         return result, logs, self.success
 
@@ -182,7 +182,7 @@ class PipelineEnvironment(BaseModel):
         agents: List[BaseAgent],
         previous_plan: str,
         advice: str = "No advice yet.",
-    ) -> List[str]:
+    ) -> List[SolverMessage]:
         # TODO: plan should be string or a special type of object?
         plan = await self.decision_maker.astep(
             agents=agents,
@@ -264,12 +264,12 @@ class PipelineEnvironment(BaseModel):
         #         logger.error("Bad response from human evaluator!")
         #     return ([comprehensiveness, detailedness, feasibility, novelty], advice)
         # else:
-        score, advice = self.evaluator.step(
+        evaluation = self.evaluator.step(
             agent=self.agents[AGENT_TYPES.EVALUATION],
             result=result,
             task_description=self.task_description,
         )
-        return score, advice
+        return evaluation.score, evaluation.advice
 
     def is_done(self):
         """Check if the environment is done"""

@@ -77,8 +77,8 @@ class EvaluatorParser(OutputParser):
             ]
             advice_text = "".join(checks[len(self.dimensions) :])
             advice = re.findall(r"(?:\d\.\s*)?Advice:\s*(.+)", advice_text)[0]
-            logger.info("Evaluator give the following advice:\n" + advice)
+            # logger.info("Evaluator give the following advice:\n" + advice)
         except (IndexError, ValueError):
-            logger.error("Bad response from evaluator!")
+            # logger.error("Bad response from evaluator!")
             raise OutputParserError(text)
         return score, advice

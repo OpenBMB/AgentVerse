@@ -11,13 +11,14 @@ from agentverse.message import Message
 from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
 from agentverse.utils import AgentCriticism
+from agentverse.message import CriticMessage
 
 logger = get_logger()
 
 
 @agent_registry.register("critic")
 class CriticAgent(BaseAgent):
-    def step(self, env_description: str = "") -> Message:
+    def step(self, env_description: str = "") -> CriticMessage:
         pass
 
     async def astep(
@@ -25,16 +26,21 @@ class CriticAgent(BaseAgent):
         preliminary_solution: str,
         advice: str = "No advice yet.",
         task_description: str = "",
-    ) -> AgentCriticism:
+    ) -> CriticMessage:
         """Asynchronous version of step"""
-        prompt = self._fill_prompt_template(
-            preliminary_solution, advice, task_description
+        prepend_prompt, append_prompt = self.get_all_prompts(
+            preliminary_solution=preliminary_solution,
+            advice=advice,
+            task_description=task_description,
+            role_description=self.role_description,
         )
-        logger.debug(prompt, "Critic", Fore.CYAN)
+        history = self.memory.to_messages()
         parsed_response: Union[AgentCriticism, None] = None
         for i in range(self.max_retry):
             try:
-                response = await self.llm.agenerate_response(prompt)
+                response = await self.llm.agenerate_response(
+                    prepend_prompt, history, append_prompt
+                )
                 parsed_response = self.output_parser.parse(response)
                 break
             except (KeyboardInterrupt, bdb.BdbQuit):
@@ -43,12 +49,22 @@ class CriticAgent(BaseAgent):
                 logger.error(e)
                 logger.warn("Retrying...")
                 continue
+        # if parsed_response is None:
+        #     return AgentCriticism(True, "LLM failed.", self)
+        # parsed_response = AgentCriticism(
+        #     parsed_response.is_agree, parsed_response.criticism, self
+        # )
+
         if parsed_response is None:
-            return AgentCriticism(True, "LLM failed.", self)
-        parsed_response = AgentCriticism(
-            parsed_response.is_agree, parsed_response.criticism, self
+            logger.error(f"{self.name} failed to generate valid response.")
+
+        message = CriticMessage(
+            content=parsed_response.criticism if parsed_response is not None else "",
+            sender=self.name,
+            sender_agent=self,
+            is_agree=parsed_response.is_agree if parsed_response is not None else False,
         )
-        return parsed_response
+        return message
 
     def _fill_prompt_template(
         self, preliminary_solution: str, advice: str, task_description: str

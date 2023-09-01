@@ -5,7 +5,9 @@ from typing import TYPE_CHECKING, List, Tuple
 
 from pydantic import BaseModel
 
-from agentverse.agents import BaseAgent
+if TYPE_CHECKING:
+    from agentverse.agents import EvaluatorAgent
+    from agentverse.message import EvaluatorMessage
 
 from . import evaluator_registry
 
@@ -18,12 +20,12 @@ class BaseEvaluator(BaseModel):
     @abstractmethod
     def step(
         self,
-        agent: BaseAgent,
+        agent: EvaluatorAgent,
         result: List[str] | str,
         task_description: str,
         *args,
         **kwargs,
-    ) -> Tuple[List[int], str]:
+    ) -> EvaluatorMessage:
         pass
 
     def reset(self):
@@ -34,10 +36,11 @@ class BaseEvaluator(BaseModel):
 class NoneEvaluator(BaseEvaluator):
     def step(
         self,
-        agent: BaseAgent,
+        agent: EvaluatorAgent,
         result: List[str] | str,
         task_description: str,
         *args,
         **kwargs,
-    ) -> Tuple[List[int], str]:
+    ) -> EvaluatorMessage:
+        result = EvaluatorMessage(score=0, advice=result)
         return result

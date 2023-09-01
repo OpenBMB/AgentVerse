@@ -9,7 +9,7 @@ from string import Template
 from typing import TYPE_CHECKING, List, Tuple
 
 # from agentverse.environments import PipelineEnvironment
-from agentverse.message import Message
+from agentverse.message import SolverMessage, Message, CriticMessage
 
 from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
@@ -21,23 +21,27 @@ logger = get_logger()
 
 @agent_registry.register("solver")
 class SolverAgent(BaseAgent):
-    prompt_template: str
-
     def step(
         self,
         former_solution: str,
-        critic_opinions: List[AgentCriticism],
         advice: str,
         task_description: str = "",
-    ) -> Message:
-        prompt = self._fill_prompt_template(
-            former_solution, critic_opinions, advice, task_description
+    ) -> SolverMessage:
+        # prompt = self._fill_prompt_template(
+        #     former_solution, critic_opinions, advice, task_description
+        # )
+        prepend_prompt, append_prompt = self.get_all_prompts(
+            former_solution=former_solution,
+            task_description=task_description,
+            advice=advice,
         )
-        logger.debug(f"Prompt:\n{prompt}", "Solver", Fore.CYAN)
+        history = self.memory.to_messages()  # Critic Opinions
         parsed_response = None
         for i in range(self.max_retry):
             try:
-                response = self.llm.generate_response(prompt)
+                response = self.llm.generate_response(
+                    prepend_prompt, history, append_prompt
+                )
                 parsed_response = self.output_parser.parse(response)
                 break
             except (KeyboardInterrupt, bdb.BdbQuit):
@@ -50,7 +54,7 @@ class SolverAgent(BaseAgent):
         if parsed_response is None:
             logger.error(f"{self.name} failed to generate valid response.")
 
-        message = Message(
+        message = SolverMessage(
             content=""
             if parsed_response is None
             else parsed_response.return_values["output"],
@@ -59,7 +63,7 @@ class SolverAgent(BaseAgent):
         )
         return message
 
-    async def astep(self, env_description: str = "") -> Message:
+    async def astep(self, env_description: str = "") -> SolverMessage:
         """Asynchronous version of step"""
         pass
 

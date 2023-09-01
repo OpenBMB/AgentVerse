@@ -8,6 +8,9 @@ from pydantic import BaseModel
 
 from abc import abstractmethod
 
+if TYPE_CHECKING:
+    from agentverse.agents import RoleAssignerAgent, CriticAgent
+
 
 class BaseRoleAssigner(BaseModel):
     """
@@ -17,13 +20,13 @@ class BaseRoleAssigner(BaseModel):
     @abstractmethod
     def step(
         self,
-        role_assigner: BaseAgent,
-        group_members: List[BaseAgent],
+        role_assigner: RoleAssignerAgent,
+        group_members: List[CriticAgent],
         advice: str = "No advice yet.",
         task_description: str = "",
         *args,
         **kwargs,
-    ) -> List[str]:
+    ) -> List[CriticAgent]:
         pass
 
     def reset(self):

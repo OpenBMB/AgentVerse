@@ -6,7 +6,8 @@ from . import evaluator_registry
 from .base import BaseEvaluator
 
 if TYPE_CHECKING:
-    from agentverse.agents.base import BaseAgent
+    from agentverse.agents import EvaluatorAgent
+    from agentverse.message import EvaluatorMessage
 
 
 @evaluator_registry.register("basic")
@@ -15,11 +16,11 @@ class BasicEvaluator(BaseEvaluator):
 
     def step(
         self,
-        agent: BaseAgent,
+        agent: EvaluatorAgent,
         result: List[str] | str,
         task_description: str,
         *args,
         **kwargs,
-    ) -> Tuple[List[int], str]:
+    ) -> EvaluatorMessage:
         evaluation = agent.step(result, task_description)
         return evaluation
