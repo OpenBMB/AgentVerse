@@ -23,7 +23,7 @@ class VerticalDecisionMaker(BaseDecisionMaker):
         self,
         agents: List[BaseAgent],
         task_description: str,
-        previous_solution: str = "No solution yet.",
+        previous_plan: str = "No solution yet.",
         advice: str = "No advice yet.",
         *args,
         **kwargs,
@@ -32,7 +32,7 @@ class VerticalDecisionMaker(BaseDecisionMaker):
         # The rest of the agents are the reviewers.
         reviews: List[CriticMessage] = await asyncio.gather(
             *[
-                agent.astep(previous_solution, advice, task_description)
+                agent.astep(previous_plan, advice, task_description)
                 for agent in agents[1:]
             ]
         )

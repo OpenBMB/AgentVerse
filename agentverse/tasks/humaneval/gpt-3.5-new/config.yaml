@@ -83,7 +83,7 @@ environment:
     type: role_description
     cnt_agents: *cnt_agents
   decision_maker:
-    type: vertical
+    type: dynamic
   executor:
     type: none
   evaluator:

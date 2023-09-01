@@ -89,6 +89,7 @@ class AgentVersePipeline:
         self.save_result(result, single_agent)
         return result
 
+    '''
     def iter_run(
         self,
         single_agent: bool = False,
@@ -185,6 +186,7 @@ class AgentVersePipeline:
         yield "【System Info】\n" + "End of whole process!Saving..."
         self.save_result(result, single_agent)
         return result
+    '''
 
     def singleagent_thinking(self, preliminary_solution, advice) -> str:
         preliminary_solution = self.environment.solve(
@@ -247,6 +249,7 @@ class AgentVersePipeline:
     #     final_solution = preliminary_solution
     #     return final_solution
 
+    '''
     def iter_multiagent_criticizing(
         self,
         preliminary_solution: str = "No solution yet.",
@@ -304,6 +307,7 @@ class AgentVersePipeline:
 
         final_solution = preliminary_solution
         return final_solution, True
+    '''
 
     def reset(self):
         self.environment.reset()

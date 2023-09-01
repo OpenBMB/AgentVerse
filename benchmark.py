@@ -53,8 +53,13 @@ if __name__ == "__main__":
         if i < skip_cnt:
             continue
         logger.info(f"Input: {example['input']}\nAnswer: {example['answer']}")
+        #print(args.task)
+        #exit()
         agentversepipeline = AgentVersePipeline.from_task(args.task)
         agentversepipeline.environment.set_task_description(example["input"])
+        #print(args.single_agent)
+        #print(args.discussion_mode)
+        #exit()
         response = agentversepipeline.run(
             single_agent=args.single_agent, discussion_mode=args.discussion_mode
         )
@@ -70,4 +75,8 @@ if __name__ == "__main__":
             + "\n"
         )
         f.flush()
+        print("=================")
+        print("=======Done======")
+        print("=================")
+        break
     f.close()
