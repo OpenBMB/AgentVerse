@@ -41,7 +41,12 @@ class AgentVersePipeline:
         # Build the environment
         env_config = task_config["environment"]
 
-        # Build agents
+        #if task_config["environment"]["decision_maker"]["type"] == "dynamic":
+        #    task_config["cnt_agents"] += 1
+        #    env_config["cnt_agents"] = task_config["cnt_agents"]
+
+
+        # Build agents for all pipeline (task)
         agents = {}
         for i, agent_config in enumerate(task_config["agents"]):
             agent_type = AGENT_TYPES(i)
@@ -53,7 +58,11 @@ class AgentVersePipeline:
                 ]
             else:
                 agents[agent_type] = load_agent(agent_config)
+
         env_config["agents"] = agents
+
+
+
 
         # env_config["role_assignment"] = load_agent(task_config["agents"][0])
         # env_config["execution"] = load_agent(task_config["agents"][3])
@@ -76,6 +85,7 @@ class AgentVersePipeline:
         single_agent: bool = False,
         discussion_mode: bool = False,
     ):
+
         """Run the environment from scratch until it is done.
 
         **Rewrite in pipeline to let the pipeline architecture more clear**

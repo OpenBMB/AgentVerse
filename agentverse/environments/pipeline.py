@@ -8,6 +8,7 @@ from agentverse.agents.base import BaseAgent
 from agentverse.utils import AGENT_TYPES
 from agentverse.environments.decision_maker import (
     BaseDecisionMaker,
+    DynamicDecisionMaker,
     decision_maker_registry,
 )
 from agentverse.environments.evaluator import BaseEvaluator, evaluator_registry
@@ -42,6 +43,7 @@ class PipelineEnvironment(BaseModel):
 
     agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]] = None
 
+
     role_assigner: BaseRoleAssigner
     decision_maker: BaseDecisionMaker
     executor: BaseExecutor
@@ -58,7 +60,6 @@ class PipelineEnvironment(BaseModel):
             component_type = config.pop("type")
             component = registry.build(component_type, **config)
             return component
-
         role_assigner = build_components(
             kwargs.pop("role_assigner", {"type": "role_description"}),
             role_assigner_registry,
@@ -73,6 +74,7 @@ class PipelineEnvironment(BaseModel):
         evaluator = build_components(
             kwargs.pop("evaluator", {"type": "basic"}), evaluator_registry
         )
+
 
         super().__init__(
             role_assigner=role_assigner,
@@ -124,7 +126,12 @@ class PipelineEnvironment(BaseModel):
         # ================== EXPERT RECRUITMENT ==================
 
         # ================== DECISION MAKING ==================
-        plan = await self.decision_making(agents, previous_plan, advice)
+        # if dynamic
+        if str(type(self.decision_maker)) == str("<class 'agentverse.environments.decision_maker.dynamic.DynamicDecisionMaker'>"):
+            plan = await self.decision_making(agents, self.agents[AGENT_TYPES.MANAGER], previous_plan, advice)
+            #plan = await self.decision_making(agents, previous_plan, advice)
+        else:
+            plan = await self.decision_making(agents, previous_plan, advice)
         # Although plan may be a list in some cases, all the cases we currently consider
         # only have one plan, so we just take the first element.
         # TODO: make it more general
@@ -170,6 +177,7 @@ class PipelineEnvironment(BaseModel):
 
     def role_assign(self, advice: str = "") -> List[BaseAgent]:
         """Assign roles to agents"""
+
         agents = self.role_assigner.step(
             role_assigner=self.agents[AGENT_TYPES.ROLE_ASSIGNMENT],
             group_members=[self.agents[AGENT_TYPES.SOLVER]]
@@ -182,16 +190,28 @@ class PipelineEnvironment(BaseModel):
     async def decision_making(
         self,
         agents: List[BaseAgent],
+        manager: List[BaseAgent],
         previous_plan: str,
         advice: str = "No advice yet.",
     ) -> List[str]:
         # TODO: plan should be string or a special type of object?
-        plan = await self.decision_maker.astep(
-            agents=agents,
-            task_description=self.task_description,
-            previous_plan=previous_plan,
-            advice=advice,
-        )
+
+        #dynamic
+        if str(type(manager)) == str("<class 'agentverse.agents.pipeline.manager.ManagerAgent'>"):
+            plan = await self.decision_maker.astep(
+                agents=agents,
+                manager=manager,
+                task_description=self.task_description,
+                previous_plan=previous_plan,
+                advice=advice,
+            )
+        else:
+            plan = await self.decision_maker.astep(
+                agents=agents,
+                task_description=self.task_description,
+                previous_plan=previous_plan,
+                advice=advice,
+            )
         return plan
 
     # def solve(

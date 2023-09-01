@@ -33,6 +33,7 @@ class AGENT_TYPES(Enum):
     CRITIC = 2
     EXECUTION = 3
     EVALUATION = 4
+    MANAGER = 5
 
 
 class Singleton(abc.ABCMeta, type):

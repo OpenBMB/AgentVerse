@@ -14,6 +14,7 @@ class BaseRoleAssigner(BaseModel):
     The base class of role assignment class.
     """
 
+
     @abstractmethod
     def step(
         self,
@@ -24,6 +25,7 @@ class BaseRoleAssigner(BaseModel):
         *args,
         **kwargs,
     ) -> List[str]:
+
         pass
 
     def reset(self):

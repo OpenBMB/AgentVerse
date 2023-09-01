@@ -29,6 +29,7 @@ class HorizontalDecisionMaker(BaseDecisionMaker):
         *args,
         **kwargs,
     ) -> List[str]:
+
         # pass
 
         # Here we assume that the first agent is the [summarizer].
