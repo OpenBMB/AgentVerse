@@ -128,6 +128,8 @@ class PipelineEnvironment(BaseModel):
         # Although plan may be a list in some cases, all the cases we currently consider
         # only have one plan, so we just take the first element.
         # TODO: make it more general
+        # TODO: Add mutiple loops
+        # TODO: when all agents achieve consensus, all agents require stop disscuss
         plan = plan[0].content
         logs.append({"module": "Decision Maker", "content": plan})
         typewriter_log(f"Decision Plan:\n{plan}", Fore.YELLOW)

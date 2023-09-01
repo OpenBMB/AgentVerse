@@ -23,16 +23,17 @@ class VerticalDecisionMaker(BaseDecisionMaker):
         self,
         agents: List[BaseAgent],
         task_description: str,
-        previous_solution: str = "No solution yet.",
+        previous_plan: str = "No solution yet.",
         advice: str = "No advice yet.",
         *args,
         **kwargs,
     ) -> List[Message]:
+
         # Here we assume that the first agent is the solver.
         # The rest of the agents are the reviewers.
         reviews = await asyncio.gather(
             *[
-                agent.astep(previous_solution, advice, task_description)
+                agent.astep(previous_plan, advice, task_description)
                 for agent in agents[1:]
             ]
         )
@@ -48,7 +49,7 @@ class VerticalDecisionMaker(BaseDecisionMaker):
         )
 
         # reviews = [(agent, review) for agent, review in zip(agents[1:], reviews)]
-        result = agents[0].step(previous_solution, reviews, advice, task_description)
+        result = agents[0].step(previous_plan, reviews, advice, task_description)
         return [result]
 
     def reset(self):
