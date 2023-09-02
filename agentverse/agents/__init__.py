@@ -12,4 +12,5 @@ from agentverse.agents.pipeline.role_assigner import RoleAssignerAgent
 from agentverse.agents.pipeline.critic import CriticAgent
 from agentverse.agents.pipeline.evaluator import EvaluatorAgent
 from agentverse.agents.pipeline.solver import SolverAgent
+from agentverse.agents.pipeline.manager import ManagerAgent
 from agentverse.agents.pipeline.executor import ExecutorAgent

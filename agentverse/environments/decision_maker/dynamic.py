@@ -25,13 +25,44 @@ class DynamicDecisionMaker(BaseDecisionMaker):
     async def astep(
         self,
         agents: List[BaseAgent],
+        manager: List[BaseAgent],
         task_description: str,
         previous_plan: str = "No solution yet.",
         advice: str = "No advice yet.",
+        previous_sentence: str = "No any sentence yet.",
         *args,
         **kwargs,
     ) -> List[str]:
-        pass
+
+
+        # Speak simultaneously
+        # Manger select the optimial one as the current spoken sentence
+        reviews = list()
+        for i in range(len(agents)):
+
+            review = await asyncio.gather(
+                *[
+                    agent.astep(previous_plan, advice, task_description)
+                    for agent in agents[1:]
+                ]
+            )
+
+            #typewriter_log("Reviews:", Fore.YELLOW)
+            #typewriter_log(
+            #    "\n".join(
+            #        [
+            #            f"[{review.sender_agent.role_description}]: {review.criticism}"
+            #            for review in reviews
+            #        ]
+            #    ),
+            #    Fore.YELLOW,
+            #)
+
+            previous_sentence = manager.step(previous_plan, review, advice, task_description, previous_sentence)
+            reviews.append(previous_sentence)
+
+        result = agents[0].step(previous_plan, reviews, advice, task_description)
+        return [result]
 
 
     def reset(self):

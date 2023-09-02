@@ -34,6 +34,29 @@ class HumanevalSolverParser(OutputParser):
         return AgentFinish({"output": cleaned_output}, text)
 
 
+
+@output_parser_registry.register("humaneval-manager")
+class HumanevalManagerParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        return AgentFinish({"output": output.content}, output.content)
+
+
+@output_parser_registry.register("humaneval-solver")
+class HumanevalSolverParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+        end_pos = text.rfind("```")
+        if end_pos == -1:
+            raise OutputParserError(text)
+        text = text[:end_pos]
+        cleaned_output = text.strip().strip("```").strip()
+        if cleaned_output.startswith("python"):
+            cleaned_output = cleaned_output[6:].strip()
+        elif cleaned_output.startswith("python3"):
+            cleaned_output = cleaned_output[7:].strip()
+        return AgentFinish({"output": cleaned_output}, text)
+
+
 @output_parser_registry.register("humaneval-evaluator")
 class HumanevalEvaluatorParser(OutputParser):
     dimensions: List[str] = None

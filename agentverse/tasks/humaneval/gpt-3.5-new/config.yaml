@@ -57,7 +57,28 @@ prompts:
   
     Now give your response.
 
-  evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+
+  manager_prompt: &manager_prompt |-
+    According to the current solution and the previous sentences, select the most appropriate critic to optimize the current solution.
+    ```python 
+    ${task_description} 
+    ```
+    # Previous Solution
+    The solution you gave in the last step is:
+    ${former_solution}
+
+    # Critics
+    There are some critics on the above solution:
+    ```
+    ${critic_opinions}
+    ```
+
+    # Previous Sentences
+    The previous sentences in the previous rounds is:
+    ${previous_sentence}
+
+
+  evaluator_prompt: &evaluator_prompt |-
     You are an experienced code reviewer. As a good reviewer, you carefully check the correctness of the given code completion. When the completion is incorrect, you should patiently teach the writer how to correct the completion.
 
     # Experts
@@ -181,3 +202,20 @@ agents:
       type: mgsm-evaluator
       dimensions:
         - Score
+
+
+  - #manager_agent:
+    agent_type: manager
+    name: Manager
+    prompt_template: *manager_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: humaneval-manager
+
+
