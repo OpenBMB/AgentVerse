@@ -49,7 +49,7 @@ class VerticalDecisionMaker(BaseDecisionMaker):
                 nonempty_reviews.append(review)
         agents[0].add_message_to_memory(nonempty_reviews)
         # reviews = [(agent, review) for agent, review in zip(agents[1:], reviews)]
-        result = agents[0].step(previous_solution, advice, task_description)
+        result = agents[0].step(previous_plan, advice, task_description)
         return [result]
 
     def reset(self):

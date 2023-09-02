@@ -106,14 +106,14 @@ class OpenAIChat(BaseChatModel):
         history: List[dict] = [],
         append_prompt: str = "",
     ) -> LLMResult:
-        logger.debug(prepend_prompt)
-        logger.debug(history)
-        logger.debug(append_prompt)
+        # logger.debug(prepend_prompt)
+        # logger.debug(history)
+        # logger.debug(append_prompt)
+        messages = self.construct_messages(prepend_prompt, history, append_prompt)
+        logger.log_prompt(messages)
         try:
             response = openai.ChatCompletion.create(
-                messages=self.construct_messages(
-                    prepend_prompt, history, append_prompt
-                ),
+                messages=messages,
                 **self.args.dict(),
             )
         except (OpenAIError, KeyboardInterrupt) as error:
@@ -131,14 +131,14 @@ class OpenAIChat(BaseChatModel):
         history: List[dict] = [],
         append_prompt: str = "",
     ) -> LLMResult:
-        logger.debug(prepend_prompt)
-        logger.debug(history)
-        logger.debug(append_prompt)
+        # logger.debug(prepend_prompt)
+        # logger.debug(history)
+        # logger.debug(append_prompt)
+        messages = self.construct_messages(prepend_prompt, history, append_prompt)
+        logger.log_prompt(messages)
         try:
             response = await openai.ChatCompletion.acreate(
-                messages=self.construct_messages(
-                    prepend_prompt, history, append_prompt
-                ),
+                messages=messages,
                 **self.args.dict(),
             )
         except (OpenAIError, KeyboardInterrupt) as error:
@@ -159,5 +159,5 @@ class OpenAIChat(BaseChatModel):
         if len(history) > 0:
             messages += history
         if append_prompt != "":
-            messages.append({"role": "system", "content": append_prompt})
+            messages.append({"role": "user", "content": append_prompt})
         return messages

@@ -82,13 +82,19 @@ class PipelineEnvironment(BaseModel):
             **kwargs,
         )
 
-    async def step(self) -> List[Message]:
-        advice = "No advice yet."
+    async def step(
+        self, advice: str = "No advice yet.", previous_plan: str = "No solution yet."
+    ) -> List[Message]:
+        # advice = "No advice yet."
         result = ""
-        previous_plan = "No solution yet."
+        # previous_plan = "No solution yet."
         logs = []
 
         logger.info(f"Loop Round {self.cnt_turn}")
+        if self.cnt_turn == 1:
+            import pdb
+
+            pdb.set_trace()
         # if not discussion_mode and not single_agent:
         #     # criticizing, multi-agent mode need pre-solution
         #     preliminary_solution = self.environment.solve(
@@ -166,7 +172,7 @@ class PipelineEnvironment(BaseModel):
             logs.append({"agent": "system", "content": "Bad score! Reject!"})
             logger.info("", "Bad score! Reject!", Fore.RED)
         self.cnt_turn += 1
-        return result, logs, self.success
+        return result, advice, previous_plan, logs, self.success
 
     def role_assign(self, advice: str = "") -> List[BaseAgent]:
         """Assign roles to agents"""
@@ -270,6 +276,10 @@ class PipelineEnvironment(BaseModel):
             agent=self.agents[AGENT_TYPES.EVALUATION],
             result=result,
             task_description=self.task_description,
+            all_role_description=[
+                self.agents[AGENT_TYPES.SOLVER].role_description,
+                *[agent.role_description for agent in self.agents[AGENT_TYPES.CRITIC]],
+            ],
         )
         return evaluation.score, evaluation.advice
 

@@ -9,6 +9,9 @@ prompts:
     ${task_description}
     
     You can recruit ${cnt_critic_agents} expert in different fields. What experts will you recruit to better generate an accurate solution?
+
+    Here are some suggestion:
+    ${advice}
     
   role_assigner_append_prompt: &role_assigner_append_prompt |-
     # Response Format Guidance
@@ -56,6 +59,10 @@ prompts:
 
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
     You are an experienced code reviewer. As a good reviewer, you carefully check the correctness of the given code completion. When the completion is incorrect, you should patiently teach the writer how to correct the completion.
+
+    # Experts
+    The experts recruited in this turn includes:
+    ${all_role_description}
     
     # Problem and Writer's Solution
     Problem: 
@@ -68,7 +75,7 @@ prompts:
     # Response Format Guidance
     You must respond in the following format:
     Score: (0 or 1, 0 for incorrect and 1 for correct)
-    Response: (give your advice on how to correct the solution)
+    Response: (give your advice on how to correct the solution, and your suggestion on on what experts should recruit in the next round)
 
     Now carefully check the writer's solution, and give your response.
     
@@ -83,7 +90,7 @@ environment:
     type: role_description
     cnt_agents: *cnt_agents
   decision_maker:
-    type: dynamic
+    type: vertical
   executor:
     type: none
   evaluator:

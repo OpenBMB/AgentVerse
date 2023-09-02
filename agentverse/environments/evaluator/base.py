@@ -23,6 +23,7 @@ class BaseEvaluator(BaseModel):
         agent: EvaluatorAgent,
         result: List[str] | str,
         task_description: str,
+        all_role_description: List[str],
         *args,
         **kwargs,
     ) -> EvaluatorMessage:
@@ -39,7 +40,7 @@ class NoneEvaluator(BaseEvaluator):
         agent: EvaluatorAgent,
         result: List[str] | str,
         task_description: str,
-        *args,
+        all_role_description: List[str] * args,
         **kwargs,
     ) -> EvaluatorMessage:
         result = EvaluatorMessage(score=0, advice=result)

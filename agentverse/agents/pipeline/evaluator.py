@@ -19,10 +19,13 @@ logger = get_logger()
 
 @agent_registry.register("evaluator")
 class EvaluatorAgent(BaseAgent):
-    def step(self, result: str, task_description: str) -> EvaluatorMessage:
+    def step(
+        self, result: str, task_description: str, all_role_description: List[str]
+    ) -> EvaluatorMessage:
         prepend_prompt, append_prompt = self.get_all_prompts(
             result=result,
             task_description=task_description,
+            all_role_description=all_role_description,
         )
         history = self.memory.to_messages()
         parsed_response = None

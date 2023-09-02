@@ -91,7 +91,7 @@ import time
 import json
 import abc
 from logging import LogRecord
-from typing import Any
+from typing import Any, List
 
 from colorama import Fore, Style
 from agentverse.utils import Singleton
@@ -208,7 +208,7 @@ class Logger(metaclass=Singleton):
         title="",
         title_color="",
     ):
-        self._log(title, title_color, str(message), logging.DEBUG)
+        self._log(title, title_color, message, logging.DEBUG)
 
     def info(
         self,
@@ -216,7 +216,7 @@ class Logger(metaclass=Singleton):
         title="",
         title_color="",
     ):
-        self._log(title, title_color, str(message), logging.INFO)
+        self._log(title, title_color, message, logging.INFO)
 
     def warn(
         self,
@@ -224,7 +224,7 @@ class Logger(metaclass=Singleton):
         title="",
         title_color="",
     ):
-        self._log(title, title_color, str(message), logging.WARN)
+        self._log(title, title_color, message, logging.WARN)
 
     def error(self, title, message=""):
         self._log(title, Fore.RED, message, logging.ERROR)
@@ -238,7 +238,7 @@ class Logger(metaclass=Singleton):
     ):
         if isinstance(message, list):
             if len(message) > 0:
-                message = "\n".join(message)
+                message = "\n".join([str(m) for m in message])
             else:
                 message = ""
         self.logger.log(
@@ -274,6 +274,12 @@ class Logger(metaclass=Singleton):
         self.json_logger.addHandler(json_data_handler)
         self.json_logger.debug(data)
         self.json_logger.removeHandler(json_data_handler)
+
+    def log_prompt(self, prompt: List[dict]) -> None:
+        for p in prompt:
+            self.debug(
+                p["content"], title=f'==={p["role"]}===\n', title_color=Fore.MAGENTA
+            )
 
     def get_log_directory(self):
         this_files_dir_path = os.path.dirname(__file__)

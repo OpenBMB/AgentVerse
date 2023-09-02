@@ -19,8 +19,9 @@ class BasicEvaluator(BaseEvaluator):
         agent: EvaluatorAgent,
         result: List[str] | str,
         task_description: str,
+        all_role_description: List[str],
         *args,
         **kwargs,
     ) -> EvaluatorMessage:
-        evaluation = agent.step(result, task_description)
+        evaluation = agent.step(result, task_description, all_role_description)
         return evaluation

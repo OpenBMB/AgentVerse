@@ -84,8 +84,12 @@ class AgentVersePipeline:
 
         """
         self.environment.reset()
+        advice = "No advice yet."
+        previous_plan = "No solution yet."
         while not self.environment.is_done():
-            result, logs, success = asyncio.run(self.environment.step())
+            result, advice, previous_plan, logs, success = asyncio.run(
+                self.environment.step(advice, previous_plan)
+            )
         self.save_result(result, single_agent)
         return result
 
