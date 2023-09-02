@@ -78,7 +78,7 @@ prompts:
     ${previous_sentence}
 
 
-  evaluator_prompt: &evaluator_prompt |-
+  evaluator_prepend_prompt: &evaluator_prepend_prompt |-
     You are an experienced code reviewer. As a good reviewer, you carefully check the correctness of the given code completion. When the completion is incorrect, you should patiently teach the writer how to correct the completion.
 
     # Experts
