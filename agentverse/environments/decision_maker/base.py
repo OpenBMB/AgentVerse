@@ -17,6 +17,8 @@ class BaseDecisionMaker(BaseModel):
     The base class of decision making class.
     """
 
+    name: str = "base"
+
     @abstractmethod
     async def astep(
         self,

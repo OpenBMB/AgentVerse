@@ -1,11 +1,11 @@
 from pydantic import BaseModel, Field
-from typing import List, Tuple, Set, Union
+from typing import List, Tuple, Set, Union, Any
 
 from agentverse.utils import AgentAction
 
 
 class Message(BaseModel):
-    content: Union[str, List[str]] = Field(default="")
+    content: Any = Field(default="")
     sender: str = Field(default="")
     receiver: Set[str] = Field(default=set({"all"}))
     sender_agent: object = Field(default=None)
@@ -18,6 +18,10 @@ class SolverMessage(Message):
 
 class CriticMessage(Message):
     is_agree: bool
+
+
+class ExecutorMessage(Message):
+    pass
 
 
 class EvaluatorMessage(Message):

@@ -77,6 +77,30 @@ prompts:
     The previous sentences in the previous rounds is:
     ${previous_sentence}
 
+  executor_prepend_prompt: &executor_prepend_prompt |-
+    You are an experienced program tester. Now your team is trying to solve the problem: 
+    '''
+    Complete the Python function:
+    ${task_description}
+    '''
+
+    Your team has given the following answer:
+    '''
+    ${solution}
+    '''
+
+  executor_append_prompt: &executor_append_prompt |-
+    The solution has been written to `tmp/main.py`. Your are going to write the testing code for the solution. You should respond in the following json format wrapped with markdown quotes:
+    ```json
+    {
+        "thought": your thought,
+        "code": the testing code,
+        "file_path": the path to write your testing code,
+        "command": the command to execute your testing code
+    }
+    ```
+
+    Respond only the json, and nothing else.
 
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
     You are an experienced code reviewer. As a good reviewer, you carefully check the correctness of the given code completion. When the completion is incorrect, you should patiently teach the writer how to correct the completion.
@@ -90,6 +114,9 @@ prompts:
     ${task_description}
 
     Writer's Solution: 
+    ${solution}
+
+    Tester's Feedback:
     ${result}
 
   evaluator_append_prompt: &evaluator_append_prompt |-
@@ -111,9 +138,9 @@ environment:
     type: role_description
     cnt_agents: *cnt_agents
   decision_maker:
-    type: dynamic
+    type: vertical
   executor:
-    type: none
+    type: code-test
   evaluator:
     type: basic
 
@@ -173,16 +200,17 @@ agents:
   - #executor_agent:
     agent_type: executor
     name: Executor
-    prompt_template: None
+    prepend_prompt_template: *executor_prepend_prompt
+    append_prompt_template: *executor_append_prompt
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-3.5-turbo
       model: gpt-3.5-turbo
       temperature: 0
-      max_tokens: 512
+      max_tokens: 1024
     output_parser:
-      type: humaneval
+      type: humaneval-executor
 
   - #evaluator_agent:
     agent_type: evaluator

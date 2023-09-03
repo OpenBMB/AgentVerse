@@ -21,6 +21,7 @@ class BaseEvaluator(BaseModel):
     def step(
         self,
         agent: EvaluatorAgent,
+        solution: List[str] | str,
         result: List[str] | str,
         task_description: str,
         all_role_description: List[str],
@@ -38,9 +39,11 @@ class NoneEvaluator(BaseEvaluator):
     def step(
         self,
         agent: EvaluatorAgent,
+        solution: List[str] | str,
         result: List[str] | str,
         task_description: str,
-        all_role_description: List[str] * args,
+        all_role_description: List[str],
+        *args,
         **kwargs,
     ) -> EvaluatorMessage:
         result = EvaluatorMessage(score=0, advice=result)

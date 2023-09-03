@@ -17,11 +17,14 @@ class BasicEvaluator(BaseEvaluator):
     def step(
         self,
         agent: EvaluatorAgent,
+        solution: List[str] | str,
         result: List[str] | str,
         task_description: str,
         all_role_description: List[str],
         *args,
         **kwargs,
     ) -> EvaluatorMessage:
-        evaluation = agent.step(result, task_description, all_role_description)
+        evaluation = agent.step(
+            solution, result, task_description, all_role_description
+        )
         return evaluation

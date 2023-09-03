@@ -170,3 +170,4 @@ g_push.sh
 raw/
 !ui/src/**
 results
+tmp/

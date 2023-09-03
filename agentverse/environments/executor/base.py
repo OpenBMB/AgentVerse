@@ -18,6 +18,7 @@ class BaseExecutor(BaseModel):
     @abstractmethod
     def step(
         self,
+        task_description: str,
         solution: List[str],
         *args,
         **kwargs,
@@ -36,6 +37,7 @@ class NoneExecutor(BaseExecutor):
 
     def step(
         self,
+        task_description: str,
         solution: List[str],
         *args,
         **kwargs,

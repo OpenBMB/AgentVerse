@@ -43,7 +43,6 @@ class PipelineEnvironment(BaseModel):
 
     agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]] = None
 
-
     role_assigner: BaseRoleAssigner
     decision_maker: BaseDecisionMaker
     executor: BaseExecutor
@@ -60,6 +59,7 @@ class PipelineEnvironment(BaseModel):
             component_type = config.pop("type")
             component = registry.build(component_type, **config)
             return component
+
         role_assigner = build_components(
             kwargs.pop("role_assigner", {"type": "role_description"}),
             role_assigner_registry,
@@ -74,7 +74,6 @@ class PipelineEnvironment(BaseModel):
         evaluator = build_components(
             kwargs.pop("evaluator", {"type": "basic"}), evaluator_registry
         )
-
 
         super().__init__(
             role_assigner=role_assigner,
@@ -93,10 +92,6 @@ class PipelineEnvironment(BaseModel):
         logs = []
 
         logger.info(f"Loop Round {self.cnt_turn}")
-        if self.cnt_turn == 1:
-            import pdb
-
-            pdb.set_trace()
         # if not discussion_mode and not single_agent:
         #     # criticizing, multi-agent mode need pre-solution
         #     preliminary_solution = self.environment.solve(
@@ -133,9 +128,11 @@ class PipelineEnvironment(BaseModel):
 
         # ================== DECISION MAKING ==================
         # if dynamic
-        if str(type(self.decision_maker)) == str("<class 'agentverse.environments.decision_maker.dynamic.DynamicDecisionMaker'>"):
-            plan = await self.decision_making(agents, self.agents[AGENT_TYPES.MANAGER], previous_plan, advice)
-            #plan = await self.decision_making(agents, previous_plan, advice)
+        if "dynamic" in self.decision_maker.name:
+            plan = await self.decision_making(
+                agents, self.agents[AGENT_TYPES.MANAGER], previous_plan, advice
+            )
+            # plan = await self.decision_making(agents, previous_plan, advice)
         else:
             plan = await self.decision_making(agents, previous_plan, advice)
         # Although plan may be a list in some cases, all the cases we currently consider
@@ -156,7 +153,7 @@ class PipelineEnvironment(BaseModel):
         # ================== EXECUTION ==================
 
         # ================== EVALUATION ==================
-        score, advice = self.evaluate(result)
+        score, advice = self.evaluate(plan, result)
         logs.append(
             {
                 "agent": "evaluator",
@@ -202,8 +199,10 @@ class PipelineEnvironment(BaseModel):
     ) -> List[SolverMessage]:
         # TODO: plan should be string or a special type of object?
 
-        #dynamic
-        if str(type(manager)) == str("<class 'agentverse.agents.pipeline.manager.ManagerAgent'>"):
+        # dynamic
+        if str(type(manager)) == str(
+            "<class 'agentverse.agents.pipeline.manager.ManagerAgent'>"
+        ):
             plan = await self.decision_maker.astep(
                 agents=agents,
                 manager=manager,
@@ -271,9 +270,13 @@ class PipelineEnvironment(BaseModel):
         """execution stage.
         Use the executor to finish the task.
         """
-        return self.executor.step(final_solution)
+        return self.executor.step(
+            self.agents[AGENT_TYPES.EXECUTION], self.task_description, final_solution
+        )
 
-    def evaluate(self, result: Any) -> Tuple[List[int], str]:
+    def evaluate(
+        self, solution: Union[List[str], str], result: Any
+    ) -> Tuple[List[int], str]:
         """evaluation stage."""
         # if self.human_eval:
         #     print("This round, LLM gave the following result:")
@@ -294,6 +297,7 @@ class PipelineEnvironment(BaseModel):
         # else:
         evaluation = self.evaluator.step(
             agent=self.agents[AGENT_TYPES.EVALUATION],
+            solution=solution,
             result=result,
             task_description=self.task_description,
             all_role_description=[

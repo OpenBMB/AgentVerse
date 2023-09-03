@@ -8,7 +8,7 @@ import bdb
 from string import Template
 from typing import TYPE_CHECKING, List, Tuple
 
-from agentverse.message import EvaluatorMessage
+from agentverse.message import EvaluatorMessage, Message
 
 from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
@@ -20,9 +20,14 @@ logger = get_logger()
 @agent_registry.register("evaluator")
 class EvaluatorAgent(BaseAgent):
     def step(
-        self, result: str, task_description: str, all_role_description: List[str]
+        self,
+        solution: List[str] | str,
+        result: str,
+        task_description: str,
+        all_role_description: List[str],
     ) -> EvaluatorMessage:
         prepend_prompt, append_prompt = self.get_all_prompts(
+            solution=solution,
             result=result,
             task_description=task_description,
             all_role_description=all_role_description,

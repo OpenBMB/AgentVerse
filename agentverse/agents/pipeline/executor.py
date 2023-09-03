@@ -5,8 +5,7 @@ import bdb
 from string import Template
 from typing import TYPE_CHECKING, List, Any
 
-# from agentverse.environments import PipelineEnvironment
-from agentverse.message import Message
+from agentverse.message import ExecutorMessage, Message
 
 from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
@@ -17,13 +16,33 @@ logger = get_logger()
 
 @agent_registry.register("executor")
 class ExecutorAgent(BaseAgent):
-    environment: object = None
+    def step(self, task_description: str, solution: str) -> ExecutorMessage:
+        prepend_prompt, append_prompt = self.get_all_prompts(
+            task_description=task_description, solution=solution
+        )
+        parsed_response = None
+        for i in range(self.max_retry):
+            try:
+                response = self.llm.generate_response(prepend_prompt, [], append_prompt)
+                parsed_response = self.output_parser.parse(response)
+                break
+            except (KeyboardInterrupt, bdb.BdbQuit):
+                raise
+            except Exception as e:
+                logger.error(e)
+                logger.warn("Retrying...")
+                continue
 
-    def step(self, solution: str) -> Any:
-        # TODO: implement the executor
-        return solution
+        if parsed_response is None:
+            logger.error(f"{self.name} failed to generate valid response.")
+        message = ExecutorMessage(
+            sender=self.name,
+            sender_agent=self,
+            content=parsed_response.return_values["output"],
+        )
+        return message
 
-    async def astep(self, env_description: str = "") -> Message:
+    async def astep(self, solution: str) -> ExecutorMessage:
         """Asynchronous version of step"""
         pass
 

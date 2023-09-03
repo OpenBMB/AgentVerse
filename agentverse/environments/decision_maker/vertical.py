@@ -19,6 +19,8 @@ class VerticalDecisionMaker(BaseDecisionMaker):
     Discuss in a vertical manner.
     """
 
+    name: str = "vertical"
+
     async def astep(
         self,
         agents: List[BaseAgent],

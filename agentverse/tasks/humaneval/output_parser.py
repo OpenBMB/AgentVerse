@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import ast
 from typing import Union, List, Tuple
 
 from agentverse.utils import AgentAction, AgentFinish, AgentCriticism
@@ -34,7 +35,6 @@ class HumanevalSolverParser(OutputParser):
         return AgentFinish({"output": cleaned_output}, text)
 
 
-
 @output_parser_registry.register("humaneval-manager")
 class HumanevalManagerParser(OutputParser):
     def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
@@ -54,6 +54,22 @@ class HumanevalSolverParser(OutputParser):
             cleaned_output = cleaned_output[6:].strip()
         elif cleaned_output.startswith("python3"):
             cleaned_output = cleaned_output[7:].strip()
+        return AgentFinish({"output": cleaned_output}, text)
+
+
+@output_parser_registry.register("humaneval-executor")
+class HumanevalSolverParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+        json_dict = re.findall(r"```.*?\n(.+?)```", text, re.DOTALL)[-1]
+        try:
+            cleaned_output = ast.literal_eval(json_dict)
+        except BaseException as e:
+            raise OutputParserError(text)
+        if not (
+            "code" in json_dict and "file_path" in json_dict and "command" in json_dict
+        ):
+            raise OutputParserError(text)
         return AgentFinish({"output": cleaned_output}, text)
 
 

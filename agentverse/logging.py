@@ -276,10 +276,12 @@ class Logger(metaclass=Singleton):
         self.json_logger.removeHandler(json_data_handler)
 
     def log_prompt(self, prompt: List[dict]) -> None:
+        self.debug("", "-=-=-=-=-=-=-=-=Prompt Start-=-=-=-=-=-=-=-=", Fore.MAGENTA)
         for p in prompt:
             self.debug(
                 p["content"], title=f'==={p["role"]}===\n', title_color=Fore.MAGENTA
             )
+        self.debug("", "-=-=-=-=-=-=-=-=Prompt End-=-=-=-=-=-=-=-=", Fore.MAGENTA)
 
     def get_log_directory(self):
         this_files_dir_path = os.path.dirname(__file__)

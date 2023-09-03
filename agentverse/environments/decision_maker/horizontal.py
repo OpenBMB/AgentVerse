@@ -19,7 +19,9 @@ class HorizontalDecisionMaker(BaseDecisionMaker):
     Discuss in a horizontal manner.
     """
 
-    #def step(
+    name: str = "horizontal"
+
+    # def step(
     async def astep(
         self,
         agents: List[BaseAgent],
@@ -29,7 +31,6 @@ class HorizontalDecisionMaker(BaseDecisionMaker):
         *args,
         **kwargs,
     ) -> List[str]:
-
         # pass
 
         # Here we assume that the first agent is the [summarizer].

@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 import asyncio
 from colorama import Fore
@@ -20,8 +19,10 @@ class DynamicDecisionMaker(BaseDecisionMaker):
     Discuss in a horizontal manner.
     """
 
+    name: str = "dynamic"
+
     ## To Do: implement dynamic
-    #def step(
+    # def step(
     async def astep(
         self,
         agents: List[BaseAgent],
@@ -33,13 +34,10 @@ class DynamicDecisionMaker(BaseDecisionMaker):
         *args,
         **kwargs,
     ) -> List[str]:
-
-
         # Speak simultaneously
         # Manger select the optimial one as the current spoken sentence
         reviews = list()
         for i in range(len(agents)):
-
             review = await asyncio.gather(
                 *[
                     agent.astep(previous_plan, advice, task_description)
@@ -47,8 +45,8 @@ class DynamicDecisionMaker(BaseDecisionMaker):
                 ]
             )
 
-            #typewriter_log("Reviews:", Fore.YELLOW)
-            #typewriter_log(
+            # typewriter_log("Reviews:", Fore.YELLOW)
+            # typewriter_log(
             #    "\n".join(
             #        [
             #            f"[{review.sender_agent.role_description}]: {review.criticism}"
@@ -56,19 +54,21 @@ class DynamicDecisionMaker(BaseDecisionMaker):
             #        ]
             #    ),
             #    Fore.YELLOW,
-            #)
+            # )
 
-            previous_sentence = manager.step(previous_plan, review, advice, task_description, previous_sentence)
+            previous_sentence = manager.step(
+                previous_plan, review, advice, task_description, previous_sentence
+            )
             reviews.append(previous_sentence)
 
-        '''
+        """
         reviews = await asyncio.gather(
             *[
                 agent.astep(previous_plan, advice, task_description)
                 for agent in agents[1:]
             ]
         )
-        '''
+        """
 
         nonempty_reviews = []
         for review in reviews:
@@ -79,7 +79,6 @@ class DynamicDecisionMaker(BaseDecisionMaker):
         result = agents[0].step(previous_plan, advice, task_description)
 
         return [result]
-
 
     def reset(self):
         pass
