@@ -16,6 +16,7 @@ from agentverse.agents.base import BaseAgent
 from agentverse.utils import AgentCriticism
 
 import random
+from rapidfuzz import fuzz
 
 
 logger = get_logger()
@@ -28,13 +29,15 @@ class ManagerAgent(BaseAgent):
     def step(
         self,
         former_solution: str,
-        critic_opinions: List[AgentCriticism],
+        candidate_critic_opinions: List[AgentCriticism],
         advice: str,
         task_description: str = "",
         previous_sentence: str = "",
     ) -> Message:
+
+
         prompt = self._fill_prompt_template(
-            former_solution, critic_opinions, advice, task_description, previous_sentence
+            former_solution, candidate_critic_opinions, advice, task_description, previous_sentence
         )
 
         logger.debug(f"Prompt:\n{prompt}", "Manager", Fore.CYAN)
@@ -42,12 +45,16 @@ class ManagerAgent(BaseAgent):
         for i in range(self.max_retry):
             try:
                 # LLM Manager
-                '''
-                response = self.llm.generate_response(prompt)
-                parsed_response = self.output_parser.parse(response)
-                '''
+                #response = self.llm.generate_response(prompt)
+                #parsed_response = self.output_parser.parse(response)
+                selected_role_description = self.llm.generate_response(prompt).content
+                candidate_score_list = [fuzz.ratio(candidate.sender, selected_role_description) for candidate in candidate_critic_opinions]
+                selected_index = candidate_score_list.index(max(candidate_score_list))
+                candidate_critic_opinion = candidate_critic_opinions[selected_index]
+
+
                 # Random Manager
-                parsed_response = random.choice(critic_opinions)
+                #parsed_response = random.choice(candidate_critic_opinions)
                 break
             except (KeyboardInterrupt, bdb.BdbQuit):
                 raise
@@ -55,7 +62,7 @@ class ManagerAgent(BaseAgent):
                 logger.error(e)
                 logger.warn("Retrying...")
                 continue
-        return parsed_response
+        return candidate_critic_opinion
 
 
     async def astep(self, env_description: str = "") -> Message:
@@ -65,11 +72,12 @@ class ManagerAgent(BaseAgent):
     def _fill_prompt_template(
         self,
         former_solution: str,
-        critic_opinions: List[AgentCriticism],
+        candidate_critic_opinions: List[AgentCriticism],
         advice: str,
         task_description: str,
         previous_sentence: str,
     ) -> str:
+
         """Fill the placeholders in the prompt template
 
         In the role_assigner agent, three placeholders are supported:
@@ -85,13 +93,12 @@ class ManagerAgent(BaseAgent):
             "previous_sentence": previous_sentence,
             "critic_opinions": "\n".join(
                 [
-                    f"{critic.sender_agent.role_description} said: {critic.criticism}"
-                    for critic in critic_opinions
+                    f"Role: {critic.sender}. {critic.sender_agent.role_description} said: {critic.content}"
+                    for critic in candidate_critic_opinions
                 ]
             ),
             "advice": advice,
         }
-
 
         # manger select the proper sentence
         template = Template(self.prompt_template)

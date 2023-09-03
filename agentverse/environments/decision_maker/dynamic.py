@@ -61,7 +61,23 @@ class DynamicDecisionMaker(BaseDecisionMaker):
             previous_sentence = manager.step(previous_plan, review, advice, task_description, previous_sentence)
             reviews.append(previous_sentence)
 
-        result = agents[0].step(previous_plan, reviews, advice, task_description)
+        '''
+        reviews = await asyncio.gather(
+            *[
+                agent.astep(previous_plan, advice, task_description)
+                for agent in agents[1:]
+            ]
+        )
+        '''
+
+        nonempty_reviews = []
+        for review in reviews:
+            if not review.is_agree and review.content != "":
+                nonempty_reviews.append(review)
+        agents[0].add_message_to_memory(nonempty_reviews)
+
+        result = agents[0].step(previous_plan, advice, task_description)
+
         return [result]
 
 

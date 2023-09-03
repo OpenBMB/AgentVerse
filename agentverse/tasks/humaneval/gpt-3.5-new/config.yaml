@@ -59,7 +59,7 @@ prompts:
 
 
   manager_prompt: &manager_prompt |-
-    According to the current solution and the previous sentences, select the most appropriate critic to optimize the current solution.
+    According to the Previous Solution and the Previous Sentences, select the most appropriate Critic from a specific Role and output the Role.
     ```python 
     ${task_description} 
     ```
@@ -111,7 +111,7 @@ environment:
     type: role_description
     cnt_agents: *cnt_agents
   decision_maker:
-    type: vertical
+    type: dynamic
   executor:
     type: none
   evaluator:
