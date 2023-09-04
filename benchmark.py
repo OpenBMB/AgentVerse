@@ -60,14 +60,14 @@ if __name__ == "__main__":
         # print(args.single_agent)
         # print(args.discussion_mode)
         # exit()
-        response = agentversepipeline.run(
+        plan, result, logs = agentversepipeline.run(
             single_agent=args.single_agent, discussion_mode=args.discussion_mode
         )
         f.write(
             json.dumps(
                 {
                     "input": example["input"],
-                    "response": response,
+                    "response": plan,
                     "label": example["answer"],
                     "logs": agentversepipeline.logs,
                 }

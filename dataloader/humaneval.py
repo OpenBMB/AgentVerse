@@ -7,6 +7,7 @@ import json
 @dataloader_registry.register("humaneval/gpt-4")
 @dataloader_registry.register("humaneval/gpt-3.5")
 @dataloader_registry.register("humaneval/gpt-3.5-new")
+@dataloader_registry.register("humaneval/gpt-4-new")
 class HumanevalLoader(DataLoader):
     def __init__(self, path: str):
         super().__init__(path)

@@ -32,7 +32,7 @@ class EvaluatorAgent(BaseAgent):
             task_description=task_description,
             all_role_description=all_role_description,
         )
-        history = self.memory.to_messages()
+        history = self.memory.to_messages(self.name)
         parsed_response = None
         for i in range(self.max_retry):
             try:

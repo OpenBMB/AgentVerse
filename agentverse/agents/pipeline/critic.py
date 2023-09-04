@@ -34,7 +34,7 @@ class CriticAgent(BaseAgent):
             task_description=task_description,
             role_description=self.role_description,
         )
-        history = self.memory.to_messages()
+        history = self.memory.to_messages(self.name)
         parsed_response: Union[AgentCriticism, None] = None
         for i in range(self.max_retry):
             try:

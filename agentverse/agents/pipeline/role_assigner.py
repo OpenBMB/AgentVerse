@@ -31,7 +31,7 @@ class RoleAssignerAgent(BaseAgent):
             task_description=task_description,
             cnt_critic_agents=cnt_critic_agents,
         )
-        history = self.memory.to_messages()
+        history = self.memory.to_messages(self.name)
         parsed_response = None
         for i in range(self.max_retry):
             try:

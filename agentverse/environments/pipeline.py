@@ -121,8 +121,8 @@ class PipelineEnvironment(BaseModel):
 
         # ================== EXPERT RECRUITMENT ==================
         agents = self.role_assign(advice)
-        logs.append({"module": "Role Assigner", "content": agents})
         description = "\n".join([agent.role_description for agent in agents])
+        logs.append({"module": "Role Assigner", "content": description})
         logger.info("", f"Role Assignment:\n{description}", Fore.CYAN)
         # ================== EXPERT RECRUITMENT ==================
 
@@ -134,7 +134,7 @@ class PipelineEnvironment(BaseModel):
             )
             # plan = await self.decision_making(agents, previous_plan, advice)
         else:
-            plan = await self.decision_making(agents, previous_plan, advice)
+            plan = await self.decision_making(agents, None, previous_plan, advice)
         # Although plan may be a list in some cases, all the cases we currently consider
         # only have one plan, so we just take the first element.
         # TODO: make it more general
@@ -176,7 +176,7 @@ class PipelineEnvironment(BaseModel):
             logs.append({"agent": "system", "content": "Bad score! Reject!"})
             logger.info("", "Bad score! Reject!", Fore.RED)
         self.cnt_turn += 1
-        return result, advice, previous_plan, logs, self.success
+        return result, advice, plan, logs, self.success
 
     def role_assign(self, advice: str = "") -> List[BaseAgent]:
         """Assign roles to agents"""
@@ -200,9 +200,7 @@ class PipelineEnvironment(BaseModel):
         # TODO: plan should be string or a special type of object?
 
         # dynamic
-        if str(type(manager)) == str(
-            "<class 'agentverse.agents.pipeline.manager.ManagerAgent'>"
-        ):
+        if "dynamic" in self.decision_maker.name:
             plan = await self.decision_maker.astep(
                 agents=agents,
                 manager=manager,

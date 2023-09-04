@@ -35,7 +35,7 @@ class SolverAgent(BaseAgent):
             task_description=task_description,
             advice=advice,
         )
-        history = self.memory.to_messages()  # Critic Opinions
+        history = self.memory.to_messages(self.name)  # Critic Opinions
         parsed_response = None
         for i in range(self.max_retry):
             try:
