@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List, Tuple, Any
 
 from pydantic import BaseModel
 
-from agentverse.agents import BaseAgent
+from agentverse.agents import ExecutorAgent
 
 from . import executor_registry
 
@@ -18,6 +18,7 @@ class BaseExecutor(BaseModel):
     @abstractmethod
     def step(
         self,
+        agent: ExecutorAgent,
         task_description: str,
         solution: List[str],
         *args,
@@ -37,12 +38,13 @@ class NoneExecutor(BaseExecutor):
 
     def step(
         self,
+        agent: ExecutorAgent,
         task_description: str,
         solution: List[str],
         *args,
         **kwargs,
     ) -> Any:
-        return solution
+        return "None"
 
     def reset(self):
         pass

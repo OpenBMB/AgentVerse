@@ -144,7 +144,7 @@ environment:
   decision_maker:
     type: vertical
   executor:
-    type: code-test
+    type: none
   evaluator:
     type: basic
 
