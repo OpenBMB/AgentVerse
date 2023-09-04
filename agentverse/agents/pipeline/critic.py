@@ -28,6 +28,7 @@ class CriticAgent(BaseAgent):
         task_description: str = "",
     ) -> CriticMessage:
         """Asynchronous version of step"""
+        logger.debug("", self.name, Fore.MAGENTA)
         prepend_prompt, append_prompt = self.get_all_prompts(
             preliminary_solution=preliminary_solution,
             advice=advice,

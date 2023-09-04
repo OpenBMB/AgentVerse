@@ -34,10 +34,14 @@ class ManagerAgent(BaseAgent):
         task_description: str = "",
         previous_sentence: str = "",
     ) -> Message:
-
+        logger.debug("", self.name, Fore.MAGENTA)
 
         prompt = self._fill_prompt_template(
-            former_solution, candidate_critic_opinions, advice, task_description, previous_sentence
+            former_solution,
+            candidate_critic_opinions,
+            advice,
+            task_description,
+            previous_sentence,
         )
 
         logger.debug(f"Prompt:\n{prompt}", "Manager", Fore.CYAN)
@@ -45,16 +49,18 @@ class ManagerAgent(BaseAgent):
         for i in range(self.max_retry):
             try:
                 # LLM Manager
-                #response = self.llm.generate_response(prompt)
-                #parsed_response = self.output_parser.parse(response)
+                # response = self.llm.generate_response(prompt)
+                # parsed_response = self.output_parser.parse(response)
                 selected_role_description = self.llm.generate_response(prompt).content
-                candidate_score_list = [fuzz.ratio(candidate.sender, selected_role_description) for candidate in candidate_critic_opinions]
+                candidate_score_list = [
+                    fuzz.ratio(candidate.sender, selected_role_description)
+                    for candidate in candidate_critic_opinions
+                ]
                 selected_index = candidate_score_list.index(max(candidate_score_list))
                 candidate_critic_opinion = candidate_critic_opinions[selected_index]
 
-
                 # Random Manager
-                #parsed_response = random.choice(candidate_critic_opinions)
+                # parsed_response = random.choice(candidate_critic_opinions)
                 break
             except (KeyboardInterrupt, bdb.BdbQuit):
                 raise
@@ -63,7 +69,6 @@ class ManagerAgent(BaseAgent):
                 logger.warn("Retrying...")
                 continue
         return candidate_critic_opinion
-
 
     async def astep(self, env_description: str = "") -> Message:
         """Asynchronous version of step"""
@@ -77,7 +82,6 @@ class ManagerAgent(BaseAgent):
         task_description: str,
         previous_sentence: str,
     ) -> str:
-
         """Fill the placeholders in the prompt template
 
         In the role_assigner agent, three placeholders are supported:

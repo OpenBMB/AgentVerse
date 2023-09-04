@@ -24,6 +24,7 @@ class RoleAssignerAgent(BaseAgent):
     def step(
         self, advice: str, task_description: str, cnt_critic_agents: int
     ) -> RoleAssignerMessage:
+        logger.debug("", self.name, Fore.MAGENTA)
         # prompt = self._fill_prompt_template(advice, task_description, cnt_critic_agents)
         # logger.debug(f"Prompt:\n{prompt}", "Role Assigner", Fore.CYAN)
         prepend_prompt, append_prompt = self.get_all_prompts(

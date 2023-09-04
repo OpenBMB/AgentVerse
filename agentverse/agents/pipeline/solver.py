@@ -27,6 +27,7 @@ class SolverAgent(BaseAgent):
         advice: str,
         task_description: str = "",
     ) -> SolverMessage:
+        logger.debug("", self.name, Fore.MAGENTA)
         # prompt = self._fill_prompt_template(
         #     former_solution, critic_opinions, advice, task_description
         # )

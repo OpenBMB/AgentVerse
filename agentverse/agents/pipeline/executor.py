@@ -17,6 +17,7 @@ logger = get_logger()
 @agent_registry.register("executor")
 class ExecutorAgent(BaseAgent):
     def step(self, task_description: str, solution: str) -> ExecutorMessage:
+        logger.debug("", self.name, Fore.MAGENTA)
         prepend_prompt, append_prompt = self.get_all_prompts(
             task_description=task_description, solution=solution
         )

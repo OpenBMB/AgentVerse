@@ -26,6 +26,7 @@ class EvaluatorAgent(BaseAgent):
         task_description: str,
         all_role_description: List[str],
     ) -> EvaluatorMessage:
+        logger.debug("", self.name, Fore.MAGENTA)
         prepend_prompt, append_prompt = self.get_all_prompts(
             solution=solution,
             result=result,
