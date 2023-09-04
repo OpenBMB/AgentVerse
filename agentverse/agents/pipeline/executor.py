@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from agentverse.logging import get_logger
+from colorama import Fore
 import bdb
 from string import Template
 from typing import TYPE_CHECKING, List, Any
