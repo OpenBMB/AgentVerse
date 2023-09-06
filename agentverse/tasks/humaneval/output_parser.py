@@ -23,16 +23,52 @@ class HumanevalParser(OutputParser):
 class HumanevalSolverParser(OutputParser):
     def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
         text = output.content
-        end_pos = text.rfind("```")
-        if end_pos == -1:
+        # start_pos = text.find("```")
+        # end_pos = text.rfind("```")
+        # if end_pos == -1:
+        #     raise OutputParserError(text)
+        # text = text[start_pos:end_pos]
+        # cleaned_output = text.strip().strip("```").strip()
+        # if cleaned_output.startswith("python"):
+        #     cleaned_output = cleaned_output[6:].strip()
+        # elif cleaned_output.startswith("python3"):
+        #     cleaned_output = cleaned_output[7:].strip()
+        code = re.findall(r"```.*?\n(.+?)```", text, re.DOTALL)[-1]
+
+        return AgentFinish({"output": code}, text)
+
+
+@output_parser_registry.register("humaneval-solver-autogpt")
+class HumanevalSolverParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+        json_dict = re.findall(r"```.*?\n(.+?)```", text, re.DOTALL)[-1]
+        try:
+            cleaned_output = ast.literal_eval(json_dict)
+        except BaseException as e:
             raise OutputParserError(text)
-        text = text[:end_pos]
-        cleaned_output = text.strip().strip("```").strip()
-        if cleaned_output.startswith("python"):
-            cleaned_output = cleaned_output[6:].strip()
-        elif cleaned_output.startswith("python3"):
-            cleaned_output = cleaned_output[7:].strip()
-        return AgentFinish({"output": cleaned_output}, text)
+        if "code" not in json_dict:
+            raise OutputParserError(text)
+        return AgentFinish({"output": cleaned_output["code"]}, text)
+
+
+@output_parser_registry.register("humaneval-solver-autogpt-2")
+class HumanevalSolverParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+        try:
+            parsed_result = re.findall(
+                r"Text:(.+?)Reasoning:(.+?)Criticism:(.+?)Code:(.+)", text, re.DOTALL
+            )[0]
+        except BaseException as e:
+            raise OutputParserError(text)
+        code = parsed_result[-1].strip()
+        if code.startswith("```"):
+            try:
+                code = re.findall(r"```.*?\n(.+?)```", code, re.DOTALL)[0].strip()
+            except BaseException as e:
+                raise OutputParserError(text)
+        return AgentFinish({"output": code}, text)
 
 
 @output_parser_registry.register("humaneval-manager")
@@ -41,23 +77,23 @@ class HumanevalManagerParser(OutputParser):
         return AgentFinish({"output": output.content}, output.content)
 
 
-@output_parser_registry.register("humaneval-solver")
-class HumanevalSolverParser(OutputParser):
-    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
-        text = output.content
-        end_pos = text.rfind("```")
-        if end_pos == -1:
-            raise OutputParserError(text)
-        text = text[:end_pos]
-        cleaned_output = text.strip().strip("```").strip()
-        if cleaned_output.startswith("python"):
-            cleaned_output = cleaned_output[6:].strip()
-        elif cleaned_output.startswith("python3"):
-            cleaned_output = cleaned_output[7:].strip()
-        return AgentFinish({"output": cleaned_output}, text)
+# @output_parser_registry.register("humaneval-solver")
+# class HumanevalSolverParser(OutputParser):
+#     def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+#         text = output.content
+#         end_pos = text.rfind("```")
+#         if end_pos == -1:
+#             raise OutputParserError(text)
+#         text = text[:end_pos]
+#         cleaned_output = text.strip().strip("```").strip()
+#         if cleaned_output.startswith("python"):
+#             cleaned_output = cleaned_output[6:].strip()
+#         elif cleaned_output.startswith("python3"):
+#             cleaned_output = cleaned_output[7:].strip()
+#         return AgentFinish({"output": cleaned_output}, text)
 
 
-@output_parser_registry.register("humaneval-executor")
+@output_parser_registry.register("humaneval-executor-autogpt")
 class HumanevalSolverParser(OutputParser):
     def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
         text = output.content
@@ -69,6 +105,31 @@ class HumanevalSolverParser(OutputParser):
         if not (
             "code" in json_dict and "file_path" in json_dict and "command" in json_dict
         ):
+            raise OutputParserError(text)
+        return AgentFinish({"output": cleaned_output}, text)
+
+
+@output_parser_registry.register("humaneval-executor")
+class HumanevalSolverParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+        try:
+            parsed_result = re.findall(
+                r"Thought:(.+?)File Path:(.+?)Code:(.+?)Command:(.+)",
+                text,
+                re.DOTALL,
+            )[0]
+            cleaned_output = {
+                "thought": parsed_result[0].strip(),
+                "file_path": parsed_result[1].strip().strip("`"),
+                "code": parsed_result[2]
+                .strip()
+                .strip("```")
+                .strip("python")
+                .strip("python3"),
+                "command": parsed_result[3].strip().strip("`"),
+            }
+        except BaseException as e:
             raise OutputParserError(text)
         return AgentFinish({"output": cleaned_output}, text)
 
@@ -130,3 +191,32 @@ class HumanevalyCriticParser(OutputParser):
             return AgentCriticism(False, criticism)
         else:
             raise OutputParserError(text)
+
+
+@output_parser_registry.register("humaneval-critic-agree")
+class HumanevalyCriticParser(OutputParser):
+    def parse(self, output: LLMResult) -> AgentCriticism:
+        text = output.content
+        if "[Agree]" in text:
+            return AgentCriticism(True, "")
+        else:
+            return AgentCriticism(False, text)
+
+
+@output_parser_registry.register("humaneval-critic-autogpt")
+class HumanevalCriticParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+        try:
+            parsed_result = re.findall(
+                r"Text:(.+?)Reasoning:(.+?)Criticism:(.+?)Speak:(.+?)Final Decision:(.+)",
+                text,
+                re.DOTALL,
+            )[0]
+        except BaseException as e:
+            raise OutputParserError(text)
+        decision = parsed_result[-1].strip()
+        if "[Agree]" in decision:
+            return AgentCriticism(True, "")
+        else:
+            return AgentCriticism(False, parsed_result[-2].strip())

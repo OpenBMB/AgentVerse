@@ -89,6 +89,7 @@ class AgentVersePipeline:
 
         """
         self.environment.reset()
+        self.logs = []
         advice = "No advice yet."
         previous_plan = "No solution yet."
         while not self.environment.is_done():
@@ -97,7 +98,7 @@ class AgentVersePipeline:
             )
             self.logs += logs
         self.save_result(previous_plan, single_agent)
-        return previous_plan, result, logs
+        return previous_plan, result, self.logs
 
     '''
     def iter_run(

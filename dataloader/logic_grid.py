@@ -5,7 +5,8 @@ import re
 
 
 @dataloader_registry.register("logic_grid")
-@dataloader_registry.register("logic_grid/2agents")
+@dataloader_registry.register("logic_grid/gpt-4")
+@dataloader_registry.register("logic_grid/gpt-4-new")
 class LogicGridLoader(DataLoader):
     def __init__(self, path: str):
         self.answer_pat = re.compile(r"#### (-?\d+)")

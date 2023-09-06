@@ -69,7 +69,7 @@ if __name__ == "__main__":
                     "input": example["input"],
                     "response": plan,
                     "label": example["answer"],
-                    "logs": agentversepipeline.logs,
+                    "logs": logs,
                 }
             )
             + "\n"

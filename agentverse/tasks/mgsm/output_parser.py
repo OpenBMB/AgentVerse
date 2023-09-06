@@ -19,6 +19,21 @@ class MGSMParser(OutputParser):
         return AgentFinish({"output": output.content}, output.content)
 
 
+@output_parser_registry.register("mgsm-solver-autogpt")
+class MGSMSolverParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+        try:
+            parsed_result = re.findall(
+                r"Thought:(.+?)Reasoning:(.+?)Criticism:(.+?)Solution:(.+)",
+                text,
+                re.DOTALL,
+            )[0]
+        except BaseException as e:
+            raise OutputParserError(text)
+        return AgentFinish({"output": re.sub(r"\n+", "\n", text.strip())}, text)
+
+
 @output_parser_registry.register("mgsm-evaluator")
 class MGSMEvaluatorParser(OutputParser):
     dimensions: List[str] = None
@@ -48,10 +63,24 @@ class MGSMEvaluatorParser(OutputParser):
             advice = pat.findall(cleaned_output)[0]
             # logger.info("Evaluator give the following advice:\n" + advice)
         except (IndexError, ValueError):
-            import pdb
-
-            pdb.set_trace()
             # logger.error("Bad response from evaluator!")
+            raise OutputParserError(text)
+        return score, advice
+
+
+@output_parser_registry.register("mgsm-evaluator-autogpt")
+class MGSMCriticParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+        try:
+            parsed_result = re.findall(
+                r"Thought:(.+?)Reasoning:(.+?)Criticism:(.+?)Speak:(.+?)Correctness:(.+)",
+                text,
+                re.DOTALL,
+            )[0]
+            score = int(parsed_result[-1])
+            advice = parsed_result[-2]
+        except BaseException as e:
             raise OutputParserError(text)
         return score, advice
 
@@ -86,6 +115,24 @@ class MGSMCriticParser(OutputParser):
             return AgentCriticism(False, criticism)
         # else:
         #     raise OutputParserError(text)
+
+
+@output_parser_registry.register("mgsm-critic-autogpt")
+class MGSMCriticParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+        try:
+            parsed_result = re.findall(
+                r"Thought:(.+?)Reasoning:(.+?)Criticism:(.+?)Speak:(.+?)Decision:(.+)",
+                text,
+                re.DOTALL,
+            )[0]
+        except BaseException as e:
+            raise OutputParserError(text)
+        if "[Agree]" in parsed_result[-1]:
+            return AgentCriticism(True, "")
+        else:
+            return AgentCriticism(False, parsed_result[-2])
 
 
 @output_parser_registry.register("mgsm-critic-agree")

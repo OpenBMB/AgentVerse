@@ -1,4 +1,4 @@
-cnt_agents: &cnt_agents 4
+cnt_agents: &cnt_agents 2
 max_turn: &max_turn 5
 max_criticizing_rounds: 3
 
@@ -25,23 +25,27 @@ prompts:
 
   solver_prepend_prompt: &solver_prepend_prompt |-
     Can you complete the following code?
-    ```python 
-    ${task_description} 
+    ```python
+    ${task_description}
     ```
-
-    # Previous Solution
-    The solution you gave in the last step is:
-    ${former_solution}
-
-    # Evaluation
-    The unit testing gave the following suggestion:
-    ${advice}
-
-    # Critics
-    The following messages are the critics on the provided solution:
   
   solver_append_prompt: &solver_append_prompt |-
-    Using these information, can you provide a correct completion of the code? Explain your reasoning. Your response should contain only Python code. Do not give any additional information. Use ```python to put the completed Python code in markdown quotes. When responding, please include the given code and the completion.
+    You are ${role_description}. Using these information, can you provide a correct completion of the code?
+    You should respond in the following format:
+    Text: your thought
+    Reasoning: your reasoning
+    Criticism: constructive self-criticism
+    Code: the final code completion with step by step comment
+
+  # Example Function:
+  # ```python
+  # def add(num1: float, num2: float) -> float:
+  # """A function that returns the addition of the two number."""
+  #   return num1 + num2
+  # ```
+
+  # Example Response:
+  # Text: 
 
   critic_prepend_prompt: &critic_prepend_prompt |-
     You are in a discussion group, aiming to complete the following code function:
@@ -49,18 +53,10 @@ prompts:
     ${task_description}
     ```
 
-    Below is a possible code completion:
-    ```
-    ${preliminary_solution}
-    ```
-
   critic_append_prompt: &critic_append_prompt |-
-    You are ${role_description}. Based on your knowledge, can you check the correctness of the completion given above? When responding, you should follow the following rules:
-    1. If there is a solution, double-check the solution, give your critics. If the provided solution is correct, end your response with a special token "[Agree]", if the solution is incorrect, end with "[Disagree]".
-    2. If there is no solution provided yet, please elaborate on what should be noticed when solving this problem, and end your response with a special token "[Disagree]"
-  
-    Now give your response.
-
+    You are ${role_description}. Based on your knowledge, can you check the correctness of the latest completion given above? Write your reasoning step by step. When responding, you should follow the rules:
+    1. If the latest provided solution is correct, end your response with a special token "[Agree]". 
+    2. If the solution is incorrect, give your comment and end your response with a special token "[Disagree]".
 
   manager_prompt: &manager_prompt |-
     According to the Previous Solution and the Previous Sentences, select the most appropriate Critic from a specific Role and output the Role.
@@ -128,7 +124,7 @@ prompts:
     You must respond in the following format:
     Score: (0 or 1, 0 for incorrect and 1 for correct)
     Response: (give your advice on how to correct the solution, and your suggestion on on what experts should recruit in the next round)
-    
+
 
 name: pipeline
 
@@ -140,9 +136,9 @@ environment:
     type: role_description
     cnt_agents: *cnt_agents
   decision_maker:
-    type: vertical
+    type: vertical-solver-first
   executor:
-    type: code-test
+    type: none
   evaluator:
     type: basic
 
@@ -152,11 +148,12 @@ agents:
     name: role assigner
     prepend_prompt_template: *role_assigner_prepend_prompt
     append_prompt_template: *role_assigner_append_prompt
+    max_retry: 10
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: "gpt-4"
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
       temperature: 0
       max_tokens: 512
     output_parser:
@@ -167,15 +164,16 @@ agents:
     name: Planner
     prepend_prompt_template: *solver_prepend_prompt
     append_prompt_template: *solver_append_prompt
+    max_retry: 10
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: "gpt-4"
-      temperature: 0
-      max_tokens: 1024
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo-16k"
+      temperature: 0.3
+      max_tokens: 2048
     output_parser:
-      type: humaneval-solver
+      type: humaneval-solver-autogpt-2
       # stop:
       #   - "\ndef "
       #   - "\nclass "
@@ -189,26 +187,28 @@ agents:
       Waiting to be assigned.
     prepend_prompt_template: *critic_prepend_prompt
     append_prompt_template: *critic_append_prompt
+    max_retry: 10
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: "gpt-4"
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo-16k"
       temperature: 0
-      max_tokens: 1024
+      max_tokens: 2048
     output_parser:
-      type: mgsm-critic-agree
+      type: humaneval-critic-agree
 
   - #executor_agent:
     agent_type: executor
     name: Executor
     prepend_prompt_template: *executor_prepend_prompt
     append_prompt_template: *executor_append_prompt
+    max_retry: 10
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: gpt-4
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
       temperature: 0
       max_tokens: 1024
     output_parser:
@@ -221,11 +221,12 @@ agents:
       Evaluator
     prepend_prompt_template: *evaluator_prepend_prompt
     append_prompt_template: *evaluator_append_prompt
+    max_retry: 10
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: gpt-4
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
       temperature: 0.3
       max_tokens: 1024
     output_parser:
@@ -238,11 +239,12 @@ agents:
     agent_type: manager
     name: Manager
     prompt_template: *manager_prompt
+    max_retry: 10
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: "gpt-4"
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
       temperature: 0
       max_tokens: 1024
     output_parser:
