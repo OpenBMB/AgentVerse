@@ -115,19 +115,21 @@ class HumanevalSolverParser(OutputParser):
         text = output.content
         try:
             parsed_result = re.findall(
-                r"Thought:(.+?)File Path:(.+?)Code:(.+?)Command:(.+)",
+                r"Thought:(.+?)Reasoning:(.+?)Criticism:(.+?)File Path:(.+?)Code:(.+?)Command:(.+)",
                 text,
                 re.DOTALL,
             )[0]
             cleaned_output = {
                 "thought": parsed_result[0].strip(),
-                "file_path": parsed_result[1].strip().strip("`"),
-                "code": parsed_result[2]
+                "reasoning": parsed_result[1].strip(),
+                "criticism": parsed_result[2].strip(),
+                "file_path": parsed_result[3].strip().strip("`"),
+                "code": parsed_result[4]
                 .strip()
                 .strip("```")
                 .strip("python")
                 .strip("python3"),
-                "command": parsed_result[3].strip().strip("`"),
+                "command": parsed_result[5].strip().strip("`"),
             }
         except BaseException as e:
             raise OutputParserError(text)

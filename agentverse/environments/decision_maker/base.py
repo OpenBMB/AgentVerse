@@ -33,3 +33,15 @@ class BaseDecisionMaker(BaseModel):
 
     def reset(self):
         pass
+
+    def broadcast_messages(self, agents, messages) -> None:
+        for agent in agents:
+            agent.add_message_to_memory(messages)
+
+    def p2p_messages(self, agents, messages) -> None:
+        agents[0].add_message_to_memory(messages)
+        for message in messages:
+            for agent in agents[1:]:
+                if agent.name == message.sender:
+                    agent.add_message_to_memory(messages)
+                    break
