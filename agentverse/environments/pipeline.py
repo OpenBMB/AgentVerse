@@ -268,6 +268,7 @@ class PipelineEnvironment(BaseModel):
         """execution stage.
         Use the executor to finish the task.
         """
+
         return self.executor.step(
             self.agents[AGENT_TYPES.EXECUTION], self.task_description, final_solution
         )

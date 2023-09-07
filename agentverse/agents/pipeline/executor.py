@@ -14,7 +14,6 @@ from agentverse.agents.base import BaseAgent
 
 logger = get_logger()
 
-
 @agent_registry.register("executor")
 class ExecutorAgent(BaseAgent):
     def step(self, task_description: str, solution: str) -> ExecutorMessage:

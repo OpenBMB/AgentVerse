@@ -106,10 +106,13 @@ class OpenAIChat(BaseChatModel):
         history: List[dict] = [],
         append_prompt: str = "",
     ) -> LLMResult:
+
         # logger.debug(prepend_prompt)
         # logger.debug(history)
         # logger.debug(append_prompt)
+
         messages = self.construct_messages(prepend_prompt, history, append_prompt)
+
         logger.log_prompt(messages)
         try:
             response = openai.ChatCompletion.create(
@@ -125,12 +128,68 @@ class OpenAIChat(BaseChatModel):
             total_tokens=response["usage"]["total_tokens"],
         )
 
+
+    def generate_response_funcation_call(
+        self,
+        prepend_prompt: str = "",
+        history: List[dict] = [],
+        append_prompt: str = "",
+        function_calls: List[dict] = [],
+    ) -> LLMResult:
+
+        # logger.debug(prepend_prompt)
+        # logger.debug(history)
+        # logger.debug(append_prompt)
+
+        messages = self.construct_messages(prepend_prompt, history, append_prompt)
+
+        logger.log_prompt(messages)
+
+
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.args.model,
+                messages=messages,
+                functions=function_calls,
+                function_call="auto",
+                #stream=True,
+                temperature=self.args.temperature,
+            )
+
+        except (OpenAIError, KeyboardInterrupt) as error:
+            raise
+
+        #print(response)
+        #content=response["choices"][0]["message"]
+        print(response["choices"])
+        #for i in response:
+        #    print(i)
+        exit()
+
+        #id
+        #object
+        #created
+        #model
+        #choices
+        #usage
+
+        return LLMResult(
+            content=response["choices"][0]["message"]["content"],
+            send_tokens=response["usage"]["prompt_tokens"],
+            recv_tokens=response["usage"]["completion_tokens"],
+            total_tokens=response["usage"]["total_tokens"],
+        )
+
+
+
+
     async def agenerate_response(
         self,
         prepend_prompt: str = "",
         history: List[dict] = [],
         append_prompt: str = "",
     ) -> LLMResult:
+
         # logger.debug(prepend_prompt)
         # logger.debug(history)
         # logger.debug(append_prompt)
@@ -149,6 +208,7 @@ class OpenAIChat(BaseChatModel):
             recv_tokens=response["usage"]["completion_tokens"],
             total_tokens=response["usage"]["total_tokens"],
         )
+
 
     def construct_messages(
         self, prepend_prompt: str, history: List[dict], append_prompt: str

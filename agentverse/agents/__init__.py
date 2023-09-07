@@ -14,3 +14,4 @@ from agentverse.agents.pipeline.evaluator import EvaluatorAgent
 from agentverse.agents.pipeline.solver import SolverAgent
 from agentverse.agents.pipeline.manager import ManagerAgent
 from agentverse.agents.pipeline.executor import ExecutorAgent
+from agentverse.agents.pipeline.executor_fc import ExecutorAgent_fc
