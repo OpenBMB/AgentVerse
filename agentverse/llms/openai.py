@@ -134,53 +134,46 @@ class OpenAIChat(BaseChatModel):
         prepend_prompt: str = "",
         history: List[dict] = [],
         append_prompt: str = "",
-        function_calls: List[dict] = [],
+        functions: List[dict] = [],
     ) -> LLMResult:
 
         # logger.debug(prepend_prompt)
         # logger.debug(history)
         # logger.debug(append_prompt)
-
         messages = self.construct_messages(prepend_prompt, history, append_prompt)
-
         logger.log_prompt(messages)
 
-
         try:
-            response = openai.ChatCompletion.create(
-                model=self.args.model,
-                messages=messages,
-                functions=function_calls,
-                function_call="auto",
-                #stream=True,
-                temperature=self.args.temperature,
-            )
+            if functions != []:
+                response = openai.ChatCompletion.create(
+                    model=self.args.model,
+                    messages=messages,
+                    functions=functions,
+                    #function_call="auto",
+                    #function_call={"name": "run_code"},
+                    #stream=True,
+                    temperature=self.args.temperature,
+                )
+                return LLMResult(
+                    content=response["choices"][0]["message"]["function_call"]["arguments"],
+                    send_tokens=response["usage"]["prompt_tokens"],
+                    recv_tokens=response["usage"]["completion_tokens"],
+                    total_tokens=response["usage"]["total_tokens"],
+                )
 
+            else:
+                response = openai.ChatCompletion.create(
+                    messages=messages,
+                    **self.args.dict(),
+                )
+                return LLMResult(
+                    content=response["choices"][0]["message"]["content"],
+                    send_tokens=response["usage"]["prompt_tokens"],
+                    recv_tokens=response["usage"]["completion_tokens"],
+                    total_tokens=response["usage"]["total_tokens"],
+                )
         except (OpenAIError, KeyboardInterrupt) as error:
             raise
-
-        #print(response)
-        #content=response["choices"][0]["message"]
-        print(response["choices"])
-        #for i in response:
-        #    print(i)
-        exit()
-
-        #id
-        #object
-        #created
-        #model
-        #choices
-        #usage
-
-        return LLMResult(
-            content=response["choices"][0]["message"]["content"],
-            send_tokens=response["usage"]["prompt_tokens"],
-            recv_tokens=response["usage"]["completion_tokens"],
-            total_tokens=response["usage"]["total_tokens"],
-        )
-
-
 
 
     async def agenerate_response(

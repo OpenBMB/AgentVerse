@@ -212,7 +212,7 @@ agents:
       temperature: 0
       max_tokens: 1024
     output_parser:
-      type: humaneval-executor
+      type: humaneval-executor-fc
 
   - #evaluator_agent:
     agent_type: evaluator
