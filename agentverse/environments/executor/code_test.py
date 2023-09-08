@@ -4,10 +4,12 @@ import os
 import subprocess
 from typing import TYPE_CHECKING, Any, List, Tuple
 
+from agentverse.logging import get_logger
 from agentverse.agents import ExecutorAgent
 
 from . import BaseExecutor, executor_registry
 
+logger = get_logger()
 
 def execute_command(command: str) -> str:
     # TODO: make it more secure
@@ -28,16 +30,23 @@ class CodeTestExecutor(BaseExecutor):
         **kwargs,
     ) -> Any:
 
+        #import pdb;pdb.set_trace()
+
         os.makedirs("tmp", exist_ok=True)
         self.write_to_file("tmp/main.py", solution)
-        if task_description not in self.has_test:
-            response = agent.step(task_description, solution).content
-            self.write_to_file(response["file_path"], response["code"])
-            self.has_test[task_description] = f"python {response['file_path']}"
-            result = execute_command(f"python {response['file_path']}")
-        else:
-            result = execute_command(self.has_test[task_description])
+        try:
+            if task_description not in self.has_test:
+                response = agent.step(task_description, solution).content
+                self.write_to_file(response["file_path"], response["code"])
+                self.has_test[task_description] = f"python {response['file_path']}"
+                result = execute_command(f"python {response['file_path']}")
+            else:
+                result = execute_command(self.has_test[task_description])
+        except Exception as e:
+            logger.error(e)
+
         return result
+
 
     def write_to_file(self, file_name, file_content):
         # TODO: generalize this method to a common tool
