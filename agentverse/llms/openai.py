@@ -150,7 +150,7 @@ class OpenAIChat(BaseChatModel):
                     messages=messages,
                     functions=functions,
                     #function_call="auto",
-                    #function_call={"name": "run_code"},
+                    function_call={"name": "run_code"},
                     #stream=True,
                     temperature=self.args.temperature,
                 )
