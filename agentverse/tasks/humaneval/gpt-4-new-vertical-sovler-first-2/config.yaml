@@ -8,14 +8,14 @@ prompts:
     You are the leader of a group of experts, now you need to recruit a small group of experts with diverse identity to correctly write the code to solve the given problems:
     ${task_description}
     
-    You can recruit ${cnt_critic_agents} expert in different fields. What experts will you recruit to better generate an accurate solution?
+    You can recruit ${cnt_critic_agents} expert in different fields. What experts will you recruit to better generate an accurate solution? The first expert will be assigned the task of writing code, and others will be assigned the task of reviewing and giving advices on the code.
 
     Here are some suggestion:
     ${advice}
     
   role_assigner_append_prompt: &role_assigner_append_prompt |-
     # Response Format Guidance
-    You should respond with a list of expert description. For example:
+    You should respond with a list of ${cnt_critic_agents} expert description. For example:
     1. an electrical engineer specified in the filed of xxx.
     2. an economist who is good at xxx.
     3. a lawyer with a good knowledge of xxx.
@@ -55,9 +55,9 @@ prompts:
   # ```
 
   critic_append_prompt: &critic_append_prompt |-
-    You are ${role_description}. Based on your knowledge, can you check the functional correctness of the latest completion given above? When responding, you should follow the following rules:
-    1. If the latest provided solution is correct, end your response with a special token "[Agree]". 
-    2. If the solution is incorrect, give your comment and end your response with a special token "[Disagree]".
+    You are ${role_description}. Based on your knowledge, can you check the functional correctness of the latest completion given above? You should give your correct solution to the problem step by step. When responding, you should follow the following rules:
+    1. Double-check the above solutions, give your critics, then generate the correct solution step by step.
+    2. If your code is functionally the same as the latest completion, end your response with a special token "[Agree]", otherwise end with "[Disagree]".
   
 
   manager_prompt: &manager_prompt |-

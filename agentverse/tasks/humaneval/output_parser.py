@@ -222,3 +222,22 @@ class HumanevalCriticParser(OutputParser):
             return AgentCriticism(True, "")
         else:
             return AgentCriticism(False, parsed_result[-2].strip())
+
+
+@output_parser_registry.register("humaneval-critic-autogpt-2")
+class HumanevalCriticParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+        try:
+            parsed_result = re.findall(
+                r"Problem Analysis:(.+?)Solution Analysis:(.+?)Decision:(.+?)Suggestion:(.+)",
+                text,
+                re.DOTALL,
+            )[0]
+        except BaseException as e:
+            raise OutputParserError(text)
+        decision = parsed_result[-2].strip()
+        if "[Agree]" in decision:
+            return AgentCriticism(True, "")
+        else:
+            return AgentCriticism(False, parsed_result[-1].strip())
