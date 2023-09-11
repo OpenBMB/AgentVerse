@@ -141,8 +141,15 @@ class HumanevalSolverParser(OutputParser):
 class HumanevalSolverParser(OutputParser):
     def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
         text = output.content
-        output_dict = json.loads(text)
+
+        #print("======")
+        #print(output)
+        #print("======")
+
         try:
+            #output_dict = eval(text)
+            output_dict = json.loads(text, strict=False) #The control characters (character codes in the 0-31 range, including '\t' (tab), '\n', '\r' and '\0'.") will be allowed inside strings
+            '''
             cleaned_output = {
                 "thought": output_dict["thought"].strip(),
                 "file_path": output_dict["file_path"].strip().strip("`"),
@@ -153,8 +160,11 @@ class HumanevalSolverParser(OutputParser):
                 .strip("python3"),
                 "command": output_dict["command"].strip().strip("`"),
             }
+            '''
+            cleaned_output = output_dict
         except BaseException as e:
             raise OutputParserError(text)
+
         return AgentFinish({"output": cleaned_output}, text)
 
 

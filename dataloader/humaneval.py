@@ -13,6 +13,7 @@ import json
 @dataloader_registry.register("humaneval/gpt-3.5-vertical-solver-first-autogpt-2")
 @dataloader_registry.register("humaneval/gpt-3.5-concurrent")
 @dataloader_registry.register("humaneval/gpt-4-new-vertical-sovler-first")
+@dataloader_registry.register("humaneval/gpt-4-new-vertical-sovler-first-fc")
 @dataloader_registry.register("humaneval/gpt-4-new-vertical-sovler-first-rust")
 @dataloader_registry.register("humaneval/gpt-4-new-fc")
 class HumanevalLoader(DataLoader):

@@ -53,19 +53,19 @@ function_schema = {
     "properties": {
       "thought": {
         "type": "string",
-        "description": "your thought"
+        "description": "Your thought"
       },
       "file_path": {
         "type": "string",
-        "description": "the path to write your testing code"
+        "description": "The path to write your testing code"
       },
       "code": {
         "type": "string",
-        "description": "the testing code"
+        "description": "The testing code"
       },
       "command": {
         "type": "string",
-        "description": "the command to change directory and execute your testing code"
+        "description": "The command to change directory and execute your testing code"
       }
     },
     "required": ["thought", "file_path", "code", "command"]
@@ -82,6 +82,7 @@ class ExecutorAgent_fc(BaseAgent):
         prepend_prompt, append_prompt = self.get_all_prompts(
             task_description=task_description, solution=solution
         )
+
 
         # Function Call format
         # The function call input can be optimized

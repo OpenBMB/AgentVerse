@@ -67,11 +67,28 @@ response = openai.ChatCompletion.create(
 
 #output = response.choices[0].message.function_call
 output = response.choices[0].message.function_call.arguments
+
+
+#output = "{\n\"thought\": \"I will write the unit testing code for the solution in `tmp/test_main.py`. The testing code will import the solution from `main.py` and test the functions. I will use the `unittest` module from Python for this. After writing the testing code, I will execute it using the command `python -m unittest tmp/test_main.py`.\",\n\"file_path\": \"tmp/test_main.py\",\n\"code\": \"import unittest\\nfrom main import *\\n\\nclass TestSolution(unittest.TestCase):\\n\\n    def test_function1(self):\\n        self.assertEqual(function1(1), 1)\\n\\n    def test_function2(self):\\n        self.assertEqual(function2(2), 4)\\n\\nif __name__ == '__main__':\\n    unittest.main()\",\n\"command\": \"python -m unittest tmp/test_main.py\"\n}"
+
 '''
 
-output = "{\n\"thought\": \"I will write the unit testing code for the solution in `tmp/test_main.py`. The testing code will import the solution from `main.py` and test the functions. I will use the `unittest` module from Python for this. After writing the testing code, I will execute it using the command `python -m unittest tmp/test_main.py`.\",\n\"file_path\": \"tmp/test_main.py\",\n\"code\": \"import unittest\\nfrom main import *\\n\\nclass TestSolution(unittest.TestCase):\\n\\n    def test_function1(self):\\n        self.assertEqual(function1(1), 1)\\n\\n    def test_function2(self):\\n        self.assertEqual(function2(2), 4)\\n\\nif __name__ == '__main__':\\n    unittest.main()\",\n\"command\": \"python -m unittest tmp/test_main.py\"\n}"
 
-js = json.loads(output)
+#output = '{\n"thought": "I will write the unit test in a new python file. I will import the function from the main file and then write tests for different scenarios. I will test for a list of positive numbers, a list of negative numbers, a list of both positive and negative numbers, and an empty list. I will use the assert keyword to check if the output is as expected.",\n"file_path": "tmp/test_main.py",\n"code": "import unittest\\nfrom main import mean_absolute_deviation\\n\\nclass TestMain(unittest.TestCase):\\n    def test_mean_absolute_deviation(self):\\n        self.assertEqual(mean_absolute_deviation([1.0, 2.0, 3.0, 4.0]), 1.0)\\n        self.assertEqual(mean_absolute_deviation([-1.0, -2.0, -3.0, -4.0]), 1.0)\\n        self.assertEqual(mean_absolute_deviation([-1.0, 2.0, -3.0, 4.0]), 2.5)\\n        self.assertEqual(mean_absolute_deviation([]), \'Error: Empty List\')\\n\\nif __name__ == \'__main__\':\\n    unittest.main()",\n"command": "cd tmp && python3 -m unittest test_main.py"\n}'
+
+output = '{\n"thought": "I will write the unit test in a new python file. The test will import the function from the main file and test it with different inputs. I will use the assert keyword to make sure the function returns the expected output. I will test the function with a list of positive numbers, a list of negative numbers, a list of both positive and negative numbers, and a list with one number.",\n"file_path": "tmp/test_main.py",\n"code": "\nimport unittest\nfrom main import mean_absolute_deviation\n\nclass TestMain(unittest.TestCase):\n    def test_mean_absolute_deviation(self):\n        self.assertEqual(mean_absolute_deviation([1.0, 2.0, 3.0, 4.0]), 1.0)\n        self.assertEqual(mean_absolute_deviation([-1.0, -2.0, -3.0, -4.0]), 1.0)\n        self.assertEqual(mean_absolute_deviation([-1.0, 2.0, -3.0, 4.0]), 2.5)\n        self.assertEqual(mean_absolute_deviation([5.0]), 0.0)\n\nif __name__ == \'__main__\':\n    unittest.main()\n",\n"command": "cd tmp && python3 -m unittest test_main.py"\n}'
+
+
+#js = eval(output)
+js = json.loads(output, strict=True)
+print(js)
+exit()
+
+
+js = json.loads(output, strict=True)
+
+
+
 
 print(js["code"])
 
