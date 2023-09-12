@@ -146,7 +146,7 @@ class PipelineEnvironment(BaseModel):
         # ================== DECISION MAKING ==================
 
         # ================== EXECUTION ==================
-        result = self.execute(plan)
+        result = await self.execute(plan)
         logs.append({"module": "Executor", "content": result})
         logger.info("", f"Execution Result:", Fore.GREEN)
         logger.info("", result, Fore.GREEN)
@@ -264,11 +264,11 @@ class PipelineEnvironment(BaseModel):
     #     # critic_messages = [x.content for x in critic_messages]
     #     return criticisms
 
-    def execute(self, final_solution: str = "") -> Any:
+    async def execute(self, final_solution: str = "") -> Any:
         """execution stage.
         Use the executor to finish the task.
         """
-        return self.executor.step(
+        return await self.executor.astep(
             self.agents[AGENT_TYPES.EXECUTION], self.task_description, final_solution
         )
 

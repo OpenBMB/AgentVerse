@@ -15,7 +15,6 @@ from .initialization import (
     prepare_task_config,
     load_agent,
     load_environment,
-    load_tools,
     load_llm,
     load_memory,
 )

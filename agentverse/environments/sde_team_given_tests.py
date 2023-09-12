@@ -9,7 +9,7 @@ from agentverse.message import Message
 
 from . import env_registry as EnvironmentRegistry
 from .base import BaseEnvironment
-from agentverse.initialization import load_tools
+#from agentverse.initialization import load_tools
 
 
 @EnvironmentRegistry.register("sde_team_given_tests")

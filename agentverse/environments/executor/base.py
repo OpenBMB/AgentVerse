@@ -25,6 +25,17 @@ class BaseExecutor(BaseModel):
         **kwargs,
     ) -> Any:
         pass
+    
+    @abstractmethod
+    async def astep(
+        self,
+        agent: ExecutorAgent,
+        task_description: str,
+        solution: List[str],
+        *args,
+        **kwargs,
+    ) -> Any:
+        pass
 
     def reset(self):
         pass

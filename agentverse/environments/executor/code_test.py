@@ -17,7 +17,7 @@ def execute_command(command: str) -> str:
 
 @executor_registry.register("code-test")
 class CodeTestExecutor(BaseExecutor):
-    def step(
+    async def astep(
         self,
         agent: ExecutorAgent,
         task_description: str,

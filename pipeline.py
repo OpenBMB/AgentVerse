@@ -23,12 +23,12 @@ parser.add_argument("--task", type=str, default="pipeline_brainstorming")
 args = parser.parse_args()
 
 # terminal
-# agentversepipeline = AgentVersePipeline.from_task(args.task)
-# agentversepipeline.run(
-#     single_agent=args.single_agent,
-#     discussion_mode=args.discussion_mode,
-# )
+agentversepipeline = AgentVersePipeline.from_task(args.task)
+agentversepipeline.run(
+    single_agent=args.single_agent,
+    discussion_mode=args.discussion_mode,
+)
 
 # ui
-ui = UI(args.task)
-ui.launch(args.single_agent, args.discussion_mode)
+# ui = UI(args.task)
+# ui.launch(args.single_agent, args.discussion_mode)

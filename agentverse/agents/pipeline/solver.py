@@ -24,7 +24,9 @@ class SolverAgent(BaseAgent):
     def step(
         self,
         former_solution: str,
+        
         advice: str,
+
         task_description: str = "",
     ) -> SolverMessage:
         logger.debug("", self.name, Fore.MAGENTA)

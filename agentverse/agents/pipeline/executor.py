@@ -10,17 +10,17 @@ from agentverse.message import ExecutorMessage, Message
 
 from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
-
+import requests
 
 logger = get_logger()
 
 
 @agent_registry.register("executor")
 class ExecutorAgent(BaseAgent):
-    def step(self, task_description: str, solution: str) -> ExecutorMessage:
+    def step(self, task_description: str, solution: str,tools:str='') -> ExecutorMessage:
         logger.debug("", self.name, Fore.MAGENTA)
         prepend_prompt, append_prompt = self.get_all_prompts(
-            task_description=task_description, solution=solution
+            task_description=task_description, solution=solution,tools=tools
         )
         parsed_response = None
         for i in range(self.max_retry):

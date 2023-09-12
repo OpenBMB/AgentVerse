@@ -48,9 +48,6 @@ class MGSMEvaluatorParser(OutputParser):
             advice = pat.findall(cleaned_output)[0]
             # logger.info("Evaluator give the following advice:\n" + advice)
         except (IndexError, ValueError):
-            import pdb
-
-            pdb.set_trace()
             # logger.error("Bad response from evaluator!")
             raise OutputParserError(text)
         return score, advice
