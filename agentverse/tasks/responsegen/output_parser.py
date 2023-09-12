@@ -46,9 +46,6 @@ class ResponseGenEvaluatorParser(OutputParser):
             advice = re.findall(r"(?:\d.\s*)?Advice:\s*(.+)", checks[-1])[0]
             # logger.info("Evaluator give the following advice:\n" + advice)
         except (IndexError, ValueError):
-            import pdb
-
-            pdb.set_trace()
             # logger.error("Bad response from evaluator!")
             raise OutputParserError(text)
         return score, advice

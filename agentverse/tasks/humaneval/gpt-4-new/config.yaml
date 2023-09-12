@@ -1,5 +1,5 @@
 cnt_agents: &cnt_agents 4
-max_rounds: &max_rounds 5
+max_turn: &max_turn 5
 max_criticizing_rounds: 3
 
 prompts:
@@ -128,8 +128,6 @@ prompts:
     You must respond in the following format:
     Score: (0 or 1, 0 for incorrect and 1 for correct)
     Response: (give your advice on how to correct the solution, and your suggestion on on what experts should recruit in the next round)
-
-    Now carefully check the writer's solution, summarize the tester's feedback, and give your response.
     
 
 name: pipeline
@@ -137,7 +135,7 @@ name: pipeline
 
 environment:
   env_type: pipeline
-  max_rounds: *max_rounds
+  max_turn: *max_turn
   role_assigner:
     type: role_description
     cnt_agents: *cnt_agents

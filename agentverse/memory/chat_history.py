@@ -29,9 +29,9 @@ class ChatHistoryMemory(BaseMemory):
         else:
             return "\n".join([message.content for message in self.messages])
 
-    def to_messages(self, my_name: str = ""):
+    def to_messages(self, my_name: str = "", start_index: int = 0) -> List[dict]:
         messages = []
-        for message in self.messages:
+        for message in self.messages[start_index:]:
             messages.append(
                 {
                     "role": "user" if message.sender != my_name else "assistant",

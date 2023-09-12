@@ -92,32 +92,6 @@ class PipelineEnvironment(BaseModel):
         logs = []
 
         logger.info(f"Loop Round {self.cnt_turn}")
-        # if not discussion_mode and not single_agent:
-        #     # criticizing, multi-agent mode need pre-solution
-        #     preliminary_solution = self.environment.solve(
-        #         former_solution=preliminary_solution,
-        #         critic_opinions=[(self.environment.evaluator, advice)],
-        #     )
-        #     logs.append({"agent": "solver", "content": preliminary_solution})
-        #     logger.info(f"New Solution:\n{preliminary_solution}")
-        # if not single_agent:
-        #     preliminary_solution = self.multiagent_criticizing(
-        #         preliminary_solution, advice, discussion_mode
-        #     )
-        # else:
-        #     # single agent
-        #     # to let LLM think the same times as multi-agent criticizing
-        #     # like chain of thought
-        #     for i in range(self.environment.max_criticizing_rounds):
-        #         solutions_in_this_round = []
-
-        #         new_step_solution = self.singleagent_thinking(
-        #             preliminary_solution, advice
-        #         )
-        #         solutions_in_this_round.append(new_step_solution)
-        #         logger.info(f"New Step:\n{new_step_solution}")
-
-        #         preliminary_solution += "\n" + "\n".join(solutions_in_this_round)
 
         # ================== EXPERT RECRUITMENT ==================
         agents = self.role_assign(advice)
@@ -127,19 +101,15 @@ class PipelineEnvironment(BaseModel):
         # ================== EXPERT RECRUITMENT ==================
 
         # ================== DECISION MAKING ==================
-        # if dynamic
         if "dynamic" in self.decision_maker.name:
             plan = await self.decision_making(
                 agents, self.agents[AGENT_TYPES.MANAGER], previous_plan, advice
             )
-            # plan = await self.decision_making(agents, previous_plan, advice)
         else:
             plan = await self.decision_making(agents, None, previous_plan, advice)
         # Although plan may be a list in some cases, all the cases we currently consider
         # only have one plan, so we just take the first element.
         # TODO: make it more general
-        # TODO: Add mutiple loops
-        # TODO: when all agents achieve consensus, all agents require stop disscuss
         plan = plan[0].content
         logs.append({"module": "Decision Maker", "content": plan})
         logger.info("", f"Decision Plan:\n{plan}", Fore.YELLOW)
@@ -170,7 +140,7 @@ class PipelineEnvironment(BaseModel):
         ):
             # TODO: 8 is an arbitrary threshold
             logs.append({"agent": "system", "content": "Good score! Accept!"})
-            logger.info("", f"Good score! Accept! Final Result:\n{result}", Fore.GREEN)
+            logger.info("", f"Good score! Accept! Final Result:\n{plan}", Fore.GREEN)
             self.success = True
         else:
             logs.append({"agent": "system", "content": "Bad score! Reject!"})
@@ -268,7 +238,8 @@ class PipelineEnvironment(BaseModel):
         """execution stage.
         Use the executor to finish the task.
         """
-        return await self.executor.astep(
+
+        return self.executor.step(
             self.agents[AGENT_TYPES.EXECUTION], self.task_description, final_solution
         )
 

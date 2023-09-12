@@ -18,6 +18,8 @@ logger = get_logger()
 
 @agent_registry.register("critic")
 class CriticAgent(BaseAgent):
+    max_history: int = 3
+
     def step(self, env_description: str = "") -> CriticMessage:
         pass
 
@@ -35,7 +37,7 @@ class CriticAgent(BaseAgent):
             task_description=task_description,
             role_description=self.role_description,
         )
-        history = self.memory.to_messages(self.name)
+        history = self.memory.to_messages(self.name, start_index=-self.max_history)
         parsed_response: Union[AgentCriticism, None] = None
         for i in range(self.max_retry):
             try:

@@ -21,6 +21,8 @@ logger = get_logger()
 
 @agent_registry.register("solver")
 class SolverAgent(BaseAgent):
+    max_history: int = 3
+
     def step(
         self,
         former_solution: str,
@@ -37,8 +39,9 @@ class SolverAgent(BaseAgent):
             former_solution=former_solution,
             task_description=task_description,
             advice=advice,
+            role_description=self.role_description,
         )
-        history = self.memory.to_messages(self.name)  # Critic Opinions
+        history = self.memory.to_messages(self.name, start_index=-self.max_history)
         parsed_response = None
         for i in range(self.max_retry):
             try:
