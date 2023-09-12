@@ -14,7 +14,6 @@ from agentverse.agents.base import BaseAgent
 
 logger = get_logger()
 
-
 @agent_registry.register("executor")
 class ExecutorAgent(BaseAgent):
     def step(self, task_description: str, solution: str) -> ExecutorMessage:
@@ -22,6 +21,8 @@ class ExecutorAgent(BaseAgent):
         prepend_prompt, append_prompt = self.get_all_prompts(
             task_description=task_description, solution=solution
         )
+
+
         parsed_response = None
         for i in range(self.max_retry):
             try:

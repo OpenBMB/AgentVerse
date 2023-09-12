@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import json
 import ast
 from typing import Union, List, Tuple
 
@@ -133,7 +134,41 @@ class HumanevalSolverParser(OutputParser):
             }
         except BaseException as e:
             raise OutputParserError(text)
+
         return AgentFinish({"output": cleaned_output}, text)
+
+
+
+@output_parser_registry.register("humaneval-executor-fc")
+class HumanevalSolverParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+
+        #print("======")
+        #print(output)
+        #print("======")
+
+        try:
+            #output_dict = eval(text)
+            output_dict = json.loads(text, strict=False) #The control characters (character codes in the 0-31 range, including '\t' (tab), '\n', '\r' and '\0'.") will be allowed inside strings
+            '''
+            cleaned_output = {
+                "thought": output_dict["thought"].strip(),
+                "file_path": output_dict["file_path"].strip().strip("`"),
+                "code": output_dict["code"]
+                .strip()
+                .strip("```")
+                .strip("python")
+                .strip("python3"),
+                "command": output_dict["command"].strip().strip("`"),
+            }
+            '''
+            cleaned_output = output_dict
+        except BaseException as e:
+            raise OutputParserError(text)
+
+        return AgentFinish({"output": cleaned_output}, text)
+
 
 
 @output_parser_registry.register("humaneval-evaluator")

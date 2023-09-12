@@ -5,10 +5,12 @@ import subprocess
 import multiprocessing
 from typing import TYPE_CHECKING, Any, List, Tuple
 
+from agentverse.logging import get_logger
 from agentverse.agents import ExecutorAgent
 
 from . import BaseExecutor, executor_registry
 
+logger = get_logger()
 
 def execute_command(command: str) -> str:
     # TODO: make it more secure
@@ -29,6 +31,9 @@ class CodeTestExecutor(BaseExecutor):
         *args,
         **kwargs,
     ) -> Any:
+
+        #import pdb;pdb.set_trace()
+
         os.makedirs("tmp", exist_ok=True)
         self.write_to_file("tmp/main.py", solution)
         manager = multiprocessing.Manager()
@@ -57,6 +62,7 @@ class CodeTestExecutor(BaseExecutor):
         if not result:
             result.append("Execution timed out.")
         return result[0]
+
 
     def write_to_file(self, file_name, file_content):
         # TODO: generalize this method to a common tool
