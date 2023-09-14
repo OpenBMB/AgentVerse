@@ -28,6 +28,7 @@ class CriticAgent(BaseAgent):
         preliminary_solution: str,
         advice: str = "No advice yet.",
         task_description: str = "",
+        **kwargs,
     ) -> CriticMessage:
         """Asynchronous version of step"""
         logger.debug("", self.name, Fore.MAGENTA)
@@ -36,6 +37,7 @@ class CriticAgent(BaseAgent):
             advice=advice,
             task_description=task_description,
             role_description=self.role_description,
+            **kwargs,
         )
         history = self.memory.to_messages(self.name, start_index=-self.max_history)
         parsed_response: Union[AgentCriticism, None] = None

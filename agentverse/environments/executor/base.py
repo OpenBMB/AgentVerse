@@ -48,3 +48,23 @@ class NoneExecutor(BaseExecutor):
 
     def reset(self):
         pass
+
+
+@executor_registry.register("dummy")
+class DummyExecutor(BaseExecutor):
+    """
+    The base class of execution.
+    """
+
+    def step(
+        self,
+        agent: ExecutorAgent,
+        task_description: str,
+        solution: List[str],
+        *args,
+        **kwargs,
+    ) -> Any:
+        return solution
+
+    def reset(self):
+        pass

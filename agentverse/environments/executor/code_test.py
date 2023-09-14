@@ -6,14 +6,16 @@ import multiprocessing
 from typing import TYPE_CHECKING, Any, List, Tuple
 
 from agentverse.agents import ExecutorAgent
+from agentverse.logging import logger
 
 from . import BaseExecutor, executor_registry
 
 
-def execute_command(command: str) -> str:
+def execute_command(command: str, result_list) -> str:
     # TODO: make it more secure
     result = subprocess.run(command, capture_output=True, shell=True, encoding="utf-8")
-    return f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
+    result_list.append(f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}")
+    # return f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
 
 
 @executor_registry.register("code-test")
@@ -38,7 +40,7 @@ class CodeTestExecutor(BaseExecutor):
             self.write_to_file(response["file_path"], response["code"])
             self.has_test[task_description] = f"python {response['file_path']}"
             p = multiprocessing.Process(
-                target=execute_command, args=(f"python {response['file_path']}",)
+                target=execute_command, args=(f"python {response['file_path']}", result)
             )
             p.start()
             p.join(timeout=self.timeout + 1)
@@ -48,7 +50,7 @@ class CodeTestExecutor(BaseExecutor):
         else:
             # result = execute_command(self.has_test[task_description])
             p = multiprocessing.Process(
-                target=execute_command, args=(self.has_test[task_description],)
+                target=execute_command, args=(self.has_test[task_description], result)
             )
             p.start()
             p.join(timeout=self.timeout + 1)
@@ -60,5 +62,9 @@ class CodeTestExecutor(BaseExecutor):
 
     def write_to_file(self, file_name, file_content):
         # TODO: generalize this method to a common tool
-        with open(file_name, "w") as f:
-            f.write(file_content)
+        try:
+            with open(file_name, "w") as f:
+                f.write(file_content)
+                f.flush()
+        except:
+            logger.error(f"Failed to write to {file_name}")

@@ -31,11 +31,11 @@ class DescriptionAssigner(BaseRoleAssigner):
         assert self.cnt_agents > 0
 
         roles = role_assigner.step(advice, task_description, self.cnt_agents)
-        if len(roles.content) != len(group_members):
+        if len(roles.content) < len(group_members):
             raise ValueError(
                 f"Number of roles ({len(roles.content)}) and number of group members ({len(group_members)}) do not match."
             )
-        for role, member in zip(roles.content, group_members):
+        for role, member in zip(roles.content[: len(group_members)], group_members):
             description = role.strip().strip(".")
             member.role_description = description
             member.name = description

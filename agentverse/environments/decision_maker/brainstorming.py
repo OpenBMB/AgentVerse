@@ -15,15 +15,17 @@ if TYPE_CHECKING:
     from agentverse.message import CriticMessage
 
 
-@decision_maker_registry.register("horizontal")
-class HorizontalDecisionMaker(BaseDecisionMaker):
+@decision_maker_registry.register("brainstorming")
+class BrainstormingDecisionMaker(BaseDecisionMaker):
     """
-    Discuss in a horizontal manner.
+    Much like the horizontal decision maker, but with some twists:
+    (1) Solver acts as a summarizer, summarizing the discussion of this turn
+    (2) After summarizing, all the agents' memory are cleared, and replaced with
+    the summary (to avoid exceeding maximum context length of the model too fast)
     """
 
-    name: str = "horizontal"
+    name: str = "brainstorming"
 
-    # def step(
     async def astep(
         self,
         agents: List[BaseAgent],
@@ -52,7 +54,14 @@ class HorizontalDecisionMaker(BaseDecisionMaker):
             )
 
         result = agents[0].step(previous_plan, advice, task_description)
+        for agent in agents:
+            agent.memory.reset()
+        self.broadcast_messages(
+            agents,
+            [
+                Message(
+                    content=result.content, sender="Summary From Previous Discussion"
+                )
+            ],
+        )
         return [result]
-
-    def reset(self):
-        pass

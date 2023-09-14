@@ -40,6 +40,12 @@ class RoleAssignerAgent(BaseAgent):
                     prepend_prompt, history, append_prompt
                 )
                 parsed_response = self.output_parser.parse(response)
+                if len(parsed_response) < cnt_critic_agents:
+                    logger.warn(
+                        f"Number of generate roles ({len(parsed_response)}) and number of group members ({cnt_critic_agents}) do not match."
+                    )
+                    logger.warn("Retrying...")
+                    continue
                 break
             except (KeyboardInterrupt, bdb.BdbQuit):
                 raise
