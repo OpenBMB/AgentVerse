@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import json
 import ast
 from typing import Union, List, Tuple
 
@@ -36,6 +37,12 @@ class HumanevalSolverParser(OutputParser):
         code = re.findall(r"```.*?\n(.+?)```", text, re.DOTALL)[-1]
 
         return AgentFinish({"output": code}, text)
+
+
+@output_parser_registry.register("humaneval-critic-central")
+class HumanevalCriticParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        return AgentCriticism(False, output.content)
 
 
 @output_parser_registry.register("humaneval-solver-autogpt")
@@ -133,7 +140,41 @@ class HumanevalSolverParser(OutputParser):
             }
         except BaseException as e:
             raise OutputParserError(text)
+
         return AgentFinish({"output": cleaned_output}, text)
+
+
+
+@output_parser_registry.register("humaneval-executor-fc")
+class HumanevalSolverParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        text = output.content
+
+        #print("======")
+        #print(output)
+        #print("======")
+
+        try:
+            #output_dict = eval(text)
+            output_dict = json.loads(text, strict=False) #The control characters (character codes in the 0-31 range, including '\t' (tab), '\n', '\r' and '\0'.") will be allowed inside strings
+            '''
+            cleaned_output = {
+                "thought": output_dict["thought"].strip(),
+                "file_path": output_dict["file_path"].strip().strip("`"),
+                "code": output_dict["code"]
+                .strip()
+                .strip("```")
+                .strip("python")
+                .strip("python3"),
+                "command": output_dict["command"].strip().strip("`"),
+            }
+            '''
+            cleaned_output = output_dict
+        except BaseException as e:
+            raise OutputParserError(text)
+
+        return AgentFinish({"output": cleaned_output}, text)
+
 
 
 @output_parser_registry.register("humaneval-evaluator")
@@ -168,6 +209,33 @@ class HumanevalEvaluatorParser(OutputParser):
             # logger.info("Evaluator give the following advice:\n" + advice)
         except (IndexError, ValueError):
             # logger.error("Bad response from evaluator!")
+            raise OutputParserError(text)
+        return score[0], advice
+
+
+@output_parser_registry.register("humaneval-evaluator-2")
+class HumanevalEvaluatorParser(OutputParser):
+    dimensions: List[str] = None
+
+    def parse(self, output: LLMResult) -> Tuple[List[int], str]:
+        text = output.content
+        pattern = re.compile(
+            r"Response:(.+?)"
+            + "".join(
+                [
+                    f"{dimension}:(.+?)"
+                    if i != len(self.dimensions) - 1
+                    else f"{dimension}:(.+)"
+                    for i, dimension in enumerate(self.dimensions)
+                ]
+            ),
+            re.DOTALL,
+        )
+        try:
+            parsed_result = pattern.findall(text)[0]
+            score = [bool(int(x.strip())) for x in parsed_result[1:]]
+            advice = parsed_result[0].strip()
+        except BaseException as e:
             raise OutputParserError(text)
         return score[0], advice
 

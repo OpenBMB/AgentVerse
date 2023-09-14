@@ -1,6 +1,6 @@
-cnt_agents: &cnt_agents 2
+cnt_agents: &cnt_agents 4
 max_turn: &max_turn 3
-max_criticizing_rounds: 3
+max_criticizing_rounds: 2
 
 prompts:
   role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
@@ -15,7 +15,7 @@ prompts:
     
   role_assigner_append_prompt: &role_assigner_append_prompt |-
     # Response Format Guidance
-    You should respond with a list of ${cnt_critic_agents} expert description. For example:
+    You should respond with a list of expert description. For example:
     1. an electrical engineer specified in the filed of xxx.
     2. an economist who is good at xxx.
     3. a lawyer with a good knowledge of xxx.
@@ -25,23 +25,23 @@ prompts:
 
   solver_prepend_prompt: &solver_prepend_prompt |-
     Can you complete the following code?
-    ```python
-    ${task_description}
+    ```python 
+    ${task_description} 
     ```
+
+    # Previous Solution
+    The solution you gave in the last step is:
+    ${former_solution}
+
+    # Evaluation
+    The unit testing gave the following suggestion:
+    ${advice}
+
+    # Critics
+    The following messages are the critics on the provided solution:
   
   solver_append_prompt: &solver_append_prompt |-
-    You are ${role_description}. Can you provide a correct completion of the code? Your response should contain only Python code. Do not give any additional information. Use ```python to put the completed Python code in markdown quotes. When responding, please include the given code and the completion with your step by step reasoning in the code comment.
-  # You should respond in the following json format wrapped with markdown quotes:
-  # ```json
-  # {
-  #     "text": "your thought",
-  #     "reasoning": "your reasoning",
-  #     "criticism": "constructive self-criticism",
-  #     "code": "the final code completion",
-  # }
-  # ```
-
-  # Respond only the json, and nothing else. Make sure it can be directly parsed with Python `json.loads`.
+    Using these information, can you provide a correct completion of the code? Explain your reasoning. Your response should contain only Python code. Do not give any additional information. Use ```python to put the completed Python code in markdown quotes. When responding, please include the given code and the completion.
 
   critic_prepend_prompt: &critic_prepend_prompt |-
     You are in a discussion group, aiming to complete the following code function:
@@ -49,12 +49,18 @@ prompts:
     ${task_description}
     ```
 
+    Below is a possible code completion:
+    ```
+    ${preliminary_solution}
+    ```
+
   critic_append_prompt: &critic_append_prompt |-
     You are ${role_description}. Based on your knowledge, can you check the correctness of the completion given above? When responding, you should follow the following rules:
-    1. Analyze the above latest solution and the problem. 
-    2. If the latest solution is correct, end your response with a special token "[Agree]". 
-    3. If the latest solution is wrong, write down your critics in the code block and give a corrected code with comment explanation on the modification step by step.
-    4. Your response should contain only Python code. Do not give any additional information. Use ```python to wrap your Python code in markdown quotes. When responding, please include the given code and the completion.
+    1. If there is a solution, double-check the solution, give your critics. If the provided solution is correct, end your response with a special token "[Agree]", if the solution is incorrect, end with "[Disagree]".
+    2. If there is no solution provided yet, please elaborate on what should be noticed when solving this problem, and end your response with a special token "[Disagree]"
+  
+    Now give your response.
+
 
   manager_prompt: &manager_prompt |-
     According to the Previous Solution and the Previous Sentences, select the most appropriate Critic from a specific Role and output the Role.
@@ -82,16 +88,27 @@ prompts:
     ${task_description}
     '''
 
+    Your team has given the following answer:
+    '''
+    ${solution}
+    '''
+
   executor_append_prompt: &executor_append_prompt |-
-    The solution has been written to `tmp/main.py`. Your are going to write the unit testing code for the solution. You should respond in the following format:
-    Thought: your thought
-    Reasoning: your reasoning on the testing cases
-    Criticism: constructive self-criticism
-    File Path: the path to write your testing code
-    Code: the testing code with explaination in docstring. make sure to write the input in the assertion to make it appear in the unit test report. only write unit test cases for which you are certain of the answer and that align with the functionality described in the code's docstring.
-    Command: the command to change directory and execute your testing code
+    The solution has been written to `tmp/main.py`. Your are going to write the unit testing code for the solution. You should respond in the following json format wrapped with markdown quotes:
+    ```json
+    {
+        "thought": your thought,
+        "file_path": the path to write your testing code,
+        "code": the testing code,
+        "command": the command to change directory and execute your testing code
+    }
+    ```
+
+    Respond only the json, and nothing else.
 
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+    You are an experienced code reviewer. As a good reviewer, you carefully check the correctness of the given code completion. When the completion is incorrect, you should patiently teach the writer how to correct the completion.
+
     # Experts
     The experts recruited in this turn includes:
     ${all_role_description}
@@ -103,17 +120,15 @@ prompts:
     Writer's Solution: 
     ${solution}
 
-    # Tester's Feedback:
+    Tester's Feedback:
     ${result}
 
   evaluator_append_prompt: &evaluator_append_prompt |-
-    You are an experienced code reviewer. As a good reviewer, you carefully check the functional correctness of the given code completion. When the completion is incorrect, you should patiently teach the writer how to correct the completion, but do not give the code directly.
-
     # Response Format Guidance
     You must respond in the following format:
-    Response: (give your decision on the solution, whether it is correct or wrong. give your advice on correcting the solution if it is wrong, and give your suggestion on what experts should recruit in the next round)
-    Final Decision: (0 or 1, 0 for incorrect and 1 for correct. )
-
+    Score: (0 or 1, 0 for incorrect and 1 for correct)
+    Response: (give your advice on how to correct the solution, and your suggestion on on what experts should recruit in the next round)
+    
 
 name: pipeline
 
@@ -125,9 +140,9 @@ environment:
     type: role_description
     cnt_agents: *cnt_agents
   decision_maker:
-    type: vertical-solver-first
+    type: vertical
   executor:
-    type: none
+    type: code-test
   evaluator:
     type: basic
 
@@ -137,7 +152,6 @@ agents:
     name: role assigner
     prepend_prompt_template: *role_assigner_prepend_prompt
     append_prompt_template: *role_assigner_append_prompt
-    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:
@@ -153,14 +167,13 @@ agents:
     name: Planner
     prepend_prompt_template: *solver_prepend_prompt
     append_prompt_template: *solver_append_prompt
-    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-4
       model: "gpt-4"
       temperature: 0
-      max_tokens: 2048
+      max_tokens: 1024
     output_parser:
       type: humaneval-solver
       # stop:
@@ -176,23 +189,21 @@ agents:
       Waiting to be assigned.
     prepend_prompt_template: *critic_prepend_prompt
     append_prompt_template: *critic_append_prompt
-    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-4
       model: "gpt-4"
       temperature: 0
-      max_tokens: 2048
+      max_tokens: 1024
     output_parser:
-      type: humaneval-critic-agree
+      type: mgsm-critic-agree
 
   - #executor_agent:
-    agent_type: executor
+    agent_type: executor_fc
     name: Executor
     prepend_prompt_template: *executor_prepend_prompt
     append_prompt_template: *executor_append_prompt
-    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:
@@ -201,7 +212,7 @@ agents:
       temperature: 0
       max_tokens: 1024
     output_parser:
-      type: humaneval-executor
+      type: humaneval-executor-fc
 
   - #evaluator_agent:
     agent_type: evaluator
@@ -210,7 +221,6 @@ agents:
       Evaluator
     prepend_prompt_template: *evaluator_prepend_prompt
     append_prompt_template: *evaluator_append_prompt
-    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:
@@ -219,16 +229,15 @@ agents:
       temperature: 0.3
       max_tokens: 1024
     output_parser:
-      type: humaneval-evaluator-2
+      type: mgsm-evaluator
       dimensions:
-        - Final Decision
+        - Score
 
 
   - #manager_agent:
     agent_type: manager
     name: Manager
     prompt_template: *manager_prompt
-    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:
