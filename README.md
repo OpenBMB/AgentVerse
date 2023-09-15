@@ -37,6 +37,19 @@ You could refer the stay-tuned code in this [branch](https://github.com/OpenBMB/
 - [2023/6/5] 🎉 We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun!
 - [2023/5/1] 🚀 [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched!
 
+## 🌟 Join Us!
+AgentVerse is on a mission to revolutionize the multi-agent environment for large language models, and we're eagerly looking for passionate collaborators to join us on this exciting journey.
+### How Can You Contribute?
+- **Code Development**: If you're an engineer, help us refine, optimize, and expand the current framework. We're always looking for talented developers to enhance our existing features and develop new modules.
+
+- **Documentation and Tutorials**: If you have a knack for writing, help us improve our documentation, create tutorials, or write blog posts to make AgentVerse more accessible to the broader community.
+
+- **Application Exploration**: If you're intrigued by multi-agent applications and are eager to experiment using AgentVerse, we'd be thrilled to support your journey and see what you create!
+
+- **Feedback and Suggestions**: Use AgentVerse and provide us with feedback. Your insights can lead to potential improvements and ensure that our framework remains top-notch.
+
+Also, if you're passionate about advancing the frontiers of multi-agent environments and are eager to dive deeper into research, we invite you to join our team at THUNLP. To explore this exciting opportunity and embark on a collaborative journey with us, please reach out to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com) and express your interest. We're keen to welcome motivated individuals like you to our lab!
+
 ## 🗓 Coming Soon
 - [ ] Code release of our [paper](https://arxiv.org/abs/2308.10848)
 - [ ] Add documentation
