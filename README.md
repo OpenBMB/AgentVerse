@@ -71,7 +71,7 @@ We demonstrate the following cases that are expertly crafted by AgentVerse.
 <!-- - **NLP Classroom**: -->
 
 #### NLP Classroom
-In the NLP class, the professor and students engage in interactive communication. When students have a question, they raise their hands and patiently wait for the professor to call on them. Only after being called on by the professor, students can speak and ask their questions.
+In the NLP class, the professor and students engage in interactive communication. When students have a question, they raise their hands and patiently wait for the professor to call on them. Only after being called on by the professor, can students speak and ask their questions.
 
 Use the following command to launch the NLP Classroom example:
 ```bash
