@@ -16,9 +16,11 @@
 <img src="./imgs/title.png" width="512">
 </p>
 
-**AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
+<p align="center">
+    【English | <a href="README_zh.md">Chinese</a>】
+</p>
 
-我们也提供[中文版README](README_zh.md)
+**AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
 
 ---
 

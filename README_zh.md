@@ -16,6 +16,10 @@
 <img src="./imgs/title.png" width="512">
 </p>
 
+<p align="center">
+    【<a href="README.md">English </a> | Chinese】
+</p>
+
 **AgentVerse** 提供了一个多功能的框架，简化了为大型语言模型（LLMs）创建自定义多智能体环境的过程。旨在快速、低成本的开发和定制，我们的框架赋能研究人员专注于他们的研究，而不被实现细节所困扰。
 
 ---
