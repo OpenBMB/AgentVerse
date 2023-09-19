@@ -110,9 +110,11 @@ class PipelineEnvironment(BaseModel):
         # Although plan may be a list in some cases, all the cases we currently consider
         # only have one plan, so we just take the first element.
         # TODO: make it more general
-        plan = plan[0].content
-        logs.append({"module": "Decision Maker", "content": plan})
-        logger.info("", f"Decision Plan:\n{plan}", Fore.YELLOW)
+        # plan = plan[0].content
+        plan = [p.content for p in plan]
+        flatten_plan = "\n\n".join(plan)
+        logs.append({"module": "Decision Maker", "content": flatten_plan})
+        logger.info("", f"Decision Plan:\n{flatten_plan}", Fore.YELLOW)
         # ================== DECISION MAKING ==================
 
         # ================== EXECUTION ==================
@@ -140,7 +142,9 @@ class PipelineEnvironment(BaseModel):
         ):
             # TODO: 8 is an arbitrary threshold
             logs.append({"agent": "system", "content": "Good score! Accept!"})
-            logger.info("", f"Good score! Accept! Final Result:\n{plan}", Fore.GREEN)
+            logger.info(
+                "", f"Good score! Accept! Final Result:\n{flatten_plan}", Fore.GREEN
+            )
             self.success = True
         else:
             logs.append({"agent": "system", "content": "Bad score! Reject!"})
@@ -234,18 +238,16 @@ class PipelineEnvironment(BaseModel):
     #     # critic_messages = [x.content for x in critic_messages]
     #     return criticisms
 
-    async def execute(self, final_solution: str = "") -> Any:
+    async def execute(self, final_solution: List[str]) -> Any:
         """execution stage.
         Use the executor to finish the task.
         """
 
-        return self.executor.step(
+        return await self.executor.astep(
             self.agents[AGENT_TYPES.EXECUTION], self.task_description, final_solution
         )
 
-    def evaluate(
-        self, solution: Union[List[str], str], result: Any
-    ) -> Tuple[List[int], str]:
+    def evaluate(self, solution: List[str], result: Any) -> Tuple[List[int], str]:
         """evaluation stage."""
         # if self.human_eval:
         #     print("This round, LLM gave the following result:")

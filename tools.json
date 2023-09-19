@@ -1,0 +1,267 @@
+{
+  "analyze_code": {
+    "name": "analyze_code",
+    "description": "Analyze Code",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "string",
+          "description": "<context_of_code>"
+        },
+        "code": {
+          "type": "string",
+          "description": "<full_code_string>"
+        }
+      }
+    }
+  },
+  "write_tests": {
+    "name": "write_tests",
+    "description": "Write Tests",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "<full_code_string>"
+        },
+        "focus": {
+          "type": "string",
+          "description": "<list_of_focus_areas>"
+        }
+      }
+    }
+  },
+  "improve_code": {
+    "name": "improve_code",
+    "description": "Get Improved Code",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "suggestions": {
+          "type": "string",
+          "description": "<list_of_suggestions>"
+        },
+        "code": {
+          "type": "string",
+          "description": "<full_code_string>"
+        }
+      }
+    }
+  },
+  "query_wolfram": {
+    "name": "query_wolfram",
+    "description": "query by access computation, math, curated knowledge & real-time data through Wolfram|Alpha and Wolfram Language.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "<query>"
+        }
+      }
+    }
+  },
+  "google_without_key": {
+    "name": "google_without_key",
+    "description": "Google Search, use this if you don't have a google_seach_key",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "<query>"
+        }
+      }
+    }
+  },
+  "google": {
+    "name": "google",
+    "description": "Google Search, use this if you have a google_seach_key",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "<query>"
+        }
+      }
+    }
+  },
+  "execute_shell": {
+    "name": "execute_shell",
+    "description": "Execute Shell Command, non-interactive commands only",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "command_line": {
+          "type": "string",
+          "description": "<command_line>"
+        }
+      }
+    }
+  },
+  "read_file": {
+    "name": "read_file",
+    "description": "Read a file",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string",
+          "description": "<filename>"
+        }
+      }
+    }
+  },
+  "write_to_file": {
+    "name": "write_to_file",
+    "description": "Write to file",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string",
+          "description": "<filename>"
+        },
+        "text": {
+          "type": "string",
+          "description": "<text>"
+        }
+      }
+    }
+  },
+  "append_to_file": {
+    "name": "append_to_file",
+    "description": "Append to file",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string",
+          "description": "<filename>"
+        },
+        "text": {
+          "type": "string",
+          "description": "<text>"
+        }
+      }
+    }
+  },
+  "delete_file": {
+    "name": "delete_file",
+    "description": "Delete file",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string",
+          "description": "<filename>"
+        }
+      }
+    }
+  },
+  "list_files": {
+    "name": "list_files",
+    "description": "List Files in Directory",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "directory": {
+          "type": "string",
+          "description": "<directory>"
+        }
+      }
+    }
+  },
+  "download_file": {
+    "name": "download_file",
+    "description": "Download File",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "<url>"
+        },
+        "filename": {
+          "type": "string",
+          "description": "<filename>"
+        }
+      }
+    }
+  },
+  "clone_repository": {
+    "name": "clone_repository",
+    "description": "Clone Repository",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "<repository_url>"
+        },
+        "clone_path": {
+          "type": "string",
+          "description": "<clone_path>"
+        }
+      }
+    }
+  },
+  "scrape_text": {
+    "name": "scrape_text",
+    "description": "Scrape text from a webpage",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "<url>"
+        },
+        "question": {
+          "type": "string",
+          "description": "<what_you_want_to_find_on_website>"
+        }
+      }
+    }
+  },
+  "browse_website": {
+    "name": "browse_website",
+    "description": "Browse Website",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "<url>"
+        },
+        "question": {
+          "type": "string",
+          "description": "<what_you_want_to_find_on_website>"
+        }
+      }
+    }
+  },
+  "submit_task": {
+    "name": "submit_task",
+    "description": "Submit your conclusion to the task",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "finished"
+          ],
+          "description": "set to 'pending' if your assigned task cannot be finished, set to 'finished' if you have finished your assigned task"
+        },
+        "conclusion": {
+          "type": "string",
+          "description": "your conclusion to the task"
+        }
+      }
+    }
+  }
+}

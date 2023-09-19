@@ -15,7 +15,6 @@ class BaseExecutor(BaseModel):
     The base class of execution.
     """
 
-    @abstractmethod
     def step(
         self,
         agent: ExecutorAgent,
@@ -25,8 +24,7 @@ class BaseExecutor(BaseModel):
         **kwargs,
     ) -> Any:
         pass
-    
-    @abstractmethod
+
     async def astep(
         self,
         agent: ExecutorAgent,

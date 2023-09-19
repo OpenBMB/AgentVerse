@@ -49,3 +49,42 @@ class DescriptionAssigner(BaseRoleAssigner):
 
     def reset(self):
         pass
+
+
+@role_assigner_registry.register("role_description_name")
+class DescriptionNameAssigner(BaseRoleAssigner):
+    """
+    Generates description and name for each agent.
+    """
+
+    cnt_agents: int = 0
+
+    def step(
+        self,
+        role_assigner: RoleAssignerAgent,
+        group_members: List[CriticAgent],
+        advice: str = "No advice yet.",
+        task_description: str = "",
+        *args,
+        **kwargs,
+    ) -> List[CriticAgent]:
+        assert task_description != ""
+        assert self.cnt_agents > 0
+
+        # roles: [{'name': 'xxx', 'description': 'xxx'}, ...]
+        roles = role_assigner.step(advice, task_description, self.cnt_agents)
+
+        if len(group_members) < 2:
+            pass
+        else:
+            if len(roles.content) != len(group_members):
+                raise ValueError(
+                    f"Number of roles ({len(roles.content)}) and number of group members ({len(group_members)}) do not match."
+                )
+
+        for role_dict, member in zip(roles.content, group_members):
+            description = role_dict["description"].strip().strip(".")
+            member.role_description = description
+            member.name = role_dict["name"].strip()
+
+        return group_members

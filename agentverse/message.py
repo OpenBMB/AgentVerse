@@ -18,11 +18,12 @@ class SolverMessage(Message):
 
 class CriticMessage(Message):
     is_agree: bool
-    criticism: str = ''
+    criticism: str = ""
 
 
 class ExecutorMessage(Message):
-    pass
+    tool_name: str = Field(default="")
+    tool_input: Any = None
 
 
 class EvaluatorMessage(Message):

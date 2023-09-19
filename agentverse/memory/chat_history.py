@@ -1,8 +1,9 @@
+import json
 from typing import List
 
 from pydantic import Field
 
-from agentverse.message import Message
+from agentverse.message import Message, ExecutorMessage
 
 from . import memory_registry
 from .base import BaseMemory
@@ -32,9 +33,41 @@ class ChatHistoryMemory(BaseMemory):
     def to_messages(self, my_name: str = "", start_index: int = 0) -> List[dict]:
         messages = []
         for message in self.messages[start_index:]:
+            if message.sender == my_name:
+                if isinstance(message, ExecutorMessage):
+                    if message.tool_name != "":
+                        messages.append(
+                            {
+                                "role": "assistant",
+                                "content": f"[{message.sender}]: {message.content}"
+                                if message.content != ""
+                                else "",
+                                "function_call": {
+                                    "name": message.tool_name,
+                                    "arguments": json.dumps(message.tool_input),
+                                },
+                            }
+                        )
+                        continue
+                messages.append(
+                    {
+                        "role": "assistant",
+                        "content": f"[{message.sender}]: {message.content}",
+                    }
+                )
+                continue
+            if message.sender == "function":
+                messages.append(
+                    {
+                        "role": "function",
+                        "content": message.content,
+                        "name": message.tool_name,
+                    }
+                )
+                continue
             messages.append(
                 {
-                    "role": "user" if message.sender != my_name else "assistant",
+                    "role": "assistant",
                     "content": f"[{message.sender}]: {message.content}",
                 }
             )

@@ -21,8 +21,8 @@ class BaseEvaluator(BaseModel):
     def step(
         self,
         agent: EvaluatorAgent,
-        solution: List[str] | str,
-        result: List[str] | str,
+        solution: List[str],
+        result: List[str],
         task_description: str,
         all_role_description: List[str],
         *args,
@@ -39,8 +39,8 @@ class NoneEvaluator(BaseEvaluator):
     def step(
         self,
         agent: EvaluatorAgent,
-        solution: List[str] | str,
-        result: List[str] | str,
+        solution: List[str],
+        result: List[str],
         task_description: str,
         all_role_description: List[str],
         *args,

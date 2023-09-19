@@ -3,8 +3,12 @@ cnt_tool_agents: &cnt_tool_agents 3
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
 
+task_description: I want to hold a party at somewhere around Tsinghua University tomorrow. I need you to look for some best places for holding a party nearby, and tell me whether the weather is good for holding a party tomorrow. Also, I want to know what activities can be considered in my party. Help me search the web.
+
 prompts:
   role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
+    
+  role_assigner_append_prompt: &role_assigner_append_prompt |-
     # Role Description
     You are the leader of a group of experts, now you need to recruit a small group of experts with diverse identity and apply them with tools to solve the given problems:
     ${task_description}
@@ -13,57 +17,53 @@ prompts:
 
     Here are some suggestion:
     ${advice}
-    
-  role_assigner_append_prompt: &role_assigner_append_prompt |-
+
     # Response Format Guidance
-    You should respond with a list of expert description. For example:
-    1. an electrical engineer specified in the filed of xxx.
-    2. an economist who is good at xxx.
-    3. a lawyer with a good knowledge of xxx.
+    You should respond with a list of expert names and their descriptions, and separate the name and description of each expert with "-". For example:
+    1. Alice - an electrical engineer specified in the filed of xxx.
+    2. Bob - an economist who is good at xxx.
+    3. Charlie - a lawyer with a good knowledge of xxx.
     ...
 
-    Only respond with the description of each role. Do not include your reason.
+    Only respond with the list of names and descriptions. Do not include your reason.
 
   solver_prepend_prompt: &solver_prepend_prompt |-
-    Read the following description of the problem:
-    ${task_description} 
+    Please review the following chat conversation and identify the specific latest sub-task or the next step that each person needs to accomplish:
 
-    # Previous Solution
-    The solution you gave in the last step is:
-    ${former_solution}
-
-    # Evaluation
-    The unit testing gave the following suggestion:
-    ${advice}
-
-    # Critics
-    The following messages are the critics on the provided solution:
-  
   solver_append_prompt: &solver_append_prompt |-
-    Using these information, can you assign several subtasks to the executor?
-    You should describe the subtasks in a list. For example:
-    1. Look for the weather on the date of 2023-09-10 in New York.
-    2. Write a report on the topic of xxx to a file.
-    3. Search for the movies that is on theater these days
+    RESPONSE FORMAT:
+    Your response should be a list of expert names and their tasks, and separate the name and the corresponding task with "-". For example:
+    1. Alice - search the web for the weather at Beijing today using google.
+    2. Bob - look for information about the popular restaurants in Beijing using google.
+    ...
 
-    Only respond with the description of each subtask. Do not include your reason.
-
+    What's the latest sub-task assigned to each person in the above conversation? Your response should include ALL the people appear in the chat, and merge the sub-tasks for the same person into one line. Each line should only include one person.
+  
   critic_prepend_prompt: &critic_prepend_prompt |-
-    You are in a discussion group, aiming to solve the task:
-    ${task_description}
-    
+    You are ${agent_name}, ${role_description}. You are now in a discussion group, the members are:
+    ${all_roles}
 
-    Below is a possible solution:
-    ```
-    ${preliminary_solution}
-    ```
+    Your current mission is to team up with others and make a plan on addressing the following query:
+    ${task_description}
+
+    AVAILABLE TOOLS:
+    ${tool_descriptions}
+
+    REQUIREMENTS:
+    It is essential that you effectively coordinate with others to ensure the successful completion of the query in a highly efficient manner. This collaboration should be achieved through the following steps:
+    - Communication: Engage in open dialogue, discussing the specifics of the high-level query to make the goal of each one in the following execution stage more specific.
+    - Task Decomposition: After understanding the task in its entirety, you guys need to decompose the high-level query into smaller, manageable sub-tasks that can be completed with the above tools. These sub-tasks should be small, specific, and executable with the provided tools (functions). Make sure your proposed sub-tasks are small, simple and achievable, to ensure smooth progression. Each sub-task should contribute to the completion of the overall query, and each of you should take one subtask. When necessary, the sub-tasks can be identical for faster task accomplishment. You don't need to always agree with the decomposition proposed by other players. You can propose a more reasonable one when you find the decomposition not good. Be specific for the sub-tasks.
+    - Sub-task Dispatch: Post decomposition, the next step is to distribute the sub-tasks amongst all the members. This will require further communication, where you consider each one's skills, resources, and availability. Ensure the dispatch facilitates smooth, PARALLEL execution. And ensure to specify which tool should be used for each one to complete his assigned sub-task. Each of you should take on one sub-task.
+
+    REMINDER:
+    Remember, the key to achieving high efficiency as a group is maintaining a constant line of communication, cooperation, and coordination throughout the entire process.
+
+    Below is the chat history in the group so far.
 
   critic_append_prompt: &critic_append_prompt |-
-    You are ${role_description}. Based on your knowledge, can you check the correctness of the completion given above? When responding, you should follow the following rules:
-    1. If there is a solution, double-check the solution, give your critics. If the provided solution is correct, end your response with a special token "[Agree]", if the solution is incorrect, end with "[Disagree]".
-    2. If there is no solution provided yet, please elaborate on what should be noticed when solving this problem, and end your response with a special token "[Disagree]"
-  
-    Now give your response.
+    What will you, ${agent_name}, say now? Your response should only contain the words of ${agent_name}. When and ONLY when all members have spoken and agreed on task assignments, you can end your words with "[END]" to stop the discussion.
+
+    [${agent_name}]:
 
 
   manager_prompt: &manager_prompt |-
@@ -88,69 +88,32 @@ prompts:
   executor_prepend_prompt: &executor_prepend_prompt |-
     You are in a discussion group aiming to solve the task:
     ${task_description}
-    Your team has divided the task into several subtasks:
-    '''
+
+    After some discussion, the group have reached consensus on the sub-tasks that each of you need to complete. Your task is:
     ${solution}
-    '''
-    Here are the tools given by the team:
-    '''
-    ${tools}
-    '''
+
   executor_append_prompt: &executor_append_prompt |-
-    Please use the tools given by the team to solve the subtasks. You should respond in the following json format wrapped with markdown quotes:
-    ```json
-    {
-      "subtask1": {
-        "tool": the name of the tool,
-        "args": {
-          "arg1(substitute to the name of the argument)": the value of the argument,
-          "arg2": the value of the argument,
-          ...
-        },
-      }
-      "subtask2": {
-        "tool": the name of the tool,
-        "args": {
-          "arg1": the value of the argument,
-          "arg2": the value of the argument,
-          ...
-        },
-      }
-      "subtask3": {
-        "tool": the name of the tool,
-        "args": {
-          "arg1": the value of the argument,
-          "arg2": the value of the argument,
-          ...
-        },
-      }
-    }
-    ```
-    Respond only the json, and nothing else. You can use the same tool for different subtasks.
+    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `task_submit` to submit your conclusion.
+
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
-    You are an experienced code reviewer. As a good reviewer, you carefully check the correctness of the given code completion. When the completion is incorrect, you should patiently teach the writer how to correct the completion.
-
-    # Experts
-    The experts recruited in this turn includes:
-    ${all_role_description}
-    
-    # Problem and Writer's Solution
-    Problem: 
-    ${task_description}
-
-    Writer's Solution: 
-    ${solution}
-
-    Tester's Feedback:
-    ${result}
 
   evaluator_append_prompt: &evaluator_append_prompt |-
-    # Response Format Guidance
-    You must respond in the following format:
-    Score: (0 or 1, 0 for incorrect and 1 for correct)
-    Response: (give your advice on how to correct the solution, and your suggestion on on what experts should recruit in the next round)
+    A group is trying to solve the following query proposed by the user:
+    ${task_description}
 
-    Now carefully check the writer's solution, summarize the tester's feedback, and give your response.
+    After the discussion, they have reached consensus on the sub-tasks that each of them need to complete:
+    ${solution}
+
+    And after the execution stage, they give the following result:
+    ${result}
+    
+    You need to evaluate whether the given query has been completed. If so, summarize the solution to the user. If not, summarize the current progress, and propose what is missing.
+
+    You must respond in the following format:
+    Status: (0 or 1. 0 for pending and 1 for finished)
+    Speak: (your words to the group if the task is pending, or your words to the user if the task is finished)
+
+    Now give your response.
     
 
 name: pipeline
@@ -160,57 +123,13 @@ environment:
   env_type: pipeline
   max_rounds: *max_rounds
   role_assigner:
-    type: role_description
+    type: role_description_name
     cnt_agents: *cnt_agents
   decision_maker:
-    type: horizontal
+    type: horizontal-tool
   executor:
     type: tool-using
     num_agents: *cnt_tool_agents
-    tools: #TODO
-       tool1: 
-         name: web_requests
-         decription: make http requests
-         args:
-            url: https://www.google.com
-            content: 
-       tool2: 
-         name: analyze_code
-         decription: analyze code
-         args :
-            file_path: ./test.py
-            text : 
-       tool3: 
-         name: execute_code
-         decription: execute code
-         args:
-           file_path: ./test.py
-       tool4: 
-         name: write_tests
-         decription: write tests
-         args:
-           file_path: ./test.py
-       tool5: 
-         name: improve_code
-         decription: improve code
-         args:
-           file_path: ./test.py
-       tool6: 
-         name: file_operations
-         decription: operate files
-         args:
-           file_path: ./test.py
-       tool7: 
-         name: git_operations
-         decription: operate git
-         args:
-           file_path: ./test.py
-       tool8: 
-         name: web_playwright
-         decription: operate playwright
-         args:
-           url: https://www.google.com
-           content:
   evaluator:
     type: basic
 
@@ -228,7 +147,7 @@ agents:
       temperature: 0
       max_tokens: 512
     output_parser:
-      type: role_assigner
+      type: role_description_name_assigner
 
   - #solver_agent:
     agent_type: solver
@@ -243,7 +162,7 @@ agents:
       temperature: 0
       max_tokens: 1024
     output_parser:
-      type: toolusing-solver
+      type: tool-using-solver
       # stop:
       #   - "\ndef "
       #   - "\nclass "
@@ -253,8 +172,8 @@ agents:
   - #critic_agents:
     agent_type: critic
     name: Critic 1
-    role_description: |-
-      Waiting to be assigned.
+    role_description: Waiting to be assigned.
+    max_history: 15
     prepend_prompt_template: *critic_prepend_prompt
     append_prompt_template: *critic_append_prompt
     memory:
@@ -262,25 +181,27 @@ agents:
     llm:
       llm_type: gpt-3.5-turbo
       model: "gpt-3.5-turbo"
-      temperature: 0
+      temperature: 0.7
       max_tokens: 1024
     output_parser:
       type: mgsm-critic-agree
+    tool_config: tools_new.json
 
   - #executor_agent:
     agent_type: executor
     name: Executor
     prepend_prompt_template: *executor_prepend_prompt
     append_prompt_template: *executor_append_prompt
+    max_history: 8
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-3.5-turbo
-      model: gpt-3.5-turbo
+      model: gpt-3.5-turbo-16k
       temperature: 0
       max_tokens: 1024
     output_parser:
-      type: humaneval-executor
+      type: tool-using-executor
 
   - #evaluator_agent:
     agent_type: evaluator
@@ -297,9 +218,7 @@ agents:
       temperature: 0.3
       max_tokens: 1024
     output_parser:
-      type: mgsm-evaluator
-      dimensions:
-        - Score
+      type: tool-using-evaluator
 
 
   - #manager_agent:

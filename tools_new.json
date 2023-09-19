@@ -1,0 +1,355 @@
+{
+  "available_envs": [
+    {
+      "name": "FileSystemEnv",
+      "description": "Provide a file system operation environment for Agent.\n    ",
+      "total_tools": 5,
+      "tools": [
+        "is_path_exist",
+        "modify_file",
+        "print_filesys_struture",
+        "read_from_file",
+        "write_to_file"
+      ]
+    },
+    {
+      "name": "PDBCodingEnv",
+      "description": "Note: This env is subclass of ['FileSystemEnv', 'ShellEnv'], and all tools of parent envs are inherited and not visible. You can try call parent tools or check this env's defination to show them.\nPython Debugging Coding Environment.\n    Always run code with `python -m pdb {python_file.py}`.\n    ",
+      "total_tools": 11,
+      "tools": [
+        "run_code"
+      ]
+    },
+    {
+      "name": "ShellEnv",
+      "description": "Provide and maintain an interactive shell environment.\n    ",
+      "total_tools": 5,
+      "tools": [
+        "kill",
+        "read_stdout",
+        "restart",
+        "terminate",
+        "write_stdin"
+      ]
+    },
+    {
+      "name": "WebEnv",
+      "description": "Web Environment providing web interface and browsering.\n    ",
+      "total_tools": 2,
+      "tools": [
+        "browse_website",
+        "scrape_text"
+      ]
+    },
+    {
+      "name": "RapidAPIEnv",
+      "description": "Note: All tools of this env are invisible during all tools display, please check this env's defination to show all tools.\nRapidAPI Env delivers rapid api for tool server.",
+      "total_tools": 4208,
+      "tools": [
+        "rapi_100_success_instagram_api_scalable_robust_media_info",
+        "rapi_100_success_instagram_api_scalable_robust_post_comments",
+        "rapi_100_success_instagram_api_scalable_robust_user_followers",
+        "rapi_13f918yf19o1t1f1of1t9_endpoint1",
+        "rapi_3d_services_thumbnail",
+        "rapi_4d_dream_dictionary_get_dream_number",
+        "rapi_50k_radio_stations_get_channels",
+        "rapi_50k_radio_stations_get_cities",
+        "rapi_50k_radio_stations_get_countries",
+        "rapi_50k_radio_stations_get_genres",
+        "..."
+      ]
+    }
+  ],
+  "available_tools": [
+    "FileSystemEnv_is_path_exist",
+    "FileSystemEnv_modify_file",
+    "FileSystemEnv_print_filesys_struture",
+    "FileSystemEnv_read_from_file",
+    "FileSystemEnv_write_to_file",
+    "PDBCodingEnv_run_code",
+    "ShellEnv_kill",
+    "ShellEnv_read_stdout",
+    "ShellEnv_restart",
+    "ShellEnv_terminate",
+    "ShellEnv_write_stdin",
+    "WebEnv_browse_website",
+    "WebEnv_scrape_text",
+    "query_wolfram",
+    "bing_search"
+  ],
+  "tools_json": [
+    {
+      "name": "FileSystemEnv_is_path_exist",
+      "description": "Check if the path exists in the workspace.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path to be checked."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "FileSystemEnv_modify_file",
+      "description": "Modify the file in the workspace based on the line changes provided. \nExample:\n```\nmodify_file('test.txt', 0, 1, 'Hello World!')\n```\nThis will modify the first line of the file `test.txt` to `Hello World!`.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filepath": {
+            "type": "string",
+            "description": "The path to the file to be modified."
+          },
+          "begin_line": {
+            "type": "integer",
+            "description": "The starting line number of the content to be modified."
+          },
+          "end_line": {
+            "type": "integer",
+            "description": "The ending line number of the content to be modified."
+          },
+          "new_content": {
+            "type": "string",
+            "description": "The new content to be replaced with the old content."
+          }
+        },
+        "required": [
+          "filepath",
+          "begin_line",
+          "end_line",
+          "new_content"
+        ]
+      }
+    },
+    {
+      "name": "FileSystemEnv_print_filesys_struture",
+      "description": "Return a tree-like structure for all files and folders in the workspace. Use this tool if you are not sure what files are in the workspace.\nThis function recursively walks through all the directories in the workspace\nand return them in a tree-like structure, \ndisplaying all the files under each directory.\n\nExample:\n```\n- root/\n    - sub_directory1/\n        - file1.txt\n        - file2.txt\n    - sub_directory2/\n        - file3.txt\n```",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "FileSystemEnv_read_from_file",
+      "description": "Open and read the file content in the workspace, you will see the content of the target file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filepath": {
+            "type": "string",
+            "description": "The path to the file to be opened."
+          },
+          "begin_line": {
+            "type": "integer",
+            "description": "The starting line number of the content to be opened. Defaults to 0."
+          },
+          "max_read_lines": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "required": [
+          "filepath"
+        ]
+      }
+    },
+    {
+      "name": "FileSystemEnv_write_to_file",
+      "description": "Write the file in the workspace with the content provided. Will automatically create the file if it does not exist. Also overwrite the file if it already exists.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filepath": {
+            "type": "string",
+            "description": "The path to the file to be saved, always use relative path to the workspace root."
+          },
+          "content": {
+            "type": "string",
+            "description": "The content to be saved."
+          }
+        },
+        "required": [
+          "filepath",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "PDBCodingEnv_run_code",
+      "description": "Run python code file in pdb mode.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "enterpoint": {
+            "type": "string",
+            "description": "The full path of python code file."
+          }
+        },
+        "required": [
+          "enterpoint"
+        ]
+      }
+    },
+    {
+      "name": "ShellEnv_kill",
+      "description": "Kill the shell.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "ShellEnv_read_stdout",
+      "description": "Read the stdout stream of the shell. If stderr is not empty, it will be returned instead.\nEmpty string will be returned if both stdout and stderr are empty.\nYou can use this function to check if the shell has new content to be read for a running process takes a while.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "ShellEnv_restart",
+      "description": "Restart the shell.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "ShellEnv_terminate",
+      "description": "Terminate the shell.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "ShellEnv_write_stdin",
+      "description": "Write the stdin stream of the shell and get instant feedback from stderr or stdout.\nExample:\n```\nwrite_stdin('echo \"hello world\"')\n```\nThis will execute the command `echo \"hello world\"` in shell and return the output `hello world`.\nYou may need to call `read_stdout` and `read_stderr` to get further feedback for running process takes a while.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The content to be written."
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "WebEnv_browse_website",
+      "description": "Browse a website and return the formatted text and hyperlinks.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL to scrape text from."
+          },
+          "question": {
+            "type": "string",
+            "description": "The question to gather context for."
+          }
+        },
+        "required": [
+          "url",
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "WebEnv_scrape_text",
+      "description": "Scrape text from the website on given url and gather question related context.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL to scrape text from."
+          },
+          "question": {
+            "type": "string",
+            "description": "The question to gather context for."
+          }
+        },
+        "required": [
+          "url",
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "query_wolfram",
+      "description": "Query WolframAlpha using natural language and return parsed results.\nQuery by access computation, math, curated knowledge & real-time data through Wolfram|Alpha and Wolfram Language.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The query you requested."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "bing_search",
+      "description": "Return the results of a Bing search using the official Bing API.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query."
+          },
+          "num_results": {
+            "type": "integer",
+            "description": "The number of results to return."
+          }
+        },
+        "required": [
+          "query",
+          "num_results"
+        ]
+      }
+    },
+    {
+      "name": "submit_task",
+      "description": "Submit your conclusion to the task",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "finished"
+            ],
+            "description": "Set to 'pending' if your assigned task cannot be finished, set to 'finished' if you have finished your assigned task"
+          },
+          "conclusion": {
+            "type": "string",
+            "description": "Your conclusion to the task"
+          }
+        },
+        "required": [
+          "status",
+          "conclusion"
+        ]
+      }
+    }
+  ]
+}

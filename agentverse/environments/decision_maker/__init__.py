@@ -8,3 +8,4 @@ from .vertical import VerticalDecisionMaker
 from .dynamic import DynamicDecisionMaker
 from .vertical_solver_first import VerticalSolverFirstDecisionMaker
 from .concurrent import ConcurrentDecisionMaker
+from .horizontal_tool import HorizontalToolDecisionMaker

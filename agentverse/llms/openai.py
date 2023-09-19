@@ -1,4 +1,5 @@
 import logging
+import json
 import os
 from typing import Dict, List, Optional, Union
 
@@ -107,32 +108,45 @@ class OpenAIChat(BaseChatModel):
         append_prompt: str = "",
         functions: List[dict] = [],
     ) -> LLMResult:
-
         # logger.debug(prepend_prompt)
         # logger.debug(history)
         # logger.debug(append_prompt)
-
         messages = self.construct_messages(prepend_prompt, history, append_prompt)
         logger.log_prompt(messages)
 
         try:
-            #Execute function call
+            # Execute function call
             if functions != []:
                 response = openai.ChatCompletion.create(
-                    model=self.args.model,
                     messages=messages,
                     functions=functions,
-                    #function_call="auto",
-                    function_call={"name": "run_code"},
-                    #stream=True,
-                    temperature=self.args.temperature,
+                    # function_call="auto",
+                    # function_call={"name": "run_code"},
+                    # stream=True,
+                    **self.args.dict(),
                 )
-                return LLMResult(
-                    content=response["choices"][0]["message"]["function_call"]["arguments"],
-                    send_tokens=response["usage"]["prompt_tokens"],
-                    recv_tokens=response["usage"]["completion_tokens"],
-                    total_tokens=response["usage"]["total_tokens"],
-                )
+                if response["choices"][0]["message"].get("function_call") is not None:
+                    return LLMResult(
+                        content=response["choices"][0]["message"].get("content", ""),
+                        function_name=response["choices"][0]["message"][
+                            "function_call"
+                        ]["name"],
+                        function_arguments=json.loads(
+                            response["choices"][0]["message"]["function_call"][
+                                "arguments"
+                            ]
+                        ),
+                        send_tokens=response["usage"]["prompt_tokens"],
+                        recv_tokens=response["usage"]["completion_tokens"],
+                        total_tokens=response["usage"]["total_tokens"],
+                    )
+                else:
+                    return LLMResult(
+                        content=response["choices"][0]["message"]["content"],
+                        send_tokens=response["usage"]["prompt_tokens"],
+                        recv_tokens=response["usage"]["completion_tokens"],
+                        total_tokens=response["usage"]["total_tokens"],
+                    )
 
             else:
                 response = openai.ChatCompletion.create(
@@ -145,10 +159,8 @@ class OpenAIChat(BaseChatModel):
                     recv_tokens=response["usage"]["completion_tokens"],
                     total_tokens=response["usage"]["total_tokens"],
                 )
-        except (OpenAIError, KeyboardInterrupt) as error:
+        except (OpenAIError, KeyboardInterrupt, json.decoder.JSONDecodeError) as error:
             raise
-
-
 
     async def agenerate_response(
         self,
@@ -157,7 +169,6 @@ class OpenAIChat(BaseChatModel):
         append_prompt: str = "",
         functions: List[dict] = [],
     ) -> LLMResult:
-
         # logger.debug(prepend_prompt)
         # logger.debug(history)
         # logger.debug(append_prompt)
@@ -165,38 +176,51 @@ class OpenAIChat(BaseChatModel):
         logger.log_prompt(messages)
 
         try:
-            #Execute function call
+            # Execute function call
             if functions != []:
-                response = await openai.ChatCompletion.create(
-                    model=self.args.model,
+                response = await openai.ChatCompletion.acreate(
                     messages=messages,
                     functions=functions,
-                    #function_call="auto",
-                    function_call={"name": "run_code"},
-                    #stream=True,
-                    temperature=self.args.temperature,
+                    # function_call="auto",
+                    # function_call={"name": "run_code"},
+                    # stream=True,
+                    **self.args.dict(),
                 )
-                return LLMResult(
-                    content=response["choices"][0]["message"]["function_call"]["arguments"],
-                    send_tokens=response["usage"]["prompt_tokens"],
-                    recv_tokens=response["usage"]["completion_tokens"],
-                    total_tokens=response["usage"]["total_tokens"],
-                )
+                if response["choices"][0]["message"].get("function_call") is not None:
+                    return LLMResult(
+                        function_name=response["choices"][0]["message"][
+                            "function_call"
+                        ]["name"],
+                        function_arguments=json.loads(
+                            response["choices"][0]["message"]["function_call"][
+                                "arguments"
+                            ]
+                        ),
+                        send_tokens=response["usage"]["prompt_tokens"],
+                        recv_tokens=response["usage"]["completion_tokens"],
+                        total_tokens=response["usage"]["total_tokens"],
+                    )
+                else:
+                    return LLMResult(
+                        content=response["choices"][0]["message"]["content"],
+                        send_tokens=response["usage"]["prompt_tokens"],
+                        recv_tokens=response["usage"]["completion_tokens"],
+                        total_tokens=response["usage"]["total_tokens"],
+                    )
 
             else:
                 response = await openai.ChatCompletion.acreate(
                     messages=messages,
                     **self.args.dict(),
                 )
-            return LLMResult(
-                content=response["choices"][0]["message"]["content"],
-                send_tokens=response["usage"]["prompt_tokens"],
-                recv_tokens=response["usage"]["completion_tokens"],
-                total_tokens=response["usage"]["total_tokens"],
-            )
-        except (OpenAIError, KeyboardInterrupt) as error:
+                return LLMResult(
+                    content=response["choices"][0]["message"]["content"],
+                    send_tokens=response["usage"]["prompt_tokens"],
+                    recv_tokens=response["usage"]["completion_tokens"],
+                    total_tokens=response["usage"]["total_tokens"],
+                )
+        except (OpenAIError, KeyboardInterrupt, json.decoder.JSONDecodeError) as error:
             raise
-
 
     def construct_messages(
         self, prepend_prompt: str, history: List[dict], append_prompt: str

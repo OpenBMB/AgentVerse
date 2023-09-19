@@ -28,7 +28,6 @@ class HorizontalDecisionMaker(BaseDecisionMaker):
         task_description: str,
         previous_plan: str = "No solution yet.",
         advice: str = "No advice yet.",
-        *args,
         **kwargs,
     ) -> List[str]:
         for agent in agents[1:]:
