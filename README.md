@@ -105,10 +105,10 @@ python main_demo.py --task sde_team/sde_team_2players
 https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4e54661626a
 
 
-#### [Database Administrator (DBA)](https://github.com/zhouxh19/AgentVerse_for_Database_Diagnosis)
-In the database diagnosis scenario, the Chief DBA monitors the database system for anomalies. If detected, the memory and CPU agents are alerted to analyze root causes and suggest optimization solutions. The Chief DBA then provides a summarized diagnosis to the user, who can also contribute by giving instructions or evaluating the effectiveness of proposed solutions.
+#### [Database Administrator (DBA)](https://github.com/TsinghuaDatabaseGroup/DB-GPT)
 
-You should first configure the [database tool](https://github.com/OpenBMB/BMTools/blob/main/bmtools/tools/db_diag/readme.md) in BMTools, and launch the BMTools server according to the [guidance](https://github.com/OpenBMB/BMTools/tree/main#211-local-tools). Then use the following command to launch the Database Administrator example:
+In the database diagnosis scenario, the Chief DBA monitors the system anomalies (e.g., slow queries, locks, crash down). If detected, the domain experts are alerted to analyze root causes, share insights, and suggest optimization solutions together. The Chief DBA then provides a summarized report to the user.
+
 ```bash
 python main_demo.py --task db_diag
 ```
