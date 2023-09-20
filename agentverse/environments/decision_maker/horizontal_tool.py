@@ -10,11 +10,11 @@ from typing import TYPE_CHECKING, List
 from . import decision_maker_registry
 from .base import BaseDecisionMaker
 from agentverse.logging import logger
-from agentverse.message import SolverMessage
+from agentverse.message import SolverMessage, Message
 
 if TYPE_CHECKING:
     from agentverse.agents.base import BaseAgent
-    from agentverse.message import Message, CriticMessage
+    from agentverse.message import CriticMessage
 
 
 @decision_maker_registry.register("horizontal-tool")
