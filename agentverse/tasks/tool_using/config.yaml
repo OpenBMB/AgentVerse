@@ -2,6 +2,7 @@ cnt_agents: &cnt_agents 4
 cnt_tool_agents: &cnt_tool_agents 3
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
+tool_config: &tool_config tools_simplified.json
 
 task_description: I want to hold a party at somewhere around Tsinghua University tomorrow. I need you to look for some best places for holding a party nearby, and tell me whether the weather is good for holding a party tomorrow. Also, I want to know what activities can be considered in my party. Help me search the web.
 
@@ -93,7 +94,7 @@ prompts:
     ${solution}
 
   executor_append_prompt: &executor_append_prompt |-
-    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `task_submit` to submit your conclusion.
+    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `task_submit` to submit your conclusion and your reflection on the tool use.
 
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
 
@@ -121,15 +122,20 @@ name: pipeline
 
 environment:
   env_type: pipeline
+  role_assign_only_once: true
+  add_execution_result_to_critic: true
+  add_execution_result_to_solver: false
   max_rounds: *max_rounds
   role_assigner:
     type: role_description_name
     cnt_agents: *cnt_agents
   decision_maker:
     type: horizontal-tool
+    tool_config: *tool_config
   executor:
     type: tool-using
     num_agents: *cnt_tool_agents
+    tool_config: *tool_config
   evaluator:
     type: basic
 
@@ -185,7 +191,7 @@ agents:
       max_tokens: 1024
     output_parser:
       type: mgsm-critic-agree
-    tool_config: tools_new.json
+    tool_config: *tool_config
 
   - #executor_agent:
     agent_type: executor

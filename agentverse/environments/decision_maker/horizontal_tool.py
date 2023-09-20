@@ -26,9 +26,11 @@ class HorizontalToolDecisionMaker(BaseDecisionMaker):
     name: str = "horizontal_tool"
     tools: List[dict] = []
     tool_names: List[str] = []
+    tool_config: str = None
 
     def __init__(self, *args, **kwargs):
-        with open("tools_new.json", "r") as f:
+        assert kwargs.get("tool_config", None) is not None
+        with open(kwargs.get("tool_config"), "r") as f:
             tools_dict = json.load(f)
         tools = tools_dict["tools_json"]
         tool_names = [t["name"] for t in tools]
@@ -43,6 +45,10 @@ class HorizontalToolDecisionMaker(BaseDecisionMaker):
         advice: str = "No advice yet.",
         **kwargs,
     ) -> List[str]:
+        if advice != "No advice yet.":
+            self.broadcast_messages(
+                agents, [Message(content=advice, sender="Evaluator")]
+            )
         all_roles = "\n".join(
             [f"{agent.name}: {agent.role_description}" for agent in agents[1:]]
         )

@@ -97,7 +97,7 @@ class AgentVersePipeline:
                 self.environment.step(advice, previous_plan)
             )
             self.logs += logs
-        self.save_result(previous_plan, single_agent)
+        self.save_result(previous_plan, result, single_agent)
         return previous_plan, result, self.logs
 
     '''
@@ -337,7 +337,7 @@ class AgentVersePipeline:
     #     return agree_cnt == self.environment.cnt_critic_agents
     #     # TODO: the consensus reaching condition is to be discussed
 
-    def save_result(self, result: Union[str, List[str]], single_agent: bool = False):
+    def save_result(self, plan: str, result: str, single_agent: bool = False):
         """Save the result to the result file"""
         if single_agent:
             result_file_path = "../results/" + self.task + "_single.txt"
@@ -345,7 +345,5 @@ class AgentVersePipeline:
             result_file_path = "../results/" + self.task + ".txt"
         os.makedirs(os.path.dirname(result_file_path), exist_ok=True)
         with open(result_file_path, "w") as f:
-            if isinstance(result, list):
-                result = "\n".join(result)
-            else:
-                f.write(result)
+            f.write("[Final Plan]\n" + plan + "\n\n")
+            f.write("[Result]\n" + result)

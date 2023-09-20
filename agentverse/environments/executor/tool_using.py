@@ -7,7 +7,7 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Any, List, Tuple
 
 from agentverse.agents import ExecutorAgent
-from agentverse.message import Message, ExecutorMessage
+from agentverse.message import Message, ExecutorMessage, SolverMessage
 from agentverse.logging import logger
 
 from . import BaseExecutor, executor_registry
@@ -20,10 +20,12 @@ class ToolUsingExecutor(BaseExecutor):
     max_tool_call_times: int = 10
     tools: List[dict] = []
     tool_names: List[str] = []
+    tool_config: str = None
     # tool_description: str
 
     def __init__(self, *args, **kwargs):
-        with open("tools_new.json", "r") as f:
+        assert kwargs.get("tool_config", None) is not None
+        with open(kwargs.get("tool_config"), "r") as f:
             tools_dict = json.load(f)
         tools = tools_dict["tools_json"]
         tool_names = [t["name"] for t in tools]
@@ -36,7 +38,7 @@ class ToolUsingExecutor(BaseExecutor):
             thought = {
                 "thought": {
                     "type": "string",
-                    "description": "Your thought on how to proceed the task.",
+                    "description": "Your internal reasoning and thoughts on the task, and how you plan to solve it based on the current attempts.",
                 }
             }
             thought.update(properties)
@@ -54,13 +56,13 @@ class ToolUsingExecutor(BaseExecutor):
         self,
         agent: ExecutorAgent,
         task_description: str,
-        plan: List[str],
+        plan: List[SolverMessage],
         *args,
         **kwargs,
     ):
         agents = [deepcopy(agent) for _ in range(len(plan))]
         for i in range(len(agents)):
-            agents[i].name = plan[i].split("-")[0].strip()
+            agents[i].name = plan[i].content.split("-")[0].strip()
 
         finished_agent_indices = set()
         result = ["" for _ in range(len(agents))]
@@ -78,7 +80,7 @@ class ToolUsingExecutor(BaseExecutor):
             ]
             for idx in active_agents_indices:
                 tool_calls.append(
-                    agents[idx].astep(task_description, plan[idx], self.tools)
+                    agents[idx].astep(task_description, plan[idx].content, self.tools)
                 )
             # Use asyncio.gather to run astep concurrently
             tool_call_decisions = await asyncio.gather(*tool_calls)
@@ -109,9 +111,17 @@ class ToolUsingExecutor(BaseExecutor):
 
             # for i, (observation, is_finish) in enumerate(tool_response):
             #     agents[i].add_message_to_memory([observation])
+        message_result = []
         for i in range(len(result)):
-            result[i] = f"[{agents[i].name}]: {result[i]}"
-        return result
+            # result[i] = f"[{agents[i].name}]: {result[i]}"
+            if result[i] != "":
+                message_result.append(
+                    ExecutorMessage(
+                        content=f"[{agents[i].name}]: My execution result:\n{result[i]}",
+                        sender=agents[i].name,
+                    )
+                )
+        return message_result
 
     @classmethod
     async def call_tool(cls, command: str, arguments: dict):
@@ -138,10 +148,11 @@ class ToolUsingExecutor(BaseExecutor):
                         f"{url}/get_cookie", timeout=30
                     ) as response:
                         cookies = response.cookies
+                        await response.text()
                     session.cookie_jar.update_cookies(cookies)
                     # Sometimes the toolserver's docker container is not ready yet
                     # So we need to wait for a while
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(5)
 
                     payload_arguments = deepcopy(arguments)
                     if "thought" in payload_arguments:

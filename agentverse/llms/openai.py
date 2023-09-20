@@ -1,5 +1,6 @@
 import logging
 import json
+import ast
 import os
 from typing import Dict, List, Optional, Union
 
@@ -131,7 +132,7 @@ class OpenAIChat(BaseChatModel):
                         function_name=response["choices"][0]["message"][
                             "function_call"
                         ]["name"],
-                        function_arguments=json.loads(
+                        function_arguments=ast.literal_eval(
                             response["choices"][0]["message"]["function_call"][
                                 "arguments"
                             ]
@@ -191,7 +192,7 @@ class OpenAIChat(BaseChatModel):
                         function_name=response["choices"][0]["message"][
                             "function_call"
                         ]["name"],
-                        function_arguments=json.loads(
+                        function_arguments=ast.literal_eval(
                             response["choices"][0]["message"]["function_call"][
                                 "arguments"
                             ]

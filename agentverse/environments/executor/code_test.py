@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, List, Tuple
 
 from agentverse.logging import get_logger
 from agentverse.agents import ExecutorAgent
+from agentverse.message import ExecutorMessage, SolverMessage
 
 from . import BaseExecutor, executor_registry
 
@@ -28,11 +29,11 @@ class CodeTestExecutor(BaseExecutor):
         self,
         agent: ExecutorAgent,
         task_description: str,
-        solution: List[str],
+        solution: List[SolverMessage],
         *args,
         **kwargs,
     ) -> Any:
-        solution = solution[0]
+        solution = solution[0].content
         os.makedirs("tmp", exist_ok=True)
         self.write_to_file("tmp/main.py", solution)
         manager = multiprocessing.Manager()
@@ -99,7 +100,7 @@ class CodeTestExecutor(BaseExecutor):
                 p.kill()
         if not result:
             result.append("Execution timed out.")
-        return result[0]
+        return [ExecutorMessage(content=result[0], sender="Code Tester")]
 
     def write_to_file(self, file_name, file_content):
         # TODO: generalize this method to a common tool

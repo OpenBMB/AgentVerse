@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 if TYPE_CHECKING:
     from agentverse.agents import EvaluatorAgent
-    from agentverse.message import EvaluatorMessage
+    from agentverse.message import EvaluatorMessage, SolverMessage, ExecutorMessage
 
 from . import evaluator_registry
 
@@ -21,8 +21,8 @@ class BaseEvaluator(BaseModel):
     def step(
         self,
         agent: EvaluatorAgent,
-        solution: List[str],
-        result: List[str],
+        solution: List[SolverMessage],
+        result: List[ExecutorMessage],
         task_description: str,
         all_role_description: List[str],
         *args,
@@ -39,12 +39,14 @@ class NoneEvaluator(BaseEvaluator):
     def step(
         self,
         agent: EvaluatorAgent,
-        solution: List[str],
-        result: List[str],
+        solution: List[SolverMessage],
+        result: List[ExecutorMessage],
         task_description: str,
         all_role_description: List[str],
         *args,
         **kwargs,
     ) -> EvaluatorMessage:
-        result = EvaluatorMessage(score=0, advice=result)
+        result = EvaluatorMessage(
+            score=0, advice="\n".join([r.content for r in result])
+        )
         return result

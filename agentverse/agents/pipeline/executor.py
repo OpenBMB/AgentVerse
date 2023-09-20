@@ -6,7 +6,7 @@ import bdb
 from string import Template
 from typing import TYPE_CHECKING, List, Any
 
-from agentverse.message import ExecutorMessage, Message
+from agentverse.message import ExecutorMessage, Message, SolverMessage
 from agentverse.utils import AgentFinish, AgentAction
 
 from agentverse.agents import agent_registry
@@ -23,19 +23,22 @@ class ExecutorAgent(BaseAgent):
     def step(
         self,
         task_description: str,
-        solution: List[str],
+        solution: str,
         tools: List[dict] = [],
     ) -> ExecutorMessage:
         logger.debug("", self.name, Fore.MAGENTA)
         prepend_prompt, append_prompt = self.get_all_prompts(
-            task_description=task_description, solution=solution
+            task_description=task_description,
+            solution=solution,
+            agent_name=self.name,
         )
 
+        history = self.memory.to_messages(self.name, start_index=-self.max_history)
         parsed_response = None
         for i in range(self.max_retry):
             try:
                 response = self.llm.generate_response(
-                    prepend_prompt, [], append_prompt, tools
+                    prepend_prompt, history, append_prompt, tools
                 )
                 parsed_response = self.output_parser.parse(response)
                 break
@@ -48,17 +51,34 @@ class ExecutorAgent(BaseAgent):
 
         if parsed_response is None:
             logger.error(f"{self.name} failed to generate valid response.")
-        message = ExecutorMessage(
-            sender=self.name,
-            sender_agent=self,
-            content=parsed_response.return_values["output"],
-        )
+        if isinstance(parsed_response, AgentFinish):
+            message = ExecutorMessage(
+                content=parsed_response.return_values["output"],
+                sender=self.name,
+                sender_agent=self,
+            )
+        elif isinstance(parsed_response, AgentAction):
+            message = ExecutorMessage(
+                content=parsed_response.log,
+                sender=self.name,
+                sender_agent=self,
+                tool_name=parsed_response.tool,
+                tool_input=parsed_response.tool_input,
+            )
+        else:
+            # import pdb
+
+            # pdb.set_trace()
+            raise ValueError(
+                f"Error response type: {type(parsed_response)}. Only support \
+                    AgentFinish and AgentAction. Modify your output parser."
+            )
         return message
 
     async def astep(
         self,
         task_description: str,
-        solution: List[str],
+        solution: str,
         tools: List[dict] = [],
     ) -> ExecutorMessage:
         logger.debug("", self.name, Fore.MAGENTA)
@@ -80,6 +100,9 @@ class ExecutorAgent(BaseAgent):
             except (KeyboardInterrupt, bdb.BdbQuit):
                 raise
             except Exception as e:
+                # import pdb
+
+                # pdb.set_trace()
                 logger.error(e)
                 logger.warn("Retrying...")
                 continue

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List, Tuple, Any
 from pydantic import BaseModel
 
 from agentverse.agents import ExecutorAgent
+from agentverse.message import SolverMessage
 
 from . import executor_registry
 
@@ -19,7 +20,7 @@ class BaseExecutor(BaseModel):
         self,
         agent: ExecutorAgent,
         task_description: str,
-        solution: List[str],
+        solution: List[SolverMessage],
         *args,
         **kwargs,
     ) -> Any:
@@ -49,7 +50,7 @@ class NoneExecutor(BaseExecutor):
         self,
         agent: ExecutorAgent,
         task_description: str,
-        solution: List[str],
+        solution: List[SolverMessage],
         *args,
         **kwargs,
     ) -> Any:

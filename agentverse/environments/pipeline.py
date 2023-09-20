@@ -18,7 +18,7 @@ from agentverse.environments.role_assigner import (
     role_assigner_registry,
 )
 from agentverse.logging import logger, typewriter_log
-from agentverse.message import Message, SolverMessage
+from agentverse.message import Message, SolverMessage, ExecutorMessage
 
 
 from . import env_registry as EnvironmentRegistry
@@ -54,6 +54,10 @@ class PipelineEnvironment(BaseModel):
     max_turn: int = 10
     success: bool = False
 
+    role_assign_only_once = False
+    add_execution_result_to_critic = False
+    add_execution_result_to_solver = False
+
     def __init__(self, **kwargs):
         def build_components(config: Dict, registry):
             component_type = config.pop("type")
@@ -74,7 +78,10 @@ class PipelineEnvironment(BaseModel):
         evaluator = build_components(
             kwargs.pop("evaluator", {"type": "basic"}), evaluator_registry
         )
-
+        if kwargs.get("add_execution_result_to_critic", False):
+            assert kwargs.get("role_assign_only_once", False) == True
+        if kwargs.get("add_execution_result_to_solver", False):
+            assert kwargs.get("role_assign_only_once", False) == True
         super().__init__(
             role_assigner=role_assigner,
             decision_maker=decision_maker,
@@ -102,26 +109,29 @@ class PipelineEnvironment(BaseModel):
 
         # ================== DECISION MAKING ==================
         if "dynamic" in self.decision_maker.name:
-            plan = await self.decision_making(
+            plan: List[SolverMessage] = await self.decision_making(
                 agents, self.agents[AGENT_TYPES.MANAGER], previous_plan, advice
             )
         else:
-            plan = await self.decision_making(agents, None, previous_plan, advice)
+            plan: List[SolverMessage] = await self.decision_making(
+                agents, None, previous_plan, advice
+            )
         # Although plan may be a list in some cases, all the cases we currently consider
         # only have one plan, so we just take the first element.
         # TODO: make it more general
         # plan = plan[0].content
-        plan = [p.content for p in plan]
-        flatten_plan = "\n\n".join(plan)
+        # plan = [p.content for p in plan]
+        flatten_plan = "\n".join([p.content for p in plan])
         logs.append({"module": "Decision Maker", "content": flatten_plan})
         logger.info("", f"Decision Plan:\n{flatten_plan}", Fore.YELLOW)
         # ================== DECISION MAKING ==================
 
         # ================== EXECUTION ==================
-        result = await self.execute(plan)
-        logs.append({"module": "Executor", "content": result})
+        result: List[ExecutorMessage] = await self.execute(plan)
+        flatten_result = "\n".join([r.content for r in result])
+        logs.append({"module": "Executor", "content": flatten_result})
         logger.info("", f"Execution Result:", Fore.GREEN)
-        logger.info("", result, Fore.GREEN)
+        logger.info("", flatten_result, Fore.GREEN)
         # ================== EXECUTION ==================
 
         # ================== EVALUATION ==================
@@ -150,18 +160,23 @@ class PipelineEnvironment(BaseModel):
             logs.append({"agent": "system", "content": "Bad score! Reject!"})
             logger.info("", "Bad score! Reject!", Fore.RED)
         self.cnt_turn += 1
-        return result, advice, plan, logs, self.success
+        return flatten_result, advice, flatten_plan, logs, self.success
 
     def role_assign(self, advice: str = "") -> List[BaseAgent]:
         """Assign roles to agents"""
-
-        agents = self.role_assigner.step(
-            role_assigner=self.agents[AGENT_TYPES.ROLE_ASSIGNMENT],
-            group_members=[self.agents[AGENT_TYPES.SOLVER]]
-            + self.agents[AGENT_TYPES.CRITIC],
-            advice=advice,
-            task_description=self.task_description,
-        )
+        if self.role_assign_only_once and self.cnt_turn > 0:
+            agents = [self.agents[AGENT_TYPES.SOLVER]] + self.agents[AGENT_TYPES.CRITIC]
+        else:
+            agents = self.role_assigner.step(
+                role_assigner=self.agents[AGENT_TYPES.ROLE_ASSIGNMENT],
+                group_members=[self.agents[AGENT_TYPES.SOLVER]]
+                + self.agents[AGENT_TYPES.CRITIC],
+                advice=advice,
+                task_description=self.task_description,
+            )
+            if self.role_assign_only_once and self.cnt_turn == 0:
+                self.agents[AGENT_TYPES.SOLVER] = agents[0]
+                self.agents[AGENT_TYPES.CRITIC] = agents[1:]
         return agents
 
     async def decision_making(
@@ -238,16 +253,24 @@ class PipelineEnvironment(BaseModel):
     #     # critic_messages = [x.content for x in critic_messages]
     #     return criticisms
 
-    async def execute(self, final_solution: List[str]) -> Any:
+    async def execute(self, final_solution: List[SolverMessage]) -> Any:
         """execution stage.
         Use the executor to finish the task.
         """
 
-        return await self.executor.astep(
+        results = await self.executor.astep(
             self.agents[AGENT_TYPES.EXECUTION], self.task_description, final_solution
         )
+        if self.add_execution_result_to_critic:
+            for agent in self.agents[AGENT_TYPES.CRITIC]:
+                agent.add_message_to_memory(results)
+        if self.add_execution_result_to_solver:
+            self.agents[AGENT_TYPES.SOLVER].add_message_to_memory(results)
+        return results
 
-    def evaluate(self, solution: List[str], result: Any) -> Tuple[List[int], str]:
+    def evaluate(
+        self, solution: List[SolverMessage], result: List[ExecutorMessage]
+    ) -> Tuple[List[int], str]:
         """evaluation stage."""
         # if self.human_eval:
         #     print("This round, LLM gave the following result:")
