@@ -10,7 +10,8 @@ from pydantic import BaseModel
 
 if TYPE_CHECKING:
     from agentverse.agents.base import BaseAgent
-    from agentverse.environments.rules.base import Rule
+    from agentverse.environments.simulation_env.rules.base import simulation_Rule
+    from agentverse.environments.tasksolving_env.rules.base import tasksolving_Rule
     from agentverse.message import Message
 
 

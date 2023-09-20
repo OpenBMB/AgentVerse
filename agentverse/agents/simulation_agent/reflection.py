@@ -22,9 +22,11 @@ from agentverse.agents.base import BaseAgent
 from datetime import datetime as dt
 import datetime
 
-from . import agent_registry
+#from . import agent_registry
 from string import Template
 
+from agentverse.agents import agent_registry
+from agentverse.agents.base import BaseAgent
 
 logger = getLogger(__file__)
 

@@ -7,12 +7,12 @@ import datetime
 
 from pydantic import Field
 
-from agentverse.agents.conversation_agent import BaseAgent
-from agentverse.environments.rules.base import Rule
+from agentverse.agents.simulation_agent.conversation import BaseAgent
+from agentverse.environments.simulation_env.rules.base import Rule
 from agentverse.message import Message
 
 from . import env_registry as EnvironmentRegistry
-from .base import BaseEnvironment
+from ..base import BaseEnvironment
 
 from pydantic import validator
 

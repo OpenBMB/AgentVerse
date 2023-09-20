@@ -5,13 +5,16 @@ from typing import List, NamedTuple, Optional, Union
 from langchain.tools import BaseTool
 from pydantic import Field
 
+
 from agentverse.memory import BaseMemory, ChatHistoryMemory
 from agentverse.message import Message
 from agentverse.utils import AgentAction, AgentFinish
 
-from . import agent_registry
-from .base import BaseAgent
+#from . import agent_registry
+#from .base import BaseAgent
 
+from agentverse.agents import agent_registry
+from agentverse.agents.base import BaseAgent
 
 class ToolNotExistError(BaseException):
     """Exception raised when parsing output from a command fails."""

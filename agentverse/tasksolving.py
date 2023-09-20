@@ -7,10 +7,11 @@ import logging
 
 # from agentverse.agents import Agent
 from agentverse.logging import logger, typewriter_log
-from agentverse.agents.conversation_agent import BaseAgent
+from agentverse.agents.simulation_agent.conversation import BaseAgent
 
 # from agentverse.environments import BaseEnvironment
-from agentverse.environments import PipelineEnvironment
+# from agentverse.environments import PipelineEnvironment
+from agentverse.environments.tasksolving_env import BasicEnvironment
 from agentverse.initialization import load_agent, load_environment, prepare_task_config
 from agentverse.message import Message
 from agentverse.utils import AgentCriticism, AGENT_TYPES
@@ -21,11 +22,11 @@ openai_logger.setLevel(logging.WARNING)
 
 
 class TaskSolving:
-    environment: PipelineEnvironment
+    environment: BasicEnvironment
     task: str = ""
     logs: list = []
 
-    def __init__(self, environment: PipelineEnvironment, task: str = ""):
+    def __init__(self, environment: BasicEnvironment, task: str = ""):
         self.environment = environment
         self.task = task
 
@@ -67,7 +68,7 @@ class TaskSolving:
         env_config["task_description"] = task_config.get("task_description", "")
         env_config["max_rounds"] = task_config.get("max_rounds", 3)
 
-        environment: PipelineEnvironment = load_environment(env_config)
+        environment: BasicEnvironment = load_environment(env_config)
         # agents = (
         #     [environment.role_assigner, environment.solver]
         #     + environment.critics

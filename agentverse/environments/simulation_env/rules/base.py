@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 from pydantic import BaseModel
 
-from agentverse.environments.rules.describer import BaseDescriber, describer_registry
-from agentverse.environments.rules.order import BaseOrder, order_registry
-from agentverse.environments.rules.selector import BaseSelector, selector_registry
-from agentverse.environments.rules.updater import BaseUpdater, updater_registry
-from agentverse.environments.rules.visibility import BaseVisibility, visibility_registry
+from agentverse.environments.simulation_env.rules.describer import BaseDescriber, describer_registry
+from agentverse.environments.simulation_env.rules.order import BaseOrder, order_registry
+from agentverse.environments.simulation_env.rules.selector import BaseSelector, selector_registry
+from agentverse.environments.simulation_env.rules.updater import BaseUpdater, updater_registry
+from agentverse.environments.simulation_env.rules.visibility import BaseVisibility, visibility_registry
 
 if TYPE_CHECKING:
     from agentverse.environments.base import BaseEnvironment

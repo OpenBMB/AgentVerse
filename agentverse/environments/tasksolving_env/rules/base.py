@@ -1,34 +1,38 @@
 import asyncio
 from enum import Enum
-from typing import Any, Dict, List, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union, Optional
 
 from colorama import Fore
 
 from agentverse.agents.base import BaseAgent
 from agentverse.utils import AGENT_TYPES
-from agentverse.environments.decision_maker import (
+from agentverse.environments.tasksolving_env.rules.decision_maker import (
     BaseDecisionMaker,
     DynamicDecisionMaker,
     decision_maker_registry,
 )
-from agentverse.environments.evaluator import BaseEvaluator, evaluator_registry
-from agentverse.environments.executor import BaseExecutor, executor_registry
-from agentverse.environments.role_assigner import (
+from agentverse.environments.tasksolving_env.rules.evaluator import BaseEvaluator, evaluator_registry
+from agentverse.environments.tasksolving_env.rules.executor import BaseExecutor, executor_registry
+from agentverse.environments.tasksolving_env.rules.role_assigner import (
     BaseRoleAssigner,
     role_assigner_registry,
 )
 from agentverse.logging import logger, typewriter_log
 from agentverse.message import Message, SolverMessage
 
+#from .. import env_registry as EnvironmentRegistry
 
-from . import env_registry as EnvironmentRegistry
+if TYPE_CHECKING:
+    from agentverse.environments.base import BaseEnvironment
 
 # from .base import BaseEnvironment
 from pydantic import BaseModel
 
 
-@EnvironmentRegistry.register("pipeline")
-class PipelineEnvironment(BaseModel):
+#class PipelineEnvironment(BaseModel):
+#@EnvironmentRegistry.register("base")
+#class BaseEnvironment(BaseModel):
+class Rule(BaseModel):
     """
     A basic environment implementing the logic of conversation.
 
