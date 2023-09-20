@@ -17,7 +17,7 @@ openai_logger = logging.getLogger("openai")
 openai_logger.setLevel(logging.WARNING)
 
 
-class AgentVerse:
+class Simulation:
     def __init__(self, agents: List[BaseAgent], environment: BaseEnvironment):
         self.agents = agents
         self.environment = environment

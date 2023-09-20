@@ -6,8 +6,8 @@ from typing import Dict, List, Tuple
 import cv2
 import gradio as gr
 
-from agentverse import AgentVersePipeline
-from agentverse.agentverse import AgentVerse
+from agentverse import TaskSolving
+from agentverse.simulation import Simulation
 from agentverse.message import Message
 
 
@@ -25,7 +25,7 @@ def cover_img(background, img, place: Tuple[int, int]):
             background[place[0] + i, place[1] + j] = img[i, j, :3]
 
 
-class UI:
+class GUI:
     """
     the UI of frontend
     """
@@ -38,9 +38,9 @@ class UI:
         self.messages = []
         self.task = task
         if task == "pipeline_brainstorming":
-            self.backend = AgentVersePipeline.from_task(task)
+            self.backend = TaskSolving.from_task(task)
         else:
-            self.backend = AgentVerse.from_task(task)
+            self.backend = Simulation.from_task(task)
         self.turns_remain = 0
         self.agent_id = {
             self.backend.agents[idx].name: idx

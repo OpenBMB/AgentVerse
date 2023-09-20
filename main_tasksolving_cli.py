@@ -1,8 +1,8 @@
 import logging
 
 # from agentverse.agentverse import AgentVerse
-from agentverse.agentversepipeline import AgentVersePipeline
-from agentverse.demo import UI
+from agentverse.tasksolving import TaskSolving
+from agentverse.gui import GUI
 from agentverse.logging import logger
 from argparse import ArgumentParser
 
@@ -29,12 +29,12 @@ args = parser.parse_args()
 logger.set_level(logging.DEBUG if args.debug else logging.INFO)
 
 # terminal
-agentversepipeline = AgentVersePipeline.from_task(args.task)
+agentversepipeline = TaskSolving.from_task(args.task)
 agentversepipeline.run(
     single_agent=args.single_agent,
     discussion_mode=args.discussion_mode,
 )
 
 # ui
-# ui = UI(args.task)
+# ui = GUI(args.task)
 # ui.launch(args.single_agent, args.discussion_mode)

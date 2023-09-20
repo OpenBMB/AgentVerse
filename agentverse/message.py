@@ -9,7 +9,7 @@ class Message(BaseModel):
     sender: str = Field(default="")
     receiver: Set[str] = Field(default=set({"all"}))
     sender_agent: object = Field(default=None)
-    # tool_response: List[Tuple[AgentAction, str]] = Field(default=[])
+    tool_response: List[Tuple[AgentAction, str]] = Field(default=[])
 
 
 class SolverMessage(Message):

@@ -4,7 +4,7 @@ import json
 import shutil
 
 # from agentverse.agentverse import AgentVerse
-from agentverse.agentversepipeline import AgentVersePipeline
+from agentverse.tasksolving import AgentVersePipeline
 from agentverse.logging import get_logger
 from argparse import ArgumentParser
 import asyncio

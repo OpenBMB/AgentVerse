@@ -20,7 +20,7 @@ openai_logger = logging.getLogger("openai")
 openai_logger.setLevel(logging.WARNING)
 
 
-class AgentVersePipeline:
+class TaskSolving:
     environment: PipelineEnvironment
     task: str = ""
     logs: list = []

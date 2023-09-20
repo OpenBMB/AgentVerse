@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Set, List, Dict
-from agentverse.agentverse import AgentVerse
+from agentverse.simulation import AgentVerse
 from agentverse.message import Message
 
 

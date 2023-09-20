@@ -17,6 +17,7 @@ class BaseAgent(BaseModel):
     output_parser: OutputParser
     prepend_prompt_template: str = Field(default="")
     append_prompt_template: str = Field(default="")
+    prompt_template: str = Field(default="")
     role_description: str = Field(default="")
     memory: BaseMemory = Field(default_factory=ChatHistoryMemory)
     max_retry: int = Field(default=3)
