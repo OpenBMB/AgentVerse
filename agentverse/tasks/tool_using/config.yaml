@@ -136,6 +136,7 @@ environment:
     type: tool-using
     num_agents: *cnt_tool_agents
     tool_config: *tool_config
+    tool_retrieval: False
   evaluator:
     type: basic
 

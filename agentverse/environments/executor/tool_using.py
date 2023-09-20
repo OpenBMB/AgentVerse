@@ -1,4 +1,5 @@
 import json
+import ast
 import time
 import requests
 from colorama import Fore
@@ -14,6 +15,10 @@ from . import BaseExecutor, executor_registry
 import asyncio
 
 
+url = "http://127.0.0.1:8080"
+# url = "http://8.217.97.110:8080"
+
+
 @executor_registry.register("tool-using")
 class ToolUsingExecutor(BaseExecutor):
     num_agents: int = 3
@@ -21,6 +26,8 @@ class ToolUsingExecutor(BaseExecutor):
     tools: List[dict] = []
     tool_names: List[str] = []
     tool_config: str = None
+    cookies: List = []
+    tool_retrieval: bool = False
     # tool_description: str
 
     def __init__(self, *args, **kwargs):
@@ -29,10 +36,9 @@ class ToolUsingExecutor(BaseExecutor):
             tools_dict = json.load(f)
         tools = tools_dict["tools_json"]
         tool_names = [t["name"] for t in tools]
-        # tool_description = "\n".join(
-        #     [f"`{k}`: " + tools_dict[k]["description"] for k in tools_dict.keys()]
-        # )
 
+        # For each tool, we manually add a "thought" argument to achieve
+        # chain-of-thought in OpenAI's function call.
         for t in tools:
             properties = t["parameters"]["properties"]
             thought = {
@@ -56,22 +62,38 @@ class ToolUsingExecutor(BaseExecutor):
         self,
         agent: ExecutorAgent,
         task_description: str,
-        plan: List[SolverMessage],
+        plans: List[SolverMessage],
         *args,
         **kwargs,
     ):
-        agents = [deepcopy(agent) for _ in range(len(plan))]
+        agents = [deepcopy(agent) for _ in range(len(plans))]
         for i in range(len(agents)):
-            agents[i].name = plan[i].content.split("-")[0].strip()
+            agents[i].name = plans[i].content.split("-")[0].strip()
 
+        if self.tool_retrieval:
+            # We retrieve 5 related tools for each agent
+            tools_and_cookies = await asyncio.gather(
+                *[self.retrieve_tools(plans, self.tools) for _ in range(len(agents))]
+            )
+            tools = [t[0] for t in tools_and_cookies]
+            cookies = [t[1] for t in tools_and_cookies]
+            self.update_cookies(cookies)
+        else:
+            # We just use the tools that are provided in the config file
+            tools = [self.tools for _ in range(len(agents))]
+
+        # Record the indices of agents that have finished their tasks
+        # so that they will not be called again
         finished_agent_indices = set()
         result = ["" for _ in range(len(agents))]
         for i in range(self.max_tool_call_times):
+            # TODO: force the model to use `task_submit` at the last step
+
             if len(finished_agent_indices) == len(agents):
                 # All agents have finished their tasks. Break the loop.
                 break
 
-            # Filter out agents that have finished and gather tool calls for the rest
+            # Filter out agents that have finished and gather tool actions for the rest
             tool_calls = []
             active_agents_indices = [
                 idx
@@ -80,7 +102,7 @@ class ToolUsingExecutor(BaseExecutor):
             ]
             for idx in active_agents_indices:
                 tool_calls.append(
-                    agents[idx].astep(task_description, plan[idx].content, self.tools)
+                    agents[idx].astep(task_description, plans[idx].content, tools[idx])
                 )
             # Use asyncio.gather to run astep concurrently
             tool_call_decisions = await asyncio.gather(*tool_calls)
@@ -89,16 +111,23 @@ class ToolUsingExecutor(BaseExecutor):
             ):
                 agents[idx].add_message_to_memory([tool_call_result])
 
+            # Actually call the tool and get the observation
             tool_responses = await asyncio.gather(
                 *[
-                    ToolUsingExecutor.call_tool(tool.tool_name, tool.tool_input)
-                    for tool in tool_call_decisions
+                    ToolUsingExecutor.call_tool(
+                        tool.tool_name,
+                        tool.tool_input,
+                        self.cookies[j] if j < len(self.cookies) else None,
+                    )
+                    for j, tool in enumerate(tool_call_decisions)
                 ]
             )
             # Update each agent's memory and check if they have finished
-            for idx, (observation, is_finish) in zip(
-                active_agents_indices, tool_responses
-            ):
+            cookies = []
+            for idx, response in zip(active_agents_indices, tool_responses):
+                observation = response["observation"]
+                is_finish = response["is_finish"]
+                cookies.append(response["cookies"])
                 agents[idx].add_message_to_memory([observation])
                 logger.info(
                     f"\nTool: {observation.tool_name}\nTool Input: {observation.tool_input}\nObservation: {observation.content}",
@@ -108,12 +137,10 @@ class ToolUsingExecutor(BaseExecutor):
                 if is_finish:
                     finished_agent_indices.add(idx)
                     result[idx] = observation.content
+            self.update_cookies(cookies)
 
-            # for i, (observation, is_finish) in enumerate(tool_response):
-            #     agents[i].add_message_to_memory([observation])
         message_result = []
         for i in range(len(result)):
-            # result[i] = f"[{agents[i].name}]: {result[i]}"
             if result[i] != "":
                 message_result.append(
                     ExecutorMessage(
@@ -123,36 +150,64 @@ class ToolUsingExecutor(BaseExecutor):
                 )
         return message_result
 
+    def update_cookies(self, cookies: List):
+        if len(cookies) > len(self.cookies):
+            self.cookies = cookies
+
     @classmethod
-    async def call_tool(cls, command: str, arguments: dict):
+    async def retrieve_tools(
+        cls, plan: SolverMessage, curr_tools: List = [], cookies=None
+    ):
+        async with ClientSession(cookies=cookies) as session:
+            if cookies is None:
+                async with session.post(f"{url}/get_cookie", timeout=30) as response:
+                    cookies = response.cookies
+                    session.cookie_jar.update_cookies(cookies)
+                    await response.text()
+                    # Sometimes the toolserver's docker container is not ready yet
+                    # So we need to wait for a while
+                    await asyncio.sleep(10)
+            async with session.post(
+                f"{url}/retrieving_tools", json={"question": plan.content, "top_k": 5}
+            ) as response:
+                retrieved_tools = await response.json()
+                retrieved_tools = ast.literal_eval(retrieved_tools)
+        tools = deepcopy(curr_tools)
+        existed_tool_names = set([t["name"] for t in tools])
+        # Add the retrieved tools into the final tools
+        for tool in retrieved_tools["tools_json"]:
+            if tool["name"] not in existed_tool_names:
+                existed_tool_names.add(tool["name"])
+                tools.append(tool)
+        return tools, cookies
+
+    @classmethod
+    async def call_tool(cls, command: str, arguments: dict, cookies=None):
         if command == "submit_task":
-            return (
-                ExecutorMessage(
+            return {
+                "observation": ExecutorMessage(
                     content=f"Task Status: {arguments['status']}\nConclusion: {arguments['conclusion']}",
                     sender="function",
                     tool_name=command,
                     tool_input=arguments,
                 ),
-                True,
-            )
-        # url = "http://8.217.97.110:8080/agentx_tools"
-        url = "http://127.0.0.1:8080"
-        # url = "http://8.217.97.110:8080"
+                "is_finish": True,
+                "cookies": cookies,
+            }
 
-        # cookies = requests.post(f"{url}/get_cookie").cookies
-        # time.sleep(3)
         for i in range(3):
             try:
-                async with ClientSession() as session:
-                    async with session.post(
-                        f"{url}/get_cookie", timeout=30
-                    ) as response:
-                        cookies = response.cookies
-                        await response.text()
-                    session.cookie_jar.update_cookies(cookies)
-                    # Sometimes the toolserver's docker container is not ready yet
-                    # So we need to wait for a while
-                    await asyncio.sleep(5)
+                async with ClientSession(cookies=cookies) as session:
+                    if cookies is None:
+                        async with session.post(
+                            f"{url}/get_cookie", timeout=30
+                        ) as response:
+                            cookies = response.cookies
+                            session.cookie_jar.update_cookies(cookies)
+                            await response.text()
+                            # Sometimes the toolserver's docker container is not ready yet
+                            # So we need to wait for a while
+                            await asyncio.sleep(10)
 
                     payload_arguments = deepcopy(arguments)
                     if "thought" in payload_arguments:
@@ -160,8 +215,6 @@ class ToolUsingExecutor(BaseExecutor):
                     payload = {
                         "tool_name": command,
                         "arguments": payload_arguments,
-                        # "hash_id": "",
-                        # "is_finish": False,
                     }
                     # async with ClientSession() as session:
                     async with session.post(
@@ -183,10 +236,10 @@ class ToolUsingExecutor(BaseExecutor):
                             tool_name=command,
                             tool_input=arguments,
                         )
-                    async with session.post(
-                        f"{url}/release_session", timeout=30
-                    ) as response:
-                        await response.text()
+                    # async with session.post(
+                    #     f"{url}/release_session", timeout=30
+                    # ) as response:
+                    #     await response.text()
                 break
             except Exception as e:
                 message = ExecutorMessage(
@@ -196,17 +249,8 @@ class ToolUsingExecutor(BaseExecutor):
                     tool_input=arguments,
                 )
                 continue
-        return message, False
+        return {"observation": message, "is_finish": False, "cookies": cookies}
 
     def broadcast_messages(self, agents, messages) -> None:
         for agent in agents:
             agent.add_message_to_memory(messages)
-
-
-if __name__ == "__main__":
-    response = asyncio.run(
-        ToolUsingExecutor.call_tool(
-            "bing_search", {"query": "where is tsinghua university", "num_results": 3}
-        )
-    )
-    print(response)
