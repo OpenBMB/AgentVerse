@@ -10,8 +10,8 @@ from pydantic import BaseModel
 
 if TYPE_CHECKING:
     from agentverse.agents.base import BaseAgent
-    from agentverse.environments.simulation_env.rules.base import simulation_Rule
-    from agentverse.environments.tasksolving_env.rules.base import tasksolving_Rule
+    from agentverse.environments.simulation_env.rules.base import Simulation_Rule
+    from agentverse.environments.tasksolving_env.rules.base import Tasksolving_Rule
     from agentverse.message import Message
 
 
@@ -30,7 +30,8 @@ class BaseEnvironment(BaseModel):
 
 
     agents: List[BaseAgent]
-    rule: Rule
+    simulation_rule: Simulation_Rule
+    tasksolving_rule: Tasksolving_Rule
     max_turns: int = 10
     cnt_turn: int = 0
     last_messages: List[Message] = []

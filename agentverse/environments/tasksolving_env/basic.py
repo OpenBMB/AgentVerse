@@ -1,3 +1,4 @@
+
 import asyncio
 from enum import Enum
 from typing import Any, Dict, List, Tuple, Union
@@ -20,20 +21,32 @@ from agentverse.environments.tasksolving_env.rules.role_assigner import (
 from agentverse.logging import logger, typewriter_log
 from agentverse.message import Message, SolverMessage
 
-from .. import env_registry as EnvironmentRegistry
 
 # from .base import BaseEnvironment
 from pydantic import BaseModel
 
-# from agentverse.environments.simulation_env.rules.base import Rule
+from .. import env_registry as EnvironmentRegistry
 
-#@EnvironmentRegistry.register("basic")
-#class BasicEnvironment(Rule):
-#    pass
+# from agentverse.environments.tasksolving_env.rules.base import Rule
+# from agentverse.environments.tasksolving_env.rules.base import Tasksolving_Rule as Rule
 
+from agentverse.environments.tasksolving_env.rules.base import Tasksolving_Rule as Rule
+
+'''
+@EnvironmentRegistry.register("basic")
+class BasicEnvironment(Rule):
+
+    def __init__(self):
+        super().__init__()
+'''
 
 
 #class PipelineEnvironment(BaseModel):
+#@EnvironmentRegistry.register("basic")
+#class BasicEnvironment(BaseModel):
+
+#@EnvironmentRegistry.register("basic")
+#class BasicEnvironment(Rule):
 @EnvironmentRegistry.register("basic")
 class BasicEnvironment(BaseModel):
     """

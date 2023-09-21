@@ -17,7 +17,8 @@ if TYPE_CHECKING:
 from agentverse.message import Message
 
 
-class Rule(BaseModel):
+#class Rule(BaseModel):
+class Simulation_Rule(BaseModel):
     """
     Rule for the environment. It controls the speaking order of the agents
     and maintain the set of visible agents for each agent.

@@ -29,10 +29,16 @@ if TYPE_CHECKING:
 from pydantic import BaseModel
 
 
+class Tasksolving_Rule(BaseModel):
+    def __init__(self):
+        super().__init__()
+
+
+'''
 #class PipelineEnvironment(BaseModel):
 #@EnvironmentRegistry.register("base")
 #class BaseEnvironment(BaseModel):
-class Rule(BaseModel):
+class Tasksolving_Rule(BaseModel):
     """
     A basic environment implementing the logic of conversation.
 
@@ -296,3 +302,5 @@ class Rule(BaseModel):
         # for critic in self.critics:
         #     critic.reset()
         # self.evaluator.reset()
+'''
+        

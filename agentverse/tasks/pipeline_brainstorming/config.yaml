@@ -99,7 +99,7 @@ name: pipeline
 
 
 environment:
-  env_type: pipeline
+  env_type: basic
   max_turn: *max_turn
   role_assigner:
     type: role_description

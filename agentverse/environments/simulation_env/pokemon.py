@@ -5,7 +5,8 @@ from typing import Any, Dict, List, Optional, Set
 
 # from agentverse.agents.agent import Agent
 from agentverse.agents.simulation_agent.conversation import BaseAgent
-from agentverse.environments.simulation_env.rules.base import Rule
+#from agentverse.environments.simulation_env.rules.base import Rule
+from agentverse.environments.simulation_env.rules.base import Simulation_Rule as Rule
 from agentverse.message import Message
 
 from .. import env_registry as EnvironmentRegistry

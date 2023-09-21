@@ -11,7 +11,8 @@ from agentverse.agents.simulation_agent.conversation import BaseAgent
 
 # from agentverse.environments import BaseEnvironment
 # from agentverse.environments import PipelineEnvironment
-from agentverse.environments.tasksolving_env import BasicEnvironment
+# from agentverse.environments.tasksolving_env.rules import Rule as BasicEnvironment
+from agentverse.environments.tasksolving_env.basic import BasicEnvironment
 from agentverse.initialization import load_agent, load_environment, prepare_task_config
 from agentverse.message import Message
 from agentverse.utils import AgentCriticism, AGENT_TYPES
