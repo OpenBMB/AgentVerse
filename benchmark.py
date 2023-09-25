@@ -15,6 +15,8 @@ parser = ArgumentParser()
 parser.add_argument("--task", type=str, default="responsegen")
 parser.add_argument("--dataset_path", type=str, required=True)
 parser.add_argument("--output_path", type=str, default=None)
+parser.add_argument("--has_tools", action="store_true")
+parser.add_argument("--tool_tmp_path", type=str)
 parser.add_argument("--single_agent", "-s", action="store_true")
 parser.add_argument("--discussion_mode", "-d", action="store_true")
 parser.add_argument("--overwrite", action="store_true")
@@ -53,8 +55,10 @@ if __name__ == "__main__":
         if i < skip_cnt:
             continue
         logger.info(f"Input: {example['input']}\nAnswer: {example['answer']}")
-        # print(args.task)
-        # exit()
+        if args.has_tools:
+            assert args.tool_tmp_path is not None
+            with open(args.tool_tmp_path, "w") as f:
+                f.write(json.dumps(example["tools"]))
         agentversepipeline = AgentVersePipeline.from_task(args.task)
         agentversepipeline.environment.set_task_description(example["input"])
         # print(args.single_agent)

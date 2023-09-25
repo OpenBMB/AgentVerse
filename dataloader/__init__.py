@@ -11,3 +11,4 @@ from .tool_using import ToolUsingLoader
 from .commongen import CommongenLoader
 from .mgsm import MGSMLoader
 from .logic_grid import LogicGridLoader
+from .toolbench import ToolBenchLoader

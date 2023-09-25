@@ -1,10 +1,9 @@
 cnt_agents: &cnt_agents 4
 cnt_tool_agents: &cnt_tool_agents 3
-max_rounds: &max_rounds 5
+max_rounds: &max_rounds 3
 max_criticizing_rounds: 3
-tool_config: &tool_config tools_simplified.json
+tool_config: &tool_config tools_toolbench.json
 
-task_description: I want to hold a party at somewhere around Tsinghua University tomorrow. I need you to look for some best places for holding a party nearby, and tell me whether the weather is good for holding a party tomorrow. Also, I want to know what activities can be considered in my party. Help me search the web.
 
 prompts:
   role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
@@ -149,8 +148,8 @@ agents:
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: "gpt-4"
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
       temperature: 0
       max_tokens: 512
     output_parser:
@@ -164,8 +163,8 @@ agents:
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: "gpt-4"
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo-16k"
       temperature: 0
       max_tokens: 1024
     output_parser:
@@ -186,8 +185,8 @@ agents:
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: "gpt-4"
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo-16k"
       temperature: 0.7
       max_tokens: 1024
     output_parser:
@@ -203,8 +202,8 @@ agents:
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: gpt-4
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo-16k
       temperature: 0
       max_tokens: 1024
     output_parser:
@@ -220,8 +219,8 @@ agents:
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: gpt-4
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
       temperature: 0.3
       max_tokens: 1024
     output_parser:
@@ -235,8 +234,8 @@ agents:
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-4
-      model: "gpt-4"
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
       temperature: 0
       max_tokens: 1024
     output_parser:

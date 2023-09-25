@@ -225,10 +225,10 @@ class ToolUsingExecutor(BaseExecutor):
                         },
                         timeout=30,
                     ) as response:
-                        if response.status == 200:
-                            content = await response.text()
-                        else:
-                            content = "Error: " + str(response.status)
+                        # if response.status == 200:
+                        content = await response.text()
+                        # else:
+                        #     content = "Error: " + await response.text()
 
                         message = ExecutorMessage(
                             content=content,

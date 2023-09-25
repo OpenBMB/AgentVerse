@@ -66,9 +66,6 @@ class ExecutorAgent(BaseAgent):
                 tool_input=parsed_response.tool_input,
             )
         else:
-            # import pdb
-
-            # pdb.set_trace()
             raise ValueError(
                 f"Error response type: {type(parsed_response)}. Only support \
                     AgentFinish and AgentAction. Modify your output parser."
@@ -109,6 +106,9 @@ class ExecutorAgent(BaseAgent):
 
         if parsed_response is None:
             logger.error(f"{self.name} failed to generate valid response.")
+            parsed_response = AgentFinish(
+                return_values={"output": "Fail to execute."}, log=""
+            )
         if isinstance(parsed_response, AgentFinish):
             message = ExecutorMessage(
                 content=parsed_response.return_values["output"],

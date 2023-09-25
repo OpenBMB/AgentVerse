@@ -1,10 +1,10 @@
-cnt_agents: &cnt_agents 4
-cnt_tool_agents: &cnt_tool_agents 3
+cnt_agents: &cnt_agents 3
+cnt_tool_agents: &cnt_tool_agents 2
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
 tool_config: &tool_config tools_simplified.json
 
-task_description: I want to hold a party at somewhere around Tsinghua University tomorrow. I need you to look for some best places for holding a party nearby, and tell me whether the weather is good for holding a party tomorrow. Also, I want to know what activities can be considered in my party. Help me search the web.
+task_description: I've just heard an interesting game called 'sudoku'. Can you search for the rules of this game and the solution to this game? Finally, write a python script to automatically solve this game if possible.
 
 prompts:
   role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
@@ -97,8 +97,6 @@ prompts:
     You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `task_submit` to submit your conclusion and your reflection on the tool use.
 
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
-
-  evaluator_append_prompt: &evaluator_append_prompt |-
     A group is trying to solve the following query proposed by the user:
     ${task_description}
 
@@ -106,8 +104,8 @@ prompts:
     ${solution}
 
     And after the execution stage, they give the following result:
-    ${result}
-    
+
+  evaluator_append_prompt: &evaluator_append_prompt |-
     You need to evaluate whether the given query has been completed. If so, summarize the solution to the user. If not, summarize the current progress, and propose what is missing.
 
     You must respond in the following format:
@@ -138,7 +136,7 @@ environment:
     tool_config: *tool_config
     tool_retrieval: False
   evaluator:
-    type: basic
+    type: basic-message
 
 agents:
   - #role_assigner_agent:
@@ -161,6 +159,7 @@ agents:
     name: Planner
     prepend_prompt_template: *solver_prepend_prompt
     append_prompt_template: *solver_append_prompt
+    max_retry: 100
     memory:
       memory_type: chat_history
     llm:
@@ -181,6 +180,7 @@ agents:
     name: Critic 1
     role_description: Waiting to be assigned.
     max_history: 15
+    max_retry: 100
     prepend_prompt_template: *critic_prepend_prompt
     append_prompt_template: *critic_append_prompt
     memory:
@@ -200,12 +200,13 @@ agents:
     prepend_prompt_template: *executor_prepend_prompt
     append_prompt_template: *executor_append_prompt
     max_history: 8
+    max_retry: 100
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-4
       model: gpt-4
-      temperature: 0
+      temperature: 0.5
       max_tokens: 1024
     output_parser:
       type: tool-using-executor

@@ -12,6 +12,7 @@ from agentverse.message import Message
 
 from . import llm_registry
 from .base import BaseChatModel, BaseCompletionModel, BaseModelArgs
+from .utils.jsonrepair import JsonRepair
 
 logger = get_logger()
 
@@ -188,19 +189,35 @@ class OpenAIChat(BaseChatModel):
                     **self.args.dict(),
                 )
                 if response["choices"][0]["message"].get("function_call") is not None:
+                    try:
+                        arguments = ast.literal_eval(
+                            response["choices"][0]["message"]["function_call"][
+                                "arguments"
+                            ]
+                        )
+                    except:
+                        try:
+                            arguments = ast.literal_eval(
+                                JsonRepair(
+                                    response["choices"][0]["message"]["function_call"][
+                                        "arguments"
+                                    ]
+                                ).repair()
+                            )
+                        except:
+                            raise ValueError(
+                                "The returned argument in function call is not valid json."
+                            )
                     return LLMResult(
                         function_name=response["choices"][0]["message"][
                             "function_call"
                         ]["name"],
-                        function_arguments=ast.literal_eval(
-                            response["choices"][0]["message"]["function_call"][
-                                "arguments"
-                            ]
-                        ),
+                        function_arguments=arguments,
                         send_tokens=response["usage"]["prompt_tokens"],
                         recv_tokens=response["usage"]["completion_tokens"],
                         total_tokens=response["usage"]["total_tokens"],
                     )
+
                 else:
                     return LLMResult(
                         content=response["choices"][0]["message"]["content"],

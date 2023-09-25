@@ -78,66 +78,57 @@
     "bing_search"
   ],
   "tools_json": [
+  {
+    "name": "WebEnv_browse_website",
+    "description": "Browse a website and return the page. Note some websites may not be accessable due to network error.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "The realworld URL to scrape text from. Started with http:// or https://."
+        }
+      },
+      "required": [
+        "url"
+      ]
+    }
+  },
     {
-      "name": "WebEnv_browse_website",
-      "description": "Browse a website and return the formatted text and hyperlinks.",
+      "name": "run_interpreter",
+      "description": "The code interpreter tool that runs code and returns the output.\nThe `code` will be written to file `filename` and the `command` will be executed in a shell.\nExample:\n```\nrun_interpreter(code='print(\"hello world\")',command='python code.py')\n```",
       "parameters": {
         "type": "object",
         "properties": {
-          "url": {
+          "code": {
             "type": "string",
-            "description": "The URL to scrape text from."
+            "description": "The code to be written, default to `None`, which means no code will be written to file."
           },
-          "question": {
+          "command": {
             "type": "string",
-            "description": "The question to gather context for."
+            "description": "The shell command to be executed should avoid requiring additional user input, default to `python {filename}`."
+          },
+          "filename": {
+            "type": "string",
+            "description": "The filename to be written in mode `w`, default to `code.py`."
           }
         },
-        "required": [
-          "url",
-          "question"
-        ]
-      }
-    },
-    {
-      "name": "WebEnv_scrape_text",
-      "description": "Scrape text from the website on given url and gather question related context.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "The URL to scrape text from."
-          },
-          "question": {
-            "type": "string",
-            "description": "The question to gather context for."
-          }
-        },
-        "required": [
-          "url",
-          "question"
-        ]
+        "required": []
       }
     },
     {
       "name": "bing_search",
-      "description": "Return the results of a Bing search using the official Bing API.",
+      "description": "Return 3 most relevant results of a Bing search using the official Bing API. This tool does not provide website details, use other tools to browse website if you need.",
       "parameters": {
         "type": "object",
         "properties": {
           "query": {
             "type": "string",
             "description": "The search query."
-          },
-          "num_results": {
-            "type": "integer",
-            "description": "The number of results to return."
           }
         },
         "required": [
-          "query",
-          "num_results"
+          "query"
         ]
       }
     },
