@@ -1,7 +1,7 @@
 import json
 import ast
-import time
-import requests
+import openai
+from string import Template
 from colorama import Fore
 from aiohttp import ClientSession
 from copy import deepcopy
@@ -17,6 +17,14 @@ import asyncio
 
 url = "http://127.0.0.1:8080"
 # url = "http://8.217.97.110:8080"
+
+SUMMARIZE_PROMPT = """Here is the text gathered from a webpage, and a question you need to answer from the webpage. 
+-- Webpage -- 
+${webpage}
+-- Question --
+${question}
+
+Now summarize the webpage to answer the question."""
 
 
 @executor_registry.register("tool-using")
@@ -102,7 +110,7 @@ class ToolUsingExecutor(BaseExecutor):
             ]
             for idx in active_agents_indices:
                 tool_calls.append(
-                    agents[idx].astep(task_description, plans[idx].content, tools[idx])
+                    agents[idx].astep(task_description, plans[idx].content, tools[idx], current_turn=i+1)
                 )
             # Use asyncio.gather to run astep concurrently
             tool_call_decisions = await asyncio.gather(*tool_calls)
@@ -183,6 +191,16 @@ class ToolUsingExecutor(BaseExecutor):
 
     @classmethod
     async def call_tool(cls, command: str, arguments: dict, cookies=None):
+        async def _summarize_webpage(webpage, question):
+            summarize_prompt = Template(SUMMARIZE_PROMPT).safe_substitute(
+                webpage=webpage, question=question
+            )
+            response = await openai.ChatCompletion.acreate(
+                messages=[{"role": "user", "content": summarize_prompt}],
+                model="gpt-3.5-turbo-16k",
+            )
+            return response["choices"][0]["message"]["content"]
+
         if command == "submit_task":
             return {
                 "observation": ExecutorMessage(
@@ -192,6 +210,17 @@ class ToolUsingExecutor(BaseExecutor):
                     tool_input=arguments,
                 ),
                 "is_finish": True,
+                "cookies": cookies,
+            }
+        if command == 'None':
+            return {
+                'observation': ExecutorMessage(
+                    content=f"The format is incorrect.",
+                    sender="function",
+                    tool_name=command,
+                    tool_input=arguments,
+                ),
+                "is_finish": False,
                 "cookies": cookies,
             }
 
@@ -225,10 +254,11 @@ class ToolUsingExecutor(BaseExecutor):
                         },
                         timeout=30,
                     ) as response:
-                        # if response.status == 200:
                         content = await response.text()
-                        # else:
-                        #     content = "Error: " + await response.text()
+                        if command == "WebEnv_browse_website":
+                            content = await _summarize_webpage(
+                                content, arguments["question"]
+                            )
 
                         message = ExecutorMessage(
                             content=content,

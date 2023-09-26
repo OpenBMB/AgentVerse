@@ -87,10 +87,15 @@
         "url": {
           "type": "string",
           "description": "The realworld URL to scrape text from. Started with http:// or https://."
+        },
+        "question": {
+          "type": "string",
+          "description": "The question for the website. The function will answer the question by browsing the url."
         }
       },
       "required": [
-        "url"
+        "url",
+        "question"
       ]
     }
   },

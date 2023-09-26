@@ -45,6 +45,7 @@ class HorizontalToolDecisionMaker(BaseDecisionMaker):
         advice: str = "No advice yet.",
         **kwargs,
     ) -> List[str]:
+        agents[0].memory.reset()
         if advice != "No advice yet.":
             self.broadcast_messages(
                 agents, [Message(content=advice, sender="Evaluator")]

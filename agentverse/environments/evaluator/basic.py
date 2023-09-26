@@ -53,9 +53,6 @@ class BasicEvaluator(BaseEvaluator):
         flatten_solution = "\n".join([s.content for s in solution])
         flatten_result = "\n".join([r.content for r in result])
         flatten_all_role_description = "\n".join(all_role_description)
-        import pdb
-
-        pdb.set_trace()
         agent.add_message_to_memory(result)
         evaluation = agent.step(
             flatten_solution,
