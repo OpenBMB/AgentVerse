@@ -4,7 +4,7 @@ max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
 tool_config: &tool_config tools_simplified.json
 
-task_description: I'm currently analyzing what is popular on the website. Can you help me find the recent trending stuff. It could be anything, like trending news, products, books, movies, music, etc. Give a summarization for me.
+task_description: I'm planning a two-week vacation to Japan next month. Help me plan my itinerary. I want to visit Tokyo, Kyoto, and Osaka. Look for the top tourist attractions in each city, and also suggest the best mode of travel between these cities. Additionally, find out the weather forecast for the month I'll be visiting.
 
 prompts:
   role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
@@ -38,7 +38,7 @@ prompts:
     2. Bob - look for information about the popular restaurants in Beijing using google.
     ...
 
-    What's the latest sub-task assigned to each person in the above conversation? Your response should merge the sub-tasks for the same person into one line. Each line should only include one person.
+    What's the latest sub-task assigned to each person in the above conversation? Your response should include ALL the people appear in the chat, and merge the sub-tasks for the same person into one line. Each line should only include one person.
   
   critic_prepend_prompt: &critic_prepend_prompt |-
     You are ${agent_name}, ${role_description}. You are now in a discussion group, the members are:

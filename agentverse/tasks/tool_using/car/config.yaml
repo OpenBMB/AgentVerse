@@ -4,7 +4,7 @@ max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
 tool_config: &tool_config tools_simplified.json
 
-task_description: I'm currently analyzing what is popular on the website. Can you help me find the recent trending stuff. It could be anything, like trending news, products, books, movies, music, etc. Give a summarization for me.
+task_description: I am planning to buy a new car. Could you help me compare the features and prices of the latest models of Tesla, Ford, and Toyota? Include details about range, charging time, safety features, and after-sales service. Also, provide a brief analysis of the pros and cons of each car.
 
 prompts:
   role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
@@ -159,7 +159,7 @@ agents:
     name: Planner
     prepend_prompt_template: *solver_prepend_prompt
     append_prompt_template: *solver_append_prompt
-    max_retry: 100
+    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:
@@ -180,7 +180,7 @@ agents:
     name: Critic 1
     role_description: Waiting to be assigned.
     max_history: 15
-    max_retry: 100
+    max_retry: 1000
     prepend_prompt_template: *critic_prepend_prompt
     append_prompt_template: *critic_append_prompt
     memory:
@@ -200,7 +200,7 @@ agents:
     prepend_prompt_template: *executor_prepend_prompt
     append_prompt_template: *executor_append_prompt
     max_history: 8
-    max_retry: 100
+    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:

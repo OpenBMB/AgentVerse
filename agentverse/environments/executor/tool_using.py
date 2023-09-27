@@ -34,8 +34,10 @@ class ToolUsingExecutor(BaseExecutor):
     tools: List[dict] = []
     tool_names: List[str] = []
     tool_config: str = None
-    cookies: List = []
+    cookies: dict = {}
     tool_retrieval: bool = False
+    real_execution_agents: dict = {}
+    agent_names: List[str] = []
     # tool_description: str
 
     def __init__(self, *args, **kwargs):
@@ -74,50 +76,59 @@ class ToolUsingExecutor(BaseExecutor):
         *args,
         **kwargs,
     ):
-        agents = [deepcopy(agent) for _ in range(len(plans))]
-        for i in range(len(agents)):
-            agents[i].name = plans[i].content.split("-")[0].strip()
+        plan_this_turn = {}
+        agent_name_this_turn = []
+        for i in range(len(plans)):
+            name = plans[i].content.split("-")[0].strip()
+            if name not in self.real_execution_agents:
+                self.real_execution_agents[name] = deepcopy(agent)
+                self.real_execution_agents[name].name = name
+                self.agent_names.append(name)
+            plan_this_turn[name] = plans[i].content.split("-")[1].strip()
+            agent_name_this_turn.append(name)
+        # agents = [deepcopy(agent) for _ in range(len(plans))]
 
         if self.tool_retrieval:
             # We retrieve 5 related tools for each agent
             tools_and_cookies = await asyncio.gather(
-                *[self.retrieve_tools(plans, self.tools) for _ in range(len(agents))]
+                *[self.retrieve_tools(plan_this_turn[name], self.tools) for name in agent_name_this_turn]
             )
-            tools = [t[0] for t in tools_and_cookies]
-            cookies = [t[1] for t in tools_and_cookies]
+            tools = {name: t[0] for name, t in zip(agent_name_this_turn, tools_and_cookies)}
+            cookies = {name: t[1] for name, t in zip(agent_name_this_turn, tools_and_cookies)}
             self.update_cookies(cookies)
         else:
             # We just use the tools that are provided in the config file
-            tools = [self.tools for _ in range(len(agents))]
+            tools = {name: self.tools for name in agent_name_this_turn}
 
         # Record the indices of agents that have finished their tasks
         # so that they will not be called again
-        finished_agent_indices = set()
-        result = ["" for _ in range(len(agents))]
-        for i in range(self.max_tool_call_times):
+        finished_agent_names = set()
+        # result = ["" for _ in range(len(plan_this_turn))]
+        result = {name: "" for name in agent_name_this_turn}
+        for current_turn in range(self.max_tool_call_times):
             # TODO: force the model to use `task_submit` at the last step
 
-            if len(finished_agent_indices) == len(agents):
+            if len(finished_agent_names) == len(agent_name_this_turn):
                 # All agents have finished their tasks. Break the loop.
                 break
 
             # Filter out agents that have finished and gather tool actions for the rest
             tool_calls = []
-            active_agents_indices = [
-                idx
-                for idx, agent in enumerate(agents)
-                if idx not in finished_agent_indices
+            active_agents_names = [
+                name
+                for name in agent_name_this_turn
+                if name not in finished_agent_names
             ]
-            for idx in active_agents_indices:
+            for name in active_agents_names:
                 tool_calls.append(
-                    agents[idx].astep(task_description, plans[idx].content, tools[idx], current_turn=i+1)
+                    self.real_execution_agents[name].astep(task_description, plan_this_turn[name], tools[name], current_turn=current_turn+1)
                 )
             # Use asyncio.gather to run astep concurrently
             tool_call_decisions = await asyncio.gather(*tool_calls)
-            for idx, tool_call_result in zip(
-                active_agents_indices, tool_call_decisions
+            for name, tool_call_result in zip(
+                active_agents_names, tool_call_decisions
             ):
-                agents[idx].add_message_to_memory([tool_call_result])
+                self.real_execution_agents[name].add_message_to_memory([tool_call_result])
 
             # Actually call the tool and get the observation
             tool_responses = await asyncio.gather(
@@ -125,42 +136,42 @@ class ToolUsingExecutor(BaseExecutor):
                     ToolUsingExecutor.call_tool(
                         tool.tool_name,
                         tool.tool_input,
-                        self.cookies[j] if j < len(self.cookies) else None,
+                        self.cookies.get(name, None),
                     )
-                    for j, tool in enumerate(tool_call_decisions)
+                    for name, tool in zip(active_agents_names, tool_call_decisions)
                 ]
             )
             # Update each agent's memory and check if they have finished
-            cookies = []
-            for idx, response in zip(active_agents_indices, tool_responses):
+            cookies = {}
+            for name, response in zip(active_agents_names, tool_responses):
                 observation = response["observation"]
                 is_finish = response["is_finish"]
-                cookies.append(response["cookies"])
-                agents[idx].add_message_to_memory([observation])
+                cookies[name] = response["cookies"]
+                self.real_execution_agents[name].add_message_to_memory([observation])
                 logger.info(
                     f"\nTool: {observation.tool_name}\nTool Input: {observation.tool_input}\nObservation: {observation.content}",
-                    agents[idx].name,
+                    name,
                     Fore.YELLOW,
                 )
                 if is_finish:
-                    finished_agent_indices.add(idx)
-                    result[idx] = observation.content
+                    finished_agent_names.add(name)
+                    result[name] = observation.content
             self.update_cookies(cookies)
 
         message_result = []
-        for i in range(len(result)):
-            if result[i] != "":
+        for name, conclusion in result.items():
+            if conclusion != "":
                 message_result.append(
                     ExecutorMessage(
-                        content=f"[{agents[i].name}]: My execution result:\n{result[i]}",
-                        sender=agents[i].name,
+                        content=f"[{name}]: My execution result:\n{conclusion}",
+                        sender=name,
                     )
                 )
         return message_result
 
-    def update_cookies(self, cookies: List):
-        if len(cookies) > len(self.cookies):
-            self.cookies = cookies
+    def update_cookies(self, cookies: dict):
+        for name, cookie in cookies.items():
+            self.cookies[name] = cookie
 
     @classmethod
     async def retrieve_tools(
@@ -195,10 +206,14 @@ class ToolUsingExecutor(BaseExecutor):
             summarize_prompt = Template(SUMMARIZE_PROMPT).safe_substitute(
                 webpage=webpage, question=question
             )
-            response = await openai.ChatCompletion.acreate(
-                messages=[{"role": "user", "content": summarize_prompt}],
-                model="gpt-3.5-turbo-16k",
-            )
+            for _ in range(3):
+                try:
+                    response = await openai.ChatCompletion.acreate(
+                        messages=[{"role": "user", "content": summarize_prompt}],
+                        model="gpt-3.5-turbo-16k",
+                    )
+                except:
+                    continue
             return response["choices"][0]["message"]["content"]
 
         if command == "submit_task":

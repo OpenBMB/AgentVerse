@@ -48,7 +48,7 @@ class HorizontalToolDecisionMaker(BaseDecisionMaker):
         agents[0].memory.reset()
         if advice != "No advice yet.":
             self.broadcast_messages(
-                agents, [Message(content=advice, sender="Evaluator")]
+                agents[1:], [Message(content=advice, sender="Evaluator")]
             )
         all_roles = "\n".join(
             [f"{agent.name}: {agent.role_description}" for agent in agents[1:]]

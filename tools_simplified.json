@@ -138,23 +138,6 @@
       }
     },
     {
-      "name": "RapidAPIEnv_rapi_weather_api_by_any_city_get_weather_updates",
-      "description": "The API provides current weather information for a specific city worldwide. It allows users to retrieve up-to-date information on weather conditions, such as temperature, humidity, wind speed, and precipitation, for a specified location.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "city": {
-            "type": "string",
-            "description": "defaults to London",
-            "default": "London"
-          }
-        },
-        "required": [
-          "city"
-        ]
-      }
-    },
-    {
       "name": "submit_task",
       "description": "Submit your conclusion to the task",
       "parameters": {

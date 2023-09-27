@@ -60,5 +60,5 @@ class BasicEvaluator(BaseEvaluator):
             task_description,
             flatten_all_role_description,
         )
-        agent.add_message_to_memory(evaluation)
+        agent.add_message_to_memory([evaluation])
         return evaluation
