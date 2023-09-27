@@ -1,10 +1,10 @@
-cnt_agents: &cnt_agents 4
-cnt_tool_agents: &cnt_tool_agents 3
+cnt_agents: &cnt_agents 1
+cnt_tool_agents: &cnt_tool_agents 1
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
 tool_config: &tool_config tools_simplified.json
 
-task_description: I'm planning a two-week vacation to Japan next month. Help me plan my itinerary. I want to visit Tokyo, Kyoto, and Osaka. Look for the top tourist attractions in each city, and also suggest the best mode of travel between these cities. Additionally, find out the weather forecast for the month I'll be visiting.
+task_description: Assistant - I am planning a date with my girlfriend this week, please search for a good movie theater and a restaurant near Tsinghua University in Beijing and recommend a good movie to watch. Please search the web.
 
 prompts:
   role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
@@ -38,7 +38,7 @@ prompts:
     2. Bob - look for information about the popular restaurants in Beijing using google.
     ...
 
-    What's the latest sub-task assigned to each person in the above conversation? Your response should include ALL the people appear in the chat, and merge the sub-tasks for the same person into one line. Each line should only include one person.
+    What's the latest sub-task assigned to each person in the above conversation? Your response should merge the sub-tasks for the same person into one line. Each line should only include one person.
   
   critic_prepend_prompt: &critic_prepend_prompt |-
     You are ${agent_name}, ${role_description}. You are now in a discussion group, the members are:
@@ -94,7 +94,7 @@ prompts:
     ${solution}
 
   executor_append_prompt: &executor_append_prompt |-
-    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `submit_task` to submit your conclusion and your reflection on the tool use. You have a trial budge of 10, now it is the ${current_turn}'th trial. If it is the last trial, you must call the `submit_task` anyway.
+    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `task_submit` to submit your conclusion and your reflection on the tool use. You have a trial budge of 10, now it is the ${current_turn}'th trial. If it is the last trial, you must call the `task_submit` anyway.
 
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
     A group is trying to solve the following query proposed by the user:
@@ -128,7 +128,7 @@ environment:
     type: role_description_name
     cnt_agents: *cnt_agents
   decision_maker:
-    type: horizontal-tool
+    type: dummy
     tool_config: *tool_config
   executor:
     type: tool-using
@@ -159,7 +159,7 @@ agents:
     name: Planner
     prepend_prompt_template: *solver_prepend_prompt
     append_prompt_template: *solver_append_prompt
-    max_retry: 100
+    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:
@@ -180,7 +180,7 @@ agents:
     name: Critic 1
     role_description: Waiting to be assigned.
     max_history: 15
-    max_retry: 100
+    max_retry: 1000
     prepend_prompt_template: *critic_prepend_prompt
     append_prompt_template: *critic_append_prompt
     memory:
@@ -200,7 +200,7 @@ agents:
     prepend_prompt_template: *executor_prepend_prompt
     append_prompt_template: *executor_append_prompt
     max_history: 8
-    max_retry: 100
+    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:

@@ -1,10 +1,10 @@
-cnt_agents: &cnt_agents 4
-cnt_tool_agents: &cnt_tool_agents 3
+cnt_agents: &cnt_agents 1
+cnt_tool_agents: &cnt_tool_agents 1
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
 tool_config: &tool_config tools_simplified.json
 
-task_description: I'm planning a two-week vacation to Japan next month. Help me plan my itinerary. I want to visit Tokyo, Kyoto, and Osaka. Look for the top tourist attractions in each city, and also suggest the best mode of travel between these cities. Additionally, find out the weather forecast for the month I'll be visiting.
+task_description: Assistant - I want to hold a party at somewhere around Tsinghua University tomorrow. I need you to look for some best places for holding a party nearby, and tell me whether the weather is good for holding a party tomorrow. Also, I want to know what activities can be considered in my party. Help me search the web.
 
 prompts:
   role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
@@ -94,9 +94,11 @@ prompts:
     ${solution}
 
   executor_append_prompt: &executor_append_prompt |-
-    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `submit_task` to submit your conclusion and your reflection on the tool use. You have a trial budge of 10, now it is the ${current_turn}'th trial. If it is the last trial, you must call the `submit_task` anyway.
+    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `task_submit` to submit your conclusion and your reflection on the tool use.
 
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+
+  evaluator_append_prompt: &evaluator_append_prompt |-
     A group is trying to solve the following query proposed by the user:
     ${task_description}
 
@@ -104,8 +106,8 @@ prompts:
     ${solution}
 
     And after the execution stage, they give the following result:
-
-  evaluator_append_prompt: &evaluator_append_prompt |-
+    ${result}
+    
     You need to evaluate whether the given query has been completed. If so, summarize the solution to the user. If not, summarize the current progress, and propose what is missing.
 
     You must respond in the following format:
@@ -128,7 +130,7 @@ environment:
     type: role_description_name
     cnt_agents: *cnt_agents
   decision_maker:
-    type: horizontal-tool
+    type: dummy
     tool_config: *tool_config
   executor:
     type: tool-using
@@ -136,7 +138,7 @@ environment:
     tool_config: *tool_config
     tool_retrieval: False
   evaluator:
-    type: basic-message
+    type: basic
 
 agents:
   - #role_assigner_agent:
@@ -159,7 +161,6 @@ agents:
     name: Planner
     prepend_prompt_template: *solver_prepend_prompt
     append_prompt_template: *solver_append_prompt
-    max_retry: 100
     memory:
       memory_type: chat_history
     llm:
@@ -180,7 +181,6 @@ agents:
     name: Critic 1
     role_description: Waiting to be assigned.
     max_history: 15
-    max_retry: 100
     prepend_prompt_template: *critic_prepend_prompt
     append_prompt_template: *critic_append_prompt
     memory:
@@ -200,13 +200,12 @@ agents:
     prepend_prompt_template: *executor_prepend_prompt
     append_prompt_template: *executor_append_prompt
     max_history: 8
-    max_retry: 100
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-4
       model: gpt-4
-      temperature: 0.5
+      temperature: 0
       max_tokens: 1024
     output_parser:
       type: tool-using-executor

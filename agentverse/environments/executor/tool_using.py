@@ -24,7 +24,7 @@ ${webpage}
 -- Question --
 ${question}
 
-Now summarize the webpage to answer the question."""
+Now summarize the webpage to answer the question. If the question cannot be answer from the webpage, return the summarization of the webpage."""
 
 
 @executor_registry.register("tool-using")
@@ -91,10 +91,17 @@ class ToolUsingExecutor(BaseExecutor):
         if self.tool_retrieval:
             # We retrieve 5 related tools for each agent
             tools_and_cookies = await asyncio.gather(
-                *[self.retrieve_tools(plan_this_turn[name], self.tools) for name in agent_name_this_turn]
+                *[
+                    self.retrieve_tools(plan_this_turn[name], self.tools)
+                    for name in agent_name_this_turn
+                ]
             )
-            tools = {name: t[0] for name, t in zip(agent_name_this_turn, tools_and_cookies)}
-            cookies = {name: t[1] for name, t in zip(agent_name_this_turn, tools_and_cookies)}
+            tools = {
+                name: t[0] for name, t in zip(agent_name_this_turn, tools_and_cookies)
+            }
+            cookies = {
+                name: t[1] for name, t in zip(agent_name_this_turn, tools_and_cookies)
+            }
             self.update_cookies(cookies)
         else:
             # We just use the tools that are provided in the config file
@@ -106,8 +113,6 @@ class ToolUsingExecutor(BaseExecutor):
         # result = ["" for _ in range(len(plan_this_turn))]
         result = {name: "" for name in agent_name_this_turn}
         for current_turn in range(self.max_tool_call_times):
-            # TODO: force the model to use `task_submit` at the last step
-
             if len(finished_agent_names) == len(agent_name_this_turn):
                 # All agents have finished their tasks. Break the loop.
                 break
@@ -120,15 +125,24 @@ class ToolUsingExecutor(BaseExecutor):
                 if name not in finished_agent_names
             ]
             for name in active_agents_names:
+                if current_turn == self.max_tool_call_times - 1:
+                    tool = [t for t in tools[name] if t["name"] == "submit_task"]
+                else:
+                    tool = tools[name]
                 tool_calls.append(
-                    self.real_execution_agents[name].astep(task_description, plan_this_turn[name], tools[name], current_turn=current_turn+1)
+                    self.real_execution_agents[name].astep(
+                        task_description,
+                        plan_this_turn[name],
+                        tool,
+                        current_turn=current_turn + 1,
+                    )
                 )
             # Use asyncio.gather to run astep concurrently
             tool_call_decisions = await asyncio.gather(*tool_calls)
-            for name, tool_call_result in zip(
-                active_agents_names, tool_call_decisions
-            ):
-                self.real_execution_agents[name].add_message_to_memory([tool_call_result])
+            for name, tool_call_result in zip(active_agents_names, tool_call_decisions):
+                self.real_execution_agents[name].add_message_to_memory(
+                    [tool_call_result]
+                )
 
             # Actually call the tool and get the observation
             tool_responses = await asyncio.gather(
@@ -227,9 +241,9 @@ class ToolUsingExecutor(BaseExecutor):
                 "is_finish": True,
                 "cookies": cookies,
             }
-        if command == 'None':
+        if command == "None":
             return {
-                'observation': ExecutorMessage(
+                "observation": ExecutorMessage(
                     content=f"The format is incorrect.",
                     sender="function",
                     tool_name=command,

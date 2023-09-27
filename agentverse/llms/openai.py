@@ -3,6 +3,7 @@ import json
 import ast
 import os
 from typing import Dict, List, Optional, Union
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 from pydantic import BaseModel, Field
 
@@ -103,6 +104,7 @@ class OpenAIChat(BaseChatModel):
     # def _construct_messages(self, history: List[Message]):
     #     return history + [{"role": "user", "content": query}]
 
+    @retry(stop=stop_after_attempt(20), wait=wait_exponential(multiplier=1, min=4, max=10),reraise=True)
     def generate_response(
         self,
         prepend_prompt: str = "",
@@ -164,6 +166,7 @@ class OpenAIChat(BaseChatModel):
         except (OpenAIError, KeyboardInterrupt, json.decoder.JSONDecodeError) as error:
             raise
 
+    @retry(stop=stop_after_attempt(20), wait=wait_exponential(multiplier=1, min=4, max=10),reraise=True)
     async def agenerate_response(
         self,
         prepend_prompt: str = "",
