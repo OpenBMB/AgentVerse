@@ -6,8 +6,9 @@ from typing import Any, Dict, List
 
 # from agentverse.agents.agent import Agent
 from agentverse.agents.simulation_agent.conversation import BaseAgent
-#from agentverse.environments.simulation_env.rules.base import Rule
-from agentverse.environments.simulation_env.rules.base import Simulation_Rule as Rule
+
+# from agentverse.environments.simulation_env.rules.base import Rule
+from agentverse.environments.simulation_env.rules.base import SimulationRule as Rule
 from agentverse.message import Message
 
 logger = get_logger()
@@ -16,7 +17,7 @@ from .. import env_registry as EnvironmentRegistry
 from ..base import BaseEnvironment
 
 
-@EnvironmentRegistry.register("basic")
+@EnvironmentRegistry.register("sim-basic")
 class BasicEnvironment(BaseEnvironment):
     """
     A basic environment implementing the logic of conversation.

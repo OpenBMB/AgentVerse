@@ -8,14 +8,16 @@ import datetime
 from pydantic import Field
 
 from agentverse.agents.simulation_agent.conversation import BaseAgent
-#from agentverse.environments.simulation_env.rules.base import Rule
-from agentverse.environments.simulation_env.rules.base import Simulation_Rule as Rule
+
+# from agentverse.environments.simulation_env.rules.base import Rule
+from agentverse.environments.simulation_env.rules.base import SimulationRule as Rule
 from agentverse.message import Message
 
 from . import env_registry as EnvironmentRegistry
 from ..base import BaseEnvironment
 
 from pydantic import validator
+
 
 @EnvironmentRegistry.register("reflection")
 class ReflectionEnvironment(BaseEnvironment):
@@ -78,7 +80,10 @@ class ReflectionEnvironment(BaseEnvironment):
 
         # Generate the next message
         messages = await asyncio.gather(
-            *[self.agents[i].astep(self.current_time, env_descriptions[i]) for i in agent_ids]
+            *[
+                self.agents[i].astep(self.current_time, env_descriptions[i])
+                for i in agent_ids
+            ]
         )
 
         # Some rules will select certain messages from all the messages
@@ -118,4 +123,6 @@ class ReflectionEnvironment(BaseEnvironment):
 
     def tick_tock(self) -> None:
         """Increment the time"""
-        self.current_time = self.current_time + datetime.timedelta(seconds=self.time_delta)
+        self.current_time = self.current_time + datetime.timedelta(
+            seconds=self.time_delta
+        )

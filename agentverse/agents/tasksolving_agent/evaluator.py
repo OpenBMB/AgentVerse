@@ -21,10 +21,10 @@ logger = get_logger()
 class EvaluatorAgent(BaseAgent):
     def step(
         self,
-        solution: List[str] | str,
+        solution: str,
         result: str,
         task_description: str,
-        all_role_description: List[str],
+        all_role_description: str,
     ) -> EvaluatorMessage:
         logger.debug("", self.name, Fore.MAGENTA)
         prepend_prompt, append_prompt = self.get_all_prompts(

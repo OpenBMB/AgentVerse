@@ -9,6 +9,7 @@ from agentverse.message import EvaluatorMessage
 
 if TYPE_CHECKING:
     from agentverse.agents import EvaluatorAgent
+    from agentverse.message import EvaluatorMessage, SolverMessage, ExecutorMessage
 
 from . import evaluator_registry
 
@@ -22,8 +23,8 @@ class BaseEvaluator(BaseModel):
     def step(
         self,
         agent: EvaluatorAgent,
-        solution: List[str] | str,
-        result: List[str] | str,
+        solution: List[SolverMessage],
+        result: List[ExecutorMessage],
         task_description: str,
         all_role_description: List[str],
         *args,
@@ -40,14 +41,32 @@ class NoneEvaluator(BaseEvaluator):
     def step(
         self,
         agent: EvaluatorAgent,
-        solution: List[str] | str,
-        result: List[str] | str,
+        solution: List[SolverMessage],
+        result: List[ExecutorMessage],
         task_description: str,
         all_role_description: List[str],
         *args,
         **kwargs,
     ) -> EvaluatorMessage:
-        result = EvaluatorMessage(score=0, advice=result)
+        result = EvaluatorMessage(
+            score=0, advice="\n".join([r.content for r in result])
+        )
+        return result
+
+
+@evaluator_registry.register("dummy")
+class DummyEvaluator(BaseEvaluator):
+    def step(
+        self,
+        agent: EvaluatorAgent,
+        solution: List[SolverMessage],
+        result: List[ExecutorMessage],
+        task_description: str,
+        all_role_description: List[str],
+        *args,
+        **kwargs,
+    ) -> EvaluatorMessage:
+        result = EvaluatorMessage(score=1, advice="")
         return result
 
 
@@ -63,5 +82,7 @@ class DummyEvaluator(BaseEvaluator):
         *args,
         **kwargs,
     ) -> EvaluatorMessage:
-        result = EvaluatorMessage(score=1, advice="")
+        result = EvaluatorMessage(
+            score=0, advice="\n".join([r.content for r in result])
+        )
         return result

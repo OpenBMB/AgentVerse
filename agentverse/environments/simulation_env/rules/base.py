@@ -3,13 +3,24 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, List, Optional
 
-from pydantic import BaseModel
-
-from agentverse.environments.simulation_env.rules.describer import BaseDescriber, describer_registry
+from agentverse.environments.simulation_env.rules.describer import (
+    BaseDescriber,
+    describer_registry,
+)
 from agentverse.environments.simulation_env.rules.order import BaseOrder, order_registry
-from agentverse.environments.simulation_env.rules.selector import BaseSelector, selector_registry
-from agentverse.environments.simulation_env.rules.updater import BaseUpdater, updater_registry
-from agentverse.environments.simulation_env.rules.visibility import BaseVisibility, visibility_registry
+from agentverse.environments.simulation_env.rules.selector import (
+    BaseSelector,
+    selector_registry,
+)
+from agentverse.environments.simulation_env.rules.updater import (
+    BaseUpdater,
+    updater_registry,
+)
+from agentverse.environments.simulation_env.rules.visibility import (
+    BaseVisibility,
+    visibility_registry,
+)
+from agentverse.environments import BaseRule
 
 if TYPE_CHECKING:
     from agentverse.environments.base import BaseEnvironment
@@ -17,8 +28,8 @@ if TYPE_CHECKING:
 from agentverse.message import Message
 
 
-#class Rule(BaseModel):
-class Simulation_Rule(BaseModel):
+# class Rule(BaseModel):
+class SimulationRule(BaseRule):
     """
     Rule for the environment. It controls the speaking order of the agents
     and maintain the set of visible agents for each agent.

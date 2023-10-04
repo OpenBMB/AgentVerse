@@ -1,0 +1,181 @@
+cnt_critic_agents: 3
+max_loop_rounds: &max_loop_rounds 5
+max_criticizing_rounds: 3
+human_eval: false
+evaluation_dimensions: |-
+
+prompts:
+  role_assigner_prompt: &role_assigner_prompt |-
+    # Role Description
+    You are the leader of a group of experts, now you need to recruit a small group of experts with diverse identity to correctly write the code to solve the given problems:
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} expert in different fields. What experts will you recruit to better generate an accurate solution?
+    
+    # Response Format Guidance
+    You should respond with a list of expert description. For example:
+    1. an electrical engineer specified in the filed of xxx.
+    2. an economist who is good at xxx.
+    3. a lawyer with a good knowledge of xxx.
+    ...
+    
+    Only respond with the description of each role. Do not include your reason.
+
+  solver_prompt: &solver_prompt |-
+    Can you complete the following code?
+    ```python 
+    ${task_description} 
+    ```
+
+    # Previous Solution
+    The solution you gave in the last step is:
+    ${former_solution}
+
+    # Critics
+    There are some critics on the above solution:
+    ```
+    ${critic_opinions}
+    ```
+
+    Using the these information, can you provide a correct completion of the code? Explain your reasoning. Your response should contain only Python code. Do not give any additional information. Use ```python to put the completed Python code in markdown quotes. When responding, please include the given code and the completion.
+
+  critic_prompt: &critic_prompt |-
+    You are in a discussion group, aiming to complete the following code function:
+    ```python
+    ${task_description}
+    ```
+
+    Below is a possible code completion:
+    ```
+    ${preliminary_solution}
+    ```
+    
+    You are ${role_description}. Based on your knowledge, can you check the correctness of the completion given above? You should give your correct solution to the problem step by step. When responding, you should follow the following rules:
+    1. Double-check the above solutions, give your critics, then generate the correct solution step by step.
+    2. If the above solution is correct, end your response with a special token "[Agree]".
+    3. Your response should contain only Python code. Do not give any additional information. Use ```python to wrap your Python code in markdown quotes. When responding, please include the given code and the completion.
+
+    Now give your response.
+
+  evaluator_prompt: &evaluator_prompt |-
+    You are an experienced code reviewer. As a good reviewer, you carefully check the correctness of the given code completion. When the completion is incorrect, you should patiently teach the writer how to correct the completion.
+  
+    # Response Format Guidance
+    You must respond in the following format:
+    Score: (0 or 1, 0 for incorrect and 1 for correct)
+    Response: (give your advice on how to correct the solution)
+    
+    # Problem and Writer's Solution
+    Problem: 
+    ${task_description}
+
+    Writer's Solution: 
+    ${solution}
+
+    # Your Task
+    Now carefully check the writer's solution, and give your response.
+    
+
+name: pipeline
+
+
+environment:
+  env_type: task-basic
+  max_loop_rounds: *max_loop_rounds
+  rule:
+    order:
+      type: sequential
+    visibility:
+      type: all
+    selector:
+      type: basic
+    updater:
+      type: basic
+    describer:
+      type: basic
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    name: role assigner
+    prompt_template: *role_assigner_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 256
+    output_parser:
+      type: role_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    name: Planner
+    prompt_template: [*solver_prompt, ""]
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: humaneval-solver
+      # stop:
+      #   - "\ndef "
+      #   - "\nclass "
+      #   - "\nif "
+      #   - "\n\n#"
+
+  - #critic_agents:
+    agent_type: critic
+    name: Critic 1
+    role_description: |-
+      Waiting to be assigned.
+    prompt_template: *critic_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: mgsm-critic-agree
+
+  - #executor_agent:
+    agent_type: executor
+    name: Executor
+    prompt_template: None
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
+      temperature: 0
+      max_tokens: 512
+    output_parser:
+      type: humaneval
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    name: Evaluator
+    role_description: |-
+      Evaluator
+    prompt_template: *evaluator_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
+      temperature: 0.3
+      max_tokens: 1024
+    output_parser:
+      type: mgsm-evaluator
+      dimensions:
+        - Score
+
+
+tools:
+

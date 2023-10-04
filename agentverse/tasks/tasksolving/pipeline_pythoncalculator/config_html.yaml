@@ -1,0 +1,240 @@
+cnt_critic_agents: 3
+
+
+max_loop_rounds: 2
+
+
+max_criticizing_rounds: 3
+
+
+human_eval: false
+
+
+task_description: |-
+  build a web application of a simple calculator.
+
+  
+
+evaluation_dimensions: |-
+  
+
+
+prompts:
+  role_assigner_prompt: &role_assigner_prompt |-
+    You are the leader of a group of experts, now you are faced with a task:
+    
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} expert team members in different regions.
+    What experts will you recruit to better generate good ideas?
+    
+    Output format example:
+    1. an electrical engineer specified in the filed of xxx
+    2. an economist who is good at xxx
+    3. a lawyer with a good knowledge of xxx
+    ...
+    
+    ${advice}
+    You don't have to give the reason.
+
+  solver_prompt: &solver_prompt |-
+    You are faced with the task:
+    ${task_description}
+    
+    You formerly gave the following solution
+    ${former_solution}
+    
+    But other critics in the group are not satisfied with it.
+    They gave the following opinions:
+    ${critic_opinions}
+    
+    Now you are going to give a new solution,
+    based upon your former solution and the critics' opinions.
+    Please write code only!
+    
+    If no former solution or critic opinions are given, you can ignore this part, and just generate a new solution.
+
+  summarizer_prompt: &summarizer_prompt |-
+    You are a summarizer. 
+    Your task is to categorize and summarize the ideas in the chat history.
+    Please add the speaker of each idea to the beginning of the content.
+
+
+    The question of the discussing is to ${task_description}.
+    
+    #Output format
+    1. (Speaker1): (Ideas of Speaker 1 in a single line)
+    2. (Speaker2): (Ideas of Speaker 2 in a single line)
+    3. (Speaker3): (Ideas of Speaker 3 in a single line)
+    ...
+    
+    Here is the content you have to summarize:
+    ${former_solution}
+    ${critic_opinions}
+
+    Please merge all ideas of one speaker into one item.
+
+  critic_prompt: &critic_prompt |-
+    Now you are ${role_description}
+    
+    You are in a discussion group, aiming to ${task_description}.
+    
+    Now the group is going to give a preliminary solution as the following:
+
+    ${preliminary_solution}
+    
+    Now the group is asking your opinion about it. Based on your knowledge
+    in your field, do you agree that this solution can perfectly 
+    solve the problem?
+    Or do you have any ideas to improve it?
+    
+    - If you thinks it is perfect, use the following output format:
+    Action: Agree
+    Action Input: Agree.
+    (Do not output your reason for agreeing!)
+
+    - If you want to give complemented opinions to improve it or to contradict with it, use the following output format:
+    Action: Disagree
+    Action Input: (what you want to say in one line)
+    
+    P.S. Always remember you are ${role_description}!
+    
+    ${advice}
+    If no former solution or critic opinions are given, you can just disagree and output your idea freely, based on the expertise of your role.
+    Remember, the ideas should be specific and detailed enough, not just general opinions.
+    
+    Please control output code in 2048 tokens! (Write concise code)
+
+  evaluator_prompt: &evaluator_prompt |-
+    You are an professional code reviewer.
+ 
+    Your task is to evaluate the solution.
+    The code is to ${task_description}.
+    Your task is to evaluate the codes written by the code engineers.
+      Please not only give a general rating points (from 0 to 10) but also give detailed comments about where and how the code can be improved.
+      Please consider the following aspects when you are evaluating the code:
+        1. The code should be able to run without any errors.
+        2. The code should be able to achieve the goal specified in the task description.
+        3. The code should be easy to read and understand, efficient, concise and elegant.
+        4. The code should be robust.
+    
+    Please rate the code in the following dimensions:
+        1. Completeness: Is the code snippet complete enough without unimplemented functions of methods? Is it able to run without any errors?
+        2. Functionality: Is the code able to achieve the goal specified in the task description?
+        3. Readability: Is the code easy to read and understand, efficient, concise and elegant?
+        4. Robustness: Is the code snippet able to handle different unexpected input or other exceptions?
+    
+    0 means the idea looks like beginner's work, and 10 means the idea is perfect in that aspect, like a master.
+    
+    and then in the fifth line of output, give your detailed advice for the engineers to better generate good codes.
+    
+  
+    #Output format
+    You must output in the following format:
+    1. Completeness: (a score between 0 and 9)
+    2. Functionality: (a score between 0 and 9)
+    3. Readability: (a score between 0 and 9)
+    4. Robustness: (a score between 0 and 9)
+    5. Advice: (your advice in one line)
+    
+    Here is the content you have to evaluate:
+    ${solution}
+    
+
+name: pipeline
+
+
+environment:
+  env_type: task-basic
+  max_loop_rounds: 3
+  rule:
+    order:
+      type: sequential
+    visibility:
+      type: all
+    selector:
+      type: basic
+    updater:
+      type: basic
+    describer:
+      type: basic
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    name: role assigner
+    prompt_template: *role_assigner_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 256
+    output_parser:
+      type: role_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    name: Planner
+    prompt_template: [*solver_prompt, *summarizer_prompt]
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 2048
+
+  - #critic_agents:
+    agent_type: critic
+    name: Critic 1
+    role_description: |-
+      Waiting to be assigned.
+    prompt_template: *critic_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 256
+    output_parser:
+      type: critic
+
+  - #executor_agent:
+    agent_type: executor
+    name: Executor
+    prompt_template: None
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 512
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    name: Evaluator
+    role_description: |-
+      Code Reviewer
+    prompt_template: *evaluator_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 128
+    output_parser:
+      type: evaluator
+      dimensions:
+        - Completeness
+        - Functionality
+        - Readability
+        - Robustness
+
+
+tools:
+

@@ -36,14 +36,14 @@ def load_memory(memory_config: Dict):
     return memory_registry.build(memory_type, **memory_config)
 
 
-def load_tools(tool_config: List[Dict]):
-    if len(tool_config) == 0:
-        return []
-    all_tools_list = []
-    for tool in tool_config:
-        _, config = load_single_tools(tool["tool_name"], tool["tool_url"])
-        all_tools_list += import_all_apis(config)
-    return all_tools_list
+# def load_tools(tool_config: List[Dict]):
+#     if len(tool_config) == 0:
+#         return []
+#     all_tools_list = []
+#     for tool in tool_config:
+#         _, config = load_single_tools(tool["tool_name"], tool["tool_url"])
+#         all_tools_list += import_all_apis(config)
+#     return all_tools_list
 
 
 def load_environment(env_config: Dict) -> BaseEnvironment:
@@ -89,7 +89,7 @@ def prepare_task_config(task):
             agent_configs["tool_memory"] = load_memory(agent_configs["tool_memory"])
         llm = load_llm(agent_configs.get("llm", "text-davinci-003"))
         agent_configs["llm"] = llm
-        agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
+        #agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
 
         # Build the output parser
         output_parser_config = agent_configs.get("output_parser", {})

@@ -3,7 +3,7 @@ from . import dataloader_registry
 import json
 
 
-@dataloader_registry.register("readability")
+@dataloader_registry.register("tasksolving/readability")
 class ReadabilityLoader(DataLoader):
     def __init__(self, path: str):
         super().__init__(path)

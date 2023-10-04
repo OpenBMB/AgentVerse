@@ -30,7 +30,6 @@ class HorizontalDecisionMaker(BaseDecisionMaker):
         task_description: str,
         previous_plan: str = "No solution yet.",
         advice: str = "No advice yet.",
-        *args,
         **kwargs,
     ) -> List[str]:
         if advice != "No advice yet.":

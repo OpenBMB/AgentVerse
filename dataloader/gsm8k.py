@@ -4,7 +4,7 @@ import json
 import re
 
 
-@dataloader_registry.register("gsm8k")
+@dataloader_registry.register("tasksolving/gsm8k")
 class GSM8KLoader(DataLoader):
     def __init__(self, path: str):
         self.answer_pat = re.compile(r"#### (-?\d+)")

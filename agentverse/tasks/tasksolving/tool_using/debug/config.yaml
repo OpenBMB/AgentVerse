@@ -1,0 +1,248 @@
+cnt_agents: &cnt_agents 1
+cnt_tool_agents: &cnt_tool_agents 1
+max_rounds: &max_rounds 5
+max_criticizing_rounds: 3
+tool_config: &tool_config tools_simplified.json
+
+task_description: Assistant - I want to kick off a book club with my friends. Can you tell me the top 5 bestselling books this month, gather the content summary for each, and find online platforms where we can buy or borrow them?
+
+prompts:
+  role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
+    
+  role_assigner_append_prompt: &role_assigner_append_prompt |-
+    # Role Description
+    You are the leader of a group of experts, now you need to recruit a small group of experts with diverse identity and apply them with tools to solve the given problems:
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} expert in different fields. What experts will you recruit to better generate an accurate solution?
+
+    Here are some suggestion:
+    ${advice}
+
+    # Response Format Guidance
+    You should respond with a list of expert names and their descriptions, and separate the name and description of each expert with "-". For example:
+    1. Alice - an electrical engineer specified in the filed of xxx.
+    2. Bob - an economist who is good at xxx.
+    3. Charlie - a lawyer with a good knowledge of xxx.
+    ...
+
+    Only respond with the list of names and descriptions. Do not include your reason.
+
+  solver_prepend_prompt: &solver_prepend_prompt |-
+    Please review the following chat conversation and identify the specific latest sub-task or the next step that each person needs to accomplish:
+
+  solver_append_prompt: &solver_append_prompt |-
+    RESPONSE FORMAT:
+    Your response should be a list of expert names and their tasks, and separate the name and the corresponding task with "-". For example:
+    1. Alice - search the web for the weather at Beijing today using google.
+    2. Bob - look for information about the popular restaurants in Beijing using google.
+    ...
+
+    What's the latest sub-task assigned to each person in the above conversation? Your response should merge the sub-tasks for the same person into one line. Each line should only include one person. Make the sub-tasks specific. Do not use pronoun to refer to the topic mentioned in conversation. Make the sub-task self-contained.
+  
+  critic_prepend_prompt: &critic_prepend_prompt |-
+    You are ${agent_name}, ${role_description}. You are now in a discussion group, the members are:
+    ${all_roles}
+
+    Your current mission is to team up with others and make a plan on addressing the following query:
+    ${task_description}
+
+    AVAILABLE TOOLS:
+    ${tool_descriptions}
+
+    REQUIREMENTS:
+    It is essential that you effectively coordinate with others to ensure the successful completion of the query in a highly efficient manner. This collaboration should be achieved through the following steps:
+    - Communication: Engage in open dialogue, discussing the specifics of the high-level query to make the goal of each one in the following execution stage more specific.
+    - Task Decomposition: After understanding the task in its entirety, you guys need to decompose the high-level query into smaller, manageable sub-tasks that can be completed with the above tools. These sub-tasks should be small, specific, and executable with the provided tools (functions). Make sure your proposed sub-tasks are small, simple and achievable, to ensure smooth progression. Each sub-task should contribute to the completion of the overall query, and each of you should take one subtask. When necessary, the sub-tasks can be identical for faster task accomplishment. You don't need to always agree with the decomposition proposed by other players. You can propose a more reasonable one when you find the decomposition not good. Be specific for the sub-tasks.
+    - Sub-task Dispatch: Post decomposition, the next step is to distribute the sub-tasks amongst all the members. This will require further communication, where you consider each one's skills, resources, and availability. Ensure the dispatch facilitates smooth, PARALLEL execution. And ensure to specify which tool should be used for each one to complete his assigned sub-task. Each of you should take on one sub-task.
+
+    REMINDER:
+    Remember, the key to achieving high efficiency as a group is maintaining a constant line of communication, cooperation, and coordination throughout the entire process.
+
+    Below is the chat history in the group so far.
+
+  critic_append_prompt: &critic_append_prompt |-
+    What will you, ${agent_name}, say now? Your response should only contain the words of ${agent_name}. When and ONLY when all members have spoken and agreed on task assignments, you can end your words with "[END]" to stop the discussion.
+
+    [${agent_name}]:
+
+
+  manager_prompt: &manager_prompt |-
+    According to the Previous Solution and the Previous Sentences, select the most appropriate Critic from a specific Role and output the Role.
+    
+    ${task_description} 
+    
+    # Previous Solution
+    The solution you gave in the last step is:
+    ${former_solution}
+
+    # Critics
+    There are some critics on the above solution:
+    ```
+    ${critic_opinions}
+    ```
+
+    # Previous Sentences
+    The previous sentences in the previous rounds is:
+    ${previous_sentence}
+
+  executor_prepend_prompt: &executor_prepend_prompt |-
+    You are in a discussion group aiming to solve the task:
+    ${task_description}
+
+    After some discussion, the group have reached consensus on the sub-tasks that each of you need to complete. Your task is:
+    ${solution}
+
+  executor_append_prompt: &executor_append_prompt |-
+    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `submit_task` to submit your conclusion and your reflection on the tool use. You have a trial budge of 10, now it is the ${current_turn}'th trial. If it is the last trial, you must call the `submit_task` anyway.
+
+  evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+    A group is trying to solve the following query proposed by the user:
+    ${task_description}
+
+    After the discussion, they have reached consensus on the sub-tasks that each of them need to complete:
+    ${solution}
+
+    And after the execution stage, they give the following result:
+
+  evaluator_append_prompt: &evaluator_append_prompt |-
+    You need to evaluate whether the given query has been completed. If so, summarize the solution to the user. If not, summarize the current progress, and propose what is missing.
+
+    You must respond in the following format:
+    Status: (0 or 1. 0 for pending and 1 for finished)
+    Speak: (your words to the group if the task is pending, or a complete answer based on the full execution log to the user if the task is finished)
+
+    Now give your response.
+    
+
+name: pipeline
+
+
+environment:
+  env_type: task-basic
+  role_assign_only_once: true
+  add_execution_result_to_critic: true
+  add_execution_result_to_solver: false
+  max_rounds: *max_rounds
+  role_assigner:
+    type: role_description_name
+    cnt_agents: *cnt_agents
+  decision_maker:
+    type: dummy
+    tool_config: *tool_config
+  executor:
+    type: tool-using
+    num_agents: *cnt_tool_agents
+    tool_config: *tool_config
+    tool_retrieval: False
+    max_tool_call_times: 2
+  evaluator:
+    type: basic-message
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    name: role assigner
+    prepend_prompt_template: *role_assigner_prepend_prompt
+    append_prompt_template: *role_assigner_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 512
+    output_parser:
+      type: role_description_name_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    name: Planner
+    prepend_prompt_template: *solver_prepend_prompt
+    append_prompt_template: *solver_append_prompt
+    max_retry: 100
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: tool-using-solver
+      # stop:
+      #   - "\ndef "
+      #   - "\nclass "
+      #   - "\nif "
+      #   - "\n\n#"
+
+  - #critic_agents:
+    agent_type: critic
+    name: Critic 1
+    role_description: Waiting to be assigned.
+    max_history: 15
+    max_retry: 100
+    prepend_prompt_template: *critic_prepend_prompt
+    append_prompt_template: *critic_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0.7
+      max_tokens: 1024
+    output_parser:
+      type: mgsm-critic-agree
+    tool_config: *tool_config
+
+  - #executor_agent:
+    agent_type: executor
+    name: Executor
+    prepend_prompt_template: *executor_prepend_prompt
+    append_prompt_template: *executor_append_prompt
+    max_history: 16
+    max_retry: 100
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: gpt-4
+      temperature: 0.5
+      max_tokens: 1024
+    output_parser:
+      type: tool-using-executor
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    name: Evaluator
+    role_description: |-
+      Evaluator
+    max_history: 10
+    prepend_prompt_template: *evaluator_prepend_prompt
+    append_prompt_template: *evaluator_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: gpt-4
+      temperature: 0.3
+      max_tokens: 1024
+    output_parser:
+      type: tool-using-evaluator
+
+
+  - #manager_agent:
+    agent_type: manager
+    name: Manager
+    prompt_template: *manager_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: humaneval-manager
+
+

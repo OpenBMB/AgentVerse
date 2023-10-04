@@ -1,0 +1,192 @@
+cnt_critic_agents: 3
+max_loop_rounds: &max_loop_rounds 5
+max_criticizing_rounds: 3
+human_eval: false
+evaluation_dimensions: |-
+
+prompts:
+  role_assigner_prompt: &role_assigner_prompt |-
+    # Role Description
+    You are the leader of a group of experts, now you need to generate a response based on the text:
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} expert in different fields. What experts will you recruit to better generate an accurate solution?
+    
+    # Response Format Guidance
+    You should respond with a list of expert description. For example:
+    1. an electrical engineer specified in the filed of xxx
+    2. an economist who is good at xxx
+    3. a lawyer with a good knowledge of xxx
+    ...
+    
+    You don't have to give the reason.
+
+  solver_prompt: &solver_prompt |-
+    # Problem
+    You need to generate a response based on the text:
+    ${task_description}
+    
+    # Previous Solution
+    The solution you gave in the last step is:
+    ${former_solution}
+    
+    # Critics
+    Critics in the group gave the following opinions:
+    ${critic_opinions}
+    
+    # Your Task
+    Now based upon the former solution and the critics' opinions, please give a new solution.
+    Your solution should contain only your response beginning with "System: ".
+    Do not give any additional information.
+
+  critic_prompt: &critic_prompt |-
+    # Role Description and Problem to Solve
+    You are ${role_description}. You are in a discussion group, aiming to generate a response based on the text:
+    ${task_description}
+
+    # Preliminary Solution
+    Now the group gives a preliminary solution as follows:
+    ${preliminary_solution}
+    
+    # Advice
+    Meanwhile, another expert gave the following advice on the solution:
+    ${advice}
+    
+    # Response Format Guidance
+    - If you thinks the preliminary solution is perfect, respond using the following format:
+    Action: Agree
+    Action Input: Agree.
+    (Do not output your reason for agreeing!)
+
+    - If you think it is flawed, give your advice use the following output format:
+    Action: Disagree
+    Action Input: (explain why you disagree)
+    
+    # Your Task
+    Based on your knowledge in your field, do you agree that this solution is the best response based on the text?
+
+  evaluator_prompt: &evaluator_prompt |-
+    # Role Description
+    You are an experienced dialogue teacher. As a good teacher, you carefully check the correctness of the given response based on the text. When the solution is flawed, you should patiently teach the students how to give better response.
+  
+    # Response Format Guidance
+    You must respond in the following format:
+    Interesting: (a score between 0 and 9)
+    Engaging: (a score between 0 and 9)
+    Specific: (a score between 0 and 9)
+    Relevant: (a score between 0 and 9)
+    Semantically Appropriate: (a score between 0 and 9)
+    Understandable: (a score between 0 and 9)
+    Fluent: (a score between 0 and 9)
+    Overall Impression: (a score between 0 and 9)
+    Advice: (your advice on how to correct the solution)
+    
+    # Problem and Student's Solution
+    Problem: ${task_description}
+    Student's Solution: ${solution}
+
+    # Your Task
+    Now carefully check the student's solution, and give your response.
+    
+
+name: pipeline
+
+
+environment:
+  env_type: task-basic
+  max_loop_rounds: *max_loop_rounds
+  rule:
+    order:
+      type: sequential
+    visibility:
+      type: all
+    selector:
+      type: basic
+    updater:
+      type: basic
+    describer:
+      type: basic
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    name: role assigner
+    prompt_template: *role_assigner_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 256
+    output_parser:
+      type: role_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    name: Planner
+    prompt_template: [*solver_prompt, ""]
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 512
+
+  - #critic_agents:
+    agent_type: critic
+    name: Critic 1
+    role_description: |-
+      Waiting to be assigned.
+    prompt_template: *critic_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 256
+    output_parser:
+      type: responsegen-critic
+
+  - #executor_agent:
+    agent_type: executor
+    name: Executor
+    prompt_template: None
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 512
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    name: Evaluator
+    role_description: |-
+      Evaluator
+    prompt_template: *evaluator_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 512
+    output_parser:
+      type: responsegen-evaluator
+      dimensions:
+        - Interesting
+        - Engaging
+        - Specific
+        - Relevant
+        - Semantically Appropriate
+        - Understandable
+        - Fluent
+        - Overall Impression
+
+
+tools:
+

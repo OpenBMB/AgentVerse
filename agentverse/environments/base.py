@@ -10,9 +10,11 @@ from pydantic import BaseModel
 
 if TYPE_CHECKING:
     from agentverse.agents.base import BaseAgent
-    from agentverse.environments.simulation_env.rules.base import Simulation_Rule
-    from agentverse.environments.tasksolving_env.rules.base import Tasksolving_Rule
     from agentverse.message import Message
+
+
+class BaseRule(BaseModel):
+    pass
 
 
 class BaseEnvironment(BaseModel):
@@ -28,10 +30,8 @@ class BaseEnvironment(BaseModel):
         rule_params: Variables set by the rule
     """
 
-
     agents: List[BaseAgent]
-    simulation_rule: Simulation_Rule
-    tasksolving_rule: Tasksolving_Rule
+    rule: BaseRule
     max_turns: int = 10
     cnt_turn: int = 0
     last_messages: List[Message] = []

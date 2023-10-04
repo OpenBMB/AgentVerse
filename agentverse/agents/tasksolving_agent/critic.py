@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from colorama import Fore
 from agentverse.logging import get_logger
 import bdb
@@ -19,6 +20,34 @@ logger = get_logger()
 @agent_registry.register("critic")
 class CriticAgent(BaseAgent):
     max_history: int = 3
+    tools: List[dict] = []
+    tool_names: List[str] = []
+    tool_descriptions: str = ""
+
+    def __init__(self, *args, **kwargs):
+        tool_config_file = kwargs.pop("tool_config", "")
+        tools = []
+        tool_names = []
+        tool_descriptions = ""
+        if tool_config_file != "":
+            try:
+                with open(tool_config_file, "r") as f:
+                    tools_dict = json.load(f)
+                tools = tools_dict["tools_json"]
+                tool_names = [t["name"] for t in tools]
+                tool_descriptions = "\n".join(
+                    [f"- {t['name']}: " + t["description"] for t in tools]
+                )
+            except Exception as e:
+                logger.error(e)
+                logger.warn("Failed to load tool config file.")
+        super().__init__(
+            tools=tools,
+            tool_names=tool_names,
+            tool_descriptions=tool_descriptions,
+            *args,
+            **kwargs,
+        )
 
     def step(self, env_description: str = "") -> CriticMessage:
         pass
@@ -28,6 +57,7 @@ class CriticAgent(BaseAgent):
         preliminary_solution: str,
         advice: str = "No advice yet.",
         task_description: str = "",
+        all_roles: str = "",
         **kwargs,
     ) -> CriticMessage:
         """Asynchronous version of step"""
@@ -37,7 +67,10 @@ class CriticAgent(BaseAgent):
             advice=advice,
             task_description=task_description,
             role_description=self.role_description,
-            **kwargs,
+            agent_name=self.name,
+            all_roles=all_roles,
+            # tool_names=self.tool_names,
+            tool_descriptions=self.tool_descriptions,
         )
         history = self.memory.to_messages(self.name, start_index=-self.max_history)
         parsed_response: Union[AgentCriticism, None] = None

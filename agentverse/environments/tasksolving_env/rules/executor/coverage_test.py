@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, List, Tuple
 
 from agentverse.agents import ExecutorAgent
 from agentverse.logging import logger
+from agentverse.message import ExecutorMessage, SolverMessage
 
 from . import BaseExecutor, executor_registry
 
@@ -24,16 +25,34 @@ class CoverageTestExecutor(BaseExecutor):
         self,
         agent: ExecutorAgent,
         task_description: str,
-        solution: List[str],
+        solution: List[SolverMessage],
         *args,
         **kwargs,
     ) -> Any:
         from evaluate_commongen import scoring
 
-        coverage, missing_tokens = scoring([solution], [task_description])
+        coverage, missing_tokens = scoring([s.content for s in solution], [task_description])
         if len(missing_tokens[0]) == 0:
             missing_tokens = "No missing tokens."
         else:
             missing_tokens = ", ".join(missing_tokens[0])
         result = f"Coverage: {coverage*100:.2f}%\nMissing Tokens: {missing_tokens}"
-        return result
+        return [ExecutorMessage(content=result)]
+    
+    async def astep(
+        self,
+        agent: ExecutorAgent,
+        task_description: str,
+        solution: List[SolverMessage],
+        *args,
+        **kwargs,
+    ) -> Any:
+        from evaluate_commongen import scoring
+
+        coverage, missing_tokens = scoring([s.content for s in solution], [task_description])
+        if len(missing_tokens[0]) == 0:
+            missing_tokens = "No missing tokens."
+        else:
+            missing_tokens = ", ".join(missing_tokens[0])
+        result = f"Coverage: {coverage*100:.2f}%\nMissing Tokens: {missing_tokens}"
+        return [ExecutorMessage(content=result)]

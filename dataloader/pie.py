@@ -3,7 +3,7 @@ from . import dataloader_registry
 import json
 
 
-@dataloader_registry.register("pie")
+@dataloader_registry.register("tasksolving/pie")
 class PieLoader(DataLoader):
     def __init__(self, path: str):
         super().__init__(path)

@@ -1,0 +1,197 @@
+cnt_agents: &cnt_agents 2
+max_turn: &max_turn 3
+max_inner_turns: &max_inner_turns 3
+
+prompts:
+  role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
+
+  role_assigner_append_prompt: &role_assigner_append_prompt |-
+    # Role Description
+    You are the leader of a group of experts, now you need to recruit a small group of experts with diverse identity to generate coherent and grammatically correct sentences containing the following given words:
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} expert in different fields. What experts will you recruit?
+    
+    # Response Format Guidance
+    You should respond with a list of expert description. For example:
+    1. an electrical engineer specified in the filed of xxx.
+    2. an economist who is good at xxx.
+    3. a lawyer with a good knowledge of xxx.
+    ...
+    
+    Only respond with the description of each role. Do not include your reason.
+
+  solver_prepend_prompt: &solver_prepend_prompt |-
+    You are ${role_description}. Generate a coherent and grammatically correct paragraph containing the following given words (or their variations):
+    WORDS: 
+    ${task_description}
+
+  solver_append_prompt: &solver_append_prompt |-
+
+  critic_prepend_prompt: &critic_prepend_prompt |-
+    You are in a discussion group, aiming to generate coherent and grammatically correct sentences containing the following given words (or their variations):
+    WORDS:
+    ${task_description}
+
+    Below is the chat history in your group.
+    
+  critic_append_prompt: &critic_append_prompt |-
+    You are ${role_description}. Based on your knowledge, can you check whether the latest provided paragraph contains all the given words or their variations? When responding, you should follow the following rules:
+    1. If the above latest provided solution has covered all the given words or their variations, end your response with a special token "[Agree]".
+    1. If not, double-check the above solutions, give your critics, and generate a better solution.
+
+  manager_prompt: &manager_prompt |-
+
+  executor_prepend_prompt: &executor_prepend_prompt |-
+
+  executor_append_prompt: &executor_append_prompt |-
+
+  evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+
+  evaluator_append_prompt: &evaluator_append_prompt |-
+    You are a reviewer who checks whether a paragraph contains all the given words (including their variations). When some words are missing, you should patiently point out, and output a score of 0. When the paragraph contains all the words, you should output a score of 1.
+  
+    WORDS: 
+    ${task_description}
+
+    SOLUTION: 
+    ```
+    ${solution}
+    ```
+
+    TEST RESULT:
+    ${result}
+    
+    RESPONSE FORMAT:
+    You must respond in the following format:
+    Score: (0 or 1. 0 if there are some missing words, 1 if there is no missing words)
+    Advice: (point out all the missing words)
+    
+
+name: pipeline
+
+
+environment:
+  env_type: task-basic
+  max_turn: *max_turn
+  rule:
+    role_assigner:
+      type: role_description
+      cnt_agents: *cnt_agents
+    decision_maker:
+      type: vertical-solver-first
+      max_inner_turns: *max_inner_turns
+    executor:
+      type: coverage-test
+    evaluator:
+      type: basic
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    name: role assigner
+    max_retry: 1000
+    prepend_prompt_template: *role_assigner_prepend_prompt
+    append_prompt_template: *role_assigner_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 512
+    output_parser:
+      type: role_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    name: Planner
+    max_retry: 1000
+    max_history: 4
+    prepend_prompt_template: *solver_prepend_prompt
+    append_prompt_template: *solver_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: commongen
+      # max_tokens: 1024
+      # stop:
+      #   - "\ndef "
+      #   - "\nclass "
+      #   - "\nif "
+      #   - "\n\n#"
+
+  - #critic_agents:
+    agent_type: critic
+    name: Critic 1
+    max_retry: 1000
+    max_history: 4
+    role_description: |-
+      Waiting to be assigned.
+    prepend_prompt_template: *critic_prepend_prompt
+    append_prompt_template: *critic_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: mgsm-critic-agree
+
+  - #executor_agent:
+    agent_type: executor
+    name: Executor
+    max_retry: 1000
+    prepend_prompt_template: *executor_prepend_prompt
+    append_prompt_template: *executor_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: gpt-4
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: commongen
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    name: Evaluator
+    max_retry: 1000
+    role_description: |-
+      Evaluator
+    prepend_prompt_template: *evaluator_prepend_prompt
+    append_prompt_template: *evaluator_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: gpt-4
+      temperature: 0.3
+      max_tokens: 1024
+    output_parser:
+      type: humaneval-evaluator
+      dimensions:
+        - Score
+
+  - #manager_agent:
+    agent_type: manager
+    name: Manager
+    max_retry: 1000
+    prompt_template: *manager_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: humaneval-manager

@@ -1,0 +1,200 @@
+cnt_critic_agents: 1
+max_loop_rounds: &max_loop_rounds 2
+max_criticizing_rounds: 3
+human_eval: false
+evaluation_dimensions: |-
+
+prompts:
+  role_assigner_prompt: &role_assigner_prompt |-
+    # Role Description
+    You are the leader of a group, now you are facing a grade school math problem:
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} people. What people will you recruit?
+    
+    # Response Format Guidance
+    You should respond with a list of ${cnt_critic_agents} people description. For example:
+    1. an electrical engineer specified in the filed of xxx
+    2. an economist who is good at xxx
+    3. a lawyer with a good knowledge of xxx
+    ...
+    
+    Only respond with the description of each role. Do not include your reason.
+
+  solver_prompt: &solver_prompt |-
+    Can you solve the following math problem? 
+    ${task_description} 
+
+    # Previous Solution
+    The solution you gave in the last step is:
+    ```
+    ${former_solution}
+    ```
+
+    # Critics
+    There are some critics on the above solution:
+    ```
+    ${critic_opinions}
+    ```
+
+    Using the these information, can you provide the correct solution to the math problem? Explain your reasoning. Your final answer must be a single numerical number (not a equation, fraction, function or variable), in the form \boxed{answer}, at the end of your response.
+
+  # Your response should include one final answer in the form of \boxed{answer} at the end. If there are multiple answers given by different agents, you should only select the correct one and summarize its deduction process. Do not summarize each agent's response separately, summarize the whole chat history and give one final answer.
+  # Can you solve the following math problem? 
+  # ${task_description} 
+
+  # # Previous Solution
+  # The solution you gave in the last step is:
+  # ```
+  # ${former_solution}
+  # ```
+
+  # # Critics
+  # There are some critics on the above solution:
+  # ```
+  # ${critic_opinions}
+  # ```
+  
+  # Using the these information, can you provide the correct solution to the math problem? Explain your reasoning. Your final answer should be a single numerical number (not a equation), in the form \boxed{answer}, at the end of your response.
+
+  critic_prompt: &critic_prompt |-
+    You are in a discussion group, aiming to collaborative solve the following math problem:
+    ${task_description}
+
+    Below is a possible solution to the problem:
+    ```
+    ${preliminary_solution}
+    ```
+    
+    You are ${role_description}. Based on your knowledge, can you check the correctness of the solutions given in the chat history? You should give your correct solution to the problem step by step. When responding, you should follow the following rules:
+    1. Double-check the above solutions, give your critics, then generate the correct solution step by step.
+    2. If the final answer in your solution is the same as the final answer in the above provided solution, end your response with a special token "[Agree]".
+    3. You must highlight your final answer in the form \boxed{answer} at the end of your response. The answer must be a numerical number, not a equation, fraction, function or variable.
+
+    Now give your response.
+  # If the solution is correct, end your response with a special token "[Correct]".
+  # If the solution is wrong, end your response with a special token "[Wrong]".
+  # # Response Format
+  # Using the solution from the other member as additional information, can you provide your answer to this math problem? Explain your reasoning. Your final answer should be a single numerical number (not a equation), in the form \boxed{answer}, at the end of your response. And additionally:
+  # 1. If your solution has the same answer to the provided solution, end your response with a special token "[Correct]".
+  # 2. If your solution has different answer to the provided solution, end your response with a special token "[Wrong]".
+
+  evaluator_prompt: &evaluator_prompt |-
+    Problem: ${task_description}
+    Solution: 
+    ```
+    ${solution}
+    ```
+
+    You are an experienced mathematic teacher. As a good teacher, you carefully check the correctness of the given solution on a grade school math problem. When the solution is wrong, you should give your advice to the students on how to correct the solution. When it is correct, output a correctness of 1 and why it is correct. Also check that the final answer is in the form \boxed{answer} at the end of the solution. The answer must be a numerical number (not a equation, fraction, function or variable).
+    
+    You should respond in the following format:
+    Correctness: (0 or 1, 0 is wrong, and 1 is correct)
+    Response: (explain in details why it is wrong or correct)
+
+    
+
+name: pipeline
+
+
+environment:
+  env_type: task-basic
+  is_parallel: true
+  max_loop_rounds: *max_loop_rounds
+  rule:
+    order:
+      type: sequential
+    visibility:
+      type: all
+    selector:
+      type: basic
+    updater:
+      type: basic
+    describer:
+      type: basic
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    max_retry: 100000
+    name: role assigner
+    prompt_template: *role_assigner_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      # max_tokens: 256
+    output_parser:
+      type: role_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    max_retry: 100000
+    name: Planner
+    prompt_template: [*solver_prompt, *solver_prompt]
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo-16k"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: mgsm
+
+  - #critic_agents:
+    agent_type: critic
+    max_retry: 100000
+    name: Critic 1
+    role_description: |-
+      Waiting to be assigned.
+    prompt_template: *critic_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: mgsm-critic-agree
+
+  - #executor_agent:
+    agent_type: executor
+    max_retry: 100000
+    name: Executor
+    prompt_template: None
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      # max_tokens: 512
+    output_parser:
+      type: mgsm
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    max_retry: 100000
+    name: Evaluator
+    role_description: |-
+      Evaluator
+    prompt_template: *evaluator_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0.3
+      # max_tokens: 512
+    output_parser:
+      type: mgsm-evaluator
+      dimensions:
+        - Correctness
+
+
+tools:
+

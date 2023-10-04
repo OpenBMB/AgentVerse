@@ -4,13 +4,15 @@ from typing import Any, Dict, List
 import json
 
 from agentverse.agents.simulation_agent.conversation import BaseAgent
-#from agentverse.environments.simulation_env.rules.base import Rule
-from agentverse.environments.simulation_env.rules.base import Simulation_Rule as Rule
+
+# from agentverse.environments.simulation_env.rules.base import Rule
+from agentverse.environments.simulation_env.rules.base import SimulationRule as Rule
 from agentverse.message import Message
 
 from .. import env_registry as EnvironmentRegistry
 from ..base import BaseEnvironment
-from agentverse.initialization import load_tools
+
+# from agentverse.initialization import load_tools
 
 
 @EnvironmentRegistry.register("sde_team")
@@ -52,12 +54,12 @@ class SdeTeamEnvironment(BaseEnvironment):
         super().__init__(rule=rule, **kwargs)
         self.rule_params["first_round"] = True
         self.rule_params["end_flag"] = False
-        
+
         # # Test code
         # self.rule_params["name_to_tools"] = {tool.name: tool for tool in load_tools([{"tool_name": "code_interpreter", "tool_url" : "http://127.0.0.1:8079/tools/code_interpreter/"}])}
         # tool = self.rule_params["name_to_tools"]["execute_unit_tests"]
         # print(type(tool))
-        
+
         # d = {
         #     "func_impl": "def f(x):\n\treturn x + 1",
         #     "tests": ["assert f(1) == 2"]
@@ -66,7 +68,7 @@ class SdeTeamEnvironment(BaseEnvironment):
         # json.loads(input_str)
         # tool.run(input_str, verbose=True)
         # exit()
-        
+
     async def step(self) -> List[Message]:
         """Run one step of the environment"""
 
@@ -81,23 +83,21 @@ class SdeTeamEnvironment(BaseEnvironment):
         #     *[self.agents[i].astep(env_descriptions[i]) for i in agent_ids]
         # )   # call chatgpt api
 
-        messages = await asyncio.gather(
-            *[self.agents[i].astep("") for i in agent_ids]
-        )
+        messages = await asyncio.gather(*[self.agents[i].astep("") for i in agent_ids])
 
         # Track the messages to get the role of the sender
         self.last_messages = messages
 
         # Some rules will select certain messages from all the messages
-        selected_messages = self.rule.select_message(self, messages)    # selector
+        selected_messages = self.rule.select_message(self, messages)  # selector
         self.last_messages = selected_messages
         self.print_messages(selected_messages)
 
         # Update the memory of the agents
-        self.rule.update_memory(self)   # updater: update memory
+        self.rule.update_memory(self)  # updater: update memory
 
         # Update the set of visible agents for each agent
-        self.rule.update_visible_agents(self)   # change receiver
+        self.rule.update_visible_agents(self)  # change receiver
 
         self.cnt_turn += 1
 

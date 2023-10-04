@@ -279,7 +279,13 @@ class Logger(metaclass=Singleton):
         self.debug("", "-=-=-=-=-=-=-=-=Prompt Start-=-=-=-=-=-=-=-=", Fore.MAGENTA)
         for p in prompt:
             self.debug(
-                p["content"], title=f'==={p["role"]}===\n', title_color=Fore.MAGENTA
+                p["content"]
+                if "function_call" not in p
+                else p["content"]
+                + "\nFunction Call:\n"
+                + json.dumps(p["function_call"]),
+                title=f'==={p["role"]}===\n',
+                title_color=Fore.MAGENTA,
             )
         self.debug("", "-=-=-=-=-=-=-=-=Prompt End-=-=-=-=-=-=-=-=", Fore.MAGENTA)
 

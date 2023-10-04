@@ -1,1 +1,1 @@
-from .base import Simulation_Rule
+from .base import SimulationRule
