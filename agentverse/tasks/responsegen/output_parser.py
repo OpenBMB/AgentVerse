@@ -28,7 +28,7 @@ class ResponseGenEvaluatorParser(OutputParser):
         checks = cleaned_output.split("\n")
 
         patterns = [
-            re.compile(r"(?:\d.\s*)?" + dimension + r":\s*(\d)")
+            re.compile(r"(?:\d.\s*)?" + dimension + r":\s*(\d+)")
             for dimension in self.dimensions
         ]
 
@@ -66,9 +66,39 @@ class ResponseGenCriticParser(OutputParser):
             try:
                 criticism = pattern.findall(text)[0].strip()
             except IndexError:
-                # logger.error("Bad response from critic!")
+                criticism = "I think the can be further improved."
                 # raise OutputParserError(text)
-                criticism = "I think the solution is not correct. Please think carefully and correct it."
             return AgentCriticism(False, criticism)
         else:
             raise OutputParserError(text)
+
+
+@output_parser_registry.register("responsegen-critic-2")
+class ResponseGenCriticParser(OutputParser):
+    def parse(self, output: LLMResult) -> AgentCriticism:
+        text = output.content
+        # text = re.sub(r"\n+", "\n", text.strip())
+        # checks = text.split("\n")
+        # if not (checks[0].startswith("Action:")):
+        #     raise OutputParserError(text)
+        # if checks[0].strip(". ") == "Action: Agree":
+        #     return AgentCriticism(True, "")
+        # elif checks[0].strip(". ") == "Action: Disagree":
+        #     pattern = re.compile(r"Action Input: ([\S\n ]+)")
+        #     try:
+        #         criticism = pattern.findall(text)[0].strip()
+        #     except IndexError:
+        #         # criticism = "I think the solution is not correct. Please think carefully and correct it."
+        #         raise OutputParserError(text)
+        #     return AgentCriticism(False, criticism)
+        # else:
+        #     raise OutputParserError(text)
+        result = re.findall(r"Decision:(.+?)Response:(.+)", text, re.DOTALL)
+        if len(result) == 0:
+            result = ["Disagree", "I think the response can be further improved."]
+        else:
+            result = result[0]
+        if "Agree" in result[0]:
+            return AgentCriticism(True, "")
+        else:
+            return AgentCriticism(False, result[1].strip())
