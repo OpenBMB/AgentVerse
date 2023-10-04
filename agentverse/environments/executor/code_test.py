@@ -39,7 +39,7 @@ class CodeTestExecutor(BaseExecutor):
         manager = multiprocessing.Manager()
         result = manager.list()
         if task_description not in self.has_test:
-            response = await agent.astep(task_description, solution).content
+            response = (await agent.astep(task_description, solution)).content
             self.write_to_file(response["file_path"], response["code"])
             self.has_test[task_description] = f"python {response['file_path']}"
             p = multiprocessing.Process(
@@ -61,7 +61,7 @@ class CodeTestExecutor(BaseExecutor):
                 p.kill()
         if not result:
             result.append("Execution timed out.")
-        return [result[0]]
+        return [ExecutorMessage(content=result[0], sender="Code Tester")]
 
     def step(
         self,

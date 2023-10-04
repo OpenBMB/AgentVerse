@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, List, Tuple, Any
 from pydantic import BaseModel
 
 from agentverse.agents import ExecutorAgent
-from agentverse.message import SolverMessage
+from agentverse.message import SolverMessage, ExecutorMessage
 
 from . import executor_registry
 
@@ -23,7 +23,7 @@ class BaseExecutor(BaseModel):
         solution: List[SolverMessage],
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> List[ExecutorMessage]:
         pass
 
     async def astep(
@@ -33,7 +33,7 @@ class BaseExecutor(BaseModel):
         solution: List[str],
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> List[ExecutorMessage]:
         pass
 
     def reset(self):
@@ -54,7 +54,17 @@ class NoneExecutor(BaseExecutor):
         *args,
         **kwargs,
     ) -> Any:
-        return "None"
+        return [ExecutorMessage(content="")]
+    
+    async def astep(
+        self,
+        agent: ExecutorAgent,
+        task_description: str,
+        solution: List[SolverMessage],
+        *args,
+        **kwargs,
+    ) -> Any:
+        return [ExecutorMessage(content="")]
 
     def reset(self):
         pass
@@ -70,11 +80,21 @@ class DummyExecutor(BaseExecutor):
         self,
         agent: ExecutorAgent,
         task_description: str,
-        solution: List[str],
+        solution: List[SolverMessage],
         *args,
         **kwargs,
     ) -> Any:
-        return solution
+        return [ExecutorMessage(content=s.content) for s in solution]
+    
+    async def astep(
+        self,
+        agent: ExecutorAgent,
+        task_description: str,
+        solution: List[SolverMessage],
+        *args,
+        **kwargs,
+    ) -> Any:
+        return [ExecutorMessage(content=s.content) for s in solution]
 
     def reset(self):
         pass

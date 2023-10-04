@@ -11,3 +11,4 @@ astunparse
 langchain
 colorlog
 rapidfuzz
+spacy
