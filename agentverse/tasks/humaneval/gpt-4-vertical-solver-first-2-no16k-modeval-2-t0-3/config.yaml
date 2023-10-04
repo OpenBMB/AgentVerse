@@ -30,7 +30,7 @@ prompts:
     ```
   
   solver_append_prompt: &solver_append_prompt |-
-    You are ${role_description}. Can you provide a correct completion of the code? Your response should contain only Python code. Do not give any additional information. Use ```python to put the completed Python code in markdown quotes. When responding, please include the given code and the completion with your step by step reasoning in the comment.
+    You are ${role_description}. Can you provide a correct completion of the code? Your response should contain only Python code. Do not give any additional information. Use ```python to put the completed Python code in markdown quotes. When responding, please include the given code and the completion with your step by step reasoning in the code comment.
   # You should respond in the following json format wrapped with markdown quotes:
   # ```json
   # {
@@ -88,7 +88,7 @@ prompts:
     Reasoning: your reasoning on the testing cases
     Criticism: constructive self-criticism
     File Path: the path to write your testing code
-    Code: the testing code with explaination in docstring. make sure to write the input in the assertion to make it appear in the unit test report, and make sure the expected answer is correct. do not write the unit tests that you are uncertain about the answer.
+    Code: the testing code with explaination in docstring. make sure to write the input in the assertion to make it appear in the unit test report. only write unit test cases for which you are certain of the answer and that align with the functionality described in the code's docstring.
     Command: the command to change directory and execute your testing code
 
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
@@ -111,8 +111,8 @@ prompts:
 
     # Response Format Guidance
     You must respond in the following format:
-    Score: (0 or 1, 0 for incorrect and 1 for correct)
-    Response: (give your advice on how to correct the solution, and your suggestion on on what experts should recruit in the next round)
+    Response: (give your decision on the solution, whether it is correct or wrong. give your advice on correcting the solution if it is wrong, and give your suggestion on what experts should recruit in the next round)
+    Final Decision: (0 or 1, 0 for incorrect and 1 for correct. )
 
 
 name: pipeline
@@ -127,7 +127,7 @@ environment:
   decision_maker:
     type: vertical-solver-first
   executor:
-    type: code-test
+    type: none
   evaluator:
     type: basic
 
@@ -219,9 +219,9 @@ agents:
       temperature: 0.3
       max_tokens: 1024
     output_parser:
-      type: mgsm-evaluator
+      type: humaneval-evaluator-2
       dimensions:
-        - Score
+        - Final Decision
 
 
   - #manager_agent:

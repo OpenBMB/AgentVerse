@@ -1,16 +1,19 @@
+import logging
+
 # from agentverse.agentverse import AgentVerse
 import logging
 from agentverse.agentversepipeline import AgentVersePipeline
 from agentverse.logging import logger
 from agentverse.demo import UI
+from agentverse.logging import logger
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
 
 # case: pipeline
 # parser.add_argument("--task", type=str, default="pipeline")
-parser.add_argument("--single_agent", "-s", action="store_true")
-parser.add_argument("--discussion_mode", "-d", action="store_true")
+parser.add_argument("--single_agent", "-s", action="store_true")  # Deprecated
+parser.add_argument("--discussion_mode", "-d", action="store_true")  # Deprecated
 parser.add_argument("--debug", action="store_true")
 
 # case: code writing: create a caculator

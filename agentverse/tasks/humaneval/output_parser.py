@@ -39,6 +39,12 @@ class HumanevalSolverParser(OutputParser):
         return AgentFinish({"output": code}, text)
 
 
+@output_parser_registry.register("humaneval-critic-central")
+class HumanevalCriticParser(OutputParser):
+    def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
+        return AgentCriticism(False, output.content)
+
+
 @output_parser_registry.register("humaneval-solver-autogpt")
 class HumanevalSolverParser(OutputParser):
     def parse(self, output: LLMResult) -> Union[AgentAction, AgentFinish]:
@@ -203,6 +209,33 @@ class HumanevalEvaluatorParser(OutputParser):
             # logger.info("Evaluator give the following advice:\n" + advice)
         except (IndexError, ValueError):
             # logger.error("Bad response from evaluator!")
+            raise OutputParserError(text)
+        return score[0], advice
+
+
+@output_parser_registry.register("humaneval-evaluator-2")
+class HumanevalEvaluatorParser(OutputParser):
+    dimensions: List[str] = None
+
+    def parse(self, output: LLMResult) -> Tuple[List[int], str]:
+        text = output.content
+        pattern = re.compile(
+            r"Response:(.+?)"
+            + "".join(
+                [
+                    f"{dimension}:(.+?)"
+                    if i != len(self.dimensions) - 1
+                    else f"{dimension}:(.+)"
+                    for i, dimension in enumerate(self.dimensions)
+                ]
+            ),
+            re.DOTALL,
+        )
+        try:
+            parsed_result = pattern.findall(text)[0]
+            score = [bool(int(x.strip())) for x in parsed_result[1:]]
+            advice = parsed_result[0].strip()
+        except BaseException as e:
             raise OutputParserError(text)
         return score[0], advice
 

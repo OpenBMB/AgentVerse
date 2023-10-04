@@ -9,3 +9,5 @@ from .dynamic import DynamicDecisionMaker
 from .vertical_solver_first import VerticalSolverFirstDecisionMaker
 from .concurrent import ConcurrentDecisionMaker
 from .horizontal_tool import HorizontalToolDecisionMaker
+from .central import CentralDecisionMaker
+from .brainstorming import BrainstormingDecisionMaker

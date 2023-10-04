@@ -58,6 +58,7 @@ class CriticAgent(BaseAgent):
         advice: str = "No advice yet.",
         task_description: str = "",
         all_roles: str = "",
+        **kwargs,
     ) -> CriticMessage:
         """Asynchronous version of step"""
         logger.debug("", self.name, Fore.MAGENTA)

@@ -24,10 +24,7 @@ class SolverAgent(BaseAgent):
     max_history: int = 3
 
     def step(
-        self,
-        former_solution: str,
-        advice: str,
-        task_description: str = "",
+        self, former_solution: str, advice: str, task_description: str = "", **kwargs
     ) -> SolverMessage:
         logger.debug("", self.name, Fore.MAGENTA)
         # prompt = self._fill_prompt_template(
@@ -38,6 +35,7 @@ class SolverAgent(BaseAgent):
             task_description=task_description,
             advice=advice,
             role_description=self.role_description,
+            **kwargs,
         )
         history = self.memory.to_messages(self.name, start_index=-self.max_history)
         parsed_response = None
