@@ -101,7 +101,7 @@
   },
     {
       "name": "run_interpreter",
-      "description": "The code interpreter tool that runs code and returns the output.\nThe `code` will be written to file `filename` and the `command` will be executed in a shell. The returned value of this tool is the stdout content. So use `print` to get the important information.\nExample:\n```\nrun_interpreter(code='print(\"hello world\")',command='python code.py')\n```",
+      "description": "The code interpreter tool that runs code and returns the output.\nThe `code` will be written to file `filename` and the `command` will be executed in a shell.\nExample:\n```\nrun_interpreter(code='print(\"hello world\")',command='python code.py')\n```",
       "parameters": {
         "type": "object",
         "properties": {
@@ -109,13 +109,13 @@
             "type": "string",
             "description": "The code to be written, default to `None`, which means no code will be written to file."
           },
-          "filename": {
-            "type": "string",
-            "description": "The filename to be written in mode `w`, default to `code.py`."
-          },
           "command": {
             "type": "string",
             "description": "The shell command to be executed should avoid requiring additional user input, default to `python {filename}`."
+          },
+          "filename": {
+            "type": "string",
+            "description": "The filename to be written in mode `w`, default to `code.py`."
           }
         },
         "required": []
@@ -135,6 +135,21 @@
         "required": [
           "query"
         ]
+      }
+    },
+    {
+      "name": "RapidAPIEnv_rapi_billboard_hot_100",
+      "description": "Billboard charts: Hot 100, Billboard 200, Billboard 200 Global, Artist 100 and more",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Set the date (YYYY-MM-DD) for which you want to get a chart",
+            "default": "2020-03-18"
+          }
+        },
+        "required": ["date"]
       }
     },
     {

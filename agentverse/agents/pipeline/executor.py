@@ -21,18 +21,14 @@ class ExecutorAgent(BaseAgent):
     max_history: int = 5
 
     def step(
-        self,
-        task_description: str,
-        solution: str,
-        tools: List[dict] = [],
-        **kwargs
+        self, task_description: str, solution: str, tools: List[dict] = [], **kwargs
     ) -> ExecutorMessage:
         logger.debug("", self.name, Fore.MAGENTA)
         prepend_prompt, append_prompt = self.get_all_prompts(
             task_description=task_description,
             solution=solution,
             agent_name=self.name,
-            **kwargs
+            **kwargs,
         )
 
         history = self.memory.to_messages(self.name, start_index=-self.max_history)
@@ -75,18 +71,14 @@ class ExecutorAgent(BaseAgent):
         return message
 
     async def astep(
-        self,
-        task_description: str,
-        solution: str,
-        tools: List[dict] = [],
-        **kwargs
+        self, task_description: str, solution: str, tools: List[dict] = [], **kwargs
     ) -> ExecutorMessage:
         logger.debug("", self.name, Fore.MAGENTA)
         prepend_prompt, append_prompt = self.get_all_prompts(
             task_description=task_description,
             solution=solution,
             agent_name=self.name,
-            **kwargs
+            **kwargs,
         )
 
         history = self.memory.to_messages(self.name, start_index=-self.max_history)
@@ -101,20 +93,13 @@ class ExecutorAgent(BaseAgent):
             except (KeyboardInterrupt, bdb.BdbQuit):
                 raise
             except Exception as e:
-                # import pdb
-
-                # pdb.set_trace()
                 logger.error(e)
                 logger.warn("Retrying...")
                 continue
 
         if parsed_response is None:
             logger.error(f"{self.name} failed to generate valid response.")
-            parsed_response = AgentAction(
-                tool = "None",
-                tool_input = "None",
-                log = "None"
-            )
+            parsed_response = AgentAction(tool="", tool_input="", log="")
         if isinstance(parsed_response, AgentFinish):
             message = ExecutorMessage(
                 content=parsed_response.return_values["output"],

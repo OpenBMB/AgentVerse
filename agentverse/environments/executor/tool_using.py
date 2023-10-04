@@ -241,10 +241,10 @@ class ToolUsingExecutor(BaseExecutor):
                 "is_finish": True,
                 "cookies": cookies,
             }
-        if command == "None":
+        if command == "":
             return {
                 "observation": ExecutorMessage(
-                    content=f"The format is incorrect.",
+                    content=f"The function calling format is incorrect.",
                     sender="function",
                     tool_name=command,
                     tool_input=arguments,

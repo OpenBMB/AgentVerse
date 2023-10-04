@@ -2,7 +2,7 @@ cnt_agents: &cnt_agents 1
 cnt_tool_agents: &cnt_tool_agents 1
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
-tool_config: &tool_config tools_simplified.json
+tool_config: &tool_config tools_simplified_weather.json
 
 task_description: Assistant - I want to hold a party at somewhere around Tsinghua University tomorrow. I need you to look for some best places for holding a party nearby, and tell me whether the weather is good for holding a party tomorrow. Also, I want to know what activities can be considered in my party. Help me search the web.
 
@@ -94,7 +94,7 @@ prompts:
     ${solution}
 
   executor_append_prompt: &executor_append_prompt |-
-    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `task_submit` to submit your conclusion and your reflection on the tool use.
+    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `submit_task` to submit your conclusion and your reflection on the tool use.
 
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
 
@@ -137,6 +137,7 @@ environment:
     num_agents: *cnt_tool_agents
     tool_config: *tool_config
     tool_retrieval: False
+    max_tool_call_times: 25
   evaluator:
     type: basic
 

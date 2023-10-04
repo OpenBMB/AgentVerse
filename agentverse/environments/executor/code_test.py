@@ -67,11 +67,11 @@ class CodeTestExecutor(BaseExecutor):
         self,
         agent: ExecutorAgent,
         task_description: str,
-        solution: List[str],
+        solution: List[SolverMessage],
         *args,
         **kwargs,
     ) -> Any:
-
+        solution = solution[0].content
         os.makedirs("tmp", exist_ok=True)
         self.write_to_file("tmp/main.py", solution)
         manager = multiprocessing.Manager()

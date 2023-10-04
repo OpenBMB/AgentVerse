@@ -1,10 +1,10 @@
-cnt_agents: &cnt_agents 1
-cnt_tool_agents: &cnt_tool_agents 1
+cnt_agents: &cnt_agents 4
+cnt_tool_agents: &cnt_tool_agents 3
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
 tool_config: &tool_config tools_simplified.json
 
-task_description: Assistant - I am planning to buy a new car. Could you help me compare the features and prices of the latest models of Tesla, Ford, and Toyota? Include details about range, charging time, safety features, and after-sales service. Also, provide a brief analysis of the pros and cons of each car.
+task_description: I've recently taken an interest in DIY home projects. Search for beginner-friendly DIY projects that can be completed over the weekend. Also, provide a list of materials required and a step-by-step guide for each project.
 
 prompts:
   role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
@@ -38,7 +38,7 @@ prompts:
     2. Bob - look for information about the popular restaurants in Beijing using google.
     ...
 
-    What's the latest sub-task assigned to each person in the above conversation? Your response should merge the sub-tasks for the same person into one line. Each line should only include one person.
+    What's the latest sub-task assigned to each person in the above conversation? Your response should include ALL the people appear in the chat, and merge the sub-tasks for the same person into one line. Each line should only include one person.
   
   critic_prepend_prompt: &critic_prepend_prompt |-
     You are ${agent_name}, ${role_description}. You are now in a discussion group, the members are:
@@ -94,9 +94,11 @@ prompts:
     ${solution}
 
   executor_append_prompt: &executor_append_prompt |-
-    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `submit_task` to submit your conclusion and your reflection on the tool use. You have a trial budge of 10, now it is the ${current_turn}'th trial. If it is the last trial, you must call the `submit_task` anyway.
+    You are ${agent_name}. Please use the given functions to complete your sub-task. Do not recite the website. Only access the websites provided by the search engine. When the information is sufficient, or the provided tools cannot complete your task, call the `submit_task` to submit your conclusion and your reflection on the tool use.
 
   evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+
+  evaluator_append_prompt: &evaluator_append_prompt |-
     A group is trying to solve the following query proposed by the user:
     ${task_description}
 
@@ -104,8 +106,8 @@ prompts:
     ${solution}
 
     And after the execution stage, they give the following result:
-
-  evaluator_append_prompt: &evaluator_append_prompt |-
+    ${result}
+    
     You need to evaluate whether the given query has been completed. If so, summarize the solution to the user. If not, summarize the current progress, and propose what is missing.
 
     You must respond in the following format:
@@ -128,16 +130,15 @@ environment:
     type: role_description_name
     cnt_agents: *cnt_agents
   decision_maker:
-    type: dummy
+    type: horizontal-tool
     tool_config: *tool_config
   executor:
     type: tool-using
     num_agents: *cnt_tool_agents
     tool_config: *tool_config
     tool_retrieval: False
-    max_tool_call_times: 25
   evaluator:
-    type: basic-message
+    type: basic
 
 agents:
   - #role_assigner_agent:
@@ -160,7 +161,6 @@ agents:
     name: Planner
     prepend_prompt_template: *solver_prepend_prompt
     append_prompt_template: *solver_append_prompt
-    max_retry: 1000
     memory:
       memory_type: chat_history
     llm:
@@ -181,7 +181,6 @@ agents:
     name: Critic 1
     role_description: Waiting to be assigned.
     max_history: 15
-    max_retry: 1000
     prepend_prompt_template: *critic_prepend_prompt
     append_prompt_template: *critic_append_prompt
     memory:
@@ -200,14 +199,13 @@ agents:
     name: Executor
     prepend_prompt_template: *executor_prepend_prompt
     append_prompt_template: *executor_append_prompt
-    max_history: 8
-    max_retry: 1000
+    max_history: 16
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-4
       model: gpt-4
-      temperature: 0.5
+      temperature: 0
       max_tokens: 1024
     output_parser:
       type: tool-using-executor

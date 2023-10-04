@@ -135,6 +135,7 @@ environment:
     num_agents: *cnt_tool_agents
     tool_config: *tool_config
     tool_retrieval: False
+    max_tool_call_times: 25
   evaluator:
     type: basic-message
 

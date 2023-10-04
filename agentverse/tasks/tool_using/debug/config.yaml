@@ -4,7 +4,7 @@ max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
 tool_config: &tool_config tools_simplified.json
 
-task_description: Assistant - I am planning to buy a new car. Could you help me compare the features and prices of the latest models of Tesla, Ford, and Toyota? Include details about range, charging time, safety features, and after-sales service. Also, provide a brief analysis of the pros and cons of each car.
+task_description: Assistant - I want to kick off a book club with my friends. Can you tell me the top 5 bestselling books this month, gather the content summary for each, and find online platforms where we can buy or borrow them?
 
 prompts:
   role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
@@ -38,7 +38,7 @@ prompts:
     2. Bob - look for information about the popular restaurants in Beijing using google.
     ...
 
-    What's the latest sub-task assigned to each person in the above conversation? Your response should merge the sub-tasks for the same person into one line. Each line should only include one person.
+    What's the latest sub-task assigned to each person in the above conversation? Your response should merge the sub-tasks for the same person into one line. Each line should only include one person. Make the sub-tasks specific. Do not use pronoun to refer to the topic mentioned in conversation. Make the sub-task self-contained.
   
   critic_prepend_prompt: &critic_prepend_prompt |-
     You are ${agent_name}, ${role_description}. You are now in a discussion group, the members are:
@@ -110,7 +110,7 @@ prompts:
 
     You must respond in the following format:
     Status: (0 or 1. 0 for pending and 1 for finished)
-    Speak: (your words to the group if the task is pending, or your words to the user if the task is finished)
+    Speak: (your words to the group if the task is pending, or a complete answer based on the full execution log to the user if the task is finished)
 
     Now give your response.
     
@@ -135,7 +135,7 @@ environment:
     num_agents: *cnt_tool_agents
     tool_config: *tool_config
     tool_retrieval: False
-    max_tool_call_times: 25
+    max_tool_call_times: 2
   evaluator:
     type: basic-message
 
@@ -160,7 +160,7 @@ agents:
     name: Planner
     prepend_prompt_template: *solver_prepend_prompt
     append_prompt_template: *solver_append_prompt
-    max_retry: 1000
+    max_retry: 100
     memory:
       memory_type: chat_history
     llm:
@@ -181,7 +181,7 @@ agents:
     name: Critic 1
     role_description: Waiting to be assigned.
     max_history: 15
-    max_retry: 1000
+    max_retry: 100
     prepend_prompt_template: *critic_prepend_prompt
     append_prompt_template: *critic_append_prompt
     memory:
@@ -200,8 +200,8 @@ agents:
     name: Executor
     prepend_prompt_template: *executor_prepend_prompt
     append_prompt_template: *executor_append_prompt
-    max_history: 8
-    max_retry: 1000
+    max_history: 16
+    max_retry: 100
     memory:
       memory_type: chat_history
     llm:
@@ -217,6 +217,7 @@ agents:
     name: Evaluator
     role_description: |-
       Evaluator
+    max_history: 10
     prepend_prompt_template: *evaluator_prepend_prompt
     append_prompt_template: *evaluator_append_prompt
     memory:

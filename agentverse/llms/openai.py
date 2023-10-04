@@ -8,14 +8,12 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 from pydantic import BaseModel, Field
 
 from agentverse.llms.base import LLMResult
-from agentverse.logging import get_logger
+from agentverse.logging import logger
 from agentverse.message import Message
 
 from . import llm_registry
 from .base import BaseChatModel, BaseCompletionModel, BaseModelArgs
 from .utils.jsonrepair import JsonRepair
-
-logger = get_logger()
 
 try:
     import openai
@@ -104,7 +102,11 @@ class OpenAIChat(BaseChatModel):
     # def _construct_messages(self, history: List[Message]):
     #     return history + [{"role": "user", "content": query}]
 
-    @retry(stop=stop_after_attempt(20), wait=wait_exponential(multiplier=1, min=4, max=10),reraise=True)
+    @retry(
+        stop=stop_after_attempt(20),
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        reraise=True,
+    )
     def generate_response(
         self,
         prepend_prompt: str = "",
@@ -166,7 +168,11 @@ class OpenAIChat(BaseChatModel):
         except (OpenAIError, KeyboardInterrupt, json.decoder.JSONDecodeError) as error:
             raise
 
-    @retry(stop=stop_after_attempt(20), wait=wait_exponential(multiplier=1, min=4, max=10),reraise=True)
+    @retry(
+        stop=stop_after_attempt(20),
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        reraise=True,
+    )
     async def agenerate_response(
         self,
         prepend_prompt: str = "",
@@ -192,6 +198,25 @@ class OpenAIChat(BaseChatModel):
                     **self.args.dict(),
                 )
                 if response["choices"][0]["message"].get("function_call") is not None:
+                    function_name = response["choices"][0]["message"]["function_call"][
+                        "name"
+                    ]
+                    valid_function = False
+                    if function_name.startswith("function."):
+                        function_name = function_name.replace("function.", "")
+                    elif function_name.startswith("functions."):
+                        function_name = function_name.replace("functions.", "")
+                    for function in functions:
+                        if function["name"] == function_name:
+                            valid_function = True
+                            break
+                    if not valid_function:
+                        logger.warn(
+                            f"The returned function name {function_name} is not in the list of valid functions. Retrying..."
+                        )
+                        raise ValueError(
+                            f"The returned function name {function_name} is not in the list of valid functions."
+                        )
                     try:
                         arguments = ast.literal_eval(
                             response["choices"][0]["message"]["function_call"][
@@ -208,13 +233,14 @@ class OpenAIChat(BaseChatModel):
                                 ).repair()
                             )
                         except:
+                            logger.warn(
+                                "The returned argument in function call is not valid json. Retrying..."
+                            )
                             raise ValueError(
                                 "The returned argument in function call is not valid json."
                             )
                     return LLMResult(
-                        function_name=response["choices"][0]["message"][
-                            "function_call"
-                        ]["name"],
+                        function_name=function_name,
                         function_arguments=arguments,
                         send_tokens=response["usage"]["prompt_tokens"],
                         recv_tokens=response["usage"]["completion_tokens"],
