@@ -83,14 +83,19 @@ class Reflection(BaseMemoryManipulator):
             return ""
 
     def get_accumulated_importance(self):
-
         accumulated_importance = 0
 
         for memory in self.memory.messages:
-
-            if memory.content not in self.memory2importance or memory.content not in self.memory2immediacy:
-                self.memory2importance[memory.content] = self.get_importance(memory.content)
-                self.memory2immediacy[memory.content] = self.get_immediacy(memory.content)
+            if (
+                memory.content not in self.memory2importance
+                or memory.content not in self.memory2immediacy
+            ):
+                self.memory2importance[memory.content] = self.get_importance(
+                    memory.content
+                )
+                self.memory2immediacy[memory.content] = self.get_immediacy(
+                    memory.content
+                )
 
         for score in self.memory2importance.values():
             accumulated_importance += score
@@ -160,7 +165,12 @@ class Reflection(BaseMemoryManipulator):
         return score
 
     def query_similarity(
-            self, text: Union[str, List[str]], k: int, memory_bank: List, current_time=dt.now(), nms_threshold=0.99
+        self,
+        text: Union[str, List[str]],
+        k: int,
+        memory_bank: List,
+        current_time=dt.now(),
+        nms_threshold=0.99,
     ) -> List[str]:
         """
         get top-k entry based on recency, relevance, importance, immediacy
@@ -197,25 +207,37 @@ class Reflection(BaseMemoryManipulator):
                     self.memory2time[memory.content]["last_access_time"] = dt.now()
                     self.memory2time[memory.content]["create_time"] = dt.now()
 
-                last_access_time_diff = \
-                    (current_time - self.memory2time[memory.content]["last_access_time"]).total_seconds() // 3600
+                last_access_time_diff = (
+                    current_time - self.memory2time[memory.content]["last_access_time"]
+                ).total_seconds() // 3600
                 recency = np.power(
                     0.99, last_access_time_diff
                 )  # TODO: review the metaparameter 0.99
 
-                create_time_diff = (current_time - self.memory2time[memory.content]["create_time"]).total_seconds() // 60
+                create_time_diff = (
+                    current_time - self.memory2time[memory.content]["create_time"]
+                ).total_seconds() // 60
                 instancy = np.power(
                     0.90, create_time_diff
                 )  # TODO: review the metaparameter 0.90
 
                 relevance = cosine_similarity(
                     np.array(embedding).reshape(1, -1),
-                    np.array(self.memory.memory2embedding[memory.content]).reshape(1, -1),
+                    np.array(self.memory.memory2embedding[memory.content]).reshape(
+                        1, -1
+                    ),
                 )[0][0]
 
-                if memory.content not in self.memory2importance or memory.content not in self.memory2immediacy:
-                    self.memory2importance[memory.content] = self.get_importance(memory.content)
-                    self.memory2immediacy[memory.content] = self.get_immediacy(memory.content)
+                if (
+                    memory.content not in self.memory2importance
+                    or memory.content not in self.memory2immediacy
+                ):
+                    self.memory2importance[memory.content] = self.get_importance(
+                        memory.content
+                    )
+                    self.memory2immediacy[memory.content] = self.get_immediacy(
+                        memory.content
+                    )
 
                 importance = self.memory2importance[memory.content] / 10
                 immediacy = self.memory2immediacy[memory.content] / 10
@@ -243,14 +265,22 @@ class Reflection(BaseMemoryManipulator):
                 top_index = np.argmax(maximum_score)
                 top_k_indices.append(top_index)
                 maximum_score[top_index] = -1  # anything to prevent being chosen again
-                top_embedding = self.memory.memory2embedding[memory_bank[top_index].content]
+                top_embedding = self.memory.memory2embedding[
+                    memory_bank[top_index].content
+                ]
                 cos_sim = cosine_similarity(
                     np.array(top_embedding).reshape(1, -1),
-                    np.array([self.memory.memory2embedding[memory.content] for memory in memory_bank]),
+                    np.array(
+                        [
+                            self.memory.memory2embedding[memory.content]
+                            for memory in memory_bank
+                        ]
+                    ),
                 )[0]
                 score_weight = np.ones_like(maximum_score)
-                score_weight[cos_sim >= nms_threshold] -= \
-                    (cos_sim[cos_sim >= nms_threshold] - nms_threshold) / (1 - nms_threshold)
+                score_weight[cos_sim >= nms_threshold] -= (
+                    cos_sim[cos_sim >= nms_threshold] - nms_threshold
+                ) / (1 - nms_threshold)
                 maximum_score = maximum_score * score_weight
 
         # access them and refresh the access time
@@ -258,7 +288,8 @@ class Reflection(BaseMemoryManipulator):
             self.memory2time[memory_bank[i].content]["last_access_time"] = current_time
         # sort them in time periods. if the data tag is 'observation', ad time info output.
         top_k_indices = sorted(
-            top_k_indices, key=lambda x: self.memory2time[memory_bank[x].content]["create_time"]
+            top_k_indices,
+            key=lambda x: self.memory2time[memory_bank[x].content]["create_time"],
         )
         query_results = []
         for i in top_k_indices:
@@ -280,16 +311,17 @@ class Reflection(BaseMemoryManipulator):
         """
         memories_of_interest = self.get_memories_of_interest_oneself()
         questions = self.get_questions([m.content for m in memories_of_interest])
-        statements = self.query_similarity(questions, len(questions) * 10, memories_of_interest)
+        statements = self.query_similarity(
+            questions, len(questions) * 10, memories_of_interest
+        )
         insights = self.get_insights(statements)
         logger.info(self.agent.name + f" Insights: {insights}")
         for insight in insights:
             # convert insight to messages
             # TODO currently only oneself can see its own reflection
             insight_message = Message(
-                    content=insight,
-                    sender=self.agent.name,
-                    receiver={self.agent.name})
+                content=insight, sender=self.agent.name, receiver={self.agent.name}
+            )
             self.memory.add_message([insight_message])
         reflection = "\n".join(insights)
         return reflection

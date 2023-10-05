@@ -2,6 +2,7 @@ import logging
 import json
 import ast
 import os
+import numpy as np
 from aiohttp import ClientSession
 from typing import Dict, List, Optional, Union
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -272,3 +273,21 @@ class OpenAIChat(BaseChatModel):
         if append_prompt != "":
             messages.append({"role": "user", "content": append_prompt})
         return messages
+
+
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=4, max=10),
+    reraise=True,
+)
+def get_embedding(text: str, attempts=3) -> np.array:
+    try:
+        text = text.replace("\n", " ")
+        embedding = openai.Embedding.create(
+            input=[text], model="text-embedding-ada-002"
+        )["data"][0]["embedding"]
+        return tuple(embedding)
+    except Exception as e:
+        attempt += 1
+        logger.error(f"Error {e} when requesting openai models. Retrying")
+        raise

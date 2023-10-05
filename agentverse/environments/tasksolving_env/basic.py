@@ -12,9 +12,6 @@ from agentverse.message import Message, SolverMessage, ExecutorMessage
 
 from .. import env_registry as EnvironmentRegistry
 
-# from agentverse.environments.tasksolving_env.rules.base import Rule
-# from agentverse.environments.tasksolving_env.rules.base import Tasksolving_Rule as Rule
-
 from agentverse.environments.tasksolving_env.rules import TasksolvingRule
 
 

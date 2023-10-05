@@ -1,0 +1,190 @@
+cnt_agents: &cnt_agents 2
+max_turn: &max_turn 3
+max_criticizing_rounds: 3
+
+prompts:
+  role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
+    # Role Description
+    You are the leader of a group of experts, now you are facing a grade school math problem:
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} expert in different fields.
+    
+    Here are some suggestion:
+    ${advice}
+
+  role_assigner_append_prompt: &role_assigner_append_prompt |-    
+    You can recruit ${cnt_critic_agents} expert in different fields. What experts will you recruit to better generate an accurate solution?
+
+    # Response Format Guidance
+    You should respond with a list of expert description. For example:
+    1. an electrical engineer specified in the filed of xxx.
+    2. an economist who is good at xxx.
+    ...
+
+    Only respond with the description of each role. Do not include your reason.
+
+  solver_prepend_prompt: &solver_prepend_prompt |-
+    Solve the following math problem: 
+    ${task_description} 
+    
+    This math problem can be answered without any extra information. You should not ask for any extra information.
+
+  solver_append_prompt: &solver_append_prompt |-
+    You are ${role_description}. Using the information in the chat history and your knowledge, you should provide the correct solution to the math problem. Explain your reasoning. Your final answer must be a single numerical number and nothing else, in the form \boxed{answer}, at the end of your response.
+
+  # Your response should include one final answer in the form of \boxed{answer} at the end. If there are multiple answers given by different agents, you should only select the correct one and summarize its deduction process. Do not summarize each agent's response separately, summarize the whole chat history and give one final answer.
+  # Can you solve the following math problem?
+  # ${task_description}
+
+  # # Previous Solution
+  # The solution you gave in the last step is:
+  # ```
+  # ${former_solution}
+  # ```
+
+  # # Critics
+  # There are some critics on the above solution:
+  # ```
+  # ${critic_opinions}
+  # ```
+
+  # Using the these information, can you provide the correct solution to the math problem? Explain your reasoning. Your final answer should be a single numerical number (not a equation), in the form \boxed{answer}, at the end of your response.
+
+  critic_prepend_prompt: &critic_prepend_prompt |-
+    You are ${role_description}. You are in a discussion group, aiming to collaborative solve the following math problem:
+    ${task_description}
+    
+    Based on your knowledge, give your correct solution to the problem step by step.
+
+  critic_append_prompt: &critic_append_prompt |-
+    Now compare your solution with the solution given in the chat history and give your response. The final answer is highlighted in the form \boxed{answer}. When responding, you should follow the following rules:
+    1. This math problem can be answered without any extra information. You should not ask for any extra information. 
+    2. Compare your solution with the given solution, give your critics. You should only give your critics, don't give your answer.
+    3. If the final answer in your solution is the same as the final answer in the above provided solution, end your response with a special token "[Agree]".
+
+  # If the solution is correct, end your response with a special token "[Correct]".
+  # If the solution is wrong, end your response with a special token "[Wrong]".
+  # # Response Format
+  # Using the solution from the other member as additional information, can you provide your answer to this math problem? Explain your reasoning. Your final answer should be a single numerical number (not a equation), in the form \boxed{answer}, at the end of your response. And additionally:
+  # 1. If your solution has the same answer to the provided solution, end your response with a special token "[Correct]".
+  # 2. If your solution has different answer to the provided solution, end your response with a special token "[Wrong]".
+
+  evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+    Experts: ${all_role_description}
+    Problem: ${task_description}
+    Solution: 
+    ```
+    ${solution}
+    ```
+
+  evaluator_append_prompt: &evaluator_append_prompt |-
+    You are an experienced mathematic teacher. As a good teacher, you carefully check the correctness of the given solution on a grade school math problem. When the solution is wrong, you should output a correctness of 0 and give your advice to the students on how to correct the solution. When it is correct, output a correctness of 1 and why it is correct. Also check that the final answer is in the form \boxed{answer} at the end of the solution. The answer must be a numerical number (not a equation, fraction, function or variable). You should also give some suggestion on on what experts should recruit in the next round.
+    
+    You should respond in the following format:
+    Correctness: (0 or 1, 0 is wrong, and 1 is correct)
+    Response: (advice to correct the answer or why it is correct)
+
+    
+
+name: pipeline
+
+
+environment:
+  env_type: task-basic
+  max_turn: *max_turn
+  rule:
+    role_assigner:
+      type: role_description
+      cnt_agents: *cnt_agents
+    decision_maker:
+      type: vertical-solver-first
+    executor:
+      type: none
+    evaluator:
+      type: basic
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    name: role assigner
+    prepend_prompt_template: *role_assigner_prepend_prompt
+    append_prompt_template: *role_assigner_append_prompt
+    max_retry: 10
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 512
+    output_parser:
+      type: role_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    name: Planner
+    prepend_prompt_template: *solver_prepend_prompt
+    append_prompt_template: *solver_append_prompt
+    max_retry: 10
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0
+      max_tokens: 2048
+    output_parser:
+      type: mgsm
+
+  - #critic_agents:
+    agent_type: critic
+    name: Critic 1
+    role_description: |-
+      Waiting to be assigned.
+    prepend_prompt_template: *critic_prepend_prompt
+    append_prompt_template: *critic_append_prompt
+    max_retry: 10
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0.3
+      max_tokens: 2048
+    output_parser:
+      type: mgsm-critic-agree
+
+  - #executor_agent:
+    agent_type: executor
+    name: Executor
+    max_retry: 10
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: gpt-4
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: mgsm
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    name: Evaluator
+    role_description: |-
+      Evaluator
+    prepend_prompt_template: *evaluator_prepend_prompt
+    append_prompt_template: *evaluator_append_prompt
+    max_retry: 10
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: gpt-4
+      temperature: 0.3
+      max_tokens: 1024
+    output_parser:
+      type: mgsm-evaluator
+      dimensions:
+        - Correctness

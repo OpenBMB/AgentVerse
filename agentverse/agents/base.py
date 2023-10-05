@@ -11,6 +11,7 @@ from agentverse.message import Message
 from agentverse.parser import OutputParser
 from agentverse.memory_manipulator import BaseMemoryManipulator
 
+
 class BaseAgent(BaseModel):
     name: str
     llm: BaseLLM
@@ -20,7 +21,9 @@ class BaseAgent(BaseModel):
     prompt_template: str = Field(default="")
     role_description: str = Field(default="")
     memory: BaseMemory = Field(default_factory=ChatHistoryMemory)
-    memory_manipulator: BaseMemoryManipulator = Field(default_factory=BaseMemoryManipulator)
+    memory_manipulator: BaseMemoryManipulator = Field(
+        default_factory=BaseMemoryManipulator
+    )
     max_retry: int = Field(default=3)
     receiver: Set[str] = Field(default=set({"all"}))
     async_mode: bool = Field(default=True)

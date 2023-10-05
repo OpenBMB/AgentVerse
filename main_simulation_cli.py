@@ -5,7 +5,7 @@ from agentverse.logging import logger
 from agentverse.simulation import Simulation
 
 parser = ArgumentParser()
-parser.add_argument("--task", type=str, default="prisoner_dilemma")
+parser.add_argument("--task", type=str, default="simulation/prisoner_dilemma")
 parser.add_argument("--debug", action="store_true")
 args = parser.parse_args()
 

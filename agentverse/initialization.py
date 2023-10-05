@@ -5,13 +5,11 @@ from typing import Dict, List, TYPE_CHECKING
 
 import yaml
 
-"""
-try:
-    from bmtools.agent.singletool import import_all_apis, load_single_tools
-except:
-    print("BMTools is not installed, tools cannot be used. To install BMTools, \
-         please follow the instruction in the README.md file.")
-"""
+# try:
+#     from bmtools.agent.singletool import import_all_apis, load_single_tools
+# except:
+#     print("BMTools is not installed, tools cannot be used. To install BMTools, \
+#          please follow the instruction in the README.md file.")
 
 from agentverse.llms import llm_registry
 
@@ -41,14 +39,14 @@ def load_memory_manipulator(memory_manipulator_config: Dict):
     return memory_manipulator_registry.build(memory_manipulator_type, **memory_manipulator_config)
 
 
-def load_tools(tool_config: List[Dict]):
-    if len(tool_config) == 0:
-        return []
-    all_tools_list = []
-    for tool in tool_config:
-        _, config = load_single_tools(tool["tool_name"], tool["tool_url"])
-        all_tools_list += import_all_apis(config)
-    return all_tools_list
+# def load_tools(tool_config: List[Dict]):
+#     if len(tool_config) == 0:
+#         return []
+#     all_tools_list = []
+#     for tool in tool_config:
+#         _, config = load_single_tools(tool["tool_name"], tool["tool_url"])
+#         all_tools_list += import_all_apis(config)
+#     return all_tools_list
 
 
 def load_environment(env_config: Dict) -> BaseEnvironment:
@@ -98,9 +96,6 @@ def prepare_task_config(task):
         memory_manipulator = load_memory_manipulator(agent_configs.get("memory_manipulator", {}))
         agent_configs["memory_manipulator"] = memory_manipulator
 
-        agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
-
-        agent_configs["output_parser"] = task_config["output_parser"]
         # agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
 
         # Build the output parser
