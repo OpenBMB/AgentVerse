@@ -8,7 +8,6 @@ import bdb
 from string import Template
 from typing import TYPE_CHECKING, List, Tuple
 
-# from agentverse.environments import PipelineEnvironment
 from agentverse.message import Message
 
 from agentverse.agents import agent_registry

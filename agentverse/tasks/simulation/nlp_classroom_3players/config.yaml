@@ -14,7 +14,7 @@ prompts:
 name: NLP Classroom 3 Players
 
 environment:
-  env_type: basic
+  env_type: sim-basic
   max_turns: 10
   rule:
     order:

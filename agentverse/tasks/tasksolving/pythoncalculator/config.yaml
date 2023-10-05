@@ -1,0 +1,201 @@
+cnt_agents: &cnt_agents 4
+max_turn: &max_turn 3
+max_inner_turns: &max_inner_turns 2
+
+task_description: |-
+  write a simple calculator GUI using Python3.
+
+prompts:
+  role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
+
+  role_assigner_append_prompt: &role_assigner_append_prompt |-
+    You are the leader of a group of experts, now you are faced with a task:
+    
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} expert team members in different regions.
+    What experts will you recruit to better generate good ideas?
+    
+    Output format example:
+    1. an electrical engineer specified in the filed of xxx
+    2. an economist who is good at xxx
+    3. a lawyer with a good knowledge of xxx
+    ...
+    
+    ${advice}
+    You don't have to give the reason.
+
+  solver_prepend_prompt: &solver_prepend_prompt |-
+    You are faced with the task:
+    ${task_description}
+
+    Below is the chat history among you and other teammates.
+    
+  solver_append_prompt: &solver_append_prompt |-
+    Now you are going to give a new solution, based upon your former solution and the critics' opinions. Write the code step by step.
+
+  critic_prepend_prompt: &critic_prepend_prompt |-
+    Now you are ${role_description}
+    
+    You are in a discussion group, aiming to ${task_description}.
+    
+    Below is the chat history among you and other teammates.
+
+  critic_append_prompt: &critic_append_prompt |-
+    Now the group is asking your opinion about it. Based on your knowledge
+    in your field, do you agree that this solution can perfectly 
+    solve the problem?
+    Or do you have any ideas to improve it?
+    
+    - If you thinks it is perfect, use the following output format:
+    Action: Agree
+    Action Input: Agree.
+    (Do not output your reason for agreeing!)
+
+    - If you want to give complemented opinions to improve it or to contradict with it, use the following output format:
+    Action: Disagree
+    Action Input: (what you want to say in one line)
+    
+    P.S. Always remember you are ${role_description}!
+    
+    If no former solution or critic opinions are given, you can just disagree and output your idea freely, based on the expertise of your role.
+    Remember, the ideas should be specific and detailed enough, not just general opinions.
+    
+    Please control output code in 2048 tokens! (Write concise code)
+
+  evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+
+  evaluator_append_prompt: &evaluator_append_prompt |-
+    You are an professional and strict code reviewer. Your task is to evaluate the solution. The code is to ${task_description}. Your task is to evaluate the codes written by the code engineers.
+    
+    Please not only give a general rating points (from 0 to 9) but also give detailed comments about where and how the code can be improved. Please consider the following aspects when you are evaluating the code:
+      1. The code should be able to run without any errors.
+      2. The code should be able to achieve the goal specified in the task description.
+      3. The code should be easy to read and understand, efficient, concise and elegant.
+      4. The code should be robust.
+    
+    Please rate the code in the following dimensions:
+        1. Completeness: Is the code snippet complete enough without unimplemented functions of methods? Is it able to run without any errors?
+        2. Functionality: Is the code able to achieve the goal specified in the task description?
+        3. Readability: Is the code easy to read and understand, efficient, concise and elegant?
+        4. Robustness: Is the code snippet able to handle different unexpected input or other exceptions?
+    
+    In the fifth line of output, give your detailed advice for the engineers to better generate good codes. Only give high grade when it is really great.
+  
+    # Output format
+    1. Completeness: (a score between 0 and 9)
+    2. Functionality: (a score between 0 and 9)
+    3. Readability: (a score between 0 and 9)
+    4. Robustness: (a score between 0 and 9)
+    5. Advice: (your advice in one line)
+    
+    Here is the content you have to evaluate:
+    ${solution}
+    
+
+name: pipeline
+
+
+environment:
+  env_type: task-basic
+  max_turn: *max_turn
+  role_assigner:
+    type: role_description
+    cnt_agents: *cnt_agents
+  decision_maker:
+    type: vertical-solver-first
+    max_inner_turns: *max_inner_turns
+  executor:
+    type: none
+  evaluator:
+    type: basic
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    name: role assigner
+    max_retry: 1000
+    prepend_prompt_template: *role_assigner_prepend_prompt
+    append_prompt_template: *role_assigner_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0.7
+      max_tokens: 256
+    output_parser:
+      type: role_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    name: Summarizer
+    max_retry: 1000
+    max_history: 5
+    prepend_prompt_template: *solver_prepend_prompt
+    append_prompt_template: *solver_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0.7
+      max_tokens: 2048
+    output_parser:
+      type: dummy
+
+  - #critic_agents:
+    agent_type: critic
+    name: Reviewer
+    max_retry: 1000
+    max_history: 5
+    role_description: |-
+      Waiting to be assigned.
+    prepend_prompt_template: *critic_prepend_prompt
+    append_prompt_template: *critic_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0.7
+      max_tokens: 1024
+    output_parser:
+      type: critic
+
+  - #executor_agent:
+    agent_type: executor
+    name: Dummy Executor
+    max_retry: 1000
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0.7
+      max_tokens: 512
+    output_parser:
+      type: dummy
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    name: Evaluator
+    max_retry: 1000
+    role_description: |-
+      Evaluator
+    prepend_prompt_template: *evaluator_prepend_prompt
+    append_prompt_template: *evaluator_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: "gpt-4"
+      temperature: 0.7
+      max_tokens: 1024
+    output_parser:
+      type: evaluator
+      dimensions:
+        - Completeness
+        - Functionality
+        - Readability
+        - Robustness

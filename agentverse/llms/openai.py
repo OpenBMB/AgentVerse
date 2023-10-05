@@ -2,6 +2,7 @@ import logging
 import json
 import ast
 import os
+from aiohttp import ClientSession
 from typing import Dict, List, Optional, Union
 from tenacity import retry, stop_after_attempt, wait_exponential
 
@@ -23,9 +24,9 @@ except ImportError:
     logging.warning("openai package is not installed")
 else:
     openai.api_key = os.environ.get("OPENAI_API_KEY")
-    openai.proxy = os.environ.get("http_proxy")
-    if openai.proxy is None:
-        openai.proxy = os.environ.get("HTTP_PROXY")
+    # openai.proxy = os.environ.get("http_proxy")
+    # if openai.proxy is None:
+    #     openai.proxy = os.environ.get("HTTP_PROXY")
     if openai.api_key is None:
         logging.warning(
             "OpenAI API key is not set. Please set the environment variable OPENAI_API_KEY"
@@ -114,9 +115,6 @@ class OpenAIChat(BaseChatModel):
         append_prompt: str = "",
         functions: List[dict] = [],
     ) -> LLMResult:
-        # logger.debug(prepend_prompt)
-        # logger.debug(history)
-        # logger.debug(append_prompt)
         messages = self.construct_messages(prepend_prompt, history, append_prompt)
         logger.log_prompt(messages)
 
@@ -126,9 +124,6 @@ class OpenAIChat(BaseChatModel):
                 response = openai.ChatCompletion.create(
                     messages=messages,
                     functions=functions,
-                    # function_call="auto",
-                    # function_call={"name": "run_code"},
-                    # stream=True,
                     **self.args.dict(),
                 )
                 if response["choices"][0]["message"].get("function_call") is not None:
@@ -180,23 +175,18 @@ class OpenAIChat(BaseChatModel):
         append_prompt: str = "",
         functions: List[dict] = [],
     ) -> LLMResult:
-        # logger.debug(prepend_prompt)
-        # logger.debug(history)
-        # logger.debug(append_prompt)
         messages = self.construct_messages(prepend_prompt, history, append_prompt)
         logger.log_prompt(messages)
 
         try:
-            # Execute function call
             if functions != []:
-                response = await openai.ChatCompletion.acreate(
-                    messages=messages,
-                    functions=functions,
-                    # function_call="auto",
-                    # function_call={"name": "run_code"},
-                    # stream=True,
-                    **self.args.dict(),
-                )
+                async with ClientSession(trust_env=True) as session:
+                    openai.aiosession.set(session)
+                    response = await openai.ChatCompletion.acreate(
+                        messages=messages,
+                        functions=functions,
+                        **self.args.dict(),
+                    )
                 if response["choices"][0]["message"].get("function_call") is not None:
                     function_name = response["choices"][0]["message"]["function_call"][
                         "name"
@@ -256,10 +246,12 @@ class OpenAIChat(BaseChatModel):
                     )
 
             else:
-                response = await openai.ChatCompletion.acreate(
-                    messages=messages,
-                    **self.args.dict(),
-                )
+                async with ClientSession(trust_env=True) as session:
+                    openai.aiosession.set(session)
+                    response = await openai.ChatCompletion.acreate(
+                        messages=messages,
+                        **self.args.dict(),
+                    )
                 return LLMResult(
                     content=response["choices"][0]["message"]["content"],
                     send_tokens=response["usage"]["prompt_tokens"],

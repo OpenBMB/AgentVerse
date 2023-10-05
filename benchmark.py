@@ -17,8 +17,6 @@ parser.add_argument("--dataset_path", type=str, required=True)
 parser.add_argument("--output_path", type=str, default=None)
 parser.add_argument("--has_tools", action="store_true")
 parser.add_argument("--tool_tmp_path", type=str)
-parser.add_argument("--single_agent", "-s", action="store_true")
-parser.add_argument("--discussion_mode", "-d", action="store_true")
 parser.add_argument("--overwrite", action="store_true")
 parser.add_argument("--debug", action="store_true")
 args = parser.parse_args()
@@ -64,9 +62,7 @@ if __name__ == "__main__":
         # print(args.single_agent)
         # print(args.discussion_mode)
         # exit()
-        plan, result, logs = agentversepipeline.run(
-            single_agent=args.single_agent, discussion_mode=args.discussion_mode
-        )
+        plan, result, logs = agentversepipeline.run()
         f.write(
             json.dumps(
                 {

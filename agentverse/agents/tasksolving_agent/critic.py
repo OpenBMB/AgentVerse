@@ -87,11 +87,6 @@ class CriticAgent(BaseAgent):
                 logger.error(e)
                 logger.warn("Retrying...")
                 continue
-        # if parsed_response is None:
-        #     return AgentCriticism(True, "LLM failed.", self)
-        # parsed_response = AgentCriticism(
-        #     parsed_response.is_agree, parsed_response.criticism, self
-        # )
 
         if parsed_response is None:
             logger.error(f"{self.name} failed to generate valid response.")

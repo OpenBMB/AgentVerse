@@ -4,11 +4,8 @@ import json
 import re
 
 
-@dataloader_registry.register("tasksolving/mgsm")
 @dataloader_registry.register("tasksolving/mgsm/gpt-4")
 @dataloader_registry.register("tasksolving/mgsm/gpt-3.5")
-@dataloader_registry.register("tasksolving/mgsm/gpt-3.5-new")
-@dataloader_registry.register("tasksolving/mgsm/gpt-3.5-autogpt")
 class MGSMLoader(DataLoader):
     def __init__(self, path: str):
         self.answer_pat = re.compile(r"#### (-?\d+)")

@@ -13,8 +13,6 @@ from agentverse.message import RoleAssignerMessage, Message
 from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
 
-# from agentverse.environments import PipelineEnvironment
-
 
 logger = get_logger()
 
@@ -25,8 +23,6 @@ class RoleAssignerAgent(BaseAgent):
         self, advice: str, task_description: str, cnt_critic_agents: int
     ) -> RoleAssignerMessage:
         logger.debug("", self.name, Fore.MAGENTA)
-        # prompt = self._fill_prompt_template(advice, task_description, cnt_critic_agents)
-        # logger.debug(f"Prompt:\n{prompt}", "Role Assigner", Fore.CYAN)
         prepend_prompt, append_prompt = self.get_all_prompts(
             advice=advice,
             task_description=task_description,

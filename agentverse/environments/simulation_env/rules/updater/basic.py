@@ -52,7 +52,6 @@ class BasicUpdater(BaseUpdater):
     def add_message_to_all_agents(
         self, agents: List[BaseAgent], message: Message
     ) -> bool:
-        print(message.receiver)
         if "all" in message.receiver:
             # If receiver is all, then add the message to all agents
             for agent in agents:

@@ -20,18 +20,6 @@ from agentverse.environments.tasksolving_env.rules import TasksolvingRule
 
 @EnvironmentRegistry.register("task-basic")
 class BasicEnvironment(BaseEnvironment):
-    """
-    A basic environment implementing the logic of conversation.
-
-    Args:
-        agents: List of agents
-        rule: Rule for the environment
-        max_loop_rounds: Maximum number of loop rounds number
-        cnt_turn: Current round number
-        last_messages: Messages from last turn
-        rule_params: Variables set by the rule
-    """
-
     rule: TasksolvingRule
     agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]] = None
 
@@ -60,9 +48,7 @@ class BasicEnvironment(BaseEnvironment):
     async def step(
         self, advice: str = "No advice yet.", previous_plan: str = "No solution yet."
     ) -> List[Message]:
-        # advice = "No advice yet."
         result = ""
-        # previous_plan = "No solution yet."
         logs = []
 
         logger.info(f"Loop Round {self.cnt_turn}")
@@ -80,11 +66,6 @@ class BasicEnvironment(BaseEnvironment):
         plan: List[SolverMessage] = await self.rule.decision_making(
             self.task_description, self.agents, previous_plan, advice
         )
-        # Although plan may be a list in some cases, all the cases we currently consider
-        # only have one plan, so we just take the first element.
-        # TODO: make it more general
-        # plan = plan[0].content
-        # plan = [p.content for p in plan]
         flatten_plan = "\n".join([p.content for p in plan])
         logs.append({"module": "Decision Maker", "content": flatten_plan})
         logger.info("", f"Decision Plan:\n{flatten_plan}", Fore.YELLOW)

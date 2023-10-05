@@ -89,10 +89,10 @@ def prepare_task_config(task):
             agent_configs["tool_memory"] = load_memory(agent_configs["tool_memory"])
         llm = load_llm(agent_configs.get("llm", "text-davinci-003"))
         agent_configs["llm"] = llm
-        #agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
+        # agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
 
         # Build the output parser
-        output_parser_config = agent_configs.get("output_parser", {})
+        output_parser_config = agent_configs.get("output_parser", {"type": "dummy"})
         if output_parser_config.get("type", None) == "role_assigner":
             output_parser_config["cnt_critic_agents"] = task_config.get(
                 "cnt_critic_agents", 0

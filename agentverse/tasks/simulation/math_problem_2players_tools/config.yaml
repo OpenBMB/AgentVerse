@@ -71,7 +71,7 @@ tools: &tools
     tool_url: "http://127.0.0.1:8079/tools/wolframalpha/"
 
 environment:
-  env_type: basic
+  env_type: sim-basic
   max_turns: 10
   rule:
     order:

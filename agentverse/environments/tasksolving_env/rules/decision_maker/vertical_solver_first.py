@@ -20,7 +20,7 @@ class VerticalSolverFirstDecisionMaker(BaseDecisionMaker):
     Discuss in a vertical manner.
     """
 
-    name: str = "vertical"
+    name: str = "vertical-sovler-first"
     max_inner_turns: int = 3
 
     async def astep(

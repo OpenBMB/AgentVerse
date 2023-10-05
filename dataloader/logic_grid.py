@@ -4,11 +4,7 @@ import json
 import re
 
 
-@dataloader_registry.register("tasksolving/logic_grid")
 @dataloader_registry.register("tasksolving/logic_grid/gpt-4")
-@dataloader_registry.register("tasksolving/logic_grid/gpt-4-new")
-@dataloader_registry.register("tasksolving/logic_grid/gpt-4-new-2")
-@dataloader_registry.register("tasksolving/logic_grid/gpt-4-new-norole")
 class LogicGridLoader(DataLoader):
     def __init__(self, path: str):
         self.answer_pat = re.compile(r"#### (-?\d+)")

@@ -1,11 +1,11 @@
-cnt_critic_agents: 3
-max_loop_rounds: &max_loop_rounds 5
-max_criticizing_rounds: 3
-human_eval: false
-evaluation_dimensions: |-
+cnt_agents: &cnt_agents 2
+max_turn: &max_turn 3
+max_inner_turns: &max_inner_turns 3
 
 prompts:
-  role_assigner_prompt: &role_assigner_prompt |-
+  role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
+
+  role_assigner_append_prompt: &role_assigner_append_prompt |-
     # Role Description
     You are the leader of a group of experts, now you need to generate a response based on the text:
     ${task_description}
@@ -21,72 +21,60 @@ prompts:
     
     You don't have to give the reason.
 
-  solver_prompt: &solver_prompt |-
-    # Problem
-    You need to generate a response based on the text:
-    ${task_description}
-    
-    # Previous Solution
-    The solution you gave in the last step is:
-    ${former_solution}
-    
-    # Critics
-    Critics in the group gave the following opinions:
-    ${critic_opinions}
-    
-    # Your Task
-    Now based upon the former solution and the critics' opinions, please give a new solution.
-    Your solution should contain only your response beginning with "System: ".
-    Do not give any additional information.
-
-  critic_prompt: &critic_prompt |-
-    # Role Description and Problem to Solve
-    You are ${role_description}. You are in a discussion group, aiming to generate a response based on the text:
+  solver_prepend_prompt: &solver_prepend_prompt |-
+    You are ${role_description}. Below is a chat history:
     ${task_description}
 
-    # Preliminary Solution
-    Now the group gives a preliminary solution as follows:
-    ${preliminary_solution}
+    And below is the discussion about what the next system response should be:
     
-    # Advice
-    Meanwhile, another expert gave the following advice on the solution:
-    ${advice}
+  solver_append_prompt: &solver_append_prompt |-
+    Now based on these information, please give a better next system response. Your response should contain only one system response beginning with "System: ". Do not give any additional information.
+
+  critic_prepend_prompt: &critic_prepend_prompt |-
+    You are ${role_description}. You are in a discussion group, aiming to generate a system response to the following chat history:
+    ${task_description}
+
+    Below is the discussion about what the next system response should be:
     
+  critic_append_prompt: &critic_append_prompt |-
     # Response Format Guidance
-    - If you thinks the preliminary solution is perfect, respond using the following format:
-    Action: Agree
-    Action Input: Agree.
-    (Do not output your reason for agreeing!)
+    - If you thinks the latest response given above is perfect, respond using the following format:
+    Decision: (set it to "Agree")
+    Response: (your response on why you think it is perfect)
 
     - If you think it is flawed, give your advice use the following output format:
-    Action: Disagree
-    Action Input: (explain why you disagree)
+    Decision: (set it to "Disagree")
+    Response: (explain why you disagree and give your advice)
     
-    # Your Task
-    Based on your knowledge in your field, do you agree that this solution is the best response based on the text?
+    Based on your knowledge in your field, do you agree that this solution is a good response to the chat history?
 
-  evaluator_prompt: &evaluator_prompt |-
+  manager_prompt: &manager_prompt |-
+
+  executor_prepend_prompt: &executor_prepend_prompt |-
+
+  executor_append_prompt: &executor_append_prompt |-
+
+  evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+
+  evaluator_append_prompt: &evaluator_append_prompt |-
     # Role Description
-    You are an experienced dialogue teacher. As a good teacher, you carefully check the correctness of the given response based on the text. When the solution is flawed, you should patiently teach the students how to give better response.
+    You are an experienced dialogue teacher. As a good teacher, you carefully assess the given system response based on the chat history. When the response is flawed, you should patiently teach the system how to give better response.
   
     # Response Format Guidance
     You must respond in the following format:
-    Interesting: (a score between 0 and 9)
-    Engaging: (a score between 0 and 9)
-    Specific: (a score between 0 and 9)
-    Relevant: (a score between 0 and 9)
-    Semantically Appropriate: (a score between 0 and 9)
-    Understandable: (a score between 0 and 9)
-    Fluent: (a score between 0 and 9)
-    Overall Impression: (a score between 0 and 9)
-    Advice: (your advice on how to correct the solution)
+    Engaging: (a score between 0 and 10)
+    Relevant: (a score between 0 and 10)
+    Semantically Appropriate: (a score between 0 and 10)
+    Advice: (your advice on how to improve the response)
     
-    # Problem and Student's Solution
-    Problem: ${task_description}
-    Student's Solution: ${solution}
+    # Chat History
+    ${task_description}
+
+    # Next System Response
+    ${solution}
 
     # Your Task
-    Now carefully check the student's solution, and give your response.
+    Now carefully check the system's response, and give your opinion.
     
 
 name: pipeline
@@ -94,99 +82,121 @@ name: pipeline
 
 environment:
   env_type: task-basic
-  max_loop_rounds: *max_loop_rounds
+  max_turn: *max_turn
   rule:
-    order:
-      type: sequential
-    visibility:
-      type: all
-    selector:
-      type: basic
-    updater:
-      type: basic
-    describer:
+    role_assigner:
+      type: role_description
+      cnt_agents: *cnt_agents
+    decision_maker:
+      type: vertical-solver-first
+      max_inner_turns: *max_inner_turns
+    executor:
+      type: none
+    evaluator:
       type: basic
 
 agents:
   - #role_assigner_agent:
     agent_type: role_assigner
     name: role assigner
-    prompt_template: *role_assigner_prompt
+    max_retry: 1000
+    prepend_prompt_template: *role_assigner_prepend_prompt
+    append_prompt_template: *role_assigner_append_prompt
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-4
       model: "gpt-4"
       temperature: 0
-      max_tokens: 256
+      max_tokens: 512
     output_parser:
       type: role_assigner
 
   - #solver_agent:
     agent_type: solver
     name: Planner
-    prompt_template: [*solver_prompt, ""]
+    max_retry: 1000
+    max_history: 10
+    prepend_prompt_template: *solver_prepend_prompt
+    append_prompt_template: *solver_append_prompt
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-4
       model: "gpt-4"
       temperature: 0
-      max_tokens: 512
+      max_tokens: 1024
+    output_parser:
+      type: responsegen
 
   - #critic_agents:
     agent_type: critic
     name: Critic 1
+    max_retry: 1000
+    max_history: 10
     role_description: |-
       Waiting to be assigned.
-    prompt_template: *critic_prompt
+    prepend_prompt_template: *critic_prepend_prompt
+    append_prompt_template: *critic_append_prompt
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-4
       model: "gpt-4"
       temperature: 0
-      max_tokens: 256
+      max_tokens: 1024
     output_parser:
-      type: responsegen-critic
+      type: responsegen-critic-2
 
   - #executor_agent:
     agent_type: executor
     name: Executor
-    prompt_template: None
+    max_retry: 1000
+    prepend_prompt_template: *executor_prepend_prompt
+    append_prompt_template: *executor_append_prompt
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-4
-      model: "gpt-4"
+      model: gpt-4
       temperature: 0
-      max_tokens: 512
+      max_tokens: 1024
+    output_parser:
+      type: responsegen
 
   - #evaluator_agent:
     agent_type: evaluator
     name: Evaluator
+    max_retry: 1000
     role_description: |-
       Evaluator
-    prompt_template: *evaluator_prompt
+    prepend_prompt_template: *evaluator_prepend_prompt
+    append_prompt_template: *evaluator_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: gpt-4
+      temperature: 0.3
+      max_tokens: 1024
+    output_parser:
+      type: responsegen-evaluator
+      dimensions:
+        - Engaging
+        - Relevant
+        - Semantically Appropriate
+
+  - #manager_agent:
+    agent_type: manager
+    name: Manager
+    max_retry: 1000
+    prompt_template: *manager_prompt
     memory:
       memory_type: chat_history
     llm:
       llm_type: gpt-4
       model: "gpt-4"
       temperature: 0
-      max_tokens: 512
+      max_tokens: 1024
     output_parser:
-      type: responsegen-evaluator
-      dimensions:
-        - Interesting
-        - Engaging
-        - Specific
-        - Relevant
-        - Semantically Appropriate
-        - Understandable
-        - Fluent
-        - Overall Impression
-
-
-tools:
-
+      type: humaneval-manager

@@ -172,7 +172,7 @@ tools: &tools
 name: Classroom 3 DBAs with Tools
 
 environment:
-  env_type: basic
+  env_type: sim-basic
   max_turns: 4
   rule:
     order:

@@ -129,7 +129,7 @@ tools: &tools
 name: NLP Classroom 3 Players with Tools
 
 environment:
-  env_type: basic
+  env_type: sim-basic
   max_turns: 30
   rule:
     order:

@@ -106,7 +106,7 @@ prompts:
     And after the execution stage, they give the following result:
 
   evaluator_append_prompt: &evaluator_append_prompt |-
-    You need to evaluate whether the given query has been completely completed. If so, summarize the solution to the user. If not, summarize the current progress, and propose what is missing.
+    You need to evaluate whether the given query has been completed. If so, summarize the solution to the user. If not, summarize the current progress, and propose what is missing.
 
     You must respond in the following format:
     Status: (0 or 1. 0 for pending and 1 for finished)
@@ -148,8 +148,8 @@ agents:
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-3.5-turbo
-      model: "gpt-3.5-turbo"
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0
       max_tokens: 512
     output_parser:
@@ -160,11 +160,12 @@ agents:
     name: Planner
     prepend_prompt_template: *solver_prepend_prompt
     append_prompt_template: *solver_append_prompt
+    max_retry: 100
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-3.5-turbo
-      model: "gpt-3.5-turbo-16k"
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0
       max_tokens: 1024
     output_parser:
@@ -180,13 +181,14 @@ agents:
     name: Critic 1
     role_description: Waiting to be assigned.
     max_history: 15
+    max_retry: 100
     prepend_prompt_template: *critic_prepend_prompt
     append_prompt_template: *critic_append_prompt
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-3.5-turbo
-      model: "gpt-3.5-turbo-16k"
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0.7
       max_tokens: 1024
     output_parser:
@@ -199,11 +201,12 @@ agents:
     prepend_prompt_template: *executor_prepend_prompt
     append_prompt_template: *executor_append_prompt
     max_history: 8
+    max_retry: 100
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-3.5-turbo
-      model: gpt-3.5-turbo-16k
+      llm_type: gpt-4
+      model: gpt-4
       temperature: 0.5
       max_tokens: 1024
     output_parser:
@@ -219,8 +222,8 @@ agents:
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-3.5-turbo
-      model: gpt-3.5-turbo
+      llm_type: gpt-4
+      model: gpt-4
       temperature: 0.3
       max_tokens: 1024
     output_parser:
@@ -234,8 +237,8 @@ agents:
     memory:
       memory_type: chat_history
     llm:
-      llm_type: gpt-3.5-turbo
-      model: "gpt-3.5-turbo"
+      llm_type: gpt-4
+      model: "gpt-4"
       temperature: 0
       max_tokens: 1024
     output_parser:

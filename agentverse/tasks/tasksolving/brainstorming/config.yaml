@@ -1,0 +1,203 @@
+cnt_agents: &cnt_agents 4
+max_turn: &max_turn 3
+max_inner_turns: &max_inner_turns 0
+
+task_description: |-
+  generate ideas of building a compressed hydrogen storage station in Ohio
+  
+prompts:
+  role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
+
+  role_assigner_append_prompt: &role_assigner_append_prompt |-
+    You are the leader of a group of experts, now you are faced with a task:
+    
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} expert team members in different regions.
+    What experts will you recruit to better generate good ideas?
+    
+    Output format example:
+    1. an electrical engineer specified in the filed of xxx
+    2. an economist who is good at xxx
+    3. a lawyer with a good knowledge of xxx
+    ...
+    
+    ${advice}
+    You don't have to give the reason.
+
+  solver_prepend_prompt: &solver_prepend_prompt |-
+    You are a summarizer. 
+    Your task is to categorize and summarize the ideas in the chat history.
+    Please add the speaker of each idea to the beginning of the content.
+
+    The question of the discussing is to ${task_description}. Below is the chat history:
+    
+  solver_append_prompt: &solver_append_prompt |-
+    # Output format
+    1. (Speaker1): (Ideas of Speaker 1 in a single line)
+    2. (Speaker2): (Ideas of Speaker 2 in a single line)
+    3. (Speaker3): (Ideas of Speaker 3 in a single line)
+    ...
+
+    Please merge all ideas of one speaker into one item.
+
+  critic_prepend_prompt: &critic_prepend_prompt |-
+    You are ${role_description}. You are in a discussion group, aiming to ${task_description}.
+
+  critic_append_prompt: &critic_append_prompt |-
+    Now the group is asking your opinion about it. Based on your knowledge in your field, do you agree that this solution can perfectly solve the problem? Or do you have any ideas to improve it?
+    
+    - If you thinks it is perfect, use the following output format:
+    Action: Agree
+    Action Input: Agree.
+    (Do not output your reason for agreeing!)
+
+    - If you want to give complemented opinions to improve it or to contradict with it, use the following output format:
+    Action: Disagree
+    Action Input: (what you want to say in one line)
+    
+    P.S. Always remember you are ${role_description}!
+    
+    If no former solution or critic opinions are given, you can just disagree and output your idea freely, based on the expertise of your role.
+    Remember, the ideas should be specific and detailed enough, not just general opinions.
+
+  evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+
+  evaluator_append_prompt: &evaluator_append_prompt |-
+    Your task is to evaluate the ideas in the solution.
+ 
+    The goal is to ${task_description}.
+    
+    Please rate the ideas in the content in the following dimensions:
+        1. Comprehensiveness:Are they comprehensive enough to cover all the 
+           important aspects a engineering project may have?
+        2. Detailedness: Are they detailed enough to be implemented?
+        3. Feasibility: Are they reasonable and practical?
+        4. Novelty: Are they creative and innovative?
+    
+    0 means the idea is like random generated ideas,
+    10 means the idea is perfect in that aspect.
+    
+    and then in the fifth line of output, give your detailed advice for the solution generators.
+    You can also give advice to the human resource staff on what experts they should recruit.
+    Just say the drawbacks of the ideas, no need to do compliments first.
+    
+  
+    #Output format
+    You must output in the following format:
+    1. Comprehensiveness: (a score between 0 and 9)
+    2. Detailedness: (a score between 0 and 9)
+    3. Feasibility: (a score between 0 and 9)
+    4. Novelty: (a score between 0 and 9)
+    5. Advice: (your advice in one line)
+    
+    Here is the content you have to evaluate:
+    ${solution}
+    
+
+name: pipeline
+
+
+environment:
+  env_type: task-basic
+  max_turn: *max_turn
+  role_assigner:
+    type: role_description
+    cnt_agents: *cnt_agents
+  decision_maker:
+    type: brainstorming
+    max_inner_turns: *max_inner_turns
+  executor:
+    type: none
+  evaluator:
+    type: basic
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    name: role assigner
+    max_retry: 1000
+    prepend_prompt_template: *role_assigner_prepend_prompt
+    append_prompt_template: *role_assigner_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 512
+    output_parser:
+      type: role_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    name: Summarizer
+    max_retry: 1000
+    max_history: 5
+    prepend_prompt_template: *solver_prepend_prompt
+    append_prompt_template: *solver_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: dummy
+
+  - #critic_agents:
+    agent_type: critic
+    name: Reviewer
+    max_retry: 1000
+    max_history: 5
+    role_description: |-
+      Waiting to be assigned.
+    prepend_prompt_template: *critic_prepend_prompt
+    append_prompt_template: *critic_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: critic
+
+  - #executor_agent:
+    agent_type: executor
+    name: Dummy Executor
+    max_retry: 1000
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: dummy
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    name: Evaluator
+    max_retry: 1000
+    role_description: |-
+      Evaluator
+    prepend_prompt_template: *evaluator_prepend_prompt
+    append_prompt_template: *evaluator_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
+      temperature: 0.3
+      max_tokens: 1024
+    output_parser:
+      type: evaluator
+      dimensions:
+        - Comprehensiveness
+        - Detailedness
+        - Feasibility
+        - Novelty
