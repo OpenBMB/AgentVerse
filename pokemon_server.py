@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Set, List, Dict
-from agentverse.agentverse import AgentVerse
+from agentverse.simulation import Simulation
 from agentverse.message import Message
 
 
@@ -31,7 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-agent_verse = AgentVerse.from_task("pokemon")
+agent_verse = Simulation.from_task("pokemon")
 
 
 @app.get("/")

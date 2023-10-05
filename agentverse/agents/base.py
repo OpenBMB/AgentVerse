@@ -1,6 +1,7 @@
 import logging
 from abc import abstractmethod
 from typing import List, NamedTuple, Set, Union
+from string import Template
 
 from pydantic import BaseModel, Field
 
@@ -14,7 +15,9 @@ class BaseAgent(BaseModel):
     name: str
     llm: BaseLLM
     output_parser: OutputParser
-    prompt_template: str
+    prepend_prompt_template: str = Field(default="")
+    append_prompt_template: str = Field(default="")
+    prompt_template: str = Field(default="")
     role_description: str = Field(default="")
     memory: BaseMemory = Field(default_factory=ChatHistoryMemory)
     memory_manipulator: BaseMemoryManipulator = Field(default_factory=BaseMemoryManipulator)
@@ -41,6 +44,13 @@ class BaseAgent(BaseModel):
     def add_message_to_memory(self, messages: List[Message]) -> None:
         """Add a message to the memory"""
         pass
+
+    def get_all_prompts(self, **kwargs):
+        prepend_prompt = Template(self.prepend_prompt_template).safe_substitute(
+            **kwargs
+        )
+        append_prompt = Template(self.append_prompt_template).safe_substitute(**kwargs)
+        return prepend_prompt, append_prompt
 
     def get_receiver(self) -> Set[str]:
         return self.receiver

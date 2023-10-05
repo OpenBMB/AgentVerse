@@ -14,7 +14,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from agentverse.message import Message
 from agentverse.memory import BaseMemory
 
-from logging import getLogger
+from agentverse.logging import logger
 
 from . import memory_manipulator_registry
 from .base import BaseMemoryManipulator
@@ -23,8 +23,6 @@ if TYPE_CHECKING:
     from agentverse.memory import VectorStoreMemory
     from agentverse.agents.base import BaseAgent
 
-
-logger = getLogger(__file__)
 
 IMPORTANCE_PROMPT = """On the scale of 1 to 10, where 1 is purely mundane \
 (e.g., brushing teeth, making bed) and 10 is \
@@ -55,7 +53,6 @@ example format: insight (because of 1, 5, 3)"""
 
 @memory_manipulator_registry.register("reflection")
 class Reflection(BaseMemoryManipulator):
-
     memory: VectorStoreMemory = None
     agent: BaseAgent = None
 
@@ -71,7 +68,6 @@ class Reflection(BaseMemoryManipulator):
     # TODO newly added func from generative agents
 
     def manipulate_memory(self) -> None:
-
         # reflect here
         if self.should_reflect():
             logger.debug(
@@ -104,7 +100,6 @@ class Reflection(BaseMemoryManipulator):
         return accumulated_importance
 
     def should_reflect(self):
-
         if self.get_accumulated_importance() >= self.importance_threshold:
             # double the importance_threshold
             self.importance_threshold *= 2
@@ -143,7 +138,7 @@ class Reflection(BaseMemoryManipulator):
         try:
             score = int(re.findall(r"\s*(\d+)\s*", result.content)[0])
         except Exception as e:
-            logger.warning(
+            logger.warn(
                 f"Found error {e} Abnormal result of importance rating '{result}'. Setting default value"
             )
             score = 0
@@ -158,7 +153,7 @@ class Reflection(BaseMemoryManipulator):
         try:
             score = int(re.findall(r"\s*(\d+)\s*", result.content)[0])
         except Exception as e:
-            logger.warning(
+            logger.warn(
                 f"Found error {e} Abnormal result of importance rating '{result}'. Setting default value"
             )
             score = 0
@@ -198,7 +193,6 @@ class Reflection(BaseMemoryManipulator):
             embedding = get_embedding(text)
             score = []
             for memory in memory_bank:
-
                 if memory.content not in self.memory2time:
                     self.memory2time[memory.content]["last_access_time"] = dt.now()
                     self.memory2time[memory.content]["create_time"] = dt.now()
@@ -301,5 +295,4 @@ class Reflection(BaseMemoryManipulator):
         return reflection
 
     def reset(self) -> None:
-
         self.reflection = ""

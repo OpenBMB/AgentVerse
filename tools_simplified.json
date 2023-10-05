@@ -1,0 +1,166 @@
+{
+  "available_envs": [
+    {
+      "name": "FileSystemEnv",
+      "description": "Provide a file system operation environment for Agent.\n    ",
+      "total_tools": 5,
+      "tools": [
+        "is_path_exist",
+        "modify_file",
+        "print_filesys_struture",
+        "read_from_file",
+        "write_to_file"
+      ]
+    },
+    {
+      "name": "PDBCodingEnv",
+      "description": "Note: This env is subclass of ['FileSystemEnv', 'ShellEnv'], and all tools of parent envs are inherited and not visible. You can try call parent tools or check this env's defination to show them.\nPython Debugging Coding Environment.\n    Always run code with `python -m pdb {python_file.py}`.\n    ",
+      "total_tools": 11,
+      "tools": [
+        "run_code"
+      ]
+    },
+    {
+      "name": "ShellEnv",
+      "description": "Provide and maintain an interactive shell environment.\n    ",
+      "total_tools": 5,
+      "tools": [
+        "kill",
+        "read_stdout",
+        "restart",
+        "terminate",
+        "write_stdin"
+      ]
+    },
+    {
+      "name": "WebEnv",
+      "description": "Web Environment providing web interface and browsering.\n    ",
+      "total_tools": 2,
+      "tools": [
+        "browse_website",
+        "scrape_text"
+      ]
+    },
+    {
+      "name": "RapidAPIEnv",
+      "description": "Note: All tools of this env are invisible during all tools display, please check this env's defination to show all tools.\nRapidAPI Env delivers rapid api for tool server.",
+      "total_tools": 4208,
+      "tools": [
+        "rapi_100_success_instagram_api_scalable_robust_media_info",
+        "rapi_100_success_instagram_api_scalable_robust_post_comments",
+        "rapi_100_success_instagram_api_scalable_robust_user_followers",
+        "rapi_13f918yf19o1t1f1of1t9_endpoint1",
+        "rapi_3d_services_thumbnail",
+        "rapi_4d_dream_dictionary_get_dream_number",
+        "rapi_50k_radio_stations_get_channels",
+        "rapi_50k_radio_stations_get_cities",
+        "rapi_50k_radio_stations_get_countries",
+        "rapi_50k_radio_stations_get_genres",
+        "..."
+      ]
+    }
+  ],
+  "available_tools": [
+    "FileSystemEnv_is_path_exist",
+    "FileSystemEnv_modify_file",
+    "FileSystemEnv_print_filesys_struture",
+    "FileSystemEnv_read_from_file",
+    "FileSystemEnv_write_to_file",
+    "PDBCodingEnv_run_code",
+    "ShellEnv_kill",
+    "ShellEnv_read_stdout",
+    "ShellEnv_restart",
+    "ShellEnv_terminate",
+    "ShellEnv_write_stdin",
+    "WebEnv_browse_website",
+    "WebEnv_scrape_text",
+    "query_wolfram",
+    "bing_search"
+  ],
+  "tools_json": [
+  {
+    "name": "WebEnv_browse_website",
+    "description": "Browse a website and return the page. Note some websites may not be accessable due to network error.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "The realworld URL to scrape text from. Started with http:// or https://."
+        },
+        "question": {
+          "type": "string",
+          "description": "The question for the website. The function will answer the question by browsing the url."
+        }
+      },
+      "required": [
+        "url",
+        "question"
+      ]
+    }
+  },
+    {
+      "name": "run_interpreter",
+      "description": "The code interpreter tool that runs code and returns the output.\nThe `code` will be written to file `filename` and the `command` will be executed in a shell. The returned value of this tool is the stdout content. So use `print` to get the important information.\nExample:\n```\nrun_interpreter(code='print(\"hello world\")',command='python code.py')\n```",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The code to be written, default to `None`, which means no code will be written to file."
+          },
+          "filename": {
+            "type": "string",
+            "description": "The filename to be written in mode `w`, default to `code.py`."
+          },
+          "command": {
+            "type": "string",
+            "description": "The shell command to be executed should avoid requiring additional user input, default to `python {filename}`."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "bing_search",
+      "description": "Return 3 most relevant results of a Bing search using the official Bing API. This tool does not provide website details, use other tools to browse website if you need.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "submit_task",
+      "description": "Submit your conclusion to the task",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "finished"
+            ],
+            "description": "Set to 'pending' if your assigned task cannot be finished, set to 'finished' if you have finished your assigned task"
+          },
+          "conclusion": {
+            "type": "string",
+            "description": "What you have done so far. Describe your conclusion and your summarization on the gathered information if you have finished your assigned task, or describe your problem if you cannot finish your assigned task."
+          }
+        },
+        "required": [
+          "status",
+          "conclusion"
+        ]
+      }
+    }
+  ]
+}

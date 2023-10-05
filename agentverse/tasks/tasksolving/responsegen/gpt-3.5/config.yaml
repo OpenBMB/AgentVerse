@@ -1,0 +1,202 @@
+cnt_agents: &cnt_agents 2
+max_turn: &max_turn 3
+max_inner_turns: &max_inner_turns 3
+
+prompts:
+  role_assigner_prepend_prompt: &role_assigner_prepend_prompt |-
+
+  role_assigner_append_prompt: &role_assigner_append_prompt |-
+    # Role Description
+    You are the leader of a group of experts, now you need to generate a response based on the text:
+    ${task_description}
+    
+    You can recruit ${cnt_critic_agents} expert in different fields. What experts will you recruit to better generate an accurate solution?
+    
+    # Response Format Guidance
+    You should respond with a list of expert description. For example:
+    1. an electrical engineer specified in the filed of xxx
+    2. an economist who is good at xxx
+    3. a lawyer with a good knowledge of xxx
+    ...
+    
+    You don't have to give the reason.
+
+  solver_prepend_prompt: &solver_prepend_prompt |-
+    You are ${role_description}. Below is a chat history:
+    ${task_description}
+
+    And below is the discussion about what the next system response should be:
+    
+  solver_append_prompt: &solver_append_prompt |-
+    Now based on these information, please give a better next system response. Your response should contain only one system response beginning with "System: ". Do not give any additional information.
+
+  critic_prepend_prompt: &critic_prepend_prompt |-
+    You are ${role_description}. You are in a discussion group, aiming to generate a system response to the following chat history:
+    ${task_description}
+
+    Below is the discussion about what the next system response should be:
+    
+  critic_append_prompt: &critic_append_prompt |-
+    # Response Format Guidance
+    - If you thinks the latest response given above is perfect, respond using the following format:
+    Decision: (set it to "Agree")
+    Response: (your response on why you think it is perfect)
+
+    - If you think it is flawed, give your advice use the following output format:
+    Decision: (set it to "Disagree")
+    Response: (explain why you disagree and give your advice)
+    
+    Based on your knowledge in your field, do you agree that this solution is a good response to the chat history?
+
+  manager_prompt: &manager_prompt |-
+
+  executor_prepend_prompt: &executor_prepend_prompt |-
+
+  executor_append_prompt: &executor_append_prompt |-
+
+  evaluator_prepend_prompt: &evaluator_prepend_prompt |-
+
+  evaluator_append_prompt: &evaluator_append_prompt |-
+    # Role Description
+    You are an experienced dialogue teacher. As a good teacher, you carefully assess the given system response based on the chat history. When the response is flawed, you should patiently teach the system how to give better response.
+  
+    # Response Format Guidance
+    You must respond in the following format:
+    Engaging: (a score between 0 and 10)
+    Relevant: (a score between 0 and 10)
+    Semantically Appropriate: (a score between 0 and 10)
+    Advice: (your advice on how to improve the response)
+    
+    # Chat History
+    ${task_description}
+
+    # Next System Response
+    ${solution}
+
+    # Your Task
+    Now carefully check the system's response, and give your opinion.
+    
+
+name: pipeline
+
+
+environment:
+  env_type: task-basic
+  max_turn: *max_turn
+  rule:
+    role_assigner:
+      type: role_description
+      cnt_agents: *cnt_agents
+    decision_maker:
+      type: vertical-solver-first
+      max_inner_turns: *max_inner_turns
+    executor:
+      type: none
+    evaluator:
+      type: basic
+
+agents:
+  - #role_assigner_agent:
+    agent_type: role_assigner
+    name: role assigner
+    max_retry: 1000
+    prepend_prompt_template: *role_assigner_prepend_prompt
+    append_prompt_template: *role_assigner_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 512
+    output_parser:
+      type: role_assigner
+
+  - #solver_agent:
+    agent_type: solver
+    name: Planner
+    max_retry: 1000
+    max_history: 10
+    prepend_prompt_template: *solver_prepend_prompt
+    append_prompt_template: *solver_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: responsegen
+
+  - #critic_agents:
+    agent_type: critic
+    name: Critic 1
+    max_retry: 1000
+    max_history: 10
+    role_description: |-
+      Waiting to be assigned.
+    prepend_prompt_template: *critic_prepend_prompt
+    append_prompt_template: *critic_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: responsegen-critic-2
+
+  - #executor_agent:
+    agent_type: executor
+    name: Executor
+    max_retry: 1000
+    prepend_prompt_template: *executor_prepend_prompt
+    append_prompt_template: *executor_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: responsegen
+
+  - #evaluator_agent:
+    agent_type: evaluator
+    name: Evaluator
+    max_retry: 1000
+    role_description: |-
+      Evaluator
+    prepend_prompt_template: *evaluator_prepend_prompt
+    append_prompt_template: *evaluator_append_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: gpt-3.5-turbo
+      temperature: 0.3
+      max_tokens: 1024
+    output_parser:
+      type: responsegen-evaluator
+      dimensions:
+        - Engaging
+        - Relevant
+        - Semantically Appropriate
+
+  - #manager_agent:
+    agent_type: manager
+    name: Manager
+    max_retry: 1000
+    prompt_template: *manager_prompt
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-3.5-turbo
+      model: "gpt-3.5-turbo"
+      temperature: 0
+      max_tokens: 1024
+    output_parser:
+      type: humaneval-manager

@@ -4,11 +4,14 @@ import os
 from typing import Dict, List, TYPE_CHECKING
 
 import yaml
+
+"""
 try:
     from bmtools.agent.singletool import import_all_apis, load_single_tools
 except:
     print("BMTools is not installed, tools cannot be used. To install BMTools, \
          please follow the instruction in the README.md file.")
+"""
 
 from agentverse.llms import llm_registry
 
@@ -85,10 +88,6 @@ def prepare_task_config(task):
         )
     task_config = yaml.safe_load(open(config_path))
 
-    # Build the output parser
-    parser = output_parser_registry.build(task)
-    task_config["output_parser"] = parser
-
     for i, agent_configs in enumerate(task_config["agents"]):
         agent_configs["memory"] = load_memory(agent_configs.get("memory", {}))
         if agent_configs.get("tool_memory", None) is not None:
@@ -102,5 +101,17 @@ def prepare_task_config(task):
         agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
 
         agent_configs["output_parser"] = task_config["output_parser"]
+        # agent_configs["tools"] = load_tools(agent_configs.get("tools", []))
+
+        # Build the output parser
+        output_parser_config = agent_configs.get("output_parser", {"type": "dummy"})
+        if output_parser_config.get("type", None) == "role_assigner":
+            output_parser_config["cnt_critic_agents"] = task_config.get(
+                "cnt_critic_agents", 0
+            )
+        output_parser_name = output_parser_config.pop("type", task)
+        agent_configs["output_parser"] = output_parser_registry.build(
+            output_parser_name, **output_parser_config
+        )
 
     return task_config

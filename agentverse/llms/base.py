@@ -1,14 +1,16 @@
 from abc import abstractmethod
-from typing import Dict
+from typing import Dict, Any
 
 from pydantic import BaseModel, Field
 
 
 class LLMResult(BaseModel):
-    content: str
-    send_tokens: int
-    recv_tokens: int
-    total_tokens: int
+    content: str = ""
+    function_name: str = ""
+    function_arguments: Any = None
+    send_tokens: int = 0
+    recv_tokens: int = 0
+    total_tokens: int = 0
 
 
 class BaseModelArgs(BaseModel):

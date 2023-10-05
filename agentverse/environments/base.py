@@ -9,8 +9,11 @@ from pydantic import BaseModel
 
 if TYPE_CHECKING:
     from agentverse.agents.base import BaseAgent
-    from agentverse.environments.rules.base import Rule
     from agentverse.message import Message
+
+
+class BaseRule(BaseModel):
+    pass
 
 
 class BaseEnvironment(BaseModel):
@@ -27,7 +30,7 @@ class BaseEnvironment(BaseModel):
     """
 
     agents: List[BaseAgent]
-    rule: Rule
+    rule: BaseRule
     max_turns: int = 10
     cnt_turn: int = 0
     last_messages: List[Message] = []
