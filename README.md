@@ -22,6 +22,8 @@
 
 **AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
 
+⚠️⚠️⚠️ We're presently in the process of refactoring our code to offer you the flexibility to construct both simulation environments (without a predefined goal) and task-solving environments (with a specific goal). Please note that our README is currently outdated, we will update it very soon. If you require a stable version of our code that exclusively supports simulation environments, you can find it in our [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0) branch.
+
 ---
 
 ## ✨ Features
