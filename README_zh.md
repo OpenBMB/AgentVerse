@@ -22,6 +22,8 @@
 
 **AgentVerse** 提供了一个多功能的框架，简化了为大型语言模型（LLMs）创建自定义多智能体环境的过程。旨在快速、低成本的开发和定制，我们的框架赋能研究人员专注于他们的研究，而不被实现细节所困扰。
 
+⚠️⚠️⚠️ 我们正在重构代码，目标是提供可以灵活构建 simulation （无预定目标）和 task-solving（有特定目标）的环境。请注意，目前 README 已经过时，我们将尽快对其进行更新。如果你需要使用专门支持 simulation 环境稳定运行的代码，请使用 [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0)分支。
+
 ---
 
 ## ✨ 特点
@@ -77,7 +79,7 @@ AgentVerse致力于为大型语言模型革命化多智能体环境，我们急�
 
 使用以下命令启动NLP教室示例：
 ```bash
-python main_demo.py --task nlp_classroom_9players
+python main_simulation_gui.py --task nlp_classroom_9players
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/6ea07850-595e-4a28-a82e-f863011353c2
@@ -88,7 +90,7 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/6ea07850-595e-4a28-a82e-f8
 
 使用以下命令启动NLP教室示例：
 ```bash
-python main_demo.py --task prisoner_dilemma
+python main_simulation_cli.py --task prisoner_dilemma
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/017c46e5-c738-4fca-9352-b008e2d518bd
@@ -110,7 +112,7 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4
 
 首先，您应该在BMTools中配置[数据库工具](https://github.com/OpenBMB/BMTools/blob/main/bmtools/tools/db_diag/readme.md), 并根据[指南](https://github.com/OpenBMB/BMTools/tree/main#211-local-tools)启动BMTools服务器。然后使用以下命令启动数据库管理员示例：
 ```bash
-python main_demo.py --task db_diag
+python main_simulation_gui.py --task db_diag
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/c633419d-afbb-47d4-bb12-6bb512e7af3a

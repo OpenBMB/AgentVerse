@@ -38,9 +38,9 @@ class GUI:
         self.messages = []
         self.task = task
         if task == "pipeline_brainstorming":
-            self.backend = TaskSolving.from_task(task)
+            self.backend = TaskSolving.from_task(f"tasksolving/{task}")
         else:
-            self.backend = Simulation.from_task(task)
+            self.backend = Simulation.from_task(f"simulation/{task}")
         self.turns_remain = 0
         self.agent_id = {
             self.backend.agents[idx].name: idx

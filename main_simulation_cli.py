@@ -11,5 +11,5 @@ args = parser.parse_args()
 
 logger.set_level(logging.DEBUG if args.debug else logging.INFO)
 
-agentverse = Simulation.from_task(args.task)
+agentverse = Simulation.from_task(f"simulation/{args.task}")
 agentverse.run()
