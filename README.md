@@ -22,7 +22,7 @@
 
 **AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
 
-⚠️⚠️⚠️ We're refactoring the code in process, and goal is provid a flexibility to construct simulation(without a predefined goal) and task-solving(with a specific goal) environments. Please note that README is outdated, we will update it soon. If you require a stable version code that exclusively supports simulation environments, you can using [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0) branch.
+⚠️⚠️⚠️ We're refactoring the code, and the goal is to provide a flexibility to construct simulation(without a predefined goal) and task-solving(with a specific goal) environments. Please note that this README is outdated, we will update it soon. If you require a stable version that exclusively supports simulation environments, you can use [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0) branch.
 
 ---
 
@@ -199,7 +199,11 @@ You also need to export your OpenAI API key as follows：
 ```bash
 # Export your OpenAI API key
 export OPENAI_API_KEY="your_api_key_here"
+# Or if you are using Azure
+export AZURE_OPENAI_API_KEY="your_api_key_here"
+export AZURE_OPENAI_API_BASE="your_api_base_here"
 ```
+
 If you want use Azure OpenAI services, pleas export your Azure OpenAI key and OpenAI API base as follows：
 ```bash
 export AZURE_OPENAI_API_KEY="your_api_key_here"
