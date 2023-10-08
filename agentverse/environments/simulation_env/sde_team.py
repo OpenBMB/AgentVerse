@@ -12,7 +12,7 @@ from agentverse.message import Message
 from .. import env_registry as EnvironmentRegistry
 from ..base import BaseEnvironment
 
-# from agentverse.initialization import load_tools
+from agentverse.initialization import load_tools
 
 
 @EnvironmentRegistry.register("sde_team")
@@ -56,8 +56,18 @@ class SdeTeamEnvironment(BaseEnvironment):
         self.rule_params["end_flag"] = False
 
         # # Test code
-        # self.rule_params["name_to_tools"] = {tool.name: tool for tool in load_tools([{"tool_name": "code_interpreter", "tool_url" : "http://127.0.0.1:8079/tools/code_interpreter/"}])}
-        # tool = self.rule_params["name_to_tools"]["execute_unit_tests"]
+        self.rule_params["name_to_tools"] = {
+            tool.name: tool
+            for tool in load_tools(
+                [
+                    {
+                        "tool_name": "code_interpreter",
+                        "tool_url": "http://127.0.0.1:8079/tools/code_interpreter/",
+                    }
+                ]
+            )
+        }
+        tool = self.rule_params["name_to_tools"]["execute_unit_tests"]
         # print(type(tool))
 
         # d = {
