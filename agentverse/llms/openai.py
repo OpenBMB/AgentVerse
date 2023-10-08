@@ -91,8 +91,8 @@ class OpenAIChatArgs(BaseModelArgs):
 #             total_tokens=response["usage"]["total_tokens"],
 #         )
 
-
 @llm_registry.register("gpt-35-turbo")
+@llm_registry.register("gpt-3.5-turbo")
 @llm_registry.register("gpt-4")
 class OpenAIChat(BaseChatModel):
     args: OpenAIChatArgs = Field(default_factory=OpenAIChatArgs)
@@ -100,21 +100,19 @@ class OpenAIChat(BaseChatModel):
     def __init__(self, max_retry: int = 3, **kwargs):
         args = OpenAIChatArgs()
         args = args.dict()
-        
         for k, v in args.items():
             args[k] = kwargs.pop(k, v)
         if len(kwargs) > 0:
             logging.warning(f"Unused arguments: {kwargs}")
         super().__init__(args=args, max_retry=max_retry)
-
     # def _construct_messages(self, history: List[Message]):
     #     return history + [{"role": "user", "content": query}]
-
     @retry(
         stop=stop_after_attempt(20),
         wait=wait_exponential(multiplier=1, min=4, max=10),
         reraise=True,
     )
+    
     def generate_response(
         self,
         prepend_prompt: str = "",
@@ -124,7 +122,6 @@ class OpenAIChat(BaseChatModel):
     ) -> LLMResult:
         messages = self.construct_messages(prepend_prompt, history, append_prompt)
         logger.log_prompt(messages)
-
         try:
             # Execute function call
             if functions != []:      
