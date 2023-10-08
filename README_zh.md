@@ -198,6 +198,11 @@ pip install -r requirements.txt
 # 导出你的OpenAI API密钥
 export OPENAI_API_KEY="your_api_key_here"
 ```
+或者您想使用 Azure OpenAI 服务，请按照以下方式配置 OpenAI API 密钥和 API base：
+```bash
+export AZURE_OPENAI_API_KEY="your_api_key_here"
+export AZURE_OPENAI_API_BASE="your_api_base_here"
+```
 
 如果您想使用BMTools提供的工具，您需要按如下方式安装BMTools：
 ```bash

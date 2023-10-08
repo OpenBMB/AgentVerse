@@ -24,21 +24,27 @@ except ImportError:
     is_openai_available = False
     logging.warning("openai package is not installed")
 else:
-    openai.api_key = os.environ.get("OPENAI_API_KEY")
     # openai.proxy = os.environ.get("http_proxy")
     # if openai.proxy is None:
     #     openai.proxy = os.environ.get("HTTP_PROXY")
-    if openai.api_key is None:
+    if os.environ.get("OPENAI_API_KEY")!=None:
+        openai.api_key = os.environ.get("OPENAI_API_KEY")
+        is_openai_available = True
+    elif os.environ.get("AZURE_OPENAI_API_KEY")!=None:
+        openai.api_type = "azure"
+        openai.api_key  = os.environ.get("AZURE_OPENAI_API_KEY")
+        openai.api_base = os.environ.get("AZURE_OPENAI_API_BASE")
+        openai.api_version = "2023-05-15"
+        is_openai_available = True  
+    else:
         logging.warning(
             "OpenAI API key is not set. Please set the environment variable OPENAI_API_KEY"
         )
-        is_openai_available = False
-    else:
-        is_openai_available = True
-
+        is_openai_available = False     
 
 class OpenAIChatArgs(BaseModelArgs):
     model: str = Field(default="gpt-3.5-turbo")
+    deployment_id: str = Field(default="gpt-35-turbo")
     max_tokens: int = Field(default=2048)
     temperature: float = Field(default=1.0)
     top_p: int = Field(default=1)
@@ -85,7 +91,7 @@ class OpenAIChatArgs(BaseModelArgs):
 #             total_tokens=response["usage"]["total_tokens"],
 #         )
 
-
+@llm_registry.register("gpt-35-turbo")
 @llm_registry.register("gpt-3.5-turbo")
 @llm_registry.register("gpt-4")
 class OpenAIChat(BaseChatModel):
@@ -94,21 +100,19 @@ class OpenAIChat(BaseChatModel):
     def __init__(self, max_retry: int = 3, **kwargs):
         args = OpenAIChatArgs()
         args = args.dict()
-
         for k, v in args.items():
             args[k] = kwargs.pop(k, v)
         if len(kwargs) > 0:
             logging.warning(f"Unused arguments: {kwargs}")
         super().__init__(args=args, max_retry=max_retry)
-
     # def _construct_messages(self, history: List[Message]):
     #     return history + [{"role": "user", "content": query}]
-
     @retry(
         stop=stop_after_attempt(20),
         wait=wait_exponential(multiplier=1, min=4, max=10),
         reraise=True,
     )
+    
     def generate_response(
         self,
         prepend_prompt: str = "",
@@ -118,10 +122,9 @@ class OpenAIChat(BaseChatModel):
     ) -> LLMResult:
         messages = self.construct_messages(prepend_prompt, history, append_prompt)
         logger.log_prompt(messages)
-
         try:
             # Execute function call
-            if functions != []:
+            if functions != []:      
                 response = openai.ChatCompletion.create(
                     messages=messages,
                     functions=functions,
@@ -283,9 +286,14 @@ class OpenAIChat(BaseChatModel):
 def get_embedding(text: str, attempts=3) -> np.array:
     try:
         text = text.replace("\n", " ")
-        embedding = openai.Embedding.create(
-            input=[text], model="text-embedding-ada-002"
-        )["data"][0]["embedding"]
+        if openai.api_type=="azure":
+            embedding = openai.Embedding.create(
+                input=[text], deployment_id="text-embedding-ada-002"
+            )["data"][0]["embedding"]
+        else:
+            embedding = openai.Embedding.create(
+                input=[text], model="text-embedding-ada-002"
+            )["data"][0]["embedding"]
         return tuple(embedding)
     except Exception as e:
         attempt += 1

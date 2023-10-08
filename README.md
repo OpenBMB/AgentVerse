@@ -22,7 +22,7 @@
 
 **AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
 
-⚠️⚠️⚠️ We're presently in the process of refactoring our code to offer you the flexibility to construct both simulation environments (without a predefined goal) and task-solving environments (with a specific goal). Please note that our README is currently outdated, we will update it very soon. If you require a stable version of our code that exclusively supports simulation environments, you can find it in our [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0) branch.
+⚠️⚠️⚠️ We're refactoring the code, and the goal is to provide a flexibility to construct simulation(without a predefined goal) and task-solving(with a specific goal) environments. Please note that this README is outdated, we will update it soon. If you require a stable version that exclusively supports simulation environments, you can use [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0) branch.
 
 ---
 
@@ -79,7 +79,7 @@ In the NLP class, the professor and students engage in interactive communication
 
 Use the following command to launch the NLP Classroom example:
 ```bash
-python main_demo.py --task nlp_classroom_9players
+python main_simulation_gui.py --task nlp_classroom_9players
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/6ea07850-595e-4a28-a82e-f863011353c2
@@ -90,7 +90,7 @@ A prisoner's Dilemma is a thought experiment that challenges two completely rati
 
 Use the following command to launch the Prisoner Dilemma example:
 ```bash
-python main_demo.py --task prisoner_dilemma
+python main_simulation_cli.py --task prisoner_dilemma
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/017c46e5-c738-4fca-9352-b008e2d518bd
@@ -112,7 +112,7 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4
 In the database diagnosis scenario, the Chief DBA monitors the system anomalies (e.g., slow queries, locks, crash down). If detected, the domain experts are alerted to analyze root causes, share insights, and suggest optimization solutions together. The Chief DBA then provides a summarized report to the user.
 
 ```bash
-python main_demo.py --task db_diag
+python main_simulation_gui.py --task db_diag
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/c633419d-afbb-47d4-bb12-6bb512e7af3a
@@ -195,10 +195,19 @@ pip install -r requirements.txt
 ```
 Some users have reported problems installing the `orjson` required by `gradio`. One simple workaround is to install it with Anaconda `conda install -c conda-forge orjson`.
 
-You also need to export your OpenAI API key as follows
+You also need to export your OpenAI API key as follows：
 ```bash
 # Export your OpenAI API key
 export OPENAI_API_KEY="your_api_key_here"
+# Or if you are using Azure
+export AZURE_OPENAI_API_KEY="your_api_key_here"
+export AZURE_OPENAI_API_BASE="your_api_base_here"
+```
+
+If you want use Azure OpenAI services, pleas export your Azure OpenAI key and OpenAI API base as follows：
+```bash
+export AZURE_OPENAI_API_KEY="your_api_key_here"
+export AZURE_OPENAI_API_BASE="your_api_base_here"
 ```
 
 If you want to use the tools provided by BMTools, you need to install BMTools as follows:
@@ -231,7 +240,7 @@ python3 main.py --task nlp_classroom_9players
 We also provide a local website demo for this environment. You can launch it with
 
 ```shell
-python3 main_demo.py --task nlp_classroom_9players
+python3 main_simulation_gui.py --task nlp_classroom_9players
 ```
 After successfully launching the local server, you can visit [http://127.0.0.1:7860/](http://127.0.0.1:7860/) to view the classroom environment.
 
