@@ -48,10 +48,10 @@ class BaseAgent(BaseModel):
         """Add a message to the memory"""
         pass
 
-    def get_spend(self) -> int:
+    def get_spend(self) -> float:
         return self.llm.get_spend()
 
-    def get_spend_formatted(self) -> int:
+    def get_spend_formatted(self) -> str:
         two_trailing = f"${self.get_spend():.2f}"
         if two_trailing == "$0.00":
             return f"${self.get_spend():.6f}"
