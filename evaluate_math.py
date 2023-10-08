@@ -7,6 +7,7 @@ from argparse import ArgumentParser
 parser = ArgumentParser()
 parser.add_argument("--path", type=str, required=True)
 parser.add_argument("--max_line", type=int, default=1000000000000)
+parser.add_argument("--ci_smoke_test", action="store_true")
 args = parser.parse_args()
 
 
@@ -88,3 +89,5 @@ for i in range(2):
     err_cnts.append(err_cnt)
 print(final_accs)
 print(err_cnts)
+if args.ci_smoke_test is True:
+    assert final_accs[0] == 1.0
