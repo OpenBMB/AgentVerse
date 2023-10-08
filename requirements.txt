@@ -16,3 +16,4 @@ typing-inspect==0.8.0
 colorlog
 rapidfuzz
 spacy
+colorama==0.4.6
