@@ -46,7 +46,6 @@ class BaseEnvironment(BaseModel):
         """Reset the environment"""
         pass
 
-    @abstractmethod
     def report_metrics(self) -> None:
         """Report useful metrics"""
         pass
