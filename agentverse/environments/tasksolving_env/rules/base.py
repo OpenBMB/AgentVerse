@@ -1,4 +1,5 @@
 from __future__ import annotations
+from enum import Enum
 from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union, Optional
 
 from agentverse.agents.base import BaseAgent
@@ -71,7 +72,7 @@ class TasksolvingRule(BaseRule):
     def role_assign(
         self,
         task_description: str,
-        agents: List[BaseAgent],
+        agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]],
         cnt_turn: int,
         advice: str = "",
     ) -> List[BaseAgent]:
@@ -81,7 +82,7 @@ class TasksolvingRule(BaseRule):
         else:
             agents = self.role_assigner.step(
                 role_assigner=agents[AGENT_TYPES.ROLE_ASSIGNMENT],
-                group_members=[agents[AGENT_TYPES.SOLVER]] + agents[AGENT_TYPES.CRITIC],
+                group_members=agents[AGENT_TYPES.CRITIC],
                 advice=advice,
                 task_description=task_description,
             )
@@ -93,7 +94,7 @@ class TasksolvingRule(BaseRule):
     async def decision_making(
         self,
         task_description: str,
-        agents: List[BaseAgent],
+        agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]],
         previous_plan: str,
         advice: str = "No advice yet.",
     ) -> List[SolverMessage]:
@@ -120,7 +121,7 @@ class TasksolvingRule(BaseRule):
     async def execute(
         self,
         task_description: str,
-        agents: List[BaseAgent],
+        agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]],
         final_solution: List[SolverMessage],
     ) -> Any:
         """execution stage.
@@ -140,7 +141,7 @@ class TasksolvingRule(BaseRule):
     def evaluate(
         self,
         task_description: str,
-        agents: List[BaseAgent],
+        agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]],
         solution: List[SolverMessage],
         result: List[ExecutorMessage],
     ) -> Tuple[List[int], str]:

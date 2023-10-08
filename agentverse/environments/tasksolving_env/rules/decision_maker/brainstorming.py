@@ -35,6 +35,8 @@ class BrainstormingDecisionMaker(BaseDecisionMaker):
         *args,
         **kwargs,
     ) -> List[str]:
+        assert agents[0].name == "Summarizer"
+
         if advice != "No advice yet.":
             self.broadcast_messages(
                 agents, [Message(content=advice, sender="Evaluator")]

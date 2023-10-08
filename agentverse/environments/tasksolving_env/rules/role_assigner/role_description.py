@@ -27,6 +27,7 @@ class DescriptionAssigner(BaseRoleAssigner):
     ) -> List[CriticAgent]:
         assert task_description != ""
         assert len(group_members) > 0
+        assert all(agent.name.startswith("Reviewer") for agent in group_members)
 
         roles = role_assigner.step(advice, task_description, len(group_members))
         if len(roles.content) < len(group_members):
@@ -36,7 +37,7 @@ class DescriptionAssigner(BaseRoleAssigner):
         for role, member in zip(roles.content[: len(group_members)], group_members):
             description = role.strip().strip(".")
             member.role_description = description
-            member.name = description
+            member.name = f"Reviewer: {description}"
 
         return group_members
 
