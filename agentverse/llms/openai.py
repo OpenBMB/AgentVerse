@@ -99,6 +99,9 @@ class OpenAIChatArgs(BaseModelArgs):
 class OpenAIChat(BaseChatModel):
     args: OpenAIChatArgs = Field(default_factory=OpenAIChatArgs)
 
+    total_prompt_tokens: int = 0
+    total_completion_tokens: int = 0
+
     def __init__(self, max_retry: int = 3, **kwargs):
         args = OpenAIChatArgs()
         args = args.dict()
@@ -133,6 +136,7 @@ class OpenAIChat(BaseChatModel):
                     **self.args.dict(),
                 )
                 if response["choices"][0]["message"].get("function_call") is not None:
+                    self.collect_metrics(response)
                     return LLMResult(
                         content=response["choices"][0]["message"].get("content", ""),
                         function_name=response["choices"][0]["message"][
@@ -148,6 +152,7 @@ class OpenAIChat(BaseChatModel):
                         total_tokens=response["usage"]["total_tokens"],
                     )
                 else:
+                    self.collect_metrics(response)
                     return LLMResult(
                         content=response["choices"][0]["message"]["content"],
                         send_tokens=response["usage"]["prompt_tokens"],
@@ -160,6 +165,7 @@ class OpenAIChat(BaseChatModel):
                     messages=messages,
                     **self.args.dict(),
                 )
+                self.collect_metrics(response)
                 return LLMResult(
                     content=response["choices"][0]["message"]["content"],
                     send_tokens=response["usage"]["prompt_tokens"],
@@ -235,6 +241,7 @@ class OpenAIChat(BaseChatModel):
                             raise ValueError(
                                 "The returned argument in function call is not valid json."
                             )
+                    self.collect_metrics(response)
                     return LLMResult(
                         function_name=function_name,
                         function_arguments=arguments,
@@ -244,6 +251,7 @@ class OpenAIChat(BaseChatModel):
                     )
 
                 else:
+                    self.collect_metrics(response)
                     return LLMResult(
                         content=response["choices"][0]["message"]["content"],
                         send_tokens=response["usage"]["prompt_tokens"],
@@ -258,6 +266,7 @@ class OpenAIChat(BaseChatModel):
                         messages=messages,
                         **self.args.dict(),
                     )
+                self.collect_metrics(response)
                 return LLMResult(
                     content=response["choices"][0]["message"]["content"],
                     send_tokens=response["usage"]["prompt_tokens"],
@@ -278,6 +287,40 @@ class OpenAIChat(BaseChatModel):
         if append_prompt != "":
             messages.append({"role": "user", "content": append_prompt})
         return messages
+
+    def collect_metrics(self, response):
+        self.total_prompt_tokens += response["usage"]["prompt_tokens"]
+        self.total_completion_tokens += response["usage"]["completion_tokens"]
+
+    def get_spend(self) -> int:
+        input_cost_map = {
+            "gpt-3.5-turbo": 0.0015,
+            "gpt-3.5-turbo-16k": 0.003,
+            "gpt-3.5-turbo-0613": 0.0015,
+            "gpt-3.5-turbo-16k-0613": 0.003,
+            "gpt-4": 0.03,
+            "gpt-4-0613": 0.03,
+            "gpt-4-32k": 0.06,
+        }
+
+        output_cost_map = {
+            "gpt-3.5-turbo": 0.002,
+            "gpt-3.5-turbo-16k": 0.004,
+            "gpt-3.5-turbo-0613": 0.002,
+            "gpt-3.5-turbo-16k-0613": 0.004,
+            "gpt-4": 0.06,
+            "gpt-4-0613": 0.06,
+            "gpt-4-32k": 0.12,
+        }
+
+        model = self.args.model
+        if model not in input_cost_map or model not in output_cost_map:
+            raise ValueError(f"Model type {model} not supported")
+
+        return (
+            self.total_prompt_tokens * input_cost_map[model] / 1000.0
+            + self.total_completion_tokens * output_cost_map[model] / 1000.0
+        )
 
 
 @retry(

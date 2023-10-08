@@ -46,6 +46,11 @@ class BaseEnvironment(BaseModel):
         """Reset the environment"""
         pass
 
+    @abstractmethod
+    def report_metrics(self) -> None:
+        """Report useful metrics"""
+        pass
+
     def is_done(self) -> bool:
         """Check if the environment is done"""
         return self.cnt_turn >= self.max_turns

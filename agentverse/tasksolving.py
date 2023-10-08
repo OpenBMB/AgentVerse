@@ -67,7 +67,8 @@ class TaskSolving:
                 self.environment.step(advice, previous_plan)
             )
             self.logs += logs
-        self.save_result(previous_plan, result)
+        self.environment.report_metrics()
+        self.save_result(previous_plan, result, self.environment.get_spend())
         return previous_plan, result, self.logs
 
     def singleagent_thinking(self, preliminary_solution, advice) -> str:
@@ -80,10 +81,11 @@ class TaskSolving:
     def reset(self):
         self.environment.reset()
 
-    def save_result(self, plan: str, result: str):
+    def save_result(self, plan: str, result: str, spend: float):
         """Save the result to the result file"""
-        result_file_path = "../results/" + self.task + ".txt"
+        result_file_path = "./results/" + self.task + ".txt"
         os.makedirs(os.path.dirname(result_file_path), exist_ok=True)
         with open(result_file_path, "w") as f:
             f.write("[Final Plan]\n" + plan + "\n\n")
             f.write("[Result]\n" + result)
+            f.write(f"[Spent]\n${spend}")
