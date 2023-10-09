@@ -3,12 +3,22 @@
 <h3 align="center">
     <p>A Framework for Multi-LLM Environment Simulation</p>
 </h3>
+
 <p align="center">
     <a href="https://github.com/OpenBMB/AgentVerse/blob/main/LICENSE">
         <img alt="License: Apache2" src="https://img.shields.io/badge/License-Apache_2.0-green.svg">
     </a>
     <a href="https://www.python.org/downloads/release/python-3916/">
-        <img alt="Documentation" src="https://img.shields.io/badge/python-3.9+-blue.svg">
+        <img alt="Python Version" src="https://img.shields.io/badge/python-3.9+-blue.svg">
+    </a>
+    <a href="https://github.com/OpenBMB/AgentVerse/actions/">
+        <img alt="Build" src="https://img.shields.io/github/actions/workflow/status/OpenBMB/AgentVerse/test.yml">
+    </a>
+    <a href="https://github.com/psf/black">
+        <img alt="Code Style: Black" src="https://img.shields.io/badge/code%20style-black-black">
+    </a>
+    <a href="https://github.com/OpenBMB/AgentVerse/issues">
+        <img alt="Contributions: Welcome" src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat">
     </a>
 </p>
 
@@ -22,7 +32,7 @@
 
 **AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
 
-⚠️⚠️⚠️ We're refactoring the code, and the goal is to provide a flexibility to construct simulation(without a predefined goal) and task-solving(with a specific goal) environments. Please note that this README is outdated, we will update it soon. If you require a stable version that exclusively supports simulation environments, you can use [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0) branch.
+⚠️⚠️⚠️ We're refactoring the code, and the goal is to provide a flexibility to construct simulation(without a predefined goal) and task-solving(with a specific goal) environments. Please note that this README is slightly outdated, we will update it soon. If you require a stable version that exclusively supports simulation environments, you can use [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0) branch.
 
 ---
 
@@ -35,10 +45,12 @@
 - 🛠 **Tools (Plugins) Utilization**: AgentVerse supports the multi-agent environments with tools. Currently, AgentVerse supports tools provided in [BMTools](https://github.com/OpenBMB/BMTools). 
 
 ## 📰 What's New
-- [2023/8/22] 📝 We're excited to share our work-in-progress paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848) related to this repository.
-<img width="616" alt="Screen Shot 2023-09-01 at 12 08 57 PM" src="https://github.com/OpenBMB/AgentVerse/assets/11704492/6db1c907-b7fc-42f9-946c-89853a28f386">
+- [2023/10/5] 💡 We release the code of our paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848), and refactor our codebase to enable the creation of both simulation and task-solving environment!
 
-You could refer the stay-tuned code in this [branch](https://github.com/OpenBMB/AgentVerse/tree/AgentVerse-TaskSolving).
+- [2023/8/22] 📝 We're excited to share our work-in-progress paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848) related to this repository.
+<p align="center">
+<img width="616" alt="Screen Shot 2023-09-01 at 12 08 57 PM" src="https://github.com/OpenBMB/AgentVerse/assets/11704492/6db1c907-b7fc-42f9-946c-89853a28f386">
+</p>
 
 - [2023/6/5] 🎉 We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun!
 - [2023/5/1] 🚀 [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched!
@@ -57,11 +69,10 @@ AgentVerse is on a mission to revolutionize the multi-agent environment for larg
 Also, if you're passionate about advancing the frontiers of multi-agent environments and are eager to dive deeper into research, we invite you to join our team at THUNLP. To explore this exciting opportunity and embark on a collaborative journey with us, please reach out to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com) and express your interest. We're keen to welcome motivated individuals like you to our lab!
 
 ## 🗓 Coming Soon
-- [ ] Code release of our [paper](https://arxiv.org/abs/2308.10848)
+- [x] Code release of our [paper](https://arxiv.org/abs/2308.10848)
 - [ ] Add documentation
 - [ ] Support more sophisticated memory for conversation history
 - [ ] Add support for local LLM
-- [ ] Auto-generate UI based on the given multi-agent environment
 
 
 ## 👾 Simple Demo Video
@@ -79,7 +90,7 @@ In the NLP class, the professor and students engage in interactive communication
 
 Use the following command to launch the NLP Classroom example:
 ```bash
-python main_simulation_gui.py --task nlp_classroom_9players
+python main_simulation_gui.py --task simulation/nlp_classroom_9players
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/6ea07850-595e-4a28-a82e-f863011353c2
@@ -90,7 +101,7 @@ A prisoner's Dilemma is a thought experiment that challenges two completely rati
 
 Use the following command to launch the Prisoner Dilemma example:
 ```bash
-python main_simulation_cli.py --task prisoner_dilemma
+python main_simulation_cli.py --task simulation/prisoner_dilemma
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/017c46e5-c738-4fca-9352-b008e2d518bd
@@ -101,7 +112,7 @@ In the Software Design example, a code writer, a code tester and a code reviewer
 
 Use the following command to launch the Software Design example:
 ```bash
-python main_demo.py --task sde_team/sde_team_2players
+python main_demo.py --task simulation/sde_team/sde_team_2players
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4e54661626a
@@ -112,7 +123,7 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4
 In the database diagnosis scenario, the Chief DBA monitors the system anomalies (e.g., slow queries, locks, crash down). If detected, the domain experts are alerted to analyze root causes, share insights, and suggest optimization solutions together. The Chief DBA then provides a summarized report to the user.
 
 ```bash
-python main_simulation_gui.py --task db_diag
+python main_simulation_gui.py --task simulation/db_diag
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/c633419d-afbb-47d4-bb12-6bb512e7af3a
@@ -124,7 +135,7 @@ In the context of the text evaluation scenario, we recommend users explore the [
 https://github.com/OpenBMB/AgentVerse/assets/75533759/58f33468-f15b-4bac-ae01-8d0780019f85
 
 #### Pokemon
-In the game, agents can visit shops, train their Pokémon at the gym, and interact with one another. As a player, you take on the role of an agent and can engage with others at any time. There are 6 characters in the Pokémon environment who appeared in Pokemon Emerald: [May](https://bulbapedia.bulbagarden.net/wiki/May_(game)), [Professor Birch](https://bulbapedia.bulbagarden.net/wiki/Professor_Birch), [Steven Stone](https://bulbapedia.bulbagarden.net/wiki/Steven_Stone), [Maxie](https://bulbapedia.bulbagarden.net/wiki/Maxie), [Archie](https://bulbapedia.bulbagarden.net/wiki/Archie) and [Joseph](https://bulbapedia.bulbagarden.net/wiki/Mr._Stone). 
+**Currently available only in [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0)**. In the game, agents can walk around the game world, and interact with one another. As a player, you take on the role of an agent and can engage with others at any time. There are 6 characters in the Pokémon environment who appeared in Pokemon Emerald: [May](https://bulbapedia.bulbagarden.net/wiki/May_(game)), [Professor Birch](https://bulbapedia.bulbagarden.net/wiki/Professor_Birch), [Steven Stone](https://bulbapedia.bulbagarden.net/wiki/Steven_Stone), [Maxie](https://bulbapedia.bulbagarden.net/wiki/Maxie), [Archie](https://bulbapedia.bulbagarden.net/wiki/Archie) and [Joseph](https://bulbapedia.bulbagarden.net/wiki/Mr._Stone). 
 
 To launch the Pokemon game, first launch a local server with the following command:
 ```bash
@@ -162,8 +173,9 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 - [Contents](#contents)
 - [🚀 Getting Started](#-getting-started)
   - [Installation](#installation)
-  - [CLI Example](#cli-example)
-  - [Local Website Demo](#local-website-demo)
+  - [Simulation CLI Example](#simulation-cli-example)
+  - [Simulation Local Website Demo](#simulation-local-website-demo)
+  - [Task-Solving CLI Example](#task-solving-cli-example)
 - [💡 Philosophy](#-philosophy)
   - [Environment](#environment)
   - [Agent](#agent)
@@ -227,23 +239,33 @@ cd BMTools
 python setup.py develop
 -->
 
-### CLI Example
+### Simulation CLI Example
 
 You can create a multi-agent environments provided by us. Using the classroom scenario as an example. In this scenario, there are nine agents, one playing the role of a professor and the other eight as students.
 
 ```shell
-python3 main.py --task nlp_classroom_9players
+python3 main_simulation_cli.py --task simulation/nlp_classroom_9players
 ```
 
-### Local Website Demo
+### Simulation Local Website Demo
 
 We also provide a local website demo for this environment. You can launch it with
 
 ```shell
-python3 main_simulation_gui.py --task nlp_classroom_9players
+python3 main_simulation_gui.py --task simulation/nlp_classroom_9players
 ```
 After successfully launching the local server, you can visit [http://127.0.0.1:7860/](http://127.0.0.1:7860/) to view the classroom environment.
 
+### Task-Solving CLI Example
+
+To run the experiments with the task-solving environment proposed in our [paper](https://arxiv.org/abs/2308.10848), you can use the following command:
+
+```shell
+# Run the Humaneval benchmark using gpt-3.5-turbo
+python3 main_tasksolving_cli.py --task tasksolving/humaneval/gpt-3.5 --dataset_path data/humaneval/test.jsonl --overwrite
+```
+
+You can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
 
 
 ## 💡 Philosophy
@@ -374,19 +396,17 @@ Here's a brief overview of each example:
 ## Citation
 If you find this repo helpful, feel free to cite us.
 ```
-@misc{chen2023agentverse,
-      title={AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents}, 
-      author={Weize Chen and Yusheng Su and Jingwei Zuo and Cheng Yang and Chenfei Yuan and Chen Qian and Chi-Min Chan and Yujia Qin and Yaxi Lu and Ruobing Xie and Zhiyuan Liu and Maosong Sun and Jie Zhou},
-      year={2023},
-      eprint={2308.10848},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
+@article{chen2023agentverse,
+  title={Agentverse: Facilitating multi-agent collaboration and exploring emergent behaviors in agents},
+  author={Chen, Weize and Su, Yusheng and Zuo, Jingwei and Yang, Cheng and Yuan, Chenfei and Qian, Chen and Chan, Chi-Min and Qin, Yujia and Lu, Yaxi and Xie, Ruobing and others},
+  journal={arXiv preprint arXiv:2308.10848},
+  year={2023}
 }
 ```
 
 ## Contact
 
-Weize Chen: chenwz21@mails.tsinghua.edu.cn
+Weize Chen: chenweize1998@gmail.com
 
 [Yusheng Su](https://yushengsu-thu.github.io/): yushengsu.thu@gmail.com
 
