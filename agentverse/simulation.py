@@ -43,6 +43,7 @@ class Simulation:
         self.environment.reset()
         while not self.environment.is_done():
             asyncio.run(self.environment.step())
+        self.environment.report_metrics()
 
     def reset(self):
         self.environment.reset()

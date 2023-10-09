@@ -1,4 +1,5 @@
 from __future__ import annotations
+from agentverse.logging import logger
 
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, List
@@ -44,6 +45,12 @@ class BaseEnvironment(BaseModel):
     @abstractmethod
     def reset(self) -> None:
         """Reset the environment"""
+        pass
+
+    def report_metrics(self) -> None:
+        """Report useful metrics"""
+        total_spent = sum([agent.get_spend() for agent in self.agents])
+        logger.info(f"Total spent: ${total_spent}")
         pass
 
     def is_done(self) -> bool:

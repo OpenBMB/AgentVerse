@@ -22,6 +22,13 @@ class BaseLLM(BaseModel):
     max_retry: int = Field(default=3)
 
     @abstractmethod
+    def get_spend(self) -> float:
+        """
+        Number of USD spent
+        """
+        return -1.0
+
+    @abstractmethod
     def generate_response(self, **kwargs) -> LLMResult:
         pass
 

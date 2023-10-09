@@ -108,6 +108,29 @@ class BasicEnvironment(BaseEnvironment):
         self.cnt_turn += 1
         return flatten_result, advice, flatten_plan, logs, self.success
 
+    def iter_agents(self):
+        for role, agent_or_agents in self.agents.items():
+            if isinstance(agent_or_agents, list):
+                for agent in agent_or_agents:
+                    yield role, agent
+            else:
+                yield role, agent_or_agents
+
+    def get_spend(self):
+        total_spent = sum([agent.get_spend() for (_, agent) in self.iter_agents()])
+        return total_spent
+
+    def report_metrics(self) -> None:
+        logger.info("", "Agent spend:", Fore.GREEN)
+        for role, agent in self.iter_agents():
+            name = agent.name.split(":")[0]
+            logger.info(
+                "",
+                f"Agent (Role: {role}) {name}: {agent.get_spend_formatted()}",
+                Fore.GREEN,
+            )
+        logger.info("", f"Total spent: ${self.get_spend():.6f}", Fore.GREEN)
+
     def is_done(self):
         """Check if the environment is done"""
         return self.cnt_turn >= self.max_turn or self.success
