@@ -30,7 +30,7 @@ class GUI:
     the UI of frontend
     """
 
-    def __init__(self, task: str):
+    def __init__(self, task: str, tasks_dir: str):
         """
         init a UI.
         default number of students is 0
@@ -38,9 +38,9 @@ class GUI:
         self.messages = []
         self.task = task
         if task == "pipeline_brainstorming":
-            self.backend = TaskSolving.from_task(task)
+            self.backend = TaskSolving.from_task(task, tasks_dir)
         else:
-            self.backend = Simulation.from_task(task)
+            self.backend = Simulation.from_task(task, tasks_dir)
         self.turns_remain = 0
         self.agent_id = {
             self.backend.agents[idx].name: idx

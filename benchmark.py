@@ -12,7 +12,9 @@ from dataloader import dataloader_registry
 
 parser = ArgumentParser()
 
-parser.add_argument("--task", type=str, default="responsegen")
+parser.add_argument("--task", type=str, default="tasksolving/responsegen")
+parser.add_argument("--tasks_dir", type=str, default=os.path.join(
+    os.path.dirname(__file__), "agentverse", "tasks"))
 parser.add_argument("--dataset_path", type=str, required=True)
 parser.add_argument("--output_path", type=str, default=None)
 parser.add_argument("--has_tools", action="store_true")
@@ -38,7 +40,7 @@ if __name__ == "__main__":
     else:
         os.makedirs(args.output_path, exist_ok=True)
     shutil.copyfile(
-        f"./agentverse/tasks/{args.task}/config.yaml",
+        f"{args.tasks_dir}/{args.task}/config.yaml",
         f"{args.output_path}/config.yaml",
     )
 
@@ -57,7 +59,7 @@ if __name__ == "__main__":
             assert args.tool_tmp_path is not None
             with open(args.tool_tmp_path, "w") as f:
                 f.write(json.dumps(example["tools"]))
-        agentversepipeline = TaskSolving.from_task(args.task)
+        agentversepipeline = TaskSolving.from_task(args.task, args.tasks_dir)
         agentversepipeline.environment.set_task_description(example["input"])
         # print(args.single_agent)
         # print(args.discussion_mode)
