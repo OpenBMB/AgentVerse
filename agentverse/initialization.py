@@ -66,9 +66,9 @@ def load_agent(agent_config: Dict) -> BaseAgent:
     return agent
 
 
-def prepare_task_config(task):
+def prepare_task_config(task, tasks_dir):
     """Read the yaml config of the given task in `tasks` directory."""
-    all_task_dir = os.path.join(os.path.dirname(__file__), "tasks")
+    all_task_dir = tasks_dir
     task_path = os.path.join(all_task_dir, task)
     config_path = os.path.join(task_path, "config.yaml")
     if not os.path.exists(task_path):

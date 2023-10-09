@@ -72,14 +72,17 @@ python build_config.py
 After generating `config.yaml`, run the `main.py` to start the task.
 
 ```python
+import os
 from agentverse.agentverse import AgentVerse
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
 parser.add_argument("--task", type=str, default="sde_team/sde_team_2players")
+parser.add_argument("--tasks_dir", type=str, default=os.path.join(
+    os.path.dirname(__file__), "agentverse", "tasks"))
 
 args = parser.parse_args()
-agentverse = AgentVerse.from_task(args.task)
+agentverse = AgentVerse.from_task(args.task, args.tasks_dir)
 agentverse.run()
 ```
 
