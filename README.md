@@ -33,7 +33,7 @@
 
 **AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
 
-⚠️⚠️⚠️ We're refactoring the code, and the goal is to provide a flexibility to construct simulation(without a predefined goal) and task-solving(with a specific goal) environments. Please note that this README is slightly outdated, we will update it soon. If you require a stable version that exclusively supports simulation environments, you can use [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0) branch.
+⚠️⚠️⚠️ We're refactoring the code, and the goal is to provide a flexibility to construct simulation(without a predefined goal) and task-solving(with a specific goal) environments. Please note that this README is slightly outdated, we will update it soon. If you require a stable version that exclusively supports simulation environments, you can use [`release-0.1`](https://github.com/OpenBMB/AgentVerse/tree/release-0.1) branch.
 
 ---
 
@@ -138,7 +138,7 @@ In the context of the text evaluation scenario, we recommend users explore the [
 https://github.com/OpenBMB/AgentVerse/assets/75533759/58f33468-f15b-4bac-ae01-8d0780019f85
 
 #### Pokemon
-**Currently available only in [`release-1.0`](https://github.com/OpenBMB/AgentVerse/tree/release-1.0)**. In the game, agents can walk around the game world, and interact with one another. As a player, you take on the role of an agent and can engage with others at any time. There are 6 characters in the Pokémon environment who appeared in Pokemon Emerald: [May](https://bulbapedia.bulbagarden.net/wiki/May_(game)), [Professor Birch](https://bulbapedia.bulbagarden.net/wiki/Professor_Birch), [Steven Stone](https://bulbapedia.bulbagarden.net/wiki/Steven_Stone), [Maxie](https://bulbapedia.bulbagarden.net/wiki/Maxie), [Archie](https://bulbapedia.bulbagarden.net/wiki/Archie) and [Joseph](https://bulbapedia.bulbagarden.net/wiki/Mr._Stone). 
+**Currently available only in [`release-0.1`](https://github.com/OpenBMB/AgentVerse/tree/release-0.1)**. In the game, agents can walk around the game world, and interact with one another. As a player, you take on the role of an agent and can engage with others at any time. There are 6 characters in the Pokémon environment who appeared in Pokemon Emerald: [May](https://bulbapedia.bulbagarden.net/wiki/May_(game)), [Professor Birch](https://bulbapedia.bulbagarden.net/wiki/Professor_Birch), [Steven Stone](https://bulbapedia.bulbagarden.net/wiki/Steven_Stone), [Maxie](https://bulbapedia.bulbagarden.net/wiki/Maxie), [Archie](https://bulbapedia.bulbagarden.net/wiki/Archie) and [Joseph](https://bulbapedia.bulbagarden.net/wiki/Mr._Stone). 
 
 To launch the Pokemon game, first launch a local server with the following command:
 ```bash
