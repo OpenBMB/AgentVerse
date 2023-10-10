@@ -77,7 +77,7 @@ agents:
     memory: 
       memory_type: vectorstore
     memory_manipulator:
-      memory_manipulator_type: reflection
+      memory_manipulator_type: plan
     prompt_template: *prompt
     llm:
       model: "gpt-4"
