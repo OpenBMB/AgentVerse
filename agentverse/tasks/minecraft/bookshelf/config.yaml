@@ -1,0 +1,103 @@
+prompts:
+  prompt: &prompt |-
+    # Role Description
+    You are an experienced MineCraft player. ${role_description}
+
+    Your current mission is to team up with other players and execute a set of specified tasks within the Minecraft environment.
+
+    # Requirements
+    It is essential that you effectively coordinate with other players to ensure the successful completion of tasks in a highly efficient manner. This collaboration should be achieved through the following steps:
+
+    - Communication: Engage in open dialogue, discussing the specifics of the high-level task to make the goal more specific.
+
+    - Task Decomposition: After understanding the task in its entirety, you guys need to decompose the high-level task into smaller, manageable sub-tasks. These sub-tasks should be small, specific, and executable with MineFlayer code, as you will be using MineFlayer to play MineCraft. The task decomposition will not be a one-time process but an iterative one. At regular intervals during playing the game, you'll be paused and should discuss with others again based on your progress. You'll propose new sub-tasks that respond to the current circumstances. So you don't need to plan far ahead, but make sure your proposed sub-tasks are small, simple and achievable, to ensure smooth progression. Each sub-task should contribute to the completion of the overall task, and each of you should take one subtask. That means, the number of sub-tasks should be 2. When necessary, the two sub-tasks can be identical for faster task accomplishment. You don't need to always agree with the decomposition proposed by other players. You can propose a more reasonable one when you find the decomposition not good. Be specific for the sub-tasks, for example, make sure to specify how many materials are needed.
+
+    - Sub-task Dispatch: Post decomposition, the next step is to distribute the sub-tasks amongst yourselves. This will require further communication, where you consider each player's skills, resources, and availability. Ensure the dispatch facilitates smooth, ** parallel ** execution.
+
+    - Integration and Finalization: In some tasks, you will need to integrate your individual efforts. For example, when crafting complicated stuff that require various materials, after collecting them, you need to consolidate all the materials with one of you. For these specific tasks, it is essential to discuss who should drop their items in inventory and who should collect them to reach the final goal. For other tasks that can be done completely parallal, this step can be ignored.
+
+    # Task Description
+    The high-level task: ${goal}
+
+    # Reminder
+    Remember, the key to achieving high efficiency as a group is maintaining a constant line of communication, cooperation, and coordination throughout the entire process. Now you should discuss with the other player. There will be 4 rounds for you guys to discuss the sub-tasks and the assignment at discussion phase. ** DO NOT imagine that you have achieved anything that is not mentioned in the chat history or have obtained anything that does not in your inventory. ** What will you, ${agent_name}, say now? Your response should only contain the words of ${agent_name}.
+
+    # Chat History
+    Below is the chat history among players:
+    [Before Game Start. Discussion Phase.]
+    ${chat_history}
+
+    ${env_description}
+    [${agent_name}]:
+  # - Progress Monitoring and Sub-task Update: After you have made some progress, you can inform other players what you have achieved, and discuss whether there's a need for sub-task re-assignment or update based on the changing circumstances. Do not imagine that you have achieved something that is not mentioned in the chat history before game start.
+  summarization_prompt: &sum_prompt |-
+    Please review the following chat conversation and identify the specific latest sub-task or the next step that ${agent_name} needs to accomplish.
+
+    # Chat Conversation
+    ${chat_history}
+
+    # Response Guidelines
+    Your response should exclusively include the identified sub-task or the next step intended for ${agent_name}. Ensure that you are only extracting the sub-task or next step designated to ${agent_name}, excluding tasks assigned to other participants. Keep your response succinct and to the point. It should be formatted as "verb + (quantifier) + noun" and must not exceed 20 words. For instance, "Gather 3 wood for making pickaxes", "Kill 3 cows", "Drop 4 sticks", "Pickup 4 sticks dropped by xxx". Remember to add the quantifier and other important information discussed in the conversation.
+  # For instance, "Mine [quantity] [block]", "Craft [quantity] [item]", "Smelt [quantity] [item]", "Kill [quantity] [mob]", "Cook [quantity] [food]", "Equip [item]", "Harvest [quantity] [item]", "Gather [quantity] [item]".
+
+name: MineCraft_painting
+
+environment:
+  env_type: minecraft
+  max_turns: 100000
+  rule:
+    order:
+      type: minecraft
+      total_discussion_round: 4
+    visibility:
+      type: all
+    selector:
+      type: minecraft
+      total_discussion_round: 4
+    updater:
+      type: basic
+    describer:
+      type: minecraft
+      total_discussion_round: 4
+
+agents:
+  - agent_type: minecraft
+    max_retry: 20
+    name: Alice
+    role_description: Your name is Alice. You are collaborating with Bob, who is another experienced MineCraft player, to accomplish the given tasks in MineCraft.
+    prompt_template: *prompt
+    summarization_prompt_template: *sum_prompt
+    goal: Craft 1 bookshelf
+    skill_library_dir: ckpt/bookshelf/Alice/
+    ckpt_dir: ckpt/bookshelf/Alice/
+    resume: true
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: gpt-4
+      temperature: 0.7
+      max_tokens: 250
+    output_parser:
+      type: minecraft
+  - agent_type: minecraft
+    max_retry: 20
+    name: Bob
+    role_description: Your name is Bob. You are collaborating with Alice, who is another experienced MineCraft player, to accomplish the given tasks in MineCraft.
+    prompt_template: *prompt
+    summarization_prompt_template: *sum_prompt
+    goal: Craft 1 bookshelf
+    skill_library_dir: ckpt/bookshelf/Bob/
+    ckpt_dir: ckpt/bookshelf/Bob/
+    resume: true
+    memory:
+      memory_type: chat_history
+    llm:
+      llm_type: gpt-4
+      model: gpt-4
+      temperature: 0.7
+      max_tokens: 250
+    output_parser:
+      type: minecraft
+
+tools:

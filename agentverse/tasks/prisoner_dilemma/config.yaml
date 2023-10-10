@@ -1,0 +1,100 @@
+prompts:
+  prompt: &prompt |-
+    There are three people (Police, Suspect1, Suspect2) in the scene.
+
+    You are now simultating a famous experiments called prisoner's dilemma.
+
+    Below is the description of your role. ${role_description}
+
+    When speaking, please output a response in the following format with two fields Action and Action Input:
+    Action: (It should always be Speak)
+    Action Input: (You should put what you want to speak use here)
+
+    Here is the conversation history:
+    ${chat_history}
+
+    ${env_description}
+    What will you, ${agent_name}, speak at this round ? Please give your response based on the above history. Remember to give your response STRICTLY in the above response format. Do not add any additional field or line break to your response!
+
+name: prisoner_dilemma
+
+environment:
+  env_type: prisoner_dilemma
+  max_turns: 8
+  rule:
+    order:
+      type: prisoner
+    visibility:
+      type: prisoner
+    selector:
+      type: basic
+    updater:
+      type: basic
+    describer:
+      type: prisoner
+
+agents:
+  - agent_type: police
+    name: Police
+    interrogating_form: You are now interrogating with both Suspects in turn, when you receive the message from Suspect1 you should transfer the information to Suspect2, vice versa.
+    role_description: |-
+      You are now the Police. You have arrested two suspects. However, they both refused to confess to their crime.
+      Your goal is try to convict both suspects, therefore you come up with the following rules.
+      - If one of the suspect are willing to testifies against the other and the other one remains silent, then the one who testifies will be released immediately, while the silent one will be sentenced to TEN years in prison.
+      - If both of the suspects remain silent, they will each receive a sentence of ONE year in prison.
+      - If both of the suspects choose to testify against each other, they will each receive a sentence of FIVE years in prison.
+      ${interrogating_form}
+      Both suspects are not allowed to communicate with each other, and you can adopt various strategy to talk with suspects in order to make them both confess to the crime, including exploiting the uncertainess and the suspicion of each other.
+      [IMPORTANT!]
+      - You are request to briefly describe the above rules to the suspects at the beginning of the conversation.
+      - You are request to STATE the final judgement to both suspects when they make their final decision.
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      model: "gpt-4"
+      llm_type: gpt-4
+      temperature: 1.2
+      max_tokens: 200
+  - agent_type: prisoner
+    name: Suspect1
+    personality: "You are a Sophisticated Egoist, you always seek for your personal interests best"
+    relationship_with_another: "Suspect2 has ever betrayed on you"
+    role_description: |-
+      You are Suspect1 !!! You are going to match wits and courage with Suspect2 to come out victorious in this interrogation.
+      You will have to talk to Police several times and only the final decision will count.
+      ${personality}
+      ${relationship_with_another}
+      [IMPORTANT!]
+      - Your primary goal is trying to make Yourself innocent and reduce your sentence as far as possible in this dilemma.
+      - When you hear Police saying "Attention!", you are going to made your final decision and Please start with "My final decision is:".
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      model: "gpt-4"
+      llm_type: gpt-4
+      temperature: 1.2
+      max_tokens: 100
+  - agent_type: prisoner
+    name: Suspect2
+    personality: ""
+    relationship_with_another: "You have ever betray Suspect1 once."
+    role_description: |-
+      You are Suspect2 !!! You are going to match wits and courage with Suspect1 to come out victorious in this interrogation.
+      You will have to talk to Police several times and only the final decision will count.
+      ${personality}
+      ${relationship_with_another}
+      [IMPORTANT!]
+      - Your primary goal is trying to make Yourself innocent and reduce your sentence as far as possible in this dilemma.
+      - When you hear Police saying "Attention!", you are going to made your final decision and Please start with "My final decision is:".
+    memory:
+      memory_type: chat_history
+    prompt_template: *prompt
+    llm:
+      model: "gpt-4"
+      llm_type: gpt-4
+      temperature: 1.2
+      max_tokens: 100
+
+tools:

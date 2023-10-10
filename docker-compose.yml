@@ -1,0 +1,92 @@
+version: '3'
+
+services:
+  EnvServer:
+    image: mcbot-env:0.1
+    restart: always
+    ports:
+      - 3000:3000
+      - 3001:3000
+      - 3002:3000
+      - 3003:3000
+      - 3004:3000
+      - 3100:3100
+      - 3101:3101
+      - 3102:3102
+      - 3103:3103
+      - 3104:3104
+      - 3200:3200
+      - 3201:3201
+      - 3202:3202
+      - 3203:3203
+      - 3204:3204
+      - 25565:25565
+      - 25575:25575
+    environment:
+      - MC_SERVER_HOST=localhost
+      - MC_SERVER_PORT=25565
+      - PORT=3000
+      # - VIEWER_PORT=3100
+    networks:
+      - mcbot-net
+    deploy:
+      replicas: 1
+  
+  EnvMoniter:
+    image: mcbot-env-moniter:0.1
+    environment:
+      - RECORD_SERVER=http://RecordServer:8000 
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - EnvServer
+    networks:
+      - mcbot-net
+    
+
+
+  RenderServer:
+    image: mcbot-render:0.1
+    ports:
+      - 9630:9630
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    networks:
+      - mcbot-net
+    #deploy:
+    #  resources:
+    #    reservations:
+    #      devices:
+    #        - driver: nvidia
+    #          count: all
+    #          capabilities: [gpu]
+      
+  RecordServer:
+    image: mcbot-record:0.1
+    ports:
+      - 8000:8000
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - RENDER_HOST=RenderServer
+      - RENDER_PORT=9630
+      - MAX_TASK_REPEAT=3
+    networks:
+      - mcbot-net
+    # 其他配置项
+    depends_on:
+      - RenderServer
+  
+
+networks:
+  mcbot-net:
+    name: mcbot-net
+    driver: bridge
