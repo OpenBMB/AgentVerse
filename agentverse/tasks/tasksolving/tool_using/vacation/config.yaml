@@ -2,7 +2,7 @@ cnt_agents: &cnt_agents 4
 cnt_tool_agents: &cnt_tool_agents 3
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
-tool_config: &tool_config tools_simplified.json
+tool_config: &tool_config agentverse/tasks/tasksolving/tool_using/tools_simplified.json
 
 task_description: I'm planning a two-week vacation to Japan next month. Help me plan my itinerary. I want to visit Tokyo, Kyoto, and Osaka. Look for the top tourist attractions in each city, and also suggest the best mode of travel between these cities. Additionally, find out the weather forecast for the month I'll be visiting.
 

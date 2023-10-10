@@ -38,4 +38,4 @@ jobs:
       run: |
         python setup.py develop 
         python agentverse_command/benchmark.py --task tasksolving/mgsm/gpt-3.5 --dataset_path data/mgsm/test_sample.jsonl --overwrite --output_path ci_smoke_test_output --tasks_dir ./agentverse/tasks
-        python evaluate_math.py --path ci_smoke_test_output/results.jsonl --ci_smoke_test
+        python scripts/evaluate_math.py --path ci_smoke_test_output/results.jsonl --ci_smoke_test

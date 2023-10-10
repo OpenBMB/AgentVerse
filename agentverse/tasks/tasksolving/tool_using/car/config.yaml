@@ -2,7 +2,7 @@ cnt_agents: &cnt_agents 4
 cnt_tool_agents: &cnt_tool_agents 3
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
-tool_config: &tool_config tools_simplified.json
+tool_config: &tool_config agentverse/tasks/tasksolving/tool_using/tools_simplified.json
 
 task_description: I am planning to buy a new car. Could you help me compare the features and prices of the latest models of Tesla, Ford, and Toyota? Include details about range, charging time, safety features, and after-sales service. Also, provide a brief analysis of the pros and cons of each car.
 

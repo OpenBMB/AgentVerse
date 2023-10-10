@@ -29,16 +29,18 @@ class CoverageTestExecutor(BaseExecutor):
         *args,
         **kwargs,
     ) -> Any:
-        from evaluate_commongen import scoring
+        from scripts.evaluate_commongen import scoring
 
-        coverage, missing_tokens = scoring([s.content for s in solution], [task_description])
+        coverage, missing_tokens = scoring(
+            [s.content for s in solution], [task_description]
+        )
         if len(missing_tokens[0]) == 0:
             missing_tokens = "No missing tokens."
         else:
             missing_tokens = ", ".join(missing_tokens[0])
         result = f"Coverage: {coverage*100:.2f}%\nMissing Tokens: {missing_tokens}"
         return [ExecutorMessage(content=result)]
-    
+
     async def astep(
         self,
         agent: ExecutorAgent,
@@ -47,9 +49,11 @@ class CoverageTestExecutor(BaseExecutor):
         *args,
         **kwargs,
     ) -> Any:
-        from evaluate_commongen import scoring
+        from scripts.evaluate_commongen import scoring
 
-        coverage, missing_tokens = scoring([s.content for s in solution], [task_description])
+        coverage, missing_tokens = scoring(
+            [s.content for s in solution], [task_description]
+        )
         if len(missing_tokens[0]) == 0:
             missing_tokens = "No missing tokens."
         else:

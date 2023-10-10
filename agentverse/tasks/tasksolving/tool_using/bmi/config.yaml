@@ -2,7 +2,7 @@ cnt_agents: &cnt_agents 3
 cnt_tool_agents: &cnt_tool_agents 2
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
-tool_config: &tool_config tools_simplified.json
+tool_config: &tool_config agentverse/tasks/tasksolving/tool_using/tools_simplified.json
 
 task_description: I want to lose 5kg in the next 2 months. I weigh 70kg, am 170cm tall, and my age is 25. Calculate my BMI and based on that, suggest a workout routine and daily calorie intake to help me achieve my goal.
 

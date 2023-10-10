@@ -2,7 +2,7 @@ cnt_agents: &cnt_agents 4
 cnt_tool_agents: &cnt_tool_agents 3
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
-tool_config: &tool_config tools_simplified.json
+tool_config: &tool_config agentverse/tasks/tasksolving/tool_using/tools_simplified.json
 
 task_description: I am planning a date with my girlfriend this week, please search for a good movie theater and a restaurant near Tsinghua University in Beijing and recommend a good movie to watch. Please search the web.
 

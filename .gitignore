@@ -173,3 +173,4 @@ results
 tmp/
 data/toolbench
 logs/
+ci_smoke_test_output/

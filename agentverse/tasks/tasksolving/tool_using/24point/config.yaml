@@ -2,7 +2,7 @@ cnt_agents: &cnt_agents 3
 cnt_tool_agents: &cnt_tool_agents 2
 max_rounds: &max_rounds 5
 max_criticizing_rounds: 3
-tool_config: &tool_config tools_simplified.json
+tool_config: &tool_config agentverse/tasks/tasksolving/tool_using/tools_simplified.json
 
 task_description: Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the "24-Point Game." What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?
 
