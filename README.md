@@ -93,7 +93,7 @@ In the NLP class, the professor and students engage in interactive communication
 
 Use the following command to launch the NLP Classroom example:
 ```bash
-python main_simulation_gui.py --task simulation/nlp_classroom_9players
+python agentverse_command/main_simulation_gui.py --task simulation/nlp_classroom_9players
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/6ea07850-595e-4a28-a82e-f863011353c2
@@ -104,7 +104,7 @@ A prisoner's Dilemma is a thought experiment that challenges two completely rati
 
 Use the following command to launch the Prisoner Dilemma example:
 ```bash
-python main_simulation_cli.py --task simulation/prisoner_dilemma
+python agentverse_command/main_simulation_gui.py --task simulation/prisoner_dilemma
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/017c46e5-c738-4fca-9352-b008e2d518bd
@@ -115,7 +115,7 @@ In the Software Design example, a code writer, a code tester and a code reviewer
 
 Use the following command to launch the Software Design example:
 ```bash
-python main_demo.py --task simulation/sde_team/sde_team_2players
+python agentverse_command/main_simulation_gui.py --task simulation/sde_team/sde_team_2players
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4e54661626a
@@ -126,7 +126,7 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4
 In the database diagnosis scenario, the Chief DBA monitors the system anomalies (e.g., slow queries, locks, crash down). If detected, the domain experts are alerted to analyze root causes, share insights, and suggest optimization solutions together. The Chief DBA then provides a summarized report to the user.
 
 ```bash
-python main_simulation_gui.py --task simulation/db_diag
+python agentverse_command/main_simulation_gui.py --task simulation/db_diag
 ```
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/c633419d-afbb-47d4-bb12-6bb512e7af3a
@@ -247,7 +247,9 @@ python setup.py develop
 You can create a multi-agent environments provided by us. Using the classroom scenario as an example. In this scenario, there are nine agents, one playing the role of a professor and the other eight as students.
 
 ```shell
-python3 main_simulation_cli.py --task simulation/nlp_classroom_9players
+python3 agentverse_command/main_simulation_cli.py --task simulation/nlp_classroom_9players
+# or if you have installed AgentVerse via pip
+agentverse-simulation --task simulation/nlp_classroom_9players
 ```
 
 ### Simulation Local Website Demo
@@ -255,7 +257,9 @@ python3 main_simulation_cli.py --task simulation/nlp_classroom_9players
 We also provide a local website demo for this environment. You can launch it with
 
 ```shell
-python3 main_simulation_gui.py --task simulation/nlp_classroom_9players
+python3 agentverse_command/main_simulation_gui.py --task simulation/nlp_classroom_9players
+# or if you have installed AgentVerse via pip
+agentverse-simulation-gui --task simulation/nlp_classroom_9players
 ```
 After successfully launching the local server, you can visit [http://127.0.0.1:7860/](http://127.0.0.1:7860/) to view the classroom environment.
 
@@ -265,7 +269,9 @@ To run the experiments with the task-solving environment proposed in our [paper]
 
 ```shell
 # Run the Humaneval benchmark using gpt-3.5-turbo
-python3 main_tasksolving_cli.py --task tasksolving/humaneval/gpt-3.5 --dataset_path data/humaneval/test.jsonl --overwrite
+python3 agentverse_command/main_tasksolving_cli.py --task tasksolving/humaneval/gpt-3.5 --dataset_path data/humaneval/test.jsonl --overwrite
+# or if you have installed AgentVerse via pip
+agentverse-tasksolving --task tasksolving/humaneval/gpt-3.5 --dataset_path data/humaneval/test.jsonl --overwrite
 ```
 
 You can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
