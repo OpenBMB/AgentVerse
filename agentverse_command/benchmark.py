@@ -13,8 +13,11 @@ from dataloader import dataloader_registry
 parser = ArgumentParser()
 
 parser.add_argument("--task", type=str, default="tasksolving/responsegen")
-parser.add_argument("--tasks_dir", type=str, default=os.path.join(
-    os.path.dirname(__file__), "agentverse", "tasks"))
+parser.add_argument(
+    "--tasks_dir",
+    type=str,
+    default=os.path.join(os.path.dirname(__file__), "..", "agentverse", "tasks"),
+)
 parser.add_argument("--dataset_path", type=str, required=True)
 parser.add_argument("--output_path", type=str, default=None)
 parser.add_argument("--has_tools", action="store_true")
@@ -32,7 +35,7 @@ def get_dataloader(task, dataset_path):
     return dataloader_registry.build(task, path=dataset_path)
 
 
-if __name__ == "__main__":
+def cli_main():
     dataloader = get_dataloader(args.task, args.dataset_path)
     if args.output_path is None:
         os.makedirs(f"./results/{args.task}", exist_ok=True)
@@ -78,3 +81,7 @@ if __name__ == "__main__":
         )
         f.flush()
     f.close()
+
+
+if __name__ == "__main__":
+    cli_main()
