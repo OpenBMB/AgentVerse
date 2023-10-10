@@ -14,5 +14,9 @@ args = parser.parse_args()
 
 logger.set_level(logging.DEBUG if args.debug else logging.INFO)
 
-agentverse = Simulation.from_task(args.task, args.tasks_dir)
-agentverse.run()
+def cli_main():
+    agentverse = Simulation.from_task(args.task, args.tasks_dir)
+    agentverse.run()
+
+if __name__ == "__main__":
+    cli_main()

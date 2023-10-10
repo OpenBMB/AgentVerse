@@ -38,4 +38,12 @@ setuptools.setup(
         "langchain",
     ],
     include_package_data = True,
+    entry_points={
+        "console_scripts": [
+            "agentverse-benchmark = agentverse_command.benchmark:cli_main",
+            "agentverse-main_simulation_cli = agentverse_command.main_simulation_cli:cli_main",
+            "agentverse-main_simulation_gui = agentverse_command.main_simulation_gui:cli_main",
+            "agentverse-main_tasksolving_cli = agentverse_command.main_tasksolving_cli:cli_main",
+        ],
+    },
 )

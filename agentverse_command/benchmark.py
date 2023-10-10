@@ -31,8 +31,7 @@ logger.set_level(logging.DEBUG if args.debug else logging.INFO)
 def get_dataloader(task, dataset_path):
     return dataloader_registry.build(task, path=dataset_path)
 
-
-if __name__ == "__main__":
+def cli_main():
     dataloader = get_dataloader(args.task, args.dataset_path)
     if args.output_path is None:
         os.makedirs(f"./results/{args.task}", exist_ok=True)
@@ -78,3 +77,6 @@ if __name__ == "__main__":
         )
         f.flush()
     f.close()
+
+if __name__ == "__main__":
+    cli_main()

@@ -18,5 +18,9 @@ args = parser.parse_args()
 
 logger.set_level(logging.DEBUG if args.debug else logging.INFO)
 
-agentversepipeline = TaskSolving.from_task(args.task)
-agentversepipeline.run()
+def cli_main():
+    agentversepipeline = TaskSolving.from_task(args.task)
+    agentversepipeline.run()
+
+if __name__ == "__main__":
+    cli_main()
