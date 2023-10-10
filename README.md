@@ -50,3 +50,6 @@ pip install -r requirements.txt
 bash run.sh
 ```
 Feel free to adjust the `task` variable within the script for alternate tasks. Browse `agentverse/tasks/minecraft` for a catalog of available tasks.
+
+### 7. Join the Game
+You can join the game with any Minecraft launcher at `127.0.0.1:25565` to see the agents.
