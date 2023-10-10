@@ -98,6 +98,8 @@ agents:
       model: text-davinci-003
       temperature: 0.7
       max_tokens: 250
+    output_parser:
+      type: math_problem_2players_tools
     tools: *tools
 
   - agent_type: tool
@@ -112,4 +114,6 @@ agents:
       model: text-davinci-003
       temperature: 0.7
       max_tokens: 250
+    output_parser:
+      type: math_problem_2players_tools
     tools: *tools

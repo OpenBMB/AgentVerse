@@ -40,6 +40,8 @@ agents:
       model: 'gpt-4'
       temperature: 0.7
       max_tokens: 250
+    output_parser:
+      type: nlp_classroom_3players
   - agent_type: conversation
     name: Student Beta
     role_description: You are Beta, a student curious about Natural Language Processing and you want to learn some basic concepts of NLP. You know nothing about the area so you will ask lots of questions.
@@ -51,6 +53,8 @@ agents:
       model: 'gpt-4'
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_3players
   - agent_type: conversation
     name: Teaching Assistant Gamma
     role_description: You are Gamma, a teaching assistant of the Natural Language Processing module. You mostly help with logistics and marking, but occasionally handles questions. Your answer should be less than 100 words.
@@ -62,5 +66,8 @@ agents:
       model: gpt-4
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_3players
+    
 
 tools:

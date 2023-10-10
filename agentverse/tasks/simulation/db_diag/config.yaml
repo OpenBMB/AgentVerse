@@ -211,6 +211,8 @@ agents:
       model: gpt-4
       temperature: 0.7
       max_tokens: 1024
+    output_parser:
+      type: db_diag
     tools: *tools
     verbose: true
   -
@@ -233,6 +235,8 @@ agents:
       model: gpt-4
       temperature: 0.7
       max_tokens: 512
+    output_parser:
+      type: db_diag
     tools: *tools
     verbose: true
   -
@@ -255,5 +259,7 @@ agents:
       model: gpt-4
       temperature: 0.7
       max_tokens: 512
+    output_parser:
+      type: db_diag
     tools: *tools
     verbose: true

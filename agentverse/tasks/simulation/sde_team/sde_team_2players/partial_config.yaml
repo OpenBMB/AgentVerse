@@ -159,6 +159,8 @@ agents:
       llm_type: gpt-3.5-turbo
       temperature: 0.
       max_tokens: 1024
+    output_parser:
+      type: sde_team/sde_team_2players
 
   - agent_type: conversation
     name: code_tester
@@ -172,6 +174,8 @@ agents:
       llm_type: gpt-3.5-turbo
       temperature: 0.
       max_tokens: 256
+    output_parser:
+      type: sde_team/sde_team_2players
 
   - agent_type: conversation
     name: code_reviewer
@@ -185,3 +189,5 @@ agents:
       llm_type: gpt-3.5-turbo
       temperature: 0.
       max_tokens: 1024
+    output_parser:
+      type: sde_team/sde_team_2players

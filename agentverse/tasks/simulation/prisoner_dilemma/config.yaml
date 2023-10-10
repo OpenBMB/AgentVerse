@@ -56,6 +56,8 @@ agents:
       llm_type: gpt-4
       temperature: 1.2
       max_tokens: 200
+    output_parser:
+      type: prisoner_dilemma
   - agent_type: prisoner
     name: Suspect1
     personality: "You are a Sophisticated Egoist, you always seek for your personal interests best"
@@ -76,6 +78,8 @@ agents:
       llm_type: gpt-4
       temperature: 1.2
       max_tokens: 100
+    output_parser:
+      type: prisoner_dilemma
   - agent_type: prisoner
     name: Suspect2
     personality: ""
@@ -96,5 +100,7 @@ agents:
       llm_type: gpt-4
       temperature: 1.2
       max_tokens: 100
+    output_parser:
+      type: prisoner_dilemma
 
 tools:

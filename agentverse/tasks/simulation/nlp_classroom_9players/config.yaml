@@ -99,6 +99,8 @@ agents:
       model: "gpt-4"
       temperature: 0.7
       max_tokens: 250
+    output_parser:
+      type: nlp_classroom_9players
     memory: 
       memory_type: chat_history
   -
@@ -113,6 +115,8 @@ agents:
       model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players
   -
     agent_type: conversation
     name: Student Amelia
@@ -125,6 +129,8 @@ agents:
       model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players
   -
     agent_type: conversation
     name: Student Ethan
@@ -137,6 +143,8 @@ agents:
       model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players
   -
     agent_type: conversation
     name: Student Charlotte
@@ -149,6 +157,8 @@ agents:
       model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players
   -
     agent_type: conversation
     name: Student Mason
@@ -161,6 +171,8 @@ agents:
       model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players
   -
     agent_type: conversation
     name: Student Ava
@@ -173,6 +185,8 @@ agents:
       model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players
   -
     agent_type: conversation
     name: Student Noah
@@ -185,6 +199,8 @@ agents:
       model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players
   -
     agent_type: conversation
     name: Student Emma
@@ -197,5 +213,7 @@ agents:
       model: "gpt-4"
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players
 
 tools:

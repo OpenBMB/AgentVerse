@@ -118,6 +118,8 @@ agents:
       llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 250
+    output_parser:
+      type: nlp_classroom_9players_group
     memory: 
       memory_type: chat_history
   -
@@ -131,6 +133,8 @@ agents:
       llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players_group
   -
     agent_type: conversation
     name: Student Amelia
@@ -142,6 +146,8 @@ agents:
       llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players_group
   -
     agent_type: conversation
     name: Student Ethan
@@ -153,6 +159,8 @@ agents:
       llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players_group
   -
     agent_type: conversation
     name: Student Charlotte
@@ -164,6 +172,8 @@ agents:
       llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players_group
   -
     agent_type: conversation
     name: Student Mason
@@ -175,6 +185,8 @@ agents:
       llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players_group
   -
     agent_type: conversation
     name: Student Ava
@@ -186,6 +198,8 @@ agents:
       llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players_group
   -
     agent_type: conversation
     name: Student Noah
@@ -197,6 +211,8 @@ agents:
       llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players_group
   -
     agent_type: conversation
     name: Student Emma
@@ -208,5 +224,7 @@ agents:
       llm_type: text-davinci-003
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_9players_group
 
 tools:

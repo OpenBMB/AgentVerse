@@ -84,6 +84,8 @@ agents:
     memory:
       memory_type: chat_history
     prompt_template: *prompt
+    output_parser:
+      type: pokemon
     llm:
       llm_type: gpt-3.5-turbo
       model: 'gpt-3.5-turbo'
@@ -102,6 +104,8 @@ agents:
     memory:
       memory_type: chat_history
     prompt_template: *prompt
+    output_parser:
+      type: pokemon
     llm:
       llm_type: gpt-3.5-turbo
       model: gpt-3.5-turbo
@@ -120,6 +124,8 @@ agents:
     memory:
       memory_type: chat_history
     prompt_template: *prompt
+    output_parser:
+      type: pokemon
     llm:
       llm_type: gpt-3.5-turbo
       model: gpt-3.5-turbo
@@ -138,6 +144,8 @@ agents:
     memory:
       memory_type: chat_history
     prompt_template: *prompt
+    output_parser:
+      type: pokemon
     llm:
       llm_type: gpt-3.5-turbo
       model: gpt-3.5-turbo
@@ -156,6 +164,8 @@ agents:
     memory:
       memory_type: chat_history
     prompt_template: *prompt
+    output_parser:
+      type: pokemon
     llm:
       llm_type: gpt-3.5-turbo
       model: gpt-3.5-turbo
@@ -174,6 +184,8 @@ agents:
     memory:
       memory_type: chat_history
     prompt_template: *prompt
+    output_parser:
+      type: pokemon
     llm:
       llm_type: gpt-3.5-turbo
       model: gpt-3.5-turbo

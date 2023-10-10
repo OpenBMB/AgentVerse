@@ -160,6 +160,8 @@ agents:
       model: text-davinci-003
       temperature: 0.7
       max_tokens: 250
+    output_parser:
+      type: nlp_classroom_3players_withtool
     memory:
       memory_type: chat_history
     verbose: true
@@ -182,6 +184,8 @@ agents:
       model: text-davinci-003
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_3players_withtool
     tools: *tools
     verbose: true
   - agent_type: tool
@@ -203,5 +207,7 @@ agents:
       model: text-davinci-003
       temperature: 0.7
       max_tokens: 100
+    output_parser:
+      type: nlp_classroom_3players_withtool
     tools: *tools
     verbose: true
