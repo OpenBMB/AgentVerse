@@ -2,8 +2,8 @@ import setuptools
 from setuptools.command.develop import develop
 import subprocess
 
-# with open("requirements.txt", "r") as f:
-#     requirements = f.read().splitlines()
+with open("requirements.txt", "r") as f:
+    requirements = f.read().splitlines()
 
 with open("README.md", "r", encoding='utf8') as fh:
     long_description = fh.read()
@@ -24,19 +24,20 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.9",
-    install_requires=[
-        "PyYAML",
-        "fastapi",
-        "uvicorn",
-        "py3langid",
-        "iso-639",
-        "openai",
-        "opencv-python",
-        "gradio",
-        "httpx[socks]",
-        "astunparse",
-        "langchain",
-    ],
+    # install_requires=[
+    #     "PyYAML",
+    #     "fastapi",
+    #     "uvicorn",
+    #     "py3langid",
+    #     "iso-639",
+    #     "openai",
+    #     "opencv-python",
+    #     "gradio",
+    #     "httpx[socks]",
+    #     "astunparse",
+    #     "langchain",
+    # ],
+    install_requires=requirements,
     include_package_data = True,
     entry_points={
         "console_scripts": [
