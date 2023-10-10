@@ -46,7 +46,7 @@
 - 🛠 **Tools (Plugins) Utilization**: AgentVerse supports the multi-agent environments with tools. Currently, AgentVerse supports tools provided in [BMTools](https://github.com/OpenBMB/BMTools). 
 
 ## 📰 What's New
-- [2023/10/5] 💡 We release the code of our paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848), and refactor our codebase to enable the creation of both simulation and task-solving environment!
+- [2023/10/5] 💡 We release the code of our paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848), and refactor our codebase to enable the creation of both simulation and task-solving environment! We have placed the code for Minecraft example in the paper at the [`minecraft`](https://github.com/OpenBMB/AgentVerse/tree/minecraft) branch. Our tool-using example will soon be updated to the `main` branch. Stay tuned!
 
 - [2023/8/22] 📝 We're excited to share our work-in-progress paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848) related to this repository.
 <p align="center">
@@ -69,7 +69,7 @@ AgentVerse is on a mission to revolutionize the multi-agent environment for larg
 
 Also, if you're passionate about advancing the frontiers of multi-agent environments and are eager to dive deeper into research, we invite you to join our team at THUNLP. To explore this exciting opportunity and embark on a collaborative journey with us, please reach out to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com) and express your interest. We're keen to welcome motivated individuals like you to our lab!
 
-👉Also, our Discord: https://discord.gg/cnutfCtC.
+👉Also, check our Discord: https://discord.gg/cnutfCtC.
 
 ## 🗓 Coming Soon
 - [x] Code release of our [paper](https://arxiv.org/abs/2308.10848)
