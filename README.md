@@ -20,6 +20,7 @@
     <a href="https://github.com/OpenBMB/AgentVerse/issues">
         <img alt="Contributions: Welcome" src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat">
     </a>
+    
 </p>
 
 <p align="center">
@@ -67,6 +68,8 @@ AgentVerse is on a mission to revolutionize the multi-agent environment for larg
 - **Feedback and Suggestions**: Use AgentVerse and provide us with feedback. Your insights can lead to potential improvements and ensure that our framework remains top-notch.
 
 Also, if you're passionate about advancing the frontiers of multi-agent environments and are eager to dive deeper into research, we invite you to join our team at THUNLP. To explore this exciting opportunity and embark on a collaborative journey with us, please reach out to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com) and express your interest. We're keen to welcome motivated individuals like you to our lab!
+
+👉Also, our Discord: https://discord.gg/cnutfCtC.
 
 ## 🗓 Coming Soon
 - [x] Code release of our [paper](https://arxiv.org/abs/2308.10848)
