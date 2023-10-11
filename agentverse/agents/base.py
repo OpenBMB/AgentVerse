@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from agentverse.llms import BaseLLM
 from agentverse.memory import BaseMemory, ChatHistoryMemory
 from agentverse.message import Message
-from agentverse.parser import OutputParser
+from agentverse.output_parser import OutputParser
 from agentverse.memory_manipulator import BaseMemoryManipulator
 
 

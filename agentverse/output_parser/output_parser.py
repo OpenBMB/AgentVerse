@@ -1,20 +1,38 @@
 from __future__ import annotations
 
 import re
+from abc import abstractmethod
 import json
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, NamedTuple, TYPE_CHECKING
 
 from agentverse.utils import AgentAction, AgentFinish, AgentCriticism
 
-from agentverse.parser import OutputParserError, output_parser_registry, OutputParser
+from agentverse.output_parser import OutputParserError, output_parser_registry, OutputParser
 from agentverse.llms import LLMResult
-from agentverse.logging import get_logger
+from agentverse.logging import logger
 
-# if TYPE_CHECKING:
-from agentverse.agents.base import BaseAgent
-from agentverse.environments.base import BaseEnvironment
+from pydantic import BaseModel
 
-logger = get_logger()
+if TYPE_CHECKING:
+    from agentverse.agents.base import BaseAgent
+    from agentverse.environments.base import BaseEnvironment
+
+class OutputParserError(Exception):
+    """Exception raised when parsing output from a command fails."""
+
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return "Failed to parse output of the model:%s\n " % self.message
+
+
+class OutputParser(BaseModel):
+    """Base class for output parsers."""
+
+    @abstractmethod
+    def parse(self, output: LLMResult) -> NamedTuple:
+        pass
 
 
 @output_parser_registry.register("alice_home")
@@ -545,7 +563,7 @@ class ResponseGenCriticParser(OutputParser):
             return AgentCriticism(False, result[1].strip())
 
 
-@output_parser_registry.register("role_description_name_assigner")
+@output_parser_registry.register("role-description-name-assigner")
 class RoleAssignerParser(OutputParser):
     cnt_critic_agents: int = 0
 

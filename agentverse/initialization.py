@@ -19,7 +19,7 @@ from agentverse.environments import BaseEnvironment, env_registry
 from agentverse.memory import memory_registry
 from agentverse.memory_manipulator import memory_manipulator_registry
 
-from agentverse.parser import output_parser_registry
+from agentverse.output_parser import output_parser_registry
 
 if TYPE_CHECKING:
     from agentverse.agents import BaseAgent
