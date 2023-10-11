@@ -101,16 +101,17 @@ name: pipeline
 environment:
   env_type: task-basic
   max_turn: *max_turn
-  role_assigner:
-    type: role_description
-    cnt_agents: *cnt_agents
-  decision_maker:
-    type: brainstorming
-    max_inner_turns: *max_inner_turns
-  executor:
-    type: none
-  evaluator:
-    type: basic
+  rule:
+    role_assigner:
+      type: role_description
+      cnt_agents: *cnt_agents
+    decision_maker:
+      type: brainstorming
+      max_inner_turns: *max_inner_turns
+    executor:
+      type: none
+    evaluator:
+      type: basic
 
 agents:
   - #role_assigner_agent:

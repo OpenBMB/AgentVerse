@@ -62,12 +62,12 @@ def cli_main():
             assert args.tool_tmp_path is not None
             with open(args.tool_tmp_path, "w") as f:
                 f.write(json.dumps(example["tools"]))
-        agentversepipeline = TaskSolving.from_task(args.task, args.tasks_dir)
-        agentversepipeline.environment.set_task_description(example["input"])
+        agentverse = TaskSolving.from_task(args.task, args.tasks_dir)
+        agentverse.environment.set_task_description(example["input"])
         # print(args.single_agent)
         # print(args.discussion_mode)
         # exit()
-        plan, result, logs = agentversepipeline.run()
+        plan, result, logs = agentverse.run()
         f.write(
             json.dumps(
                 {
