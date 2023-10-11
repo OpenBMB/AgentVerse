@@ -12,12 +12,12 @@ prompts:
     When responding, please use the following two-line format:
 
     [Option 1]: When you need to use a tool, output in the following format (omit the "[]" bracket when responding)
-    ACTION: (a tool name, it can be one of [${tool_names}])
-    ACTION INPUT: (input arguments for the tool)
+    Action: (a tool name, it can be one of [${tool_names}])
+    Action Input: (input arguments for the tool)
 
     [Option 2]: When you want to speak, you can use the following format:
-    ACTION: Speak
-    ACTION INPUT: (what you want to say in a single line)
+    Action: Speak
+    Action Input: (what you want to say in a single line)
 
     Here is the conversation history
     ${chat_history}
@@ -25,7 +25,7 @@ prompts:
     Here is the observations from tool execution:
     ${tool_observation}
 
-    Now the game starts! ${role_description} You should give your action based on the above history. Remember, you should ALWAYS give your response STRICTLY in the above response format with the TWO lines start with "ACTION:" and "ACTION INPUT:" respectively!
+    Now the game starts! ${role_description} You should give your action based on the above history. Remember, you should ALWAYS give your response STRICTLY in the above response format with the TWO lines start with "Action:" and "Action Input:" respectively!
 
   summary_prompt: &summary_prompt |
     Progressively summarize the lines of a record that you uses tools, which contains inputs for certain tools and the results returned by these tools. Based on the current summary, you need to summarize from the record the goals that the you intended to solve with each call to the tool, add it onto the previous summary, and eventually return a new summary.
