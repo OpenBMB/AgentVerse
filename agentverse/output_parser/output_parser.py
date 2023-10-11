@@ -5,9 +5,10 @@ from abc import abstractmethod
 import json
 from typing import Union, List, Tuple, NamedTuple, TYPE_CHECKING
 
+from . import output_parser_registry
+
 from agentverse.utils import AgentAction, AgentFinish, AgentCriticism
 
-from agentverse.output_parser import OutputParserError, output_parser_registry, OutputParser
 from agentverse.llms import LLMResult
 from agentverse.logging import logger
 
