@@ -30,13 +30,14 @@ class GUI:
     the UI of frontend
     """
 
-    def __init__(self, task: str, tasks_dir: str):
+    def __init__(self, task: str, tasks_dir: str,ui_kwargs: Dict[str, str]):
         """
         init a UI.
         default number of students is 0
         """
         self.messages = []
         self.task = task
+        self.ui_kwargs = ui_kwargs
         if task == "pipeline_brainstorming":
             self.backend = TaskSolving.from_task(task, tasks_dir)
         else:
@@ -502,5 +503,5 @@ class GUI:
                     show_progress=False,
                 )
 
-        demo.queue(concurrency_count=5, max_size=20).launch()
+        demo.queue(concurrency_count=5, max_size=20).launch(**self.ui_kwargs)
         # demo.launch()
