@@ -38,9 +38,9 @@ class CriticAgent(BaseAgent):
                 tool_descriptions = "\n".join(
                     [f"- {t['name']}: " + t["description"] for t in tools]
                 )
-                kwargs.update('tools', tools)
-                kwargs.update('tool_names', tool_names)
-                kwargs.update('tool_descriptions', tool_descriptions)
+                kwargs.update({"tools": tools})
+                kwargs.update({"tool_names": tool_names})
+                kwargs.update({"tool_descriptions": tool_descriptions})
             except Exception as e:
                 logger.error(e)
                 logger.warn("Failed to load tool config file.")
