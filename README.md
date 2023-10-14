@@ -70,6 +70,8 @@ in detail of AgentVerse.
 - [ ] Add support for local LLM
 
 
+<!--
+
 ## 👾 Simple Demo Video
 
 We demonstrate the following cases that are expertly crafted by AgentVerse.
@@ -144,6 +146,7 @@ Wait for the compilation to complete, and have fun! (WASD for moving around, and
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f155e95782e7
 
+-->
 
 
 ## Contents
@@ -221,13 +224,7 @@ python setup.py develop
 ```
 
 
-<!--
-# Install BMTools
-cd ../
-git clone git@github.com:OpenBMB/BMTools.git
-cd BMTools
-python setup.py develop
--->
+
 
 ### Simulation CLI Example
 
@@ -264,6 +261,8 @@ agentverse-tasksolving --task tasksolving/humaneval/gpt-3.5 --dataset_path data/
 You can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
 
 
+
+
 <!--
 ## 💡 Philosophy
 
@@ -279,13 +278,17 @@ At the core of our framework is the environment, which plays a crucial role in e
 
 By abstracting the environment into these five components, we have created a highly flexible and extensible framework that enables researchers to easily build and customize their own multi-agent environments.
 
--->
-
-
-<!--
 ### Agent
 
 Another fundamental component is the agent. Currently we provide two types of agents: **ConversationAgent** and **ToolAgent**. You can also customize your own agent by inheriting BaseAgent class (tutorial coming soon).
+
+-->
+
+
+
+
+
+<!--
 
 ## ✍️ Customize Your Own Environment
 
@@ -370,7 +373,10 @@ While we provide a basic framework for building environments with our five rule 
 2. **Customize the environment itself**. Our `basic` environment provides a default execution order for the five rule components that is suitable for most cases, but you can inherit the `BaseEnvironment` class and write your own `run` method to implement a more sophisticated execution order.
 3. **Customize the agent**. Depending on your specific use case, you may also need to inherit the `BaseAgent` class. For example, you may want to use your local LLM as your agents or create agents with specialized knowledge or skills.
 
+-->
 
+
+<!--
 
 ## 🔎 Examples
 
