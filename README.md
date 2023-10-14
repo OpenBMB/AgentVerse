@@ -33,10 +33,6 @@
     【English | <a href="README_zh.md">Chinese</a>】
 </p>
 
-<!--
-**AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
--->
-
 **AgentVerse** is designed to facilitate the deployment of mutiple LLM-based agents in various applications. AgentVerse primarily provides two frameworks: **task-solving** and **simulation**. 
 
 - Task-solving: This framework assembles multiple agents as an automatic multi-agent system ([Multi-agent as system](https://arxiv.org/abs/2309.02427)) to collaboratively accomplish the corresponding tasks. 
@@ -51,10 +47,6 @@ Applications: software development system, consulting system, etc.
 Applications: game, social behavior research of LLM-based agents, etc.
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f155e95782e7
-
-<!--
-⚠️⚠️⚠️ We're refactoring the code, and the goal is to provide a flexibility to construct simulation(without a predefined goal) and task-solving(with a specific goal) environments. Please note that this README is slightly outdated, we will update it soon. If you require a stable version that exclusively supports simulation environments, you can use [`release-0.1`](https://github.com/OpenBMB/AgentVerse/tree/release-0.1) branch.
--->
 
 ---
 
@@ -80,7 +72,7 @@ AgentVerse is on a mission to revolutionize the multi-agent environment for larg
 
 - **Feedback and Suggestions**: Use AgentVerse and provide us with feedback. Your insights can lead to potential improvements and ensure that our framework remains top-notch.
 
-Also, if you're passionate about advancing the frontiers of multi-agent environments and are eager to dive deeper into research, we invite you to join our team at THUNLP. To explore this exciting opportunity and embark on a collaborative journey with us, please reach out to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com) and express your interest. We're keen to welcome motivated individuals like you to our lab!
+Also, if you're passionate about advancing the frontiers of multi-agent applications and are eager to dive deeper into research, we invite you to join AgentVerse team. Please reach out [AgentVerse Team](agentverse2@gmail.com) and CC to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com). We're keen to welcome motivated individuals like you to our team!
 
 👉Also, check our Discord: https://discord.gg/cnutfCtC.
 
@@ -423,7 +415,11 @@ If you find this repo helpful, feel free to cite us.
 
 ## Contact
 
-Weize Chen: chenweize1998@gmail.com
+AgentVerse Team: agentverse2@gmail.com
 
-[Yusheng Su](https://yushengsu-thu.github.io/): yushengsu.thu@gmail.com
+Project leaders:
+
+- Weize Chen: chenweize1998@gmail.com
+
+- [Yusheng Su](https://yushengsu-thu.github.io/): yushengsu.thu@gmail.com
 
