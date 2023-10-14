@@ -283,10 +283,10 @@ You can take a look at `agentverse/tasks/tasksolving` for more experiments we ha
 ## AgentVerse Showcases
 
 ### Simulation Showcases
-Refer to
+Refer to [simulation showcases](README_simulation_cases.md)
 
 ### Task-Solving Showcases
-Refer to
+Refer to [tasksolving showcases](README_tasksolving_cases.md)
 
 
 
