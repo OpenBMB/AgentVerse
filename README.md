@@ -404,6 +404,18 @@ AgentVerse is on a mission to revolutionize the multi-agent environment for larg
 <a href="https://github.com/yushengsu-thu"><img src="https://avatars.githubusercontent.com/u/11704492?v=4" alt="Leader" style="width:5%; border-radius: 50%;"/></a>
 
 ### Contributors
+<a href="https://github.com/chanchimin"><img src="https://avatars.githubusercontent.com/u/75533759?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/libowen2121"><img src="https://avatars.githubusercontent.com/u/19970308?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/Xial-kotori"><img src="https://avatars.githubusercontent.com/u/53430452?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/Dr-Left"><img src="https://avatars.githubusercontent.com/u/39025643?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/minleminzui"><img src="https://avatars.githubusercontent.com/u/54172054?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/Tsuruko04"><img src="https://avatars.githubusercontent.com/u/129145574?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/kierangilliam"><img src="https://avatars.githubusercontent.com/u/18583882?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/zhouxh19"><img src="https://avatars.githubusercontent.com/u/17394639?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/tzw2698"><img src="https://avatars.githubusercontent.com/u/68865752?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/JetSquirrel"><img src="https://avatars.githubusercontent.com/u/20291255?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/Muiruriscode"><img src="https://avatars.githubusercontent.com/u/85177347?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/eltociear"><img src="https://avatars.githubusercontent.com/u/22633385?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
 
 
 ### How Can You Contribute?
@@ -415,7 +427,7 @@ AgentVerse is on a mission to revolutionize the multi-agent environment for larg
 
 - **Feedback and Suggestions**: Use AgentVerse and provide us with feedback. Your insights can lead to potential improvements and ensure that our framework remains top-notch.
 
-Also, if you're passionate about advancing the frontiers of multi-agent applications and are eager to dive deeper into research, we invite you to join AgentVerse team. Please reach out [AgentVerse Team](agentverse2@gmail.com) and CC to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com). We're keen to welcome motivated individuals like you to our team!
+Also, if you're passionate about advancing the frontiers of multi-agent applications, become core AgentVerse team members, or are eager to dive deeper into agent research. Please reach out [AgentVerse Team](agentverse2@gmail.com), and CC to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com). We're keen to welcome motivated individuals like you to our team!
 
 
 ### Social Media and Community
