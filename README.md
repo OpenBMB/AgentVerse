@@ -31,12 +31,15 @@
     【English | <a href="README_zh.md">Chinese</a>】
 </p>
 
+<!--
 **AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
+-->
 
-**AgentVerse** is designed to facilitate the deployment of mutiple LLM-based agents in various applications. AgentVerse primarily provides two frameworks: **simulation** and **task-solving**. 
-- Task-solving: This framework assembles multiple agents as an automatic multi-agent system, such as software development systems, consulting systems, etc., to accomplish the corresponding tasks.
-- Simulation: 
+**AgentVerse** is designed to facilitate the deployment of mutiple LLM-based agents in various applications. AgentVerse primarily provides two frameworks: **task-solving** and **simulation**. 
 
+- Task-solving: This framework assembles multiple agents as an automatic multi-agent system ([Multi-agent as system](https://arxiv.org/abs/2309.02427)) to collaboratively accomplish the corresponding tasks. Applications: software development system, consulting system, etc.
+
+- Simulation: This framework allows users to set up custom environments to observe behaviors among, or interact with, multiple agents. Applications: game, social behavior research of LLM-based agents, etc.
 
 
 ⚠️⚠️⚠️ We're refactoring the code, and the goal is to provide a flexibility to construct simulation(without a predefined goal) and task-solving(with a specific goal) environments. Please note that this README is slightly outdated, we will update it soon. If you require a stable version that exclusively supports simulation environments, you can use [`release-0.1`](https://github.com/OpenBMB/AgentVerse/tree/release-0.1) branch.
