@@ -39,10 +39,12 @@
 
 - Task-solving: This framework assembles multiple agents as an automatic multi-agent system ([Multi-agent as system](https://arxiv.org/abs/2309.02427)) to collaboratively accomplish the corresponding tasks. Applications: software development system, consulting system, etc.
 
-- Simulation: This framework allows users to set up custom environments to observe behaviors among, or interact with, multiple agents. Applications: game, social behavior research of LLM-based agents, etc.
+- Simulation: This framework allows users to set up custom environments to observe behaviors among, or interact with, multiple agents.(⚠️⚠️⚠️ We're refactoring the code. If you require a stable version that exclusively supports simulation framework, you can use [`release-0.1`](https://github.com/OpenBMB/AgentVerse/tree/release-0.1) branch.
+) Applications: game, social behavior research of LLM-based agents, etc.
 
-
+<!--
 ⚠️⚠️⚠️ We're refactoring the code, and the goal is to provide a flexibility to construct simulation(without a predefined goal) and task-solving(with a specific goal) environments. Please note that this README is slightly outdated, we will update it soon. If you require a stable version that exclusively supports simulation environments, you can use [`release-0.1`](https://github.com/OpenBMB/AgentVerse/tree/release-0.1) branch.
+-->
 
 ---
 
