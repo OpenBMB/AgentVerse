@@ -280,6 +280,14 @@ agentverse-tasksolving --task tasksolving/humaneval/gpt-3.5 --dataset_path data/
 You can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
 
 
+## AgentVerse Showcases
+
+### Simulation Showcases
+Refer to
+
+### Task-Solving Showcases
+Refer to
+
 
 
 <!--
