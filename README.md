@@ -1,8 +1,10 @@
 <h1 align="center"> 🤖 AgentVerse 🪐 </h1>
 
+<!--
 <h3 align="center">
     <p>A Framework for Multi-LLM Environment Simulation</p>
 </h3>
+-->
 
 <p align="center">
     <a href="https://github.com/OpenBMB/AgentVerse/blob/main/LICENSE">
