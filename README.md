@@ -244,8 +244,12 @@ pip install -r requirements.txt
 python setup.py develop
 ```
 
+### Simulation
 
-### Simulation CLI Example
+#### Framework Modules 
+[To-Do]
+
+#### CLI Example
 
 You can create a multi-agent environments provided by us. Using the classroom scenario as an example. In this scenario, there are nine agents, one playing the role of a professor and the other eight as students.
 
@@ -255,7 +259,7 @@ python3 agentverse_command/main_simulation_cli.py --task simulation/nlp_classroo
 agentverse-simulation --task simulation/nlp_classroom_9players
 ```
 
-### Simulation Local Website Demo
+#### GUI Example (Local)
 
 We also provide a local website demo for this environment. You can launch it with
 
@@ -266,7 +270,13 @@ agentverse-simulation-gui --task simulation/nlp_classroom_9players
 ```
 After successfully launching the local server, you can visit [http://127.0.0.1:7860/](http://127.0.0.1:7860/) to view the classroom environment.
 
-### Task-Solving CLI Example
+
+### Task-Solving 
+
+#### Framework Modules 
+[To-Do]
+
+#### CLI Example
 
 To run the experiments with the task-solving environment proposed in our [paper](https://arxiv.org/abs/2308.10848), you can use the following command:
 
