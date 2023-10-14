@@ -60,21 +60,8 @@ in detail of AgentVerse.
 - [2023/6/5] We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun!
 - [2023/5/1] 🚀 [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched!
 
-## 🌟 Join Us!
-AgentVerse is on a mission to revolutionize the multi-agent environment for large language models, and we're eagerly looking for passionate collaborators to join us on this exciting journey.
 
-### How Can You Contribute?
-- **Code Development**: If you're an engineer, help us refine, optimize, and expand the current framework. We're always looking for talented developers to enhance our existing features and develop new modules.
 
-- **Documentation and Tutorials**: If you have a knack for writing, help us improve our documentation, create tutorials, or write blog posts to make AgentVerse more accessible to the broader community.
-
-- **Application Exploration**: If you're intrigued by multi-agent applications and are eager to experiment using AgentVerse, we'd be thrilled to support your journey and see what you create!
-
-- **Feedback and Suggestions**: Use AgentVerse and provide us with feedback. Your insights can lead to potential improvements and ensure that our framework remains top-notch.
-
-Also, if you're passionate about advancing the frontiers of multi-agent applications and are eager to dive deeper into research, we invite you to join AgentVerse team. Please reach out [AgentVerse Team](agentverse2@gmail.com) and CC to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com). We're keen to welcome motivated individuals like you to our team!
-
-👉Also, check our Discord: https://discord.gg/cnutfCtC.
 
 ## 🗓 Coming Soon
 - [x] Code release of our [paper](https://arxiv.org/abs/2308.10848)
@@ -277,6 +264,7 @@ agentverse-tasksolving --task tasksolving/humaneval/gpt-3.5 --dataset_path data/
 You can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
 
 
+<!--
 ## 💡 Philosophy
 
 ### Environment
@@ -291,6 +279,10 @@ At the core of our framework is the environment, which plays a crucial role in e
 
 By abstracting the environment into these five components, we have created a highly flexible and extensible framework that enables researchers to easily build and customize their own multi-agent environments.
 
+-->
+
+
+<!--
 ### Agent
 
 Another fundamental component is the agent. Currently we provide two types of agents: **ConversationAgent** and **ToolAgent**. You can also customize your own agent by inheriting BaseAgent class (tutorial coming soon).
@@ -395,6 +387,29 @@ Here's a brief overview of each example:
 7. `db_diag`: The Chief DBA monitors (agents) the database system for anomalies and alerts memory and CPU agents if any are detected. They (agents) analyze root causes and suggest optimization solutions. The Chief DBA (agent) provides a diagnosis summary to the user, who can give instructions or evaluate the proposed solutions' effectiveness.
 8. `sde_team`: In the SDE team, code writer, code tester and code reviewer collaborate on the code generation problem. 
 9. `pokemon`:  This example intimates Pokemon game.
+-->
+
+
+## 🌟 Join Us!
+AgentVerse is on a mission to revolutionize the multi-agent environment for large language models, and we're eagerly looking for passionate collaborators to join us on this exciting journey.
+
+### How Can You Contribute?
+- **Code Development**: If you're an engineer, help us refine, optimize, and expand the current framework. We're always looking for talented developers to enhance our existing features and develop new modules.
+
+- **Documentation and Tutorials**: If you have a knack for writing, help us improve our documentation, create tutorials, or write blog posts to make AgentVerse more accessible to the broader community.
+
+- **Application Exploration**: If you're intrigued by multi-agent applications and are eager to experiment using AgentVerse, we'd be thrilled to support your journey and see what you create!
+
+- **Feedback and Suggestions**: Use AgentVerse and provide us with feedback. Your insights can lead to potential improvements and ensure that our framework remains top-notch.
+
+Also, if you're passionate about advancing the frontiers of multi-agent applications and are eager to dive deeper into research, we invite you to join AgentVerse team. Please reach out [AgentVerse Team](agentverse2@gmail.com) and CC to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com). We're keen to welcome motivated individuals like you to our team!
+
+
+### Social Media and Community
+
+- Twitter: https://twitter.com/Agentverse71134
+
+- Discord: https://discord.gg/cnutfCtC.
 
 
 ## Star History
