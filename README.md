@@ -148,6 +148,7 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 
 -->
 
+<!--
 
 ## Contents
 
@@ -182,6 +183,26 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 - [Star History](#star-history)
 - [Citation](#citation)
 - [Contact](#contact)
+
+-->
+
+## Contents
+- [📰 What's New](#-whats-new)
+- [🗓 Coming Soon](#-coming-soon)
+- [Contents](#contents)
+- [🚀 Getting Started](#-getting-started)
+  - [Installation](#installation)
+  - [Simulation CLI Example](#simulation-cli-example)
+  - [Simulation Local Website Demo](#simulation-local-website-demo)
+  - [Task-Solving CLI Example](#task-solving-cli-example)
+- [🔎 Examples](#-examples)
+- [🌟 Join Us!](#-join-us)
+  - [How Can You Contribute?](#how-can-you-contribute)
+- [Social Media and Community](#social-media-and-community)
+- [Star History](#star-history)
+- [Citation](#citation)
+- [Contact](#contact)
+
 
 
 
@@ -222,8 +243,6 @@ cd BMTools
 pip install -r requirements.txt
 python setup.py develop
 ```
-
-
 
 
 ### Simulation CLI Example
