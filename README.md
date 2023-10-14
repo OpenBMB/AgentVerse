@@ -58,24 +58,19 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 
 ---
 
-## ✨ Features
-
-- 🥳 **Efficient Environment Building:** Our framework provides a collection of essential building blocks for effortlessly creating a multi-agent environment. With only a few lines in a configuration file, you can easily construct basic environments such as a chat room for LLMs. This process entails defining the environment's settings and prompts for LLMs, enabling researchers like you to concentrate on experimentation and analysis.
-
-- ⚙️ **Customizable Components**: AgentVerse simplifies the multi-agent environment by dividing it into five functional modules and defining their respective interfaces. For complex environments that cannot be constructed directly using the basic modules offered in AgentVerse, you can customize one or more of the interfaces within these five functional modules to efficiently create your own multi-agent environment according to your requirements.
-
-- 🛠 **Tools (Plugins) Utilization**: AgentVerse supports the multi-agent environments with tools. Currently, AgentVerse supports tools provided in [BMTools](https://github.com/OpenBMB/BMTools). 
 
 ## 📰 What's New
-- [2023/10/5] 💡 We release the code of our paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848), and refactor our codebase to enable the creation of both simulation and task-solving environment! We have placed the code for Minecraft example in the paper at the [`minecraft`](https://github.com/OpenBMB/AgentVerse/tree/minecraft) branch. Our tool-using example will soon be updated to the `main` branch. Stay tuned!
+- [2023/10/5] Re-factor our codebase to enable the deployment of both simulation and task-solving framework! We have placed the code for Minecraft example in the paper at the [`minecraft`](https://github.com/OpenBMB/AgentVerse/tree/minecraft) branch. Our tool-using example will soon be updated to the `main` branch. Stay tuned!
 
-- [2023/8/22] 📝 We're excited to share our work-in-progress paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848) related to this repository.
+- [2023/8/22] We're excited to share our paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848) that  illistrate the task-solving framework 
+in detail of AgentVerse.
 
-- [2023/6/5] 🎉 We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun!
+- [2023/6/5] We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun!
 - [2023/5/1] 🚀 [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched!
 
 ## 🌟 Join Us!
 AgentVerse is on a mission to revolutionize the multi-agent environment for large language models, and we're eagerly looking for passionate collaborators to join us on this exciting journey.
+
 ### How Can You Contribute?
 - **Code Development**: If you're an engineer, help us refine, optimize, and expand the current framework. We're always looking for talented developers to enhance our existing features and develop new modules.
 
