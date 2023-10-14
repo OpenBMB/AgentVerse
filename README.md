@@ -399,6 +399,13 @@ Here's a brief overview of each example:
 ## 🌟 Join Us!
 AgentVerse is on a mission to revolutionize the multi-agent environment for large language models, and we're eagerly looking for passionate collaborators to join us on this exciting journey.
 
+### Leaders
+<a href="https://github.com/chenweize1998"><img src="https://avatars.githubusercontent.com/u/48988402?v=4" alt="Leader" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/yushengsu-thu"><img src="https://avatars.githubusercontent.com/u/48988402?v=4" alt="Leader" style="width:5%; border-radius: 50%;"/></a>
+
+### Contributors
+
+
 ### How Can You Contribute?
 - **Code Development**: If you're an engineer, help us refine, optimize, and expand the current framework. We're always looking for talented developers to enhance our existing features and develop new modules.
 
