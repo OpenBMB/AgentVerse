@@ -33,7 +33,7 @@
 
 **AgentVerse** offers a versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs). Designed to facilitate swift development and customization with minimal effort, our framework empowers researchers to concentrate on their research, rather than being bogged down by implementation details.
 
-**AgentVerse** is designed to facilitate the deployment of mutiple LLM-based agents in various applications. AgentVerse primarily provides two frameworks: simulation and task-solving. 
+**AgentVerse** is designed to facilitate the deployment of mutiple LLM-based agents in various applications. AgentVerse primarily provides two frameworks: **simulation** and **task-solving**. 
 - Task-solving: This framework assembles multiple agents as an automatic multi-agent system, such as software development systems, consulting systems, etc., to accomplish the corresponding tasks.
 - Simulation: 
 
