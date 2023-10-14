@@ -400,8 +400,8 @@ Here's a brief overview of each example:
 AgentVerse is on a mission to revolutionize the multi-agent environment for large language models, and we're eagerly looking for passionate collaborators to join us on this exciting journey.
 
 ### Leaders
-<a href="https://github.com/chenweize1998"><img src="https://avatars.githubusercontent.com/u/48988402?v=4" alt="Leader" style="width:5%; border-radius: 50%;"/></a>
-<a href="https://github.com/yushengsu-thu"><img src="https://avatars.githubusercontent.com/u/48988402?v=4" alt="Leader" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/chenweize1998"><img src="https://avatars.githubusercontent.com/u/32613237?v=4" alt="Leader" style="width:5%; border-radius: 50%;"/></a>
+<a href="https://github.com/yushengsu-thu"><img src="https://avatars.githubusercontent.com/u/11704492?v=4" alt="Leader" style="width:5%; border-radius: 50%;"/></a>
 
 ### Contributors
 
