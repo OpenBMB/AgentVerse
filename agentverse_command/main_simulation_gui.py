@@ -9,13 +9,20 @@ parser.add_argument(
     type=str,
     default=os.path.join(os.path.dirname(__file__), "..", "agentverse", "tasks"),
 )
+parser.add_argument("--share",
+                    action='store_true', 
+                    default=False,
+                    help="Create a publicly shareable link")
+parser.add_argument("--server_name",
+                    type=str,
+                    default="127.0.0.1",
+                    help="Server name")
+
 args = parser.parse_args()
 
-
 def cli_main():
-    ui = GUI(args.task, args.tasks_dir)
+    ui = GUI(args.task, args.tasks_dir,ui_kwargs={"share":args.share,"server_name":args.server_name})
     ui.launch()
-
 
 if __name__ == "__main__":
     cli_main()
