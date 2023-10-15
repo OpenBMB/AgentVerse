@@ -6,7 +6,7 @@ import logging
 
 from agentverse.environments.tasksolving_env.basic import BasicEnvironment
 from agentverse.initialization import load_agent, load_environment, prepare_task_config
-from agentverse.utils import AGENT_TYPES
+from agentverse.utils import AGENT_TYPES,get_AGENT_TYPE
 
 
 openai_logger = logging.getLogger("openai")
@@ -33,19 +33,21 @@ class TaskSolving:
 
         # Build the environment
         env_config = task_config["environment"]
-
+        
         # Build agents for all pipeline (task)
         agents = {}
         for i, agent_config in enumerate(task_config["agents"]):
-            agent_type = AGENT_TYPES(i)
-            if i == 2 and agent_config.get("agent_type", "") == "critic":
-                agent = load_agent(agent_config)
-                agents[agent_type] = [
-                    copy.deepcopy(agent)
-                    for _ in range(task_config.get("cnt_agents", 1) - 1)
-                ]
-            else:
-                agents[agent_type] = load_agent(agent_config)
+            # agent_type = AGENT_TYPES(i)
+            # if i == 2 and agent_config.get("agent_type", "") == "critic":
+            #     agent = load_agent(agent_config)
+            #     agents[agent_type] = [
+            #         copy.deepcopy(agent)
+            #         for _ in range(task_config.get("cnt_agents", 1) - 1)
+            #     ]
+            # else:
+            #     agents[agent_type] = load_agent(agent_config)
+            agent_type=get_AGENT_TYPE(agent_config.get("agent_type",""))
+            agents[agent_type]=load_agent(agent_config)
 
         env_config["agents"] = agents
 
