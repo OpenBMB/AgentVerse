@@ -46,8 +46,15 @@ class TaskSolving:
             #     ]
             # else:
             #     agents[agent_type] = load_agent(agent_config)
-            agent_type=get_AGENT_TYPE(agent_config.get("agent_type",""))
-            agents[agent_type]=load_agent(agent_config)
+            if agent_config.get("agent_type","") =="critic":
+                agent=load_agent(agent_config)
+                agents[AGENT_TYPES.CRITIC] =[
+                    copy.deepcopy(agent)
+                    for _ in range(task_config.get("cnt_agents",1)-1)
+                ]    
+            else:
+                agent_type=get_AGENT_TYPE(agent_config.get("agent_type",""))
+                agents[agent_type]=load_agent(agent_config)
 
         env_config["agents"] = agents
 
