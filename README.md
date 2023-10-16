@@ -478,7 +478,7 @@ AgentVerse is on a mission to revolutionize the multi-agent environment for larg
 
 - **Feedback and Suggestions**: Use AgentVerse and provide us with feedback. Your insights can lead to potential improvements and ensure that our framework remains top-notch.
 
-Also, if you're passionate about advancing the frontiers of multi-agent applications, become core AgentVerse team members, or are eager to dive deeper into agent research. Please reach out [AgentVerse Team](agentverse2@gmail.com), and CC to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com). We're keen to welcome motivated individuals like you to our team!
+Also, if you're passionate about advancing the frontiers of multi-agent applications, become core AgentVerse team members, or are eager to dive deeper into agent research. Please reach out [AgentVerse Team](mailto:agentverse2@gmail.com?subject=[GitHub]%20Source%20Han%20Sans), and CC to [Weize Chen](mailto:chenweize1998@gmail.com?subject=[GitHub]%20Source%20Han%20Sans) and [Yusheng Su](mailto:yushengsu.thu@gmail.com?subject=[GitHub]%20Source%20Han%20Sans). We're keen to welcome motivated individuals like you to our team!
 
 
 ## Social Media and Community
