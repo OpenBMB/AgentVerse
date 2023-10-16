@@ -52,7 +52,7 @@ Applications: software development system, consulting system, etc.
 ---
 
 
-## 📰 What's New
+# 📰 What's New
 - [2023/10/5] Re-factor our codebase to enable the deployment of both simulation and task-solving framework! We have placed the code for Minecraft example in the paper at the [`minecraft`](https://github.com/OpenBMB/AgentVerse/tree/minecraft) branch. Our tool-using example will soon be updated to the `main` branch. Stay tuned!
 
 - [2023/8/22] We're excited to share our paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848) that  illistrate the task-solving framework 
@@ -64,7 +64,7 @@ in detail of AgentVerse.
 
 
 
-## 🗓 Coming Soon
+# 🗓 Coming Soon
 - [x] Code release of our [paper](https://arxiv.org/abs/2308.10848)
 - [ ] Add documentation
 - [ ] Support more sophisticated memory for conversation history
@@ -187,7 +187,7 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 
 -->
 
-## Contents
+# Contents
 - [📰 What's New](#-whats-new)
 - [🗓 Coming Soon](#-coming-soon)
 - [Contents](#contents)
@@ -207,9 +207,9 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 
 
 
-## 🚀 Getting Started
+# 🚀 Getting Started
 
-### Installation
+## Installation
 
 ```bash
 pip install -U agentverse
@@ -245,9 +245,9 @@ pip install -r requirements.txt
 python setup.py develop
 ```
 
-### Simulation
+## Simulation
 
-#### Framework Required Modules 
+### Framework Required Modules 
 ```
 - agentverse 
   - agents
@@ -256,7 +256,7 @@ python setup.py develop
     - simulation_env
 ```
 
-#### CLI Example
+### CLI Example
 
 You can create a multi-agent environments provided by us. Using the classroom scenario as an example. In this scenario, there are nine agents, one playing the role of a professor and the other eight as students.
 
@@ -266,7 +266,7 @@ python3 agentverse_command/main_simulation_cli.py --task simulation/nlp_classroo
 agentverse-simulation --task simulation/nlp_classroom_9players
 ```
 
-#### GUI Example (Local)
+### GUI Example (Local)
 
 We also provide a local website demo for this environment. You can launch it with
 
@@ -278,10 +278,10 @@ agentverse-simulation-gui --task simulation/nlp_classroom_9players
 After successfully launching the local server, you can visit [http://127.0.0.1:7860/](http://127.0.0.1:7860/) to view the classroom environment.
 
 
-### Task-Solving 
+## Task-Solving 
 
 
-#### Framework Required Modules 
+### Framework Required Modules 
 ```
 - agentverse 
   - agents
@@ -290,7 +290,7 @@ After successfully launching the local server, you can visit [http://127.0.0.1:7
     - tasksolving_env
 ```
 
-#### CLI Example
+### CLI Example
 
 To run the experiments with the task-solving environment proposed in our [paper](https://arxiv.org/abs/2308.10848), you can use the following command:
 
@@ -304,12 +304,12 @@ agentverse-tasksolving --task tasksolving/humaneval/gpt-3.5 --dataset_path data/
 You can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
 
 
-## AgentVerse Showcases
+# AgentVerse Showcases
 
-### Simulation Showcases
+## Simulation Showcases
 Refer to [simulation showcases](README_simulation_cases.md)
 
-### Task-Solving Showcases
+## Task-Solving Showcases
 Refer to [tasksolving showcases](README_tasksolving_cases.md)
 
 
@@ -447,14 +447,14 @@ Here's a brief overview of each example:
 -->
 
 
-## 🌟 Join Us!
+# 🌟 Join Us!
 AgentVerse is on a mission to revolutionize the multi-agent environment for large language models, and we're eagerly looking for passionate collaborators to join us on this exciting journey.
 
-### Leaders
+## Leaders
 <a href="https://github.com/chenweize1998"><img src="https://avatars.githubusercontent.com/u/32613237?v=4" alt="Leader" style="width:5%; border-radius: 50%;"/></a>
 <a href="https://github.com/yushengsu-thu"><img src="https://avatars.githubusercontent.com/u/11704492?v=4" alt="Leader" style="width:5%; border-radius: 50%;"/></a>
 
-### Contributors
+## Contributors
 <a href="https://github.com/chanchimin"><img src="https://avatars.githubusercontent.com/u/75533759?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
 <a href="https://github.com/libowen2121"><img src="https://avatars.githubusercontent.com/u/19970308?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
 <a href="https://github.com/Xial-kotori"><img src="https://avatars.githubusercontent.com/u/53430452?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
@@ -469,7 +469,7 @@ AgentVerse is on a mission to revolutionize the multi-agent environment for larg
 <a href="https://github.com/eltociear"><img src="https://avatars.githubusercontent.com/u/22633385?v=4" alt="Contributor" style="width:5%; border-radius: 50%;"/></a>
 
 
-### How Can You Contribute?
+## How Can You Contribute?
 - **Code Development**: If you're an engineer, help us refine, optimize, and expand the current framework. We're always looking for talented developers to enhance our existing features and develop new modules.
 
 - **Documentation and Tutorials**: If you have a knack for writing, help us improve our documentation, create tutorials, or write blog posts to make AgentVerse more accessible to the broader community.
@@ -481,14 +481,14 @@ AgentVerse is on a mission to revolutionize the multi-agent environment for larg
 Also, if you're passionate about advancing the frontiers of multi-agent applications, become core AgentVerse team members, or are eager to dive deeper into agent research. Please reach out [AgentVerse Team](agentverse2@gmail.com), and CC to [chenweize1998@gmail.com](chenweize1998@gmail.com) and [yushengsu.thu@gmail.com](yushengsu.thu@gmail.com). We're keen to welcome motivated individuals like you to our team!
 
 
-### Social Media and Community
+## Social Media and Community
 
 - Twitter: https://twitter.com/Agentverse71134
 
 - Discord: https://discord.gg/cnutfCtC.
 
 
-## Star History
+# Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=OpenBMB/AgentVerse&type=Date)](https://star-history.com/#OpenBMB/AgentVerse&Date)
 
@@ -504,7 +504,7 @@ If you find this repo helpful, feel free to cite us.
 }
 ```
 
-## Contact
+# Contact
 
 AgentVerse Team: agentverse2@gmail.com
 
