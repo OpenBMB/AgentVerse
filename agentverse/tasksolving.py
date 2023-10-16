@@ -37,14 +37,14 @@ class TaskSolving:
         # Build agents for all pipeline (task)
         agents = {}
         for i, agent_config in enumerate(task_config["agents"]):
-            agent_type = AGENT_TYPES(i)
-            if i == 2 and agent_config.get("agent_type", "") == "critic":
+            if agent_config.get("agent_type", "") == "critic":
                 agent = load_agent(agent_config)
-                agents[agent_type] = [
+                agents[AGENT_TYPES.CRITIC] = [
                     copy.deepcopy(agent)
                     for _ in range(task_config.get("cnt_agents", 1) - 1)
                 ]
             else:
+                agent_type = AGENT_TYPES.from_string(agent_config.get("agent_type", ""))
                 agents[agent_type] = load_agent(agent_config)
 
         env_config["agents"] = agents

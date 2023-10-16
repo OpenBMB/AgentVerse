@@ -35,6 +35,21 @@ class AGENT_TYPES(Enum):
     EVALUATION = 4
     MANAGER = 5
 
+    @staticmethod
+    def from_string(agent_type: str):
+        str_to_enum_dict = {
+            "role_assigner": AGENT_TYPES.ROLE_ASSIGNMENT,
+            "solver": AGENT_TYPES.SOLVER,
+            "critic": AGENT_TYPES.CRITIC,
+            "executor": AGENT_TYPES.EXECUTION,
+            "evaluator": AGENT_TYPES.EVALUATION,
+            "manager": AGENT_TYPES.MANAGER,
+        }
+        assert (
+            agent_type in str_to_enum_dict
+        ), f"Unknown agent type: {agent_type}. Check your config file."
+        return str_to_enum_dict.get(agent_type.lower())
+
 
 class Singleton(abc.ABCMeta, type):
     """
