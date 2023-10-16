@@ -44,6 +44,8 @@ Applications: software development system, consulting system, etc.
 
 - Simulation: This framework allows users to set up custom environments to observe behaviors among, or interact with, multiple agents. ⚠️⚠️⚠️ We're refactoring the code. If you require a stable version that exclusively supports simulation framework, you can use [`release-0.1`](https://github.com/OpenBMB/AgentVerse/tree/release-0.1) branch. Applications: game, social behavior research of LLM-based agents, etc.
 
+<img width="616" alt="Screen Shot 2023-10-16 at 10 53 49 PM" src="https://github.com/OpenBMB/AgentVerse/assets/11704492/4102d1e2-3fe7-4656-aa2c-a218ce1f2c95">
+
 
 ---
 
