@@ -281,11 +281,13 @@ After successfully launching the local server, you can visit [http://127.0.0.1:7
 
 
 #### Framework Required Modules 
+```
 - agentverse 
   - agents
     - simulation_env
   - environments
     - tasksolving_env
+```
 
 #### CLI Example
 
