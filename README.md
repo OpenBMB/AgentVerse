@@ -247,11 +247,13 @@ python setup.py develop
 ### Simulation
 
 #### Framework Required Modules 
+```
 - agentverse 
   - agents
     - simulation_agent
   - environments
     - simulation_env
+```
 
 #### CLI Example
 
