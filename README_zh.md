@@ -10,6 +10,9 @@
     <a href="https://www.python.org/downloads/release/python-3916/">
         <img alt="Documentation" src="https://img.shields.io/badge/python-3.9+-blue.svg">
     </a>
+    <a href="https://huggingface.co/spaces/AgentVerse/agentVerse">
+        <img alt="Hugging Face" src="https://img.shields.io/badge/hugging_face-play-yellow">
+    </a>
 </p>
 
 <p align="center">
@@ -33,6 +36,8 @@
 - 🛠 **工具(插件)利用**: AgentVerse支持多智能体环境的工具。目前，AgentVerse支持[BMTools](https://github.com/OpenBMB/BMTools)中提供的工具。 
 
 ## 📰 最新消息
+- [2023/10/17] 我们很高兴来分享我们AI开源社区 hugging face: [`AgentVerse`](https://huggingface.co/spaces/AgentVerse/agentVerse). 在你提供openai API 密钥 and the openai 组织码之后，你可以体验NLP教室和囚徒困境两个模拟应用程序。祝你玩得开心！
+
 - [2023/8/22] 📝 我们很高兴分享与此仓库相关的正在进行中的论文[AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848).
 <img width="616" alt="Screen Shot 2023-09-01 at 12 08 57 PM" src="https://github.com/OpenBMB/AgentVerse/assets/11704492/6db1c907-b7fc-42f9-946c-89853a28f386">
 
