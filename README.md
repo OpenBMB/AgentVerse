@@ -22,6 +22,9 @@
     <a href="https://github.com/OpenBMB/AgentVerse/issues">
         <img alt="Contributions: Welcome" src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat">
     </a>
+    <a href="https://huggingface.co/spaces/AgentVerse/agentVerse">
+        <img alt="Hugging Face" src="https://img.shields.io/badge/hugging_face-play-yellow">
+    </a>
     
 </p>
 
@@ -53,6 +56,8 @@ Applications: software development system, consulting system, etc.
 
 
 # 📰 What's New
+- [2023/10/17] We're super excited to share our open-source AI community hugging face: [`AgentVerse`](https://huggingface.co/spaces/AgentVerse/agentVerse). You are able to try out the two simulation applications, NLP Classroom and Prisoner's Dilemma,with your code of the openai API key and the openai organization. Have fun!
+
 - [2023/10/5] Re-factor our codebase to enable the deployment of both simulation and task-solving framework! We have placed the code for Minecraft example in the paper at the [`minecraft`](https://github.com/OpenBMB/AgentVerse/tree/minecraft) branch. Our tool-using example will soon be updated to the `main` branch. Stay tuned!
 
 - [2023/8/22] We're excited to share our paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848) that  illistrate the task-solving framework 
@@ -487,6 +492,7 @@ Also, if you're passionate about advancing the frontiers of multi-agent applicat
 
 - Discord: https://discord.gg/cnutfCtC.
 
+- Hugging Face: https://huggingface.co/spaces/AgentVerse/agentVerse.
 
 # Star History
 
