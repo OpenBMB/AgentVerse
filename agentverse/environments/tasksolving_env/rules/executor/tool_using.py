@@ -16,7 +16,6 @@ import asyncio
 
 
 url = "http://127.0.0.1:8080"
-# url = "http://8.217.97.110:8080"
 
 SUMMARIZE_PROMPT = """Here is the text gathered from a webpage, and a question you need to answer from the webpage. 
 -- Webpage -- 
@@ -255,7 +254,7 @@ class ToolUsingExecutor(BaseExecutor):
 
         for i in range(3):
             try:
-                async with ClientSession(cookies=cookies) as session:
+                async with ClientSession(cookies=cookies, trust_env=True) as session:
                     if cookies is None:
                         async with session.post(
                             f"{url}/get_cookie", timeout=30
@@ -285,6 +284,7 @@ class ToolUsingExecutor(BaseExecutor):
                     ) as response:
                         content = await response.text()
                         if command == "WebEnv_browse_website":
+                            openai.aiosession.set(session)
                             content = await _summarize_webpage(
                                 content, arguments["question"]
                             )
