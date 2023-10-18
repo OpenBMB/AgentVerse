@@ -11,8 +11,8 @@ with open("README.md", "r", encoding='utf8') as fh:
 setuptools.setup(
     name="agentverse",
     version="0.1.8",
-    author="OpenBMB",
-    author_email="chenweize1998@gmail.com",
+    author="AgentVerse Team",
+    author_email="agentverse2@gmail.com",
     description="A versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs).",
     long_description=long_description,
     long_description_content_type="text/markdown",
