@@ -17,3 +17,4 @@ colorlog
 rapidfuzz
 spacy
 colorama==0.4.6
+fschat[model_worker,webui]

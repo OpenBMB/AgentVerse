@@ -92,10 +92,12 @@ class OpenAIChatArgs(BaseModelArgs):
 #             total_tokens=response["usage"]["total_tokens"],
 #         )
 
-
+# To support your own local LLMs, register it here and add it into LOCAL_LLMS.
+LOCAL_LLMS = ['llama-2-7b-chat-hf']
 @llm_registry.register("gpt-35-turbo")
 @llm_registry.register("gpt-3.5-turbo")
 @llm_registry.register("gpt-4")
+@llm_registry.register("llama-2-7b-chat-hf")
 class OpenAIChat(BaseChatModel):
     args: OpenAIChatArgs = Field(default_factory=OpenAIChatArgs)
 
@@ -109,6 +111,8 @@ class OpenAIChat(BaseChatModel):
             args[k] = kwargs.pop(k, v)
         if len(kwargs) > 0:
             logging.warning(f"Unused arguments: {kwargs}")
+        if args['model'] in LOCAL_LLMS:
+            openai.api_base = "http://localhost:5000/v1"
         super().__init__(args=args, max_retry=max_retry)
 
     # def _construct_messages(self, history: List[Message]):
@@ -301,6 +305,7 @@ class OpenAIChat(BaseChatModel):
             "gpt-4": 0.03,
             "gpt-4-0613": 0.03,
             "gpt-4-32k": 0.06,
+            "llama-2-7b-chat-hf": 0.0,
         }
 
         output_cost_map = {
@@ -311,6 +316,7 @@ class OpenAIChat(BaseChatModel):
             "gpt-4": 0.06,
             "gpt-4-0613": 0.06,
             "gpt-4-32k": 0.12,
+            "llama-2-7b-chat-hf": 0.0,
         }
 
         model = self.args.model
