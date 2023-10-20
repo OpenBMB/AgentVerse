@@ -18,13 +18,17 @@
     </a>
     <a href="https://github.com/psf/black">
         <img alt="Code Style: Black" src="https://img.shields.io/badge/code%20style-black-black">
-    </a>
+<!--     </a>
     <a href="https://github.com/OpenBMB/AgentVerse/issues">
         <img alt="Contributions: Welcome" src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat">
-    </a>
+    </a> -->
     <a href="https://huggingface.co/spaces/AgentVerse/agentVerse">
         <img alt="Hugging Face" src="https://img.shields.io/badge/hugging_face-play-yellow">
     </a>
+    <a href="https://discord.gg/cnutfCtC">
+        <img alt="Discord" src="https://img.shields.io/badge/AgentVerse-Discord-purple?style=flat">
+    </a>
+    
     
 </p>
 
@@ -71,9 +75,9 @@ in detail of AgentVerse.
 
 # 🗓 Coming Soon
 - [x] Code release of our [paper](https://arxiv.org/abs/2308.10848)
+- [x] Add support for local LLM (LLaMA, Vicunna, etc.)
 - [ ] Add documentation
 - [ ] Support more sophisticated memory for conversation history
-- [ ] Add support for local LLM
 
 
 <!--
@@ -173,9 +177,8 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 - [Contents](#contents)
 - [🚀 Getting Started](#-getting-started)
   - [Installation](#installation)
-  - [Simulation CLI Example](#simulation-cli-example)
-  - [Simulation Local Website Demo](#simulation-local-website-demo)
-  - [Task-Solving CLI Example](#task-solving-cli-example)
+  - [Simulation Example](#simulation)
+  - [Task-Solving Example](#task-solving-cli-example)
 - [💡 Philosophy](#-philosophy)
   - [Environment](#environment)
   - [Agent](#agent)
@@ -198,10 +201,8 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 - [Contents](#contents)
 - [🚀 Getting Started](#-getting-started)
   - [Installation](#installation)
-  - [Simulation CLI Example](#simulation-cli-example)
-  - [Simulation Local Website Demo](#simulation-local-website-demo)
-  - [Task-Solving CLI Example](#task-solving-cli-example)
-- [🔎 Examples](#-examples)
+  - [Simulation CLI Example](#simulation)
+  - [Task-Solving CLI Example](#task-solving)
 - [🌟 Join Us!](#-join-us)
   - [How Can You Contribute?](#how-can-you-contribute)
 - [Social Media and Community](#social-media-and-community)
@@ -223,7 +224,7 @@ Or you can install the package by manually cloning the latest repository
 ```bash
 git clone https://github.com/OpenBMB/AgentVerse.git --depth 1
 cd AgentVerse
-pip install -r requirements.txt
+python setup.py develop
 ```
 Some users have reported problems installing the `orjson` required by `gradio`. One simple workaround is to install it with Anaconda `conda install -c conda-forge orjson`.
 
@@ -266,8 +267,6 @@ python setup.py develop
 You can create a multi-agent environments provided by us. Using the classroom scenario as an example. In this scenario, there are nine agents, one playing the role of a professor and the other eight as students.
 
 ```shell
-python3 agentverse_command/main_simulation_cli.py --task simulation/nlp_classroom_9players
-# or if you have installed AgentVerse via pip
 agentverse-simulation --task simulation/nlp_classroom_9players
 ```
 
@@ -276,8 +275,6 @@ agentverse-simulation --task simulation/nlp_classroom_9players
 We also provide a local website demo for this environment. You can launch it with
 
 ```shell
-python3 agentverse_command/main_simulation_gui.py --task simulation/nlp_classroom_9players
-# or if you have installed AgentVerse via pip
 agentverse-simulation-gui --task simulation/nlp_classroom_9players
 ```
 After successfully launching the local server, you can visit [http://127.0.0.1:7860/](http://127.0.0.1:7860/) to view the classroom environment.
@@ -299,11 +296,16 @@ After successfully launching the local server, you can visit [http://127.0.0.1:7
 
 To run the experiments with the task-solving environment proposed in our [paper](https://arxiv.org/abs/2308.10848), you can use the following command:
 
+To run AgentVerse on a benchmark dataset, you can try
 ```shell
-# Run the Humaneval benchmark using gpt-3.5-turbo
-python3 agentverse_command/main_tasksolving_cli.py --task tasksolving/humaneval/gpt-3.5 --dataset_path data/humaneval/test.jsonl --overwrite
-# or if you have installed AgentVerse via pip
-agentverse-tasksolving --task tasksolving/humaneval/gpt-3.5 --dataset_path data/humaneval/test.jsonl --overwrite
+# Run the Humaneval benchmark using gpt-3.5-turbo (config file `agentverse/tasks/tasksolving/humaneval/gpt-3.5/config.yaml`)
+agentverse-benchmark --task tasksolving/humaneval/gpt-3.5 --dataset_path data/humaneval/test.jsonl --overwrite
+```
+
+To run AgentVerse on a specific problem, you can try
+```shell
+# Run a single query (config file `agentverse/tasks/tasksolving/brainstorming/gpt-3.5/config.yaml`). The task is specified in the config file.
+agentverse-tasksolving --task tasksolving/brainstorming
 ```
 
 You can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
