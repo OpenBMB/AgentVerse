@@ -22,8 +22,8 @@
     <a href="https://github.com/OpenBMB/AgentVerse/issues">
         <img alt="Contributions: Welcome" src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat">
     </a> -->
-    <a href="https://huggingface.co/spaces/AgentVerse/agentVerse">
-        <img alt="Hugging Face" src="https://img.shields.io/badge/hugging_face-play-yellow">
+    <a href="https://huggingface.co/AgentVerse">
+        <img alt="HuggingFace" src="https://img.shields.io/badge/hugging_face-play-yellow">
     </a>
     <a href="https://discord.gg/MjG3vzaT">
         <img alt="Discord" src="https://img.shields.io/badge/AgentVerse-Discord-purple?style=flat">
