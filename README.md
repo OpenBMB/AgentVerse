@@ -217,16 +217,21 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 
 ## Installation
 
-```bash
-pip install -U agentverse
-```
-Or you can install the package by manually cloning the latest repository
+**Manually Install (Recommended!)**
 ```bash
 git clone https://github.com/OpenBMB/AgentVerse.git --depth 1
 cd AgentVerse
 python setup.py develop
 ```
 Some users have reported problems installing the `orjson` required by `gradio`. One simple workaround is to install it with Anaconda `conda install -c conda-forge orjson`.
+
+**Install with pip**
+
+Or you can install through pip
+```bash
+pip install -U agentverse
+```
+
 
 You also need to export your OpenAI API key as follows：
 ```bash
