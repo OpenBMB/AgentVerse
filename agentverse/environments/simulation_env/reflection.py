@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from typing import Any, Dict, List
 
 from datetime import datetime as dt
@@ -7,13 +6,15 @@ import datetime
 
 from pydantic import Field
 
+from agentverse.logging import logger
+from agentverse.environments import env_registry as EnvironmentRegistry
 from agentverse.agents.simulation_agent.conversation import BaseAgent
 
 # from agentverse.environments.simulation_env.rules.base import Rule
 from agentverse.environments.simulation_env.rules.base import SimulationRule as Rule
 from agentverse.message import Message
 
-from . import env_registry as EnvironmentRegistry
+# from . import env_registry as EnvironmentRegistry
 from ..base import BaseEnvironment
 
 from pydantic import validator
@@ -70,7 +71,7 @@ class ReflectionEnvironment(BaseEnvironment):
     async def step(self) -> List[Message]:
         """Run one step of the environment"""
 
-        logging.log(logging.INFO, f"Tick tock. Current time: {self.current_time}")
+        logger.info(f"Tick tock. Current time: {self.current_time}")
 
         # Get the next agent index
         agent_ids = self.rule.get_next_agent_idx(self)
@@ -107,7 +108,7 @@ class ReflectionEnvironment(BaseEnvironment):
     def print_messages(self, messages: List[Message]) -> None:
         for message in messages:
             if message is not None:
-                logging.info(f"{message.sender}: {message.content}")
+                logger.info(f"{message.sender}: {message.content}")
 
     def reset(self) -> None:
         """Reset the environment"""
