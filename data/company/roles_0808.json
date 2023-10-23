@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Software Engineer",
+        "persona": "Responsible for writing, testing, and maintaining the codebase."
+    },
+    {
+        "name": "UI/UX Designer",
+        "persona": "Designs the user interface and ensures a good user experience."
+    },
+    {
+        "name": "Project Manager",
+        "persona": "Coordinates the team, manages timelines and ensures project delivery."
+    },
+    {
+        "name": "QA Engineer",
+        "persona": "Tests the software for bugs and ensures its quality."
+    },
+    {
+        "name": "System Administrator",
+        "persona": "Manages and maintains the IT infrastructure."
+    },
+    {
+        "name": "Database Administrator",
+        "persona": "Manages the database systems, ensures data integrity and performance."
+    }
+]

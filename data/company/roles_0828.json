@@ -1,0 +1,878 @@
+[
+    {
+        "name": "designer",
+        "persona": "I am a artistic designer. I direct creative softwares and develop the artistic design strategy that defines the company’s brand. I create the unique image or music of our producted softwares and deliver this distinctive design to consumers to create a clear brand image which is a fundamental and essential work throughout the company.",
+        "tools": [
+            {
+                "tool_name": "read_file",
+                "description": "Read a file and return the contents",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to read."
+                    }
+                ]
+            },
+            {
+                "tool_name": "write_to_file",
+                "description": "Write text to a file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to write to."
+                    },
+                    {
+                        "name": "text",
+                        "type": "string",
+                        "description": "The text to write to the file."
+                    }
+                ]
+            },
+            {
+                "tool_name": "append_to_file",
+                "description": "Append text to a file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to append to."
+                    },
+                    {
+                        "name": "text",
+                        "type": "string",
+                        "description": "The text to append to the file."
+                    }
+                ],
+                "optional_parameters":[
+                    {
+                        "name": "should_log",
+                        "type": "boolean",
+                        "description": "Should log output.",
+                        "default": "False"
+                    }
+                ]
+            },
+            {
+                "tool_name": "analyze_code",
+                "description": "Analyze Code",
+                "required_parameters": [
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_python_file",
+                "description": "Execute Python File",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "pyhon file name"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_shell",
+                "description": "Execute Shell Command, non-interactive commands only",
+                "required_parameters": [
+                    {
+                        "name": "command_line",
+                        "type": "string",
+                        "description": "command line"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_shell_popen",
+                "description": "Execute Shell Command, non-interactive commands only",
+                "required_parameters": [
+                    {
+                        "name": "command_line",
+                        "type": "string",
+                        "description": "command line"
+                    }
+                ]
+            },
+            {
+                "tool_name": "delete_file",
+                "description": "Delete file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "file to delete"
+                    }
+                ]
+            },
+            {
+                "tool_name": "download_file",
+                "description": "Download File",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "source url to download"
+                    },
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "filename to store"
+                    }
+                ]
+            },
+            {
+                "tool_name": "list_files",
+                "description": "List Files in Directory",
+                "required_parameters": [
+                    {
+                        "name": "directory",
+                        "type": "string",
+                        "description": "target directory to list files"
+                    }
+                ]
+            },
+            {
+                "tool_name": "clone_repository",
+                "description": "Clone Repository",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "repository url"
+                    },
+                    {
+                        "name": "clone_path",
+                        "type": "string",
+                        "description": "directory path to clone to"
+                    }
+                ]
+            },
+            {
+                "tool_name": "improve_code",
+                "description": "Get Improved Code",
+                "required_parameters": [
+                    {
+                        "name": "suggestions",
+                        "type": "string",
+                        "description": "list of suggestions"
+                    },
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    }
+                ]
+            },
+            {
+                "tool_name": "scrape_text",
+                "description": "Scrape text from a webpage",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "url to scrape text from"
+                    },
+                    {
+                        "name": "question",
+                        "type": "string",
+                        "description": "what you want to find on website"
+                    }
+                ]
+            },
+            {
+                "tool_name": "browse_website",
+                "description": "Browse Website",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "url to browse"
+                    },
+                    {
+                        "name": "question",
+                        "type": "string",
+                        "description": "what you want to find on website"
+                    }
+                ]
+            },
+            {
+                "tool_name": "write_tests",
+                "description": "Write Tests",
+                "required_parameters": [
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    },
+                    {
+                        "name": "focus",
+                        "type": "string",
+                        "description": "list of focus areas"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "programmer",
+        "persona": "I am a professional programmer. I can write/create computer software or applications by providing a specific programming language to the computer. I have extensive computing and coding experience in many varieties of programming languages and platforms, such as Python, Java, C, C++, HTML, CSS, JavaScript, XML, SQL, PHP, etc,. I need to respond sepecific code when the task assigned to me.",
+        "tools": [
+            {
+                "tool_name": "read_file",
+                "description": "Read a file and return the contents",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to read."
+                    }
+                ]
+            },
+            {
+                "tool_name": "write_to_file",
+                "description": "Write text to a file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to write to."
+                    },
+                    {
+                        "name": "text",
+                        "type": "string",
+                        "description": "The text to write to the file."
+                    }
+                ]
+            },
+            {
+                "tool_name": "append_to_file",
+                "description": "Append text to a file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to append to."
+                    },
+                    {
+                        "name": "text",
+                        "type": "string",
+                        "description": "The text to append to the file."
+                    }
+                ],
+                "optional_parameters":[
+                    {
+                        "name": "should_log",
+                        "type": "boolean",
+                        "description": "Should log output.",
+                        "default": "False"
+                    }
+                ]
+            },
+            {
+                "tool_name": "analyze_code",
+                "description": "Analyze Code",
+                "required_parameters": [
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_python_file",
+                "description": "Execute Python File",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "pyhon file name"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_shell",
+                "description": "Execute Shell Command, non-interactive commands only",
+                "required_parameters": [
+                    {
+                        "name": "command_line",
+                        "type": "string",
+                        "description": "command line"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_shell_popen",
+                "description": "Execute Shell Command, non-interactive commands only",
+                "required_parameters": [
+                    {
+                        "name": "command_line",
+                        "type": "string",
+                        "description": "command line"
+                    }
+                ]
+            },
+            {
+                "tool_name": "delete_file",
+                "description": "Delete file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "file to delete"
+                    }
+                ]
+            },
+            {
+                "tool_name": "download_file",
+                "description": "Download File",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "source url to download"
+                    },
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "filename to store"
+                    }
+                ]
+            },
+            {
+                "tool_name": "list_files",
+                "description": "List Files in Directory",
+                "required_parameters": [
+                    {
+                        "name": "directory",
+                        "type": "string",
+                        "description": "target directory to list files"
+                    }
+                ]
+            },
+            {
+                "tool_name": "clone_repository",
+                "description": "Clone Repository",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "repository url"
+                    },
+                    {
+                        "name": "clone_path",
+                        "type": "string",
+                        "description": "directory path to clone to"
+                    }
+                ]
+            },
+            {
+                "tool_name": "improve_code",
+                "description": "Get Improved Code",
+                "required_parameters": [
+                    {
+                        "name": "suggestions",
+                        "type": "string",
+                        "description": "list of suggestions"
+                    },
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    }
+                ]
+            },
+            {
+                "tool_name": "scrape_text",
+                "description": "Scrape text from a webpage",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "url to scrape text from"
+                    },
+                    {
+                        "name": "question",
+                        "type": "string",
+                        "description": "what you want to find on website"
+                    }
+                ]
+            },
+            {
+                "tool_name": "browse_website",
+                "description": "Browse Website",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "url to browse"
+                    },
+                    {
+                        "name": "question",
+                        "type": "string",
+                        "description": "what you want to find on website"
+                    }
+                ]
+            },
+            {
+                "tool_name": "write_tests",
+                "description": "Write Tests",
+                "required_parameters": [
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    },
+                    {
+                        "name": "focus",
+                        "type": "string",
+                        "description": "list of focus areas"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "tester",
+        "persona": "I am a code tester. I can use the software as intended to analyze its functional properties, design manual and automated test procedures to evaluate each software product, build and implement software evaluation test programs, and run test programs to ensure that testing protocols evaluate the software correctly. I need to provide specific testing code for generated code.",
+        "tools": [
+            {
+                "tool_name": "read_file",
+                "description": "Read a file and return the contents",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to read."
+                    }
+                ]
+            },
+            {
+                "tool_name": "write_to_file",
+                "description": "Write text to a file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to write to."
+                    },
+                    {
+                        "name": "text",
+                        "type": "string",
+                        "description": "The text to write to the file."
+                    }
+                ]
+            },
+            {
+                "tool_name": "append_to_file",
+                "description": "Append text to a file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to append to."
+                    },
+                    {
+                        "name": "text",
+                        "type": "string",
+                        "description": "The text to append to the file."
+                    }
+                ],
+                "optional_parameters":[
+                    {
+                        "name": "should_log",
+                        "type": "boolean",
+                        "description": "Should log output.",
+                        "default": "False"
+                    }
+                ]
+            },
+            {
+                "tool_name": "analyze_code",
+                "description": "Analyze Code",
+                "required_parameters": [
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_python_file",
+                "description": "Execute Python File",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "pyhon file name"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_shell",
+                "description": "Execute Shell Command, non-interactive commands only",
+                "required_parameters": [
+                    {
+                        "name": "command_line",
+                        "type": "string",
+                        "description": "command line"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_shell_popen",
+                "description": "Execute Shell Command, non-interactive commands only",
+                "required_parameters": [
+                    {
+                        "name": "command_line",
+                        "type": "string",
+                        "description": "command line"
+                    }
+                ]
+            },
+            {
+                "tool_name": "delete_file",
+                "description": "Delete file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "file to delete"
+                    }
+                ]
+            },
+            {
+                "tool_name": "download_file",
+                "description": "Download File",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "source url to download"
+                    },
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "filename to store"
+                    }
+                ]
+            },
+            {
+                "tool_name": "list_files",
+                "description": "List Files in Directory",
+                "required_parameters": [
+                    {
+                        "name": "directory",
+                        "type": "string",
+                        "description": "target directory to list files"
+                    }
+                ]
+            },
+            {
+                "tool_name": "clone_repository",
+                "description": "Clone Repository",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "repository url"
+                    },
+                    {
+                        "name": "clone_path",
+                        "type": "string",
+                        "description": "directory path to clone to"
+                    }
+                ]
+            },
+            {
+                "tool_name": "improve_code",
+                "description": "Get Improved Code",
+                "required_parameters": [
+                    {
+                        "name": "suggestions",
+                        "type": "string",
+                        "description": "list of suggestions"
+                    },
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    }
+                ]
+            },
+            {
+                "tool_name": "scrape_text",
+                "description": "Scrape text from a webpage",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "url to scrape text from"
+                    },
+                    {
+                        "name": "question",
+                        "type": "string",
+                        "description": "what you want to find on website"
+                    }
+                ]
+            },
+            {
+                "tool_name": "browse_website",
+                "description": "Browse Website",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "url to browse"
+                    },
+                    {
+                        "name": "question",
+                        "type": "string",
+                        "description": "what you want to find on website"
+                    }
+                ]
+            },
+            {
+                "tool_name": "write_tests",
+                "description": "Write Tests",
+                "required_parameters": [
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    },
+                    {
+                        "name": "focus",
+                        "type": "string",
+                        "description": "list of focus areas"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "reviewer",
+        "persona": "I am a code reviewer. I can help programmers to assess source codes for software troubleshooting, fix bugs to increase code quality and robustness, and offer proposals to improve the source codes.",
+        "tools": [
+            {
+                "tool_name": "read_file",
+                "description": "Read a file and return the contents",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to read."
+                    }
+                ]
+            },
+            {
+                "tool_name": "write_to_file",
+                "description": "Write text to a file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to write to."
+                    },
+                    {
+                        "name": "text",
+                        "type": "string",
+                        "description": "The text to write to the file."
+                    }
+                ]
+            },
+            {
+                "tool_name": "append_to_file",
+                "description": "Append text to a file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "The name of the file to append to."
+                    },
+                    {
+                        "name": "text",
+                        "type": "string",
+                        "description": "The text to append to the file."
+                    }
+                ],
+                "optional_parameters":[
+                    {
+                        "name": "should_log",
+                        "type": "boolean",
+                        "description": "Should log output.",
+                        "default": "False"
+                    }
+                ]
+            },
+            {
+                "tool_name": "analyze_code",
+                "description": "Analyze Code",
+                "required_parameters": [
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_python_file",
+                "description": "Execute Python File",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "pyhon file name"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_shell",
+                "description": "Execute Shell Command, non-interactive commands only",
+                "required_parameters": [
+                    {
+                        "name": "command_line",
+                        "type": "string",
+                        "description": "command line"
+                    }
+                ]
+            },
+            {
+                "tool_name": "execute_shell_popen",
+                "description": "Execute Shell Command, non-interactive commands only",
+                "required_parameters": [
+                    {
+                        "name": "command_line",
+                        "type": "string",
+                        "description": "command line"
+                    }
+                ]
+            },
+            {
+                "tool_name": "delete_file",
+                "description": "Delete file",
+                "required_parameters": [
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "file to delete"
+                    }
+                ]
+            },
+            {
+                "tool_name": "download_file",
+                "description": "Download File",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "source url to download"
+                    },
+                    {
+                        "name": "filename",
+                        "type": "string",
+                        "description": "filename to store"
+                    }
+                ]
+            },
+            {
+                "tool_name": "list_files",
+                "description": "List Files in Directory",
+                "required_parameters": [
+                    {
+                        "name": "directory",
+                        "type": "string",
+                        "description": "target directory to list files"
+                    }
+                ]
+            },
+            {
+                "tool_name": "clone_repository",
+                "description": "Clone Repository",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "repository url"
+                    },
+                    {
+                        "name": "clone_path",
+                        "type": "string",
+                        "description": "directory path to clone to"
+                    }
+                ]
+            },
+            {
+                "tool_name": "improve_code",
+                "description": "Get Improved Code",
+                "required_parameters": [
+                    {
+                        "name": "suggestions",
+                        "type": "string",
+                        "description": "list of suggestions"
+                    },
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    }
+                ]
+            },
+            {
+                "tool_name": "scrape_text",
+                "description": "Scrape text from a webpage",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "url to scrape text from"
+                    },
+                    {
+                        "name": "question",
+                        "type": "string",
+                        "description": "what you want to find on website"
+                    }
+                ]
+            },
+            {
+                "tool_name": "browse_website",
+                "description": "Browse Website",
+                "required_parameters": [
+                    {
+                        "name": "url",
+                        "type": "string",
+                        "description": "url to browse"
+                    },
+                    {
+                        "name": "question",
+                        "type": "string",
+                        "description": "what you want to find on website"
+                    }
+                ]
+            },
+            {
+                "tool_name": "write_tests",
+                "description": "Write Tests",
+                "required_parameters": [
+                    {
+                        "name": "code",
+                        "type": "string",
+                        "description": "full code string"
+                    },
+                    {
+                        "name": "focus",
+                        "type": "string",
+                        "description": "list of focus areas"
+                    }
+                ]
+            }
+        ]
+    }
+]

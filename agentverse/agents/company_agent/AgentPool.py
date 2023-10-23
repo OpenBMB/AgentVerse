@@ -1,7 +1,4 @@
 from typing import List
-from mallm.agent.Role import Role
-from mallm.openai_utils import OpenAIUtils
-from mallm.config import Config
 from tqdm import tqdm
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np

@@ -1,22 +1,27 @@
-from mallm.openai_utils import OpenAIUtils
-from mallm.config import Config
 from queue import Queue
-from mallm.utils.common import parse_solution
-from mallm.prompt import prompt
-from mallm.tool_call_handler.autogpt_commands.command import CommandRegistry
-from mallm.tool_call_handler.autogpt_commands import COMMAND_CATEGORIES
-from mallm.tool_call_handler.rapid_API_registry import RapidAPIRegistry
-from mallm.tool_call_handler.tool_call_handler import handle_tool_call
-from mallm.config import Inter_Config as Configs
-from mallm.tool_call_handler.workspace.workspace import Workspace
-from mallm.utils.common import WORK_SPACE_ROOT_DIR
-from queue import Queue
-from mallm.memory import Memory
 import json
 import os
 
+import asyncio
 
-class Role:
+# import logging
+from agentverse.logging import get_logger
+from typing import Any, Dict, List
+
+# from agentverse.agents.agent import Agent
+from agentverse.agents.simulation_agent.conversation import BaseAgent
+
+# from agentverse.environments.simulation_env.rules.base import Rule
+from agentverse.environments.simulation_env.rules.base import SimulationRule as Rule
+from agentverse.message import Message
+
+logger = get_logger()
+
+from .. import env_registry as EnvironmentRegistry
+from ..base import BaseEnvironment
+
+
+class Role(BaseAgent):
     def __init__(
         self,
         name: str = "Role",
@@ -68,12 +73,6 @@ class Role:
 
     def add_tools(self, tools):
         self.tools.extend(tools)
-        return self
-
-    def receive_message(self):
-        if not self.inbox.empty():
-            sender, message = self.inbox.get()
-            print(f"Message from {sender.name} to {self.name}: {message}")
         return self
 
     def add_task(self, task):
@@ -274,23 +273,3 @@ class Role:
 
     def clean_history_message(self):
         self.openai_conversation_history = []
-
-
-if __name__ == "__main__":
-    tools = json.load(
-        open("/Users/user/Downloads/git_clone/MALLM/mallm/agent/functions.json", "r")
-    )
-
-    role = Role(
-        name="CHATDEV_programmer",
-        persona="I am a professional programmer of CHATDEV. I can write/create computer software or applications by providing a specific programming language to the computer. I have extensive computing and coding experience in many varieties of programming languages and platforms, such as Python, Java, C, C++, HTML, CSS, JavaScript, XML, SQL, PHP, etc,.",
-        tools=tools,
-    )
-    role.add_task(
-        "write a python code into a file, named 'hello_world.py' that print 'Hello World'."
-    )
-    workspace_root = os.path.join(WORK_SPACE_ROOT_DIR, "tmp")
-    workspace_root = Workspace.make_workspace(workspace_root)
-    workspace = Workspace(workspace_root=workspace_root, restrict_to_workspace=True)
-    result = role.perform_task(workspace=workspace, workspace_root=workspace_root)
-    print(result)
