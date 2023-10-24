@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING, List
 
 from agentverse.message import Message
 
-#from . import agent_registry
-#from .base import BaseAgent
+# from . import agent_registry
+# from .base import BaseAgent
 from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
 
@@ -66,7 +66,7 @@ class ConversationAgent(BaseAgent):
                 raise
             except Exception as e:
                 logger.error(e)
-                logger.warning("Retrying...")
+                logger.warn("Retrying...")
                 continue
 
         if parsed_response is None:

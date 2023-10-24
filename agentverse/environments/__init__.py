@@ -9,6 +9,7 @@ from .base import BaseEnvironment, BaseRule
 
 # from .basic import PipelineEnvironment
 from .simulation_env.basic import BasicEnvironment
+from .simulation_env.reflection import ReflectionEnvironment
 from .simulation_env.pokemon import PokemonEnvironment
 from .simulation_env.prisoner_dilemma import PrisonerDilemmaEnvironment
 from .simulation_env.sde_team import SdeTeamEnvironment
