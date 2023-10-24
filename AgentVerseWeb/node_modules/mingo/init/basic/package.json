@@ -1,0 +1,6 @@
+{
+  "main": "../../dist/cjs/init/basic.js",
+  "module": "../../dist/esm/init/basic.js",
+  "types": "../../dist/types/init/basic.d.ts",
+  "sideEffects": true
+}

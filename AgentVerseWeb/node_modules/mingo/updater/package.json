@@ -1,0 +1,6 @@
+{
+  "main": "../dist/cjs/updater.js",
+  "module": "../dist/esm/updater.js",
+  "types": "../dist/types/updater.d.ts",
+  "sideEffects": false
+}

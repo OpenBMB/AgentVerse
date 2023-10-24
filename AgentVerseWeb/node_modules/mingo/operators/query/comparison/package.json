@@ -1,0 +1,6 @@
+{
+  "main": "../../../dist/cjs/operators/query/comparison/index.js",
+  "module": "../../../dist/esm/operators/query/comparison/index.js",
+  "types": "../../../dist/types/operators/query/comparison/index.d.ts",
+  "sideEffects": false
+}

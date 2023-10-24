@@ -1,0 +1,6 @@
+{
+  "main": "../../dist/cjs/operators/accumulator/index.js",
+  "module": "../../dist/esm/operators/accumulator/index.js",
+  "types": "../../dist/types/operators/accumulator/index.d.ts",
+  "sideEffects": false
+}

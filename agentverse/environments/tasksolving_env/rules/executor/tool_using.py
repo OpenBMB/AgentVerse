@@ -334,7 +334,6 @@ class ToolUsingExecutor(BaseExecutor):
                         elif command == "WebEnv_search_and_browse":
                             openai.aiosession.set(session)
                             content = json.loads(content)
-
                             # for i in range(len(content)):
                             summarized = await asyncio.gather(
                                 *[

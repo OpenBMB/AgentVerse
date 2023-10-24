@@ -1,0 +1,278 @@
+.crocodoc-viewer {
+    padding:0;
+    position: relative;
+}
+
+/* prevent sizing issues from bootstrap (and others) that change global defaults */
+.crocodoc-viewer * {
+    -webkit-box-sizing: content-box !important;
+    -moz-box-sizing: content-box !important;
+    box-sizing: content-box !important;
+}
+
+.crocodoc-viewer-fullscreen {
+    background: #000;
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.crocodoc-viewport {
+    margin:0; padding:0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: auto;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    outline: 0 !important;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+.crocodoc-draggable .crocodoc-viewport {
+    cursor: move;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+}
+.crocodoc-dragging .crocodoc-viewport {
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    cursor: grabbing;
+}
+
+/* outside wrapper for positioning the transformed inner wrapper properly */
+.crocodoc-doc {
+    overflow: hidden;
+    /* @NOTE: position:relative is necessary for overflow:hidden to work in IE7 */
+    position: relative;
+    text-align: center;
+    font-size: 100%;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+.crocodoc-window-as-viewport .crocodoc-viewport {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    overflow: visible;
+}
+
+.crocodoc-window-as-viewport .crocodoc-doc {
+    width: auto;
+    height: auto;
+    overflow: hidden;
+}
+
+/* individual pages */
+.crocodoc-page {
+    display: inline-block;
+    /* IE7 hack to force inline behavior on divs */
+    *display: inline;
+    *zoom: 1;
+    /* End hack */
+
+    /* IE7 inherits text-align: center, which causes the page-content to be shifted */
+    text-align: left;
+
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.crocodoc-page-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.crocodoc-page-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.crocodoc-page-visible,
+.crocodoc-current-page {
+    visibility: visible !important;
+}
+
+.crocodoc-page-svg object,
+.crocodoc-page-svg iframe,
+.crocodoc-page-svg img {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    transform: translateZ(0);
+}
+
+.crocodoc-page-autoscale {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    -webkit-transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+    transform-origin: 0 0;
+}
+
+.crocodoc-page-autoscale > div {
+    display: block;
+    position: absolute;
+}
+
+/* @NOTE: this is a fix for the white "border" issue */
+.crocodoc-page-svg {
+    position: absolute;
+    overflow: hidden;
+    top: -1px;
+    left: -1px;
+    bottom: -1px;
+    right: -1px;
+    width: auto;
+    height: auto;
+}
+
+.crocodoc-page-links {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.crocodoc-page-link {
+    position: absolute;
+    display: block;
+}
+/* Fix for IE ctrl+click behavior */
+.crocodoc-page-link span {
+    width: 100%;
+    height: 100%;
+    display: block;
+    /* IE <= 9 requires a background image for an empty element to actually receive click events */
+    background: url(data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==) 0 0 no-repeat;
+}
+.crocodoc-links-disabled .crocodoc-page-links {
+    display: none;
+}
+.crocodoc-links-disabled .crocodoc-page-link {
+    background: transparent;
+}
+
+.crocodoc-page-text {
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0.5;
+    overflow: hidden;
+}
+
+/* don't hide text if it's selected or visible */
+.crocodoc-page-visible .crocodoc-page-text,
+.crocodoc-page-selected .crocodoc-page-text {
+    display: block !important;
+}
+
+/* NEVER display text if it's disabled; this should be highest priority */
+.crocodoc-draggable .crocodoc-page-text,
+.crocodoc-text-disabled .crocodoc-page-text {
+    display: none !important;
+}
+
+.crocodoc-page-error .crocodoc-page-text,
+.crocodoc-page-loading .crocodoc-page-text,
+.crocodoc-page-error .crocodoc-page-svg,
+.crocodoc-page-loading .crocodoc-page-svg,
+.crocodoc-page-error .crocodoc-page-links,
+.crocodoc-page-loading .crocodoc-page-links {
+    display: none !important;
+}
+
+.crocodoc-subpx-fix {
+    zoom: 10;
+    -webkit-transform: scale(0.1);
+    transform: scale(0.1);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    width: 1000%;
+    height: 1000%;
+}
+
+/* Layout-specific styles -------------------------------- */
+.crocodoc-layout-horizontal .crocodoc-doc {
+    text-align: left;
+    white-space: nowrap;
+}
+
+.crocodoc-layout-vertical-single-column .crocodoc-page {
+    display: block;
+    margin: 0 auto;
+}
+
+.crocodoc-layout-presentation-two-page .crocodoc-page,
+.crocodoc-layout-presentation .crocodoc-page {
+    position: absolute;
+    visibility: hidden;
+    display: block;
+}
+
+.crocodoc-layout-presentation-two-page .crocodoc-doc,
+.crocodoc-layout-presentation .crocodoc-doc {
+    overflow: visible;
+    /* @NOTE: this is for IE 7; text-align is incorrectly honored even when pages are position:absolute/display:block */
+    text-align: left;
+}
+
+.crocodoc-layout-presentation-two-page .crocodoc-page:nth-child(odd) {
+    padding-right: 0 !important;
+}
+
+.crocodoc-layout-presentation-two-page .crocodoc-page:nth-child(even) {
+    padding-left: 0 !important;
+}
+
+.crocodoc-layout-presentation-two-page .crocodoc-page-visible,
+.crocodoc-layout-presentation .crocodoc-page-visible {
+    z-index: 1;
+}
+
+/* only possibly show scrollbars when the presentation is intentionally scrollable (e.g., doesn't fit in viewport) */
+.crocodoc-layout-presentation .crocodoc-viewport,
+.crocodoc-layout-presentation-two-page .crocodoc-viewport {
+    overflow: hidden;
+}
+.crocodoc-layout-presentation.crocodoc-scrollable .crocodoc-viewport,
+.crocodoc-layout-presentation-two-page.crocodoc-scrollable .crocodoc-viewport {
+    overflow: auto;
+}
+
+
+/** Version-specific changes ----------------------------- */
+
+/* all conversions before v1.0.0 require text to be transparent */
+.crocodoc-viewer[data-svg-version^="0"] .crocodoc-page-text .tx {
+    color: transparent !important;
+}

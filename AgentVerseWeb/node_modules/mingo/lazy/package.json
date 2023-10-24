@@ -1,0 +1,6 @@
+{
+  "main": "../dist/cjs/lazy.js",
+  "module": "../dist/esm/lazy.js",
+  "types": "../dist/types/lazy.d.ts",
+  "sideEffects": false
+}

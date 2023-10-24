@@ -1,0 +1,6 @@
+{
+  "main": "../../dist/cjs/init/system.js",
+  "module": "../../dist/esm/init/system.js",
+  "types": "../../dist/types/init/system.d.ts",
+  "sideEffects": true
+}

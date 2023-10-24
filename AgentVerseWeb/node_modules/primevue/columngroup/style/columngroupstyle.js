@@ -1,0 +1,10 @@
+this.primevue = this.primevue || {};
+this.primevue.columngroup = this.primevue.columngroup || {};
+this.primevue.columngroup.style = (function () {
+	'use strict';
+
+	var ColumnGroupStyle = {};
+
+	return ColumnGroupStyle;
+
+})();

@@ -1,0 +1,6 @@
+{
+  "main": "../../../dist/cjs/operators/expression/array/index.js",
+  "module": "../../../dist/esm/operators/expression/array/index.js",
+  "types": "../../../dist/types/operators/expression/array/index.d.ts",
+  "sideEffects": false
+}

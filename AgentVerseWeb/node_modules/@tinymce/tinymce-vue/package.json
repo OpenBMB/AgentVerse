@@ -1,0 +1,89 @@
+{
+  "name": "@tinymce/tinymce-vue",
+  "version": "5.1.1",
+  "description": "Official TinyMCE Vue 3 Component",
+  "private": false,
+  "repository": {
+    "url": "https://github.com/tinymce/tinymce-vue"
+  },
+  "main": "lib/cjs/main/ts/index.js",
+  "module": "lib/es2015/main/ts/index.js",
+  "scripts": {
+    "test": "bedrock-auto -b chrome-headless -f src/test/ts/**/*Test.ts",
+    "test-manual": "bedrock -f src/test/ts/**/*Test.ts",
+    "clean": "rimraf lib",
+    "lint": "eslint src/{main,test}/**/*.ts",
+    "build": "yarn run clean && yarn run lint && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json && node rollup.build.js",
+    "storybook": "start-storybook -p 6006",
+    "demo": "vite",
+    "build-storybook": "build-storybook"
+  },
+  "keywords": [
+    "tinymce",
+    "vue",
+    "component"
+  ],
+  "author": "Ephox Inc",
+  "license": "MIT",
+  "files": [
+    "lib/*/**",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE.txt"
+  ],
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.2",
+    "@ephox/agar": "^7.2.1",
+    "@ephox/bedrock-client": "^13.0.0",
+    "@ephox/bedrock-server": "^13.3.0",
+    "@ephox/katamari": "^9.1.1",
+    "@ephox/sugar": "^9.1.1",
+    "@storybook/addon-actions": "^6.5.13",
+    "@storybook/addon-essentials": "^6.5.13",
+    "@storybook/addon-links": "^6.5.13",
+    "@storybook/addon-notes": "^5.3.21",
+    "@storybook/builder-webpack5": "^6.5.16",
+    "@storybook/manager-webpack5": "^6.5.16",
+    "@storybook/storybook-deployer": "^2.8.16",
+    "@storybook/vue3": "^6.5.13",
+    "@tinymce/beehive-flow": "^0.19.0",
+    "@tinymce/eslint-plugin": "^2.2.1",
+    "@tinymce/miniature": "^5.0.1",
+    "@types/node": "^18.11.9",
+    "@vitejs/plugin-vue": "^2.1.0",
+    "@vue/compiler-sfc": "^3.2.45",
+    "babel-loader": "^8.2.3",
+    "babel-preset-vue": "^2.0.2",
+    "babel-register": "^6.26.0",
+    "css-loader": "^6.2.0",
+    "file-loader": "^6.0.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "regenerator-runtime": "^0.13.9",
+    "rimraf": "^3.0.2",
+    "rollup": "^1.32.1",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "rollup-plugin-uglify": "^6.0.0",
+    "tinymce-4": "npm:tinymce@^4",
+    "tinymce-5": "npm:tinymce@^5",
+    "tinymce-6": "npm:tinymce@^6",
+    "ts-loader": "^9.4.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths-webpack-plugin": "^3.5.2",
+    "typescript": "^4.8.4",
+    "vite": "^2.9.13",
+    "vue": "^3.2.45",
+    "vue-cli-plugin-storybook": "^2.1.0",
+    "vue-loader": "^15.2.1",
+    "vue-router": "^4.1.6",
+    "vue-template-compiler": "^2.7.14",
+    "webpack": "^5.75.0"
+  },
+  "dependencies": {
+    "tinymce": "^6.0.0 || ^5.5.1"
+  }
+}

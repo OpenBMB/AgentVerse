@@ -1,0 +1,6 @@
+{
+  "main": "../dist/cjs/types.js",
+  "module": "../dist/esm/types.js",
+  "types": "../dist/types/types.d.ts",
+  "sideEffects": false
+}

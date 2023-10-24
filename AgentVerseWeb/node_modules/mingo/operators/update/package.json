@@ -1,0 +1,6 @@
+{
+  "main": "../../dist/cjs/operators/update/index.js",
+  "module": "../../dist/esm/operators/update/index.js",
+  "types": "../../dist/types/operators/update/index.d.ts",
+  "sideEffects": false
+}

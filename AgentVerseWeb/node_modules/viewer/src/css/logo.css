@@ -1,0 +1,24 @@
+/* logo overlay */
+.crocodoc-viewer-logo {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 29px;
+    height: 16px;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    background: transparent url(../images/logo.png) 0 0 no-repeat;
+    pointer-events: none;
+}
+
+.crocodoc-window-as-viewport .crocodoc-viewer-logo {
+    position: fixed;
+}
+
+/* hidpi logo */
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+    .crocodoc-viewer-logo {
+        background: transparent url(../images/logo@2x.png) 0 0 no-repeat;
+        background-size: 29px auto;
+    }
+}

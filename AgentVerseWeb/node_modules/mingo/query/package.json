@@ -1,0 +1,6 @@
+{
+  "main": "../dist/cjs/query.js",
+  "module": "../dist/esm/query.js",
+  "types": "../dist/types/query.d.ts",
+  "sideEffects": false
+}

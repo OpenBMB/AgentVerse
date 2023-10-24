@@ -1,0 +1,6 @@
+{
+  "main": "../../../dist/cjs/operators/query/logical/index.js",
+  "module": "../../../dist/esm/operators/query/logical/index.js",
+  "types": "../../../dist/types/operators/query/logical/index.d.ts",
+  "sideEffects": false
+}

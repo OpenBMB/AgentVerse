@@ -1,0 +1,6 @@
+{
+  "main": "../../dist/cjs/operators/window/index.js",
+  "module": "../../dist/esm/operators/window/index.js",
+  "types": "../../dist/types/operators/window/index.d.ts",
+  "sideEffects": false
+}

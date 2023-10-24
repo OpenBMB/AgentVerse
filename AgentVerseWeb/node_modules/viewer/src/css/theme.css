@@ -1,0 +1,32 @@
+/* Default Theme -------------------------------- */
+
+/* Background */
+.crocodoc-viewport {
+    background: transparent;
+}
+
+/* Page borders/backgrounds */
+.crocodoc-page-content {
+    border: 0;
+    background: #fff;
+}
+
+/* Page paddings */
+.crocodoc-page {
+    padding: 10px 15px;
+}
+
+/* Text selection color */
+/* NOTE: these two *-selection rules MUST be separate (cannot be comma-separated) */
+.crocodoc-page-text {
+    opacity: 0.4;
+}
+
+/* override these rules with !important to change the highlight color */
+/* @NOTE: !important is used here because stylesheet.css would otherwise take precedence in this case */
+.crocodoc-page-text ::-moz-selection {
+    background: rgba(50, 151, 253, 0.75) !important;
+}
+.crocodoc-page-text ::selection {
+    background: rgba(50, 151, 253, 0.75) !important;
+}

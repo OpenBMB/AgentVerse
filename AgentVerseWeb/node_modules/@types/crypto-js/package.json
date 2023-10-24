@@ -1,0 +1,40 @@
+{
+    "name": "@types/crypto-js",
+    "version": "4.1.3",
+    "description": "TypeScript definitions for crypto-js",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/crypto-js",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Michael Zabka",
+            "githubUsername": "misak113",
+            "url": "https://github.com/misak113"
+        },
+        {
+            "name": "Max Lysenko",
+            "githubUsername": "maximlysenko",
+            "url": "https://github.com/maximlysenko"
+        },
+        {
+            "name": "Brendan Early",
+            "githubUsername": "mymindstorm",
+            "url": "https://github.com/mymindstorm"
+        },
+        {
+            "name": "Doma",
+            "githubUsername": "SevenOutman",
+            "url": "https://github.com/SevenOutman"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/crypto-js"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "6c10c9d4357e8d404d8780f1819a0badd3dffaf23c5a058137cef2365799aef3",
+    "typeScriptVersion": "4.5"
+}

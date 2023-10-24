@@ -1,0 +1,33 @@
+{
+    "name": "@types/lodash-es",
+    "version": "4.17.10",
+    "description": "TypeScript definitions for lodash-es",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/lodash-es",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Stephen Lautier",
+            "githubUsername": "stephenlautier",
+            "url": "https://github.com/stephenlautier"
+        },
+        {
+            "name": "e-cloud",
+            "githubUsername": "e-cloud",
+            "url": "https://github.com/e-cloud"
+        }
+    ],
+    "type": "module",
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/lodash-es"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@types/lodash": "*"
+    },
+    "typesPublisherContentHash": "1be0aa6f88253b019a1df0b5929023bf35542e010ec57c4a23ed92e3b4861763",
+    "typeScriptVersion": "4.5"
+}

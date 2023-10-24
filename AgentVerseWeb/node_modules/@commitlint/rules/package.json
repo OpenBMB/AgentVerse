@@ -1,0 +1,52 @@
+{
+  "name": "@commitlint/rules",
+  "version": "17.8.1",
+  "description": "Lint your commit messages",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/"
+  ],
+  "scripts": {
+    "deps": "dep-check",
+    "pkg": "pkg-check"
+  },
+  "engines": {
+    "node": ">=v14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/conventional-changelog/commitlint.git",
+    "directory": "@commitlint/rules"
+  },
+  "bugs": {
+    "url": "https://github.com/conventional-changelog/commitlint/issues"
+  },
+  "homepage": "https://commitlint.js.org/",
+  "keywords": [
+    "conventional-changelog",
+    "commitlint",
+    "library",
+    "core"
+  ],
+  "author": {
+    "name": "Mario Nebl",
+    "email": "hello@herebecode.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/parse": "^17.8.1",
+    "@commitlint/test": "^17.8.1",
+    "@commitlint/utils": "^17.8.1",
+    "conventional-changelog-angular": "6.0.0",
+    "glob": "^8.0.3"
+  },
+  "dependencies": {
+    "@commitlint/ensure": "^17.8.1",
+    "@commitlint/message": "^17.8.1",
+    "@commitlint/to-lines": "^17.8.1",
+    "@commitlint/types": "^17.8.1",
+    "execa": "^5.0.0"
+  },
+  "gitHead": "75b2a1264ac699dbaead2249282b6dca18ae3008"
+}

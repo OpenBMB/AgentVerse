@@ -1,0 +1,6 @@
+{
+  "main": "../dist/cjs/aggregator.js",
+  "module": "../dist/esm/aggregator.js",
+  "types": "../dist/types/aggregator.d.ts",
+  "sideEffects": false
+}

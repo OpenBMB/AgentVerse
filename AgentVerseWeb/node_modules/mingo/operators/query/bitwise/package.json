@@ -1,0 +1,6 @@
+{
+  "main": "../../../dist/cjs/operators/query/bitwise/index.js",
+  "module": "../../../dist/esm/operators/query/bitwise/index.js",
+  "types": "../../../dist/types/operators/query/bitwise/index.d.ts",
+  "sideEffects": false
+}

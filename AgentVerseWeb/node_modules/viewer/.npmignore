@@ -1,0 +1,15 @@
+.editorconfig
+.gitignore
+.jshintrc
+.travis.yml
+
+Gruntfile.js
+jsdoc-conf.json
+bower.json
+
+build
+examples
+git-hooks
+node_modules
+test
+testing

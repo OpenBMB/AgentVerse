@@ -1,0 +1,76 @@
+.crocodoc-text-disabled .crocodoc-text {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.crocodoc-doc.crocodoc-text {
+    margin: 0;
+    padding: 0;
+    opacity: 1;
+    text-align: left;
+    counter-reset: line-numbering;
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 10pt;
+    background: #fff;
+    min-height: 100%;
+    width: 100%;
+    tab-size: 8;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.crocodoc-text tr:last-child {
+    height: 100%;
+}
+
+.crocodoc-text tr:first-child td {
+    padding-top: 0.3em;
+}
+.crocodoc-text tr:last-child td {
+    padding-bottom: 0.3em;
+}
+
+/* line numbers */
+
+.crocodoc-text td:first-child {
+    width: 1%;
+    padding-left: 0.5em;
+    padding-right: 0.3em;
+    vertical-align: top;
+    text-align: right;
+    color: #aaa;
+    background: #f8f8f8;
+    border-right: 1px solid #eee;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    box-sizing: border-box !important;
+}
+.crocodoc-text td:first-child:before {
+    content: counter(line-numbering);
+    counter-increment: line-numbering;
+}
+
+/* line contents */
+.crocodoc-text td:last-child {
+    vertical-align: top;
+    text-align: left;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    padding: 0 10px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-all;
+    color: #333;
+    vertical-align: top;
+}

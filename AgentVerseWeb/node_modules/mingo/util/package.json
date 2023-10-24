@@ -1,0 +1,6 @@
+{
+  "main": "../dist/cjs/util.js",
+  "module": "../dist/esm/util.js",
+  "types": "../dist/types/util.d.ts",
+  "sideEffects": false
+}

@@ -1,0 +1,6 @@
+{
+  "main": "../../dist/cjs/operators/projection/index.js",
+  "module": "../../dist/esm/operators/projection/index.js",
+  "types": "../../dist/types/operators/projection/index.d.ts",
+  "sideEffects": false
+}

@@ -1,0 +1,6 @@
+{
+  "main": "../../../dist/cjs/operators/query/element/index.js",
+  "module": "../../../dist/esm/operators/query/element/index.js",
+  "types": "../../../dist/types/operators/query/element/index.d.ts",
+  "sideEffects": false
+}

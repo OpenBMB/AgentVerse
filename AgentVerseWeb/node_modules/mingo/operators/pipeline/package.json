@@ -1,0 +1,6 @@
+{
+  "main": "../../dist/cjs/operators/pipeline/index.js",
+  "module": "../../dist/esm/operators/pipeline/index.js",
+  "types": "../../dist/types/operators/pipeline/index.d.ts",
+  "sideEffects": false
+}

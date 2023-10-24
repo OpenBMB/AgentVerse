@@ -1,0 +1,85 @@
+{
+  "name": "vue-codemirror",
+  "description": "CodeMirror code editor component for Vue",
+  "version": "6.1.1",
+  "author": "Surmon",
+  "license": "MIT",
+  "keywords": [
+    "vue-codemirror",
+    "vue codemirror",
+    "vue code editor",
+    "web IDE vue"
+  ],
+  "homepage": "https://github.surmon.me/vue-codemirror",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/surmon-china/vue-codemirror.git"
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
+  "main": "./dist/vue-codemirror.cjs.js",
+  "module": "./dist/vue-codemirror.esm.js",
+  "types": "./dist/vue-codemirror.esm.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/vue-codemirror.cjs.js",
+      "import": "./dist/vue-codemirror.esm.js",
+      "types": "./dist/vue-codemirror.esm.d.ts"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "libundler",
+    "test": "vitest run --coverage",
+    "lint": "eslint --ext .js,.ts,.vue src test",
+    "rebirth": "npm run lint && npm run test && npm run build",
+    "release": ". ./scripts/release.sh"
+  },
+  "peerDependencies": {
+    "vue": "3.x",
+    "codemirror": "6.x"
+  },
+  "dependencies": {
+    "@codemirror/commands": "6.x",
+    "@codemirror/language": "6.x",
+    "@codemirror/state": "6.x",
+    "@codemirror/view": "6.x"
+  },
+  "devDependencies": {
+    "codemirror": "6.x",
+    "@codemirror/lang-cpp": "^6.0.0",
+    "@codemirror/lang-html": "^6.0.0",
+    "@codemirror/lang-java": "^6.0.0",
+    "@codemirror/lang-javascript": "^6.0.0",
+    "@codemirror/lang-json": "^6.0.0",
+    "@codemirror/lang-lezer": "^6.0.0",
+    "@codemirror/lang-markdown": "^6.0.0",
+    "@codemirror/lang-php": "^6.0.0",
+    "@codemirror/lang-python": "^6.0.0",
+    "@codemirror/lang-rust": "^6.0.0",
+    "@codemirror/lang-sql": "^6.0.0",
+    "@codemirror/lang-xml": "^6.0.0",
+    "@codemirror/legacy-modes": "^6.0.0",
+    "@codemirror/theme-one-dark": "^6.0.0",
+    "@surmon-china/libundler": "^2.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "@vitejs/plugin-vue": "^3.0.0",
+    "@vue/test-utils": "^2.0.0",
+    "c8": "^7.12.0",
+    "eslint": "^8.20.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.0",
+    "jsdom": "^20.0.0",
+    "prettier": "^2.7.0",
+    "sass": "^1.53.0",
+    "typescript": "^4.7.0",
+    "vite": "^3.0.0",
+    "vitest": "^0.18.1",
+    "vue": "^3.2.31"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "main": "../dist/cjs/cursor.js",
+  "module": "../dist/esm/cursor.js",
+  "types": "../dist/types/cursor.d.ts",
+  "sideEffects": false
+}

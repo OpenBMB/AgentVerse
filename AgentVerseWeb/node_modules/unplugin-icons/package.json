@@ -1,0 +1,165 @@
+{
+  "name": "unplugin-icons",
+  "version": "0.15.3",
+  "packageManager": "pnpm@7.13.4",
+  "description": "Access thousands of icons as components on-demand universally",
+  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/antfu",
+  "homepage": "https://github.com/antfu/unplugin-icons",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antfu/unplugin-icons"
+  },
+  "bugs": "https://github.com/antfu/unplugin-icons/issues",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
+    "./*": "./*",
+    "./esbuild": {
+      "types": "./dist/esbuild.d.ts",
+      "require": "./dist/esbuild.js",
+      "import": "./dist/esbuild.mjs"
+    },
+    "./loaders": {
+      "types": "./dist/loaders.d.ts",
+      "require": "./dist/loaders.js",
+      "import": "./dist/loaders.mjs"
+    },
+    "./nuxt": {
+      "types": "./dist/nuxt.d.ts",
+      "require": "./dist/nuxt.js",
+      "import": "./dist/nuxt.mjs"
+    },
+    "./resolver": {
+      "types": "./dist/resolver.d.ts",
+      "require": "./dist/resolver.js",
+      "import": "./dist/resolver.mjs"
+    },
+    "./rollup": {
+      "types": "./dist/rollup.d.ts",
+      "require": "./dist/rollup.js",
+      "import": "./dist/rollup.mjs"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "require": "./dist/types.js",
+      "import": "./dist/types.mjs"
+    },
+    "./types/astro": {
+      "types": "./types/astro.d.ts"
+    },
+    "./types/preact": {
+      "types": "./types/preact.d.ts"
+    },
+    "./types/raw": {
+      "types": "./types/raw.d.ts"
+    },
+    "./types/react": {
+      "types": "./types/react.d.ts"
+    },
+    "./types/solid": {
+      "types": "./types/solid.d.ts"
+    },
+    "./types/svelte": {
+      "types": "./types/svelte.d.ts"
+    },
+    "./types/vue": {
+      "types": "./types/vue.d.ts"
+    },
+    "./types/vue3": {
+      "types": "./types/vue3.d.ts"
+    },
+    "./types/web-components": {
+      "types": "./types/web-components.d.ts"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "require": "./dist/vite.js",
+      "import": "./dist/vite.mjs"
+    },
+    "./webpack": {
+      "types": "./dist/webpack.d.ts",
+      "require": "./dist/webpack.js",
+      "import": "./dist/webpack.mjs"
+    }
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./*"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "types",
+    "*.d.ts"
+  ],
+  "scripts": {
+    "build": "esno scripts/prebuild.ts && tsup && esno scripts/postbuild.ts",
+    "dev": "esno scripts/prebuild.ts && tsup --watch src",
+    "example:build": "npm -C examples/vite-vue3 run build",
+    "example:dev": "npm -C examples/vite-vue3 run dev",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
+    "prepublishOnly": "npm run build",
+    "release": "npx bumpp --commit --tag --push && npm publish",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "@svgr/core": ">=5.5.0",
+    "@vue/compiler-sfc": "^3.0.2 || ^2.7.0",
+    "vue-template-compiler": "^2.6.12",
+    "vue-template-es2015-compiler": "^1.9.0"
+  },
+  "peerDependenciesMeta": {
+    "@svgr/core": {
+      "optional": true
+    },
+    "@vue/compiler-sfc": {
+      "optional": true
+    },
+    "vue-template-compiler": {
+      "optional": true
+    },
+    "vue-template-es2015-compiler": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@antfu/install-pkg": "^0.1.1",
+    "@antfu/utils": "^0.7.2",
+    "@iconify/utils": "^2.1.2",
+    "debug": "^4.3.4",
+    "kolorist": "^1.7.0",
+    "local-pkg": "^0.4.3",
+    "unplugin": "^1.0.1"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.35.2",
+    "@iconify/json": "^2.2.21",
+    "@iconify/types": "^2.0.0",
+    "@svgr/core": "^6.5.1",
+    "@svgx/core": "^1.0.1",
+    "@types/debug": "^4.1.7",
+    "@types/node": "^18.13.0",
+    "@vue/compiler-sfc": "^3.2.47",
+    "bumpp": "^8.2.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.34.0",
+    "esno": "^0.16.3",
+    "rollup": "^3.15.0",
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5",
+    "vite": "^4.1.1",
+    "vitest": "^0.28.5"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "unimport",
+  "version": "2.2.4",
+  "description": "Unified utils for auto importing APIs in modules",
+  "repository": "unjs/unimport",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./unplugin": {
+      "types": "./dist/unplugin.d.ts",
+      "import": "./dist/unplugin.mjs",
+      "require": "./dist/unplugin.cjs"
+    },
+    "./addons": {
+      "types": "./dist/addons.d.ts",
+      "import": "./dist/addons.mjs",
+      "require": "./dist/addons.cjs"
+    },
+    "./*": "./*"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "*.d.ts"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "vitest dev",
+    "lint": "eslint --ext .ts,.js,.mjs,.cjs .",
+    "prepack": "unbuild",
+    "play": "pnpm -C playground run dev",
+    "play:build": "pnpm -C playground run build",
+    "typecheck": "vue-tsc --noEmit",
+    "release": "pnpm run test --run && standard-version && git push --follow-tags && npm publish",
+    "test": "vitest --coverage"
+  },
+  "dependencies": {
+    "@rollup/pluginutils": "^5.0.2",
+    "escape-string-regexp": "^5.0.0",
+    "fast-glob": "^3.2.12",
+    "local-pkg": "^0.4.3",
+    "magic-string": "^0.27.0",
+    "mlly": "^1.1.0",
+    "pathe": "^1.1.0",
+    "pkg-types": "^1.0.1",
+    "scule": "^1.0.0",
+    "strip-literal": "^1.0.0",
+    "unplugin": "^1.0.1"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
+    "@vitest/coverage-c8": "^0.28.3",
+    "eslint": "^8.33.0",
+    "h3": "^1.1.0",
+    "jquery": "^3.6.3",
+    "standard-version": "^9.5.0",
+    "typescript": "^4.9.4",
+    "unbuild": "^1.1.1",
+    "vitest": "^0.28.3",
+    "vue-tsc": "^1.0.24"
+  },
+  "packageManager": "pnpm@7.26.2"
+}
