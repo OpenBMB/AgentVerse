@@ -18,4 +18,3 @@ rapidfuzz
 spacy
 colorama==0.4.6
 tiktoken==0.5.1
-
