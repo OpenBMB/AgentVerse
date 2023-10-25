@@ -24,14 +24,34 @@ class ExecutorAgent(BaseAgent):
         self, task_description: str, solution: str, tools: List[dict] = [], **kwargs
     ) -> ExecutorMessage:
         logger.debug("", self.name, Fore.MAGENTA)
-        prepend_prompt, append_prompt = self.get_all_prompts(
+        prepend_prompt, append_prompt, prompt_token = self.get_all_prompts(
             task_description=task_description,
             solution=solution,
             agent_name=self.name,
             **kwargs,
         )
 
-        history = self.memory.to_messages(self.name, start_index=-self.max_history)
+        model_name = self.llm.args.model
+
+        if model_name.startswith("gpt-3.5-turbo"):
+            tokens_per_message = 4
+        else:
+            tokens_per_message = 3
+
+        max_send_token = self.llm.send_token_limit(model_name)
+        if len(prepend_prompt) > 0:
+            max_send_token -= tokens_per_message
+        if (len(append_prompt)) > 0:
+            max_send_token -= tokens_per_message
+
+        max_send_token -= prompt_token
+
+        history = self.memory.to_messages(
+            self.name,
+            start_index=-self.max_history,
+            max_send_token=max_send_token,
+            model=model_name,
+        )
         parsed_response = None
         for i in range(self.max_retry):
             try:
@@ -74,14 +94,34 @@ class ExecutorAgent(BaseAgent):
         self, task_description: str, solution: str, tools: List[dict] = [], **kwargs
     ) -> ExecutorMessage:
         logger.debug("", self.name, Fore.MAGENTA)
-        prepend_prompt, append_prompt = self.get_all_prompts(
+        prepend_prompt, append_prompt, prompt_token = self.get_all_prompts(
             task_description=task_description,
             solution=solution,
             agent_name=self.name,
             **kwargs,
         )
 
-        history = self.memory.to_messages(self.name, start_index=-self.max_history)
+        model_name = self.llm.args.model
+
+        if model_name.startswith("gpt-3.5-turbo"):
+            tokens_per_message = 4
+        else:
+            tokens_per_message = 3
+
+        max_send_token = self.llm.send_token_limit(model_name)
+        if len(prepend_prompt) > 0:
+            max_send_token -= tokens_per_message
+        if (len(append_prompt)) > 0:
+            max_send_token -= tokens_per_message
+
+        max_send_token -= prompt_token
+
+        history = self.memory.to_messages(
+            self.name,
+            start_index=-self.max_history,
+            max_send_token=max_send_token,
+            model=model_name,
+        )
         parsed_response = None
         for i in range(self.max_retry):
             try:

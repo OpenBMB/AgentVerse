@@ -15,7 +15,6 @@ from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
 from agentverse.utils import AgentCriticism
 
-
 logger = get_logger()
 
 
@@ -30,14 +29,35 @@ class SolverAgent(BaseAgent):
         # prompt = self._fill_prompt_template(
         #     former_solution, critic_opinions, advice, task_description
         # )
-        prepend_prompt, append_prompt = self.get_all_prompts(
+        prepend_prompt, append_prompt, prompt_token = self.get_all_prompts(
             former_solution=former_solution,
             task_description=task_description,
             advice=advice,
             role_description=self.role_description,
             **kwargs,
         )
-        history = self.memory.to_messages(self.name, start_index=-self.max_history)
+
+        model_name = self.llm.args.model
+
+        if model_name.startswith("gpt-4"):
+            tokens_per_message = 3
+        else:
+            tokens_per_message = 4
+
+        max_send_token = self.llm.send_token_limit(model_name)
+        if len(prepend_prompt) > 0:
+            max_send_token -= tokens_per_message
+        if (len(append_prompt)) > 0:
+            max_send_token -= tokens_per_message
+
+        max_send_token -= prompt_token
+
+        history = self.memory.to_messages(
+            self.name,
+            start_index=-self.max_history,
+            max_send_token=max_send_token,
+            model=model_name,
+        )
         parsed_response = None
         for i in range(self.max_retry):
             try:
