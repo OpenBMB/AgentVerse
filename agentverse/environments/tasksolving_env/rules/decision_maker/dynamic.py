@@ -56,7 +56,7 @@ class DynamicDecisionMaker(BaseDecisionMaker):
             #    Fore.YELLOW,
             # )
 
-            previous_sentence = manager.step(
+            previous_sentence = await manager.astep(
                 previous_plan, review, advice, task_description, previous_sentence
             )
             reviews.append(previous_sentence)
@@ -76,7 +76,7 @@ class DynamicDecisionMaker(BaseDecisionMaker):
                 nonempty_reviews.append(review)
         agents[0].add_message_to_memory(nonempty_reviews)
 
-        result = agents[0].step(previous_plan, advice, task_description)
+        result = await agents[0].astep(previous_plan, advice, task_description)
 
         return [result]
 

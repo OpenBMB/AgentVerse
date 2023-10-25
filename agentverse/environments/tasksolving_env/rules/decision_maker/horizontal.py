@@ -50,7 +50,7 @@ class HorizontalDecisionMaker(BaseDecisionMaker):
                 Fore.YELLOW,
             )
 
-        result = agents[0].step(previous_plan, advice, task_description)
+        result = await agents[0].astep(previous_plan, advice, task_description)
         return [result]
 
     def reset(self):

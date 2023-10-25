@@ -88,7 +88,7 @@ class CriticAgent(BaseAgent):
 
         max_send_token -= prompt_token
 
-        history = self.memory.to_messages(
+        history = await self.memory.to_messages(
             self.name,
             start_index=-self.max_history,
             max_send_token=max_send_token,

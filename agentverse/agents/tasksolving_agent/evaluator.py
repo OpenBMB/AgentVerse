@@ -26,6 +26,17 @@ class EvaluatorAgent(BaseAgent):
         task_description: str,
         all_role_description: str,
     ) -> EvaluatorMessage:
+        pass
+        # return parsed_response
+
+    async def astep(
+        self,
+        solution: str,
+        result: str,
+        task_description: str,
+        all_role_description: str,
+    ) -> EvaluatorMessage:
+        """Asynchronous version of step"""
         logger.debug("", self.name, Fore.MAGENTA)
         prepend_prompt, append_prompt, prompt_token = self.get_all_prompts(
             solution=solution,
@@ -49,7 +60,7 @@ class EvaluatorAgent(BaseAgent):
 
         max_send_token -= prompt_token
 
-        history = self.memory.to_messages(
+        history = await self.memory.to_messages(
             self.name,
             max_send_token=max_send_token,
             model=model_name,
@@ -57,7 +68,7 @@ class EvaluatorAgent(BaseAgent):
         parsed_response = None
         for i in range(self.max_retry):
             try:
-                response = self.llm.generate_response(
+                response = await self.llm.agenerate_response(
                     prepend_prompt, history, append_prompt
                 )
                 parsed_response = self.output_parser.parse(response)
@@ -78,11 +89,6 @@ class EvaluatorAgent(BaseAgent):
             advice=parsed_response[1] if parsed_response is not None else "",
         )
         return message
-        # return parsed_response
-
-    async def astep(self, solution: str) -> EvaluatorMessage:
-        """Asynchronous version of step"""
-        pass
 
     def _fill_prompt_template(self, solution: str, task_description: str) -> str:
         """Fill the placeholders in the prompt template

@@ -78,7 +78,7 @@ Latest Development:
         else:
             return "\n".join([message.content for message in self.messages])
 
-    def to_messages(
+    async def to_messages(
         self,
         my_name: str = "",
         start_index: int = 0,
@@ -141,7 +141,9 @@ Latest Development:
                 prompt, messages, max_send_token, model
             )
             if trimmed_history:
-                new_summary_msg, _ = self.trim_messages(list(prompt), model, messages)
+                new_summary_msg, _ = await self.trim_messages(
+                    list(prompt), model, messages
+                )
                 prompt.append(new_summary_msg)
             messages = prompt
         return messages
@@ -149,7 +151,7 @@ Latest Development:
     def reset(self) -> None:
         self.messages = []
 
-    def trim_messages(
+    async def trim_messages(
         self, current_message_chain: list[dict], model: str, history: List[dict]
     ) -> tuple[dict, list[dict]]:
         new_messages_not_in_chain = [
@@ -159,7 +161,7 @@ Latest Development:
         if not new_messages_not_in_chain:
             return self.summary_message(), []
 
-        new_summary_message = self.update_running_summary(
+        new_summary_message = await self.update_running_summary(
             new_events=new_messages_not_in_chain, model=model
         )
 
@@ -168,7 +170,7 @@ Latest Development:
 
         return new_summary_message, new_messages_not_in_chain
 
-    def update_running_summary(
+    async def update_running_summary(
         self,
         new_events: list[Message],
         model: str = "gpt-3.5-turbo",
@@ -217,7 +219,7 @@ Latest Development:
                 batch_tlength + event_tlength
                 > max_input_tokens - prompt_template_length - summary_tlength
             ):
-                self._update_summary_with_batch(batch, model, max_summary_length)
+                await self._update_summary_with_batch(batch, model, max_summary_length)
                 summary_tlength = count_string_tokens(self.summary, model)
                 batch = [event]
                 batch_tlength = event_tlength
@@ -226,18 +228,18 @@ Latest Development:
                 batch_tlength += event_tlength
 
         if batch:
-            self._update_summary_with_batch(batch, model, max_summary_length)
+            await self._update_summary_with_batch(batch, model, max_summary_length)
 
         return self.summary_message()
 
-    def _update_summary_with_batch(
+    async def _update_summary_with_batch(
         self, new_events_batch: list[dict], model: str, max_summary_length: int
     ) -> None:
         prompt = self.SUMMARIZATION_PROMPT.format(
             summary=self.summary, new_events=new_events_batch
         )
 
-        self.summary = openai.ChatCompletion.create(
+        self.summary = await openai.ChatCompletion.acreate(
             messages=[{"role": "user", "content": prompt}],
             model=model,
             max_tokens=max_summary_length,

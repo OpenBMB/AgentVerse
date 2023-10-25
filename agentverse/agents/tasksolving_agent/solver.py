@@ -25,6 +25,12 @@ class SolverAgent(BaseAgent):
     def step(
         self, former_solution: str, advice: str, task_description: str = "", **kwargs
     ) -> SolverMessage:
+        pass
+
+    async def astep(
+        self, former_solution: str, advice: str, task_description: str = "", **kwargs
+    ) -> SolverMessage:
+        """Asynchronous version of step"""
         logger.debug("", self.name, Fore.MAGENTA)
         # prompt = self._fill_prompt_template(
         #     former_solution, critic_opinions, advice, task_description
@@ -52,7 +58,7 @@ class SolverAgent(BaseAgent):
 
         max_send_token -= prompt_token
 
-        history = self.memory.to_messages(
+        history = await self.memory.to_messages(
             self.name,
             start_index=-self.max_history,
             max_send_token=max_send_token,
@@ -61,7 +67,7 @@ class SolverAgent(BaseAgent):
         parsed_response = None
         for i in range(self.max_retry):
             try:
-                response = self.llm.generate_response(
+                response = await self.llm.agenerate_response(
                     prepend_prompt, history, append_prompt
                 )
                 parsed_response = self.output_parser.parse(response)
@@ -84,10 +90,6 @@ class SolverAgent(BaseAgent):
             receiver=self.get_receiver(),
         )
         return message
-
-    async def astep(self, env_description: str = "") -> SolverMessage:
-        """Asynchronous version of step"""
-        pass
 
     def _fill_prompt_template(
         self,

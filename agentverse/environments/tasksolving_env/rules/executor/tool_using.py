@@ -258,8 +258,8 @@ class ToolUsingExecutor(BaseExecutor):
                         ],
                         function_call={"name": "parse_web_text"},
                     )
-                except e:
-                    logger.error(e)
+                except Exception as e:
+                    logger.error("Failed to call the tool. Exception: " + str(e))
                     continue
                 arguments = ast.literal_eval(
                     JsonRepair(

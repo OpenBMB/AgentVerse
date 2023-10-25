@@ -22,6 +22,12 @@ class RoleAssignerAgent(BaseAgent):
     def step(
         self, advice: str, task_description: str, cnt_critic_agents: int
     ) -> RoleAssignerMessage:
+        pass
+
+    async def astep(
+        self, advice: str, task_description: str, cnt_critic_agents: int
+    ) -> RoleAssignerMessage:
+        """Asynchronous version of step"""
         logger.debug("", self.name, Fore.MAGENTA)
         prepend_prompt, append_prompt, prompt_token = self.get_all_prompts(
             advice=advice,
@@ -44,13 +50,13 @@ class RoleAssignerAgent(BaseAgent):
 
         max_send_token -= prompt_token
 
-        history = self.memory.to_messages(
+        history = await self.memory.to_messages(
             self.name, max_send_token=max_send_token, model=model_name
         )
         parsed_response = None
         for i in range(self.max_retry):
             try:
-                response = self.llm.generate_response(
+                response = await self.llm.agenerate_response(
                     prepend_prompt, history, append_prompt
                 )
                 parsed_response = self.output_parser.parse(response)
@@ -75,10 +81,6 @@ class RoleAssignerAgent(BaseAgent):
             content=parsed_response, sender=self.name, sender_agent=self
         )
         return message
-
-    async def astep(self, env_description: str = "") -> RoleAssignerMessage:
-        """Asynchronous version of step"""
-        pass
 
     def _fill_prompt_template(
         self, advice, task_description: str, cnt_critic_agents: int

@@ -20,7 +20,7 @@ class BaseEvaluator(BaseModel):
     """
 
     @abstractmethod
-    def step(
+    def astep(
         self,
         agent: EvaluatorAgent,
         solution: List[SolverMessage],
