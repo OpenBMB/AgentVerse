@@ -126,7 +126,6 @@ class OpenAIChat(BaseChatModel):
             "gpt-4-32k": 32768,
             "llama-2-7b-chat-hf": 4096,
         }
-
         return send_token_limit_dict[model]
 
     # def _construct_messages(self, history: List[Message]):

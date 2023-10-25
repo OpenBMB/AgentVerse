@@ -35,7 +35,6 @@ class ExecutorAgent(BaseAgent):
             agent_name=self.name,
             **kwargs,
         )
-
         max_send_token = self.llm.send_token_limit(self.llm.args.model)
         max_send_token -= prompt_token
 

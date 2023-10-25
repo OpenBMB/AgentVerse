@@ -64,7 +64,6 @@ class BaseAgent(BaseModel):
             **kwargs
         )
         append_prompt = Template(self.append_prompt_template).safe_substitute(**kwargs)
-
         # TODO: self.llm.args.model is not generalizable
         num_prepend_prompt_token = count_string_tokens(
             prepend_prompt, self.llm.args.model
