@@ -482,7 +482,7 @@ AgentVerse is on a mission to revolutionize the multi-agent environment for larg
 
 
 ## How Can You Contribute?
-- **Issue and Pull-Request**: If you encounter any problems when use AgentVerse, you can propose the issue. Beisdes, you can also autonomously ask us to assign issue to you and send the PR (Please follow the [PULL_REQUEST_TEMPLATE](https://github.com/OpenBMB/AgentVerse/blob/main/PULL_REQUEST_TEMPLATE.md)) after you solve it. 
+- **Issue and Pull-Request**: If you encounter any problems when use AgentVerse, you can propose the issue in English. Beisdes, you can also autonomously ask us to assign issue to you and send the PR (Please follow the [PULL_REQUEST_TEMPLATE](https://github.com/OpenBMB/AgentVerse/blob/main/PULL_REQUEST_TEMPLATE.md)) after you solve it. 
   
 - **Code Development**: If you're an engineer, help us refine, optimize, and expand the current framework. We're always looking for talented developers to enhance our existing features and develop new modules.
 
