@@ -3,7 +3,7 @@ import logging
 from typing import List
 
 # from agentverse.agents import Agent
-from agentverse.agents.conversation_agent import BaseAgent
+from agentverse.agents.base import BaseAgent
 from agentverse.environments import BaseEnvironment
 from agentverse.initialization import load_agent, load_environment, prepare_task_config
 
