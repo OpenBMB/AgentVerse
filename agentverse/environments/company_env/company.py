@@ -1,5 +1,9 @@
+import asyncio
+from typing import List
 from agentverse.agents.company_agent.Role import Role
-from agentverse.agents.company_agent.Company import Company
+from agentverse.agents.company_agent.Recruiter import Recruiter
+from agentverse.structure import AgentPool
+from agentverse.message import Message
 
 
 class Environment:
@@ -39,6 +43,51 @@ class Environment:
     def simulate_with_company(self, use_tool):
         simulate_results = self.company.startup(self.max_turn, use_tool)
         return simulate_results
+
+    async def step(self) -> List[Message]:
+        """Run one step of the environment"""
+
+        # Get the next agent index
+        # agent_ids = self.rule.get_next_agent_idx(self)  # order
+        roles = self.planner.plan_tasks(self.complex_task, self.agent_pool)
+
+        messages = await asyncio.gather(*[role.astep("") for role in roles])
+
+        # Track the messages to get the role of the sender
+        self.last_messages = messages
+
+        # Some rules will select certain messages from all the messages
+        selected_messages = self.rule.select_message(self, messages)  # selector
+        self.last_messages = selected_messages
+        self.print_messages(selected_messages)
+
+        # Update the memory of the agents
+        self.rule.update_memory(self)  # updater: update memory
+
+        # Update the set of visible agents for each agent
+        self.rule.update_visible_agents(self)  # change receiver
+
+        self.cnt_turn += 1
+
+        return selected_messages
+
+    def reset(self) -> None:
+        """Reset the environment"""
+        self.cnt_turn = 0
+        self.rule.reset()
+        for agent in self.agents:
+            agent.reset()
+
+    def is_done(self) -> bool:
+        """Check if the environment is done"""
+        if self.cnt_turn >= self.max_turns or self.rule_params["end_flag"]:
+            # with open("record_human_eval.txt", "a") as f:
+            #     wd = dict()
+            #     wd['task_id'] = self.task_name
+            #     wd['code'] = self.rule_params['code']
+            #     f.write(json.dumps(wd))
+            return True
+        return False
 
     def simulate_with_no_company(self, use_tool):
         turn = 0

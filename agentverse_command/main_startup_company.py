@@ -14,7 +14,7 @@ parser = ArgumentParser()
 parser.add_argument(
     "--task",
     type=str,
-    default="tasksolving/brainstorming",
+    default="startup/",
 )
 parser.add_argument("--debug", action="store_true")
 parser.add_argument(
