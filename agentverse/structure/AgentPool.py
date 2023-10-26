@@ -4,6 +4,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import json
 import os
+from agentverse.agents.company_agent.Role import Role
+from agentverse.utils import Config, OpenAIUtils
 
 
 class AgentPool:
@@ -14,7 +16,6 @@ class AgentPool:
         self.logger = Config.LOGGER
 
     def get_role(self, role_name: str):
-        # return next((role for role in self.roles if role.name == role_name), None)
         return self.role_map.get(role_name, None)
 
     def get_roles(self, name_list: List[str]):
@@ -63,8 +64,6 @@ class AgentPool:
             role_embedding = item["embedding"]
             role_embeddings.append(role_embedding)
         task_embedding = np.array(self.openai_chat.get_embedding(task))
-        # np.array(response.json()['data'][0]['embedding'])
-
         similarities = cosine_similarity([task_embedding], role_embeddings)
         sorted_doc_indices = sorted(
             range(len(similarities[0])), key=lambda i: similarities[0][i], reverse=True

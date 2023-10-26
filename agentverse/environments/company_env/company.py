@@ -1,3 +1,7 @@
+from agentverse.agents.company_agent.Role import Role
+from agentverse.agents.company_agent.Company import Company
+
+
 class Environment:
     def __init__(self, roles_data, complex_task: str, max_turn: int = 10):
         roles = [

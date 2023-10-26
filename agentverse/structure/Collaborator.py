@@ -1,5 +1,8 @@
 import threading
 import os
+from agentverse.structure.Department import Department
+from agentverse.structure.AgentPool import AgentPool
+from agentverse.agents.company_agent.Planner import Planner
 
 
 class Collaborator(Department):

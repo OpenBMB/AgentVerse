@@ -1,6 +1,9 @@
 import os
 import json
 import threading
+from agentverse.agents.company_agent.Planner import Planner
+from agentverse.agents.company_agent.Role import Role
+from agentverse.structure.AgentPool import AgentPool
 
 
 class Department:

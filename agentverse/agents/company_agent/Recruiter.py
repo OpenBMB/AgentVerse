@@ -1,4 +1,5 @@
 import json
+from agentverse.agents.company_agent.Role import Role
 
 
 class Recruiter(Role):
