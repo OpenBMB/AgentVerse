@@ -10,7 +10,7 @@ with open("README.md", "r", encoding='utf8') as fh:
 
 setuptools.setup(
     name="agentverse",
-    version="0.1.8",
+    version="0.1.8.1",
     author="AgentVerse Team",
     author_email="agentverse2@gmail.com",
     description="A versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs).",
