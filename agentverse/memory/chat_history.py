@@ -117,6 +117,9 @@ Latest Development:
                 prompt, messages, max_send_token, model
             )
             if trimmed_history:
+                import pdb
+
+                pdb.set_trace()
                 new_summary_msg, _ = await self.trim_messages(
                     list(prompt), model, messages
                 )

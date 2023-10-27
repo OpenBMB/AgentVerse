@@ -131,8 +131,7 @@ class OpenAIChat(BaseChatModel):
             "llama-2-7b-chat-hf": 4096,
         }
 
-        # TODO: self.args.model is not generalizable?
-        return send_token_limit_dict[self.args.model]
+        return send_token_limit_dict[model]
 
     # def _construct_messages(self, history: List[Message]):
     #     return history + [{"role": "user", "content": query}]

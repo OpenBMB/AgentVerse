@@ -46,12 +46,7 @@ class EvaluatorAgent(BaseAgent):
             task_description=task_description,
             all_role_description=all_role_description,
         )
-
-<<<<<<< HEAD
         max_send_token = self.llm.send_token_limit(self.llm.args.model)
-=======
-        max_send_token = self.llm.send_token_limit()
->>>>>>> 861c0e2c (slightly refactor the code for token counter)
         max_send_token -= prompt_token
 
         history = await self.memory.to_messages(
