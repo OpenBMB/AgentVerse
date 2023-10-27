@@ -64,10 +64,18 @@ class BaseAgent(BaseModel):
         )
         append_prompt = Template(self.append_prompt_template).safe_substitute(**kwargs)
 
+        # TODO: self.llm.args.model is not generalizable
+        num_prepend_prompt_token = count_string_tokens(
+            prepend_prompt, self.llm.args.model
+        )
+        num_append_prompt_token = count_string_tokens(
+            append_prompt, self.llm.args.model
+        )
+
         return (
             prepend_prompt,
             append_prompt,
-            count_string_tokens(prepend_prompt + append_prompt, self.llm.args.model),
+            num_prepend_prompt_token + num_append_prompt_token,
         )
 
     def get_receiver(self) -> Set[str]:

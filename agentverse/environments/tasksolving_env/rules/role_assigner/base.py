@@ -19,7 +19,7 @@ class BaseRoleAssigner(BaseModel):
     """
 
     @abstractmethod
-    def astep(
+    async def astep(
         self,
         role_assigner: RoleAssignerAgent,
         group_members: List[CriticAgent],
@@ -40,7 +40,7 @@ class DummyRoleAssigner(BaseRoleAssigner):
     The base class of role assignment class.
     """
 
-    def astep(
+    async def astep(
         self,
         role_assigner: RoleAssignerAgent,
         group_members: List[CriticAgent],

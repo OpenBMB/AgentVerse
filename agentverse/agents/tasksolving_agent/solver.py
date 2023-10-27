@@ -20,7 +20,7 @@ logger = get_logger()
 
 @agent_registry.register("solver")
 class SolverAgent(BaseAgent):
-    max_history: int = 3
+    max_history: int = 5
 
     def step(
         self, former_solution: str, advice: str, task_description: str = "", **kwargs
@@ -43,19 +43,7 @@ class SolverAgent(BaseAgent):
             **kwargs,
         )
 
-        model_name = self.llm.args.model
-
-        if model_name.startswith("gpt-4"):
-            tokens_per_message = 3
-        else:
-            tokens_per_message = 4
-
-        max_send_token = self.llm.send_token_limit(model_name)
-        if len(prepend_prompt) > 0:
-            max_send_token -= tokens_per_message
-        if (len(append_prompt)) > 0:
-            max_send_token -= tokens_per_message
-
+        max_send_token = self.llm.send_token_limit()
         max_send_token -= prompt_token
 
         history = await self.memory.to_messages(

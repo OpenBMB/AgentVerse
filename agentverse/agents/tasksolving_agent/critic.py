@@ -73,19 +73,7 @@ class CriticAgent(BaseAgent):
             tool_descriptions=self.tool_descriptions,
         )
 
-        model_name = self.llm.args.model
-
-        if model_name.startswith("gpt-3.5-turbo"):
-            tokens_per_message = 4
-        else:
-            tokens_per_message = 3
-
-        max_send_token = self.llm.send_token_limit(model_name)
-        if len(prepend_prompt) > 0:
-            max_send_token -= tokens_per_message
-        if (len(append_prompt)) > 0:
-            max_send_token -= tokens_per_message
-
+        max_send_token = self.llm.send_token_limit()
         max_send_token -= prompt_token
 
         history = await self.memory.to_messages(

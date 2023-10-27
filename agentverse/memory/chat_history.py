@@ -9,34 +9,6 @@ from agentverse.message import Message, ExecutorMessage
 from . import memory_registry
 from .base import BaseMemory
 from agentverse.llms.utils import count_message_tokens, count_string_tokens
-from agentverse.llms import OpenAIChat
-import copy
-
-
-try:
-    import openai
-    from openai.error import OpenAIError
-except ImportError:
-    is_openai_available = False
-    logging.warning("openai package is not installed")
-else:
-    # openai.proxy = os.environ.get("http_proxy")
-    # if openai.proxy is None:
-    #     openai.proxy = os.environ.get("HTTP_PROXY")
-    if os.environ.get("OPENAI_API_KEY") != None:
-        openai.api_key = os.environ.get("OPENAI_API_KEY")
-        is_openai_available = True
-    elif os.environ.get("AZURE_OPENAI_API_KEY") != None:
-        openai.api_type = "azure"
-        openai.api_key = os.environ.get("AZURE_OPENAI_API_KEY")
-        openai.api_base = os.environ.get("AZURE_OPENAI_API_BASE")
-        openai.api_version = "2023-05-15"
-        is_openai_available = True
-    else:
-        logging.warning(
-            "OpenAI API key is not set. Please set the environment variable OPENAI_API_KEY"
-        )
-        is_openai_available = False
 
 
 @memory_registry.register("chat_history")
@@ -133,6 +105,7 @@ Latest Development:
 
         # summary message
         if self.has_summary:
+            """https://github.com/Significant-Gravitas/AutoGPT/blob/release-v0.4.7/autogpt/memory/message_history.py"""
             if max_summary_length == 0:
                 max_summary_length = self.max_summary_tlength
             max_send_token -= max_summary_length
@@ -187,15 +160,6 @@ Latest Development:
         for event in new_events:
             if event["role"].lower() == "assistant":
                 event["role"] = "you"
-
-                # Remove "thoughts" dictionary from "content"
-                # try:
-                #     content_dict = extract_dict_from_response(event.content)
-                #     if "thoughts" in content_dict:
-                #         del content_dict["thoughts"]
-                #     event.content = json.dumps(content_dict)
-                # except json.JSONDecodeError as e:
-                #     logger.error(f"Error: Invalid JSON: {e}")
 
             elif event["role"].lower() == "system":
                 event["role"] = "your computer"

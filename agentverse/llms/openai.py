@@ -115,8 +115,7 @@ class OpenAIChat(BaseChatModel):
             openai.api_base = "http://localhost:5000/v1"
         super().__init__(args=args, max_retry=max_retry)
 
-    @classmethod
-    def send_token_limit(cls, model: str) -> int:
+    def send_token_limit(self) -> int:
         send_token_limit_dict = {
             "gpt-3.5-turbo": 4096,
             "gpt-35-turbo": 4096,
@@ -125,7 +124,9 @@ class OpenAIChat(BaseChatModel):
             "gpt-4-32k": 32768,
             "llama-2-7b-chat-hf": 4096,
         }
-        return send_token_limit_dict[model]
+
+        # TODO: self.args.model is not generalizable?
+        return send_token_limit_dict[self.args.model]
 
     # def _construct_messages(self, history: List[Message]):
     #     return history + [{"role": "user", "content": query}]

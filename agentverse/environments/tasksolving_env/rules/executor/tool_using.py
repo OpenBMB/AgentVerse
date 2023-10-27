@@ -325,9 +325,6 @@ class ToolUsingExecutor(BaseExecutor):
                     async with session.post(
                         f"{url}/execute_tool",
                         json=payload,
-                        headers={
-                            "toolbench_key": "p5ZASSLBO0EknAQLE5ecNZ7kq5i1YfY9eoWUXNxL3TM6lXwdXs"
-                        },
                         timeout=30,
                     ) as response:
                         content = await response.text()
