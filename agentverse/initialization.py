@@ -4,12 +4,13 @@ import os
 from typing import Dict, List, TYPE_CHECKING
 
 import yaml
+from agentverse.logging import logger
 
 try:
     from bmtools.agent.singletool import import_all_apis, load_single_tools
 except:
-    print(
-        "BMTools is not installed, tools in the simulation environment cannot be used. To install BMTools, please follow the instruction in the README.md file."
+    logger.warn(
+        "BMTools is not installed, tools in the simulation environment cannot be used. To install BMTools, please follow the instruction in the README.md file. If you aren't running a *simulation* case with tool, you can ignore this warning."
     )
 
 from agentverse.llms import llm_registry
