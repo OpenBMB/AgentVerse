@@ -85,7 +85,6 @@ class ToolUsingExecutor(BaseExecutor):
                 self.agent_names.append(name)
             plan_this_turn[name] = plans[i].content.split("-")[1].strip()
             agent_name_this_turn.append(name)
-        # agents = [deepcopy(agent) for _ in range(len(plans))]
 
         if self.tool_retrieval:
             # We retrieve 5 related tools for each agent
@@ -109,7 +108,6 @@ class ToolUsingExecutor(BaseExecutor):
         # Record the indices of agents that have finished their tasks
         # so that they will not be called again
         finished_agent_names = set()
-        # result = ["" for _ in range(len(plan_this_turn))]
         result = {name: "" for name in agent_name_this_turn}
         for current_turn in range(self.max_tool_call_times):
             if len(finished_agent_names) == len(agent_name_this_turn):
@@ -337,14 +335,22 @@ class ToolUsingExecutor(BaseExecutor):
                             openai.aiosession.set(session)
                             content = json.loads(content)
 
+                            # for i in range(len(content)):
+                            summarized = await asyncio.gather(
+                                *[
+                                    _summarize_webpage(
+                                        content[i]["page"], arguments["goals_to_browse"]
+                                    )
+                                    for i in range(len(content))
+                                ]
+                            )
                             for i in range(len(content)):
-                                content[i]["page"] = await _summarize_webpage(
-                                    content[i]["page"], arguments["goals_to_browse"]
-                                )
+                                content[i]["page"] = summarized[i]
                             result = ""
                             for i in range(len(content)):
                                 result += f"SEARCH_REASULT {i}:\n"
-                                result += content[i]["page"]
+                                result += content[i]["page"].strip() + "\n\n"
+                            result = result.strip()
                         else:
                             result = content
                         message = ExecutorMessage(

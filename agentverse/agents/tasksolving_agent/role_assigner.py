@@ -37,14 +37,14 @@ class RoleAssignerAgent(BaseAgent):
             cnt_critic_agents=cnt_critic_agents,
         )
 
-        max_send_token = self.llm.send_token_limit()
+        max_send_token = self.llm.send_token_limit(self.llm.args.model)
         max_send_token -= prompt_token
 
         history = await self.memory.to_messages(
             self.name,
             start_index=-self.max_history,
             max_send_token=max_send_token,
-            model=model_name,
+            model=self.llm.args.model,
         )
         parsed_response = None
         for i in range(self.max_retry):

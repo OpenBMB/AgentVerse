@@ -1,6 +1,8 @@
 import json
 import logging
 import os
+import openai
+import copy
 from typing import List, Optional, Tuple, Dict
 
 from pydantic import Field
@@ -9,6 +11,7 @@ from agentverse.message import Message, ExecutorMessage
 from . import memory_registry
 from .base import BaseMemory
 from agentverse.llms.utils import count_message_tokens, count_string_tokens
+from agentverse.llms import OpenAIChat
 
 
 @memory_registry.register("chat_history")
@@ -114,6 +117,9 @@ Latest Development:
                 prompt, messages, max_send_token, model
             )
             if trimmed_history:
+                import pdb
+
+                pdb.set_trace()
                 new_summary_msg, _ = await self.trim_messages(
                     list(prompt), model, messages
                 )
@@ -145,7 +151,7 @@ Latest Development:
 
     async def update_running_summary(
         self,
-        new_events: List[Message],
+        new_events: List[Dict],
         model: str = "gpt-3.5-turbo",
         max_summary_length: Optional[int] = None,
     ) -> dict:
@@ -173,7 +179,7 @@ Latest Development:
         )
         max_input_tokens = OpenAIChat.send_token_limit(model) - max_summary_length
         summary_tlength = count_string_tokens(self.summary, model)
-        batch: list[dict] = []
+        batch: List[Dict] = []
         batch_tlength = 0
 
         for event in new_events:
