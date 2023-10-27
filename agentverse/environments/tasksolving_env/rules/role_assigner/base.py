@@ -40,11 +40,7 @@ class DummyRoleAssigner(BaseRoleAssigner):
     The base class of role assignment class.
     """
 
-<<<<<<< HEAD
     async def astep(
-=======
-    def astep(
->>>>>>> c1c9f0b8 (fix: make to_message asynchronous to accelerate compressing chat history of multiple agents)
         self,
         role_assigner: RoleAssignerAgent,
         group_members: List[CriticAgent],

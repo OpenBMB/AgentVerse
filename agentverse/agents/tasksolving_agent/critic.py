@@ -72,7 +72,6 @@ class CriticAgent(BaseAgent):
             # tool_names=self.tool_names,
             tool_descriptions=self.tool_descriptions,
         )
-
         max_send_token = self.llm.send_token_limit(self.llm.args.model)
         max_send_token -= prompt_token
 

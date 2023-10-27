@@ -36,7 +36,6 @@ class RoleAssignerAgent(BaseAgent):
             task_description=task_description,
             cnt_critic_agents=cnt_critic_agents,
         )
-
         max_send_token = self.llm.send_token_limit(self.llm.args.model)
         max_send_token -= prompt_token
 

@@ -72,6 +72,14 @@ class BaseAgent(BaseModel):
             append_prompt, self.llm.args.model
         )
 
+        # TODO: self.llm.args.model is not generalizable
+        num_prepend_prompt_token = count_string_tokens(
+            prepend_prompt, self.llm.args.model
+        )
+        num_append_prompt_token = count_string_tokens(
+            append_prompt, self.llm.args.model
+        )
+
         return (
             prepend_prompt,
             append_prompt,
