@@ -47,7 +47,7 @@ class CentralDecisionMaker(BaseDecisionMaker):
             ),
         )
         agents[1].add_message_to_memory([result])
-        result = agents[0].step(
+        result = await agents[0].astep(
             previous_plan, advice, task_description, chat_record=result.content
         )
         return [result]

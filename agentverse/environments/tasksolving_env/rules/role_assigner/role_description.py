@@ -16,7 +16,7 @@ class DescriptionAssigner(BaseRoleAssigner):
     Generates descriptions for each agent.
     """
 
-    def step(
+    async def astep(
         self,
         role_assigner: RoleAssignerAgent,
         group_members: List[CriticAgent],
@@ -28,7 +28,7 @@ class DescriptionAssigner(BaseRoleAssigner):
         assert task_description != ""
         assert len(group_members) > 0
 
-        roles = role_assigner.step(advice, task_description, len(group_members))
+        roles = await role_assigner.astep(advice, task_description, len(group_members))
         if len(roles.content) < len(group_members):
             raise ValueError(
                 f"Number of roles ({len(roles.content)}) and number of group members ({len(group_members)}) do not match."
@@ -50,7 +50,7 @@ class DescriptionNameAssigner(BaseRoleAssigner):
     Generates description and name for each agent.
     """
 
-    def step(
+    async def astep(
         self,
         role_assigner: RoleAssignerAgent,
         group_members: List[CriticAgent],
@@ -63,7 +63,7 @@ class DescriptionNameAssigner(BaseRoleAssigner):
         assert len(group_members) > 0
 
         # roles: [{'name': 'xxx', 'description': 'xxx'}, ...]
-        roles = role_assigner.step(advice, task_description, len(group_members))
+        roles = await role_assigner.astep(advice, task_description, len(group_members))
 
         if len(group_members) < 2:
             pass

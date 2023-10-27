@@ -38,7 +38,7 @@ class VerticalSolverFirstDecisionMaker(BaseDecisionMaker):
             self.broadcast_messages(
                 agents, [Message(content=advice, sender="Evaluator")]
             )
-        previous_plan = agents[0].step(previous_plan, advice, task_description)
+        previous_plan = await agents[0].astep(previous_plan, advice, task_description)
         self.broadcast_messages(agents, [previous_plan])
         logger.info("", f"Initial Plan:\n{previous_plan.content}", Fore.BLUE)
         for i in range(self.max_inner_turns):
@@ -65,7 +65,7 @@ class VerticalSolverFirstDecisionMaker(BaseDecisionMaker):
                 logger.info("", "Consensus Reached!.", Fore.GREEN)
                 break
             self.broadcast_messages(agents, nonempty_reviews)
-            previous_plan = agents[0].step(previous_plan, advice, task_description)
+            previous_plan = await agents[0].astep(previous_plan, advice, task_description)
             logger.info("", f"Updated Plan:\n{previous_plan.content}", Fore.BLUE)
             self.broadcast_messages(agents, [previous_plan])
         result = previous_plan

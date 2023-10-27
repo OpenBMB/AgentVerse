@@ -68,7 +68,7 @@ class TasksolvingRule(BaseRule):
             **kwargs,
         )
 
-    def role_assign(
+    async def role_assign(
         self,
         task_description: str,
         agents: List[BaseAgent],
@@ -79,7 +79,7 @@ class TasksolvingRule(BaseRule):
         if self.role_assign_only_once and cnt_turn > 0:
             agents = [agents[AGENT_TYPES.SOLVER]] + agents[AGENT_TYPES.CRITIC]
         else:
-            agents = self.role_assigner.step(
+            agents = await self.role_assigner.astep(
                 role_assigner=agents[AGENT_TYPES.ROLE_ASSIGNMENT],
                 group_members=[agents[AGENT_TYPES.SOLVER]] + agents[AGENT_TYPES.CRITIC],
                 advice=advice,
@@ -137,7 +137,7 @@ class TasksolvingRule(BaseRule):
             agents[AGENT_TYPES.SOLVER].add_message_to_memory(results)
         return results
 
-    def evaluate(
+    async def evaluate(
         self,
         task_description: str,
         agents: List[BaseAgent],
@@ -162,7 +162,7 @@ class TasksolvingRule(BaseRule):
         #         logger.error("Bad response from human evaluator!")
         #     return ([comprehensiveness, detailedness, feasibility, novelty], advice)
         # else:
-        evaluation = self.evaluator.step(
+        evaluation = await self.evaluator.astep(
             agent=agents[AGENT_TYPES.EVALUATION],
             solution=solution,
             result=result,

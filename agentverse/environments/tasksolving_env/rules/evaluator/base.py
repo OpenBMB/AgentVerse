@@ -20,7 +20,7 @@ class BaseEvaluator(BaseModel):
     """
 
     @abstractmethod
-    def step(
+    async def astep(
         self,
         agent: EvaluatorAgent,
         solution: List[SolverMessage],
@@ -38,7 +38,7 @@ class BaseEvaluator(BaseModel):
 
 @evaluator_registry.register("none")
 class NoneEvaluator(BaseEvaluator):
-    def step(
+    async def astep(
         self,
         agent: EvaluatorAgent,
         solution: List[SolverMessage],
@@ -56,7 +56,7 @@ class NoneEvaluator(BaseEvaluator):
 
 @evaluator_registry.register("dummy")
 class DummyEvaluator(BaseEvaluator):
-    def step(
+    async def astep(
         self,
         agent: EvaluatorAgent,
         solution: List[SolverMessage],
@@ -72,7 +72,7 @@ class DummyEvaluator(BaseEvaluator):
 
 @evaluator_registry.register("dummy")
 class DummyEvaluator(BaseEvaluator):
-    def step(
+    async def astep(
         self,
         agent: EvaluatorAgent,
         solution: List[str] | str,

@@ -77,7 +77,9 @@ class HorizontalToolDecisionMaker(BaseDecisionMaker):
             if end_flag:
                 break
 
-        result: SolverMessage = agents[0].step(previous_plan, advice, task_description)
+        result: SolverMessage = await agents[0].astep(
+            previous_plan, advice, task_description
+        )
         result_list = []
         for res in result.content:
             res_tmp = deepcopy(result)
