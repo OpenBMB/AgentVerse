@@ -5,7 +5,6 @@ import openai
 import copy
 from typing import List, Optional, Tuple, Dict
 
-
 from pydantic import Field
 
 from agentverse.message import Message, ExecutorMessage
