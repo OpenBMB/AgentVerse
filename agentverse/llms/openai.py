@@ -13,7 +13,7 @@ from agentverse.llms.base import LLMResult
 from agentverse.logging import logger
 from agentverse.message import Message
 
-from . import llm_registry
+from . import llm_registry, LOCAL_LLMS
 from .base import BaseChatModel, BaseCompletionModel, BaseModelArgs
 from .utils.jsonrepair import JsonRepair
 
@@ -92,10 +92,8 @@ class OpenAIChatArgs(BaseModelArgs):
 #             total_tokens=response["usage"]["total_tokens"],
 #         )
 
+
 # To support your own local LLMs, register it here and add it into LOCAL_LLMS.
-LOCAL_LLMS = ["llama-2-7b-chat-hf"]
-
-
 @llm_registry.register("gpt-35-turbo")
 @llm_registry.register("gpt-3.5-turbo")
 @llm_registry.register("gpt-4")

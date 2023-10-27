@@ -4,7 +4,7 @@ import tiktoken
 from typing import List, Union, Dict
 from agentverse.logging import logger
 from agentverse.message import Message
-from agentverse.llms.openai import LOCAL_LLMS
+from agentverse.llms import LOCAL_LLMS
 from transformers import AutoTokenizer
 
 
