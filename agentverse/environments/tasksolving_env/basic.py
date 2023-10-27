@@ -51,7 +51,7 @@ class BasicEnvironment(BaseEnvironment):
         logger.info(f"Loop Round {self.cnt_turn}")
 
         # ================== EXPERT RECRUITMENT ==================
-        agents = self.rule.role_assign(
+        agents = await self.rule.role_assign(
             self.task_description, self.agents, self.cnt_turn, advice
         )
         description = "\n".join([agent.role_description for agent in agents])
@@ -79,7 +79,7 @@ class BasicEnvironment(BaseEnvironment):
         # ================== EXECUTION ==================
 
         # ================== EVALUATION ==================
-        score, advice = self.rule.evaluate(
+        score, advice = await self.rule.evaluate(
             self.task_description, self.agents, plan, result
         )
         logs.append(

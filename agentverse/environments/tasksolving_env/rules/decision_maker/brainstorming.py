@@ -53,7 +53,7 @@ class BrainstormingDecisionMaker(BaseDecisionMaker):
                 Fore.YELLOW,
             )
 
-        result = agents[0].step(previous_plan, advice, task_description)
+        result = await agents[0].astep(previous_plan, advice, task_description)
         for agent in agents:
             agent.memory.reset()
         self.broadcast_messages(

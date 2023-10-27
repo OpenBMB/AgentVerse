@@ -147,6 +147,7 @@ agents:
     append_prompt_template: *role_assigner_append_prompt
     memory:
       memory_type: chat_history
+      has_summary: true
     llm:
       llm_type: gpt-4
       model: "gpt-4"
@@ -163,6 +164,7 @@ agents:
     max_retry: 100
     memory:
       memory_type: chat_history
+      has_summary: true
     llm:
       llm_type: gpt-4
       model: "gpt-4"
@@ -186,6 +188,7 @@ agents:
     append_prompt_template: *critic_append_prompt
     memory:
       memory_type: chat_history
+      has_summary: true
     llm:
       llm_type: gpt-4
       model: "gpt-4"
@@ -204,6 +207,7 @@ agents:
     max_retry: 100
     memory:
       memory_type: chat_history
+      has_summary: true
     llm:
       llm_type: gpt-4
       model: gpt-4
@@ -222,6 +226,7 @@ agents:
     append_prompt_template: *evaluator_append_prompt
     memory:
       memory_type: chat_history
+      has_summary: true
     llm:
       llm_type: gpt-4
       model: gpt-4
@@ -237,6 +242,7 @@ agents:
     prompt_template: *manager_prompt
     memory:
       memory_type: chat_history
+      has_summary: true
     llm:
       llm_type: gpt-4
       model: "gpt-4"

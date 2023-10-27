@@ -13,7 +13,7 @@ from agentverse.logging import logger
 
 from . import BaseExecutor, executor_registry
 import asyncio
-
+from agentverse.llms.utils.jsonrepair import JsonRepair
 
 url = "http://127.0.0.1:8080"
 
@@ -85,7 +85,6 @@ class ToolUsingExecutor(BaseExecutor):
                 self.agent_names.append(name)
             plan_this_turn[name] = plans[i].content.split("-")[1].strip()
             agent_name_this_turn.append(name)
-        # agents = [deepcopy(agent) for _ in range(len(plans))]
 
         if self.tool_retrieval:
             # We retrieve 5 related tools for each agent
@@ -109,7 +108,6 @@ class ToolUsingExecutor(BaseExecutor):
         # Record the indices of agents that have finished their tasks
         # so that they will not be called again
         finished_agent_names = set()
-        # result = ["" for _ in range(len(plan_this_turn))]
         result = {name: "" for name in agent_name_this_turn}
         for current_turn in range(self.max_tool_call_times):
             if len(finished_agent_names) == len(agent_name_this_turn):
@@ -224,10 +222,59 @@ class ToolUsingExecutor(BaseExecutor):
                     response = await openai.ChatCompletion.acreate(
                         messages=[{"role": "user", "content": summarize_prompt}],
                         model="gpt-3.5-turbo-16k",
+                        functions=[
+                            {
+                                "name": "parse_web_text",
+                                "description": "Parse the text of the webpage based on tthe question. Extract all related infomation about `Question` from the webpage. ! Don't provide information that is not shown in the webpage! ! Don't provide your own opinion!",
+                                "parameters": {
+                                    "type": "object",
+                                    "properties": {
+                                        "summary": {
+                                            "type": "string",
+                                            "description": "Summary of the webpage with 50 words. Make sure all important information about `Question` is included. ! Don't provide information that is not shown in the webpage! ! Don't provide your own opinion!",
+                                        },
+                                        "related_details": {
+                                            "type": "string",
+                                            "description": "List all webpage details related to the question. Maximum 400 words. ! Don't provide information that is not shown in the webpage! ! Don't provide your own opinion!",
+                                        },
+                                        "useful_hyperlinks": {
+                                            "type": "array",
+                                            "description": "Maximum 3 items. Select useful hyperlinks in the webpage that related to the question. Make sure the url is useful for further browse. Don't provide repeated hyperlinks.",
+                                            "items": {
+                                                "type": "string",
+                                                "description": "! Don't provide hyperlinks that is not shown in the webpage! ! Don't provide your own opinion!",
+                                            },
+                                        },
+                                    },
+                                    "required": [
+                                        "summary",
+                                        "related_details",
+                                        "useful_hyperlinks",
+                                    ],
+                                },
+                            }
+                        ],
+                        function_call={"name": "parse_web_text"},
                     )
-                except:
+                except Exception as e:
+                    logger.error("Failed to call the tool. Exception: " + str(e))
                     continue
-            return response["choices"][0]["message"]["content"]
+                arguments = ast.literal_eval(
+                    JsonRepair(
+                        response["choices"][0]["message"]["function_call"]["arguments"]
+                    ).repair()
+                )
+                ret = (
+                    "summary: "
+                    + arguments["summary"]
+                    + "\nrelated_details: "
+                    + arguments["related_details"]
+                    + "\nuseful_hyperlinks: ["
+                    + ",".join(arguments["useful_hyperlinks"])
+                    + "]\n"
+                )
+
+            return ret
 
         if command == "submit_task":
             return {
@@ -251,7 +298,6 @@ class ToolUsingExecutor(BaseExecutor):
                 "is_finish": False,
                 "cookies": cookies,
             }
-
         for i in range(3):
             try:
                 async with ClientSession(cookies=cookies, trust_env=True) as session:
@@ -277,20 +323,38 @@ class ToolUsingExecutor(BaseExecutor):
                     async with session.post(
                         f"{url}/execute_tool",
                         json=payload,
-                        headers={
-                            "toolbench_key": "p5ZASSLBO0EknAQLE5ecNZ7kq5i1YfY9eoWUXNxL3TM6lXwdXs"
-                        },
                         timeout=30,
                     ) as response:
                         content = await response.text()
                         if command == "WebEnv_browse_website":
                             openai.aiosession.set(session)
-                            content = await _summarize_webpage(
-                                content, arguments["question"]
+                            result = await _summarize_webpage(
+                                content, arguments["goals_to_browse"]
                             )
+                        elif command == "WebEnv_search_and_browse":
+                            openai.aiosession.set(session)
+                            content = json.loads(content)
 
+                            # for i in range(len(content)):
+                            summarized = await asyncio.gather(
+                                *[
+                                    _summarize_webpage(
+                                        content[i]["page"], arguments["goals_to_browse"]
+                                    )
+                                    for i in range(len(content))
+                                ]
+                            )
+                            for i in range(len(content)):
+                                content[i]["page"] = summarized[i]
+                            result = ""
+                            for i in range(len(content)):
+                                result += f"SEARCH_REASULT {i}:\n"
+                                result += content[i]["page"].strip() + "\n\n"
+                            result = result.strip()
+                        else:
+                            result = content
                         message = ExecutorMessage(
-                            content=content,
+                            content=result,
                             sender="function",
                             tool_name=command,
                             tool_input=arguments,

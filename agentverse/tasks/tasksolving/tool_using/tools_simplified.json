@@ -1,35 +1,12 @@
 {
   "available_envs": [
     {
-      "name": "FileSystemEnv",
-      "description": "Provide a file system operation environment for Agent.\n    ",
-      "total_tools": 5,
+      "name": "PythonNotebook",
+      "description": "Python Notebook Environment. Provide a notebook interface to run python code.",
+      "total_tools": 2,
       "tools": [
-        "is_path_exist",
-        "modify_file",
-        "print_filesys_struture",
-        "read_from_file",
-        "write_to_file"
-      ]
-    },
-    {
-      "name": "PDBCodingEnv",
-      "description": "Note: This env is subclass of ['FileSystemEnv', 'ShellEnv'], and all tools of parent envs are inherited and not visible. You can try call parent tools or check this env's defination to show them.\nPython Debugging Coding Environment.\n    Always run code with `python -m pdb {python_file.py}`.\n    ",
-      "total_tools": 11,
-      "tools": [
-        "run_code"
-      ]
-    },
-    {
-      "name": "ShellEnv",
-      "description": "Provide and maintain an interactive shell environment.\n    ",
-      "total_tools": 5,
-      "tools": [
-        "kill",
-        "read_stdout",
-        "restart",
-        "terminate",
-        "write_stdin"
+        "execute_cell",
+        "print_cells_outputs"
       ]
     },
     {
@@ -38,103 +15,215 @@
       "total_tools": 2,
       "tools": [
         "browse_website",
-        "scrape_text"
+        "search_and_browse"
       ]
     },
     {
-      "name": "RapidAPIEnv",
-      "description": "Note: All tools of this env are invisible during all tools display, please check this env's defination to show all tools.\nRapidAPI Env delivers rapid api for tool server.",
-      "total_tools": 4208,
+      "name": "FileSystemEnv",
+      "description": "Provide a file system operation environment for Agent.\n    ",
+      "total_tools": 4,
       "tools": [
-        "rapi_100_success_instagram_api_scalable_robust_media_info",
-        "rapi_100_success_instagram_api_scalable_robust_post_comments",
-        "rapi_100_success_instagram_api_scalable_robust_user_followers",
-        "rapi_13f918yf19o1t1f1of1t9_endpoint1",
-        "rapi_3d_services_thumbnail",
-        "rapi_4d_dream_dictionary_get_dream_number",
-        "rapi_50k_radio_stations_get_channels",
-        "rapi_50k_radio_stations_get_cities",
-        "rapi_50k_radio_stations_get_countries",
-        "rapi_50k_radio_stations_get_genres",
-        "..."
+        "modify_file",
+        "print_filesys_struture",
+        "read_from_file",
+        "write_to_file"
       ]
     }
   ],
   "available_tools": [
-    "FileSystemEnv_is_path_exist",
+    "PythonNotebook_execute_cell",
+    "PythonNotebook_print_cells_outputs",
+    "WebEnv_browse_website",
+    "WebEnv_search_and_browse",
     "FileSystemEnv_modify_file",
     "FileSystemEnv_print_filesys_struture",
     "FileSystemEnv_read_from_file",
     "FileSystemEnv_write_to_file",
-    "PDBCodingEnv_run_code",
-    "ShellEnv_kill",
-    "ShellEnv_read_stdout",
-    "ShellEnv_restart",
-    "ShellEnv_terminate",
-    "ShellEnv_write_stdin",
-    "WebEnv_browse_website",
-    "WebEnv_scrape_text",
-    "query_wolfram",
-    "bing_search"
+    "shell_command_executor"
   ],
   "tools_json": [
-  {
-    "name": "WebEnv_browse_website",
-    "description": "Browse a website and return the page. Note some websites may not be accessable due to network error.",
-    "parameters": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "type": "string",
-          "description": "The realworld URL to scrape text from. Started with http:// or https://."
-        },
-        "question": {
-          "type": "string",
-          "description": "The question for the website. The function will answer the question by browsing the url."
-        }
-      },
-      "required": [
-        "url",
-        "question"
-      ]
-    }
-  },
     {
-      "name": "run_interpreter",
-      "description": "The code interpreter tool that runs code and returns the output.\nThe `code` will be written to file `filename` and the `command` will be executed in a shell. The returned value of this tool is the stdout content. So use `print` to get the important information.\nExample:\n```\nrun_interpreter(code='print(\"hello world\")',command='python code.py')\n```",
+      "name": "PythonNotebook_execute_cell",
+      "description": "Create or replace a notebook cell and execute it, return the output.\nUse this tool to test your idea quickly.\n\nExample:\n```\nIn[0]: code='print(\"hello world\")' # This will create a new cell and execute it.\nOut[0]: ['cell_index: 0', 'hello world']\nIn[1]: code='print(\"hello world\")',cell_index=0 # This will overwrite the first cell and execute it.\nIn[2]: code='print(\"hello world\")',cell_index=-1 # This will overwrite the last cell and execute it.\n```",
       "parameters": {
         "type": "object",
         "properties": {
           "code": {
             "type": "string",
-            "description": "The code to be written, default to `None`, which means no code will be written to file."
+            "description": "python code to be executed, make sure it is valid python code with right format. don't provide shell command that started with '!' here. don't make your code print too much output."
           },
-          "filename": {
-            "type": "string",
-            "description": "The filename to be written in mode `w`, default to `code.py`."
+          "cell_index": {
+            "type": "integer",
+            "description": "the index of the cell to be insert and overwrite `code`, default to `None`, which means append new cell."
           },
-          "command": {
-            "type": "string",
-            "description": "The shell command to be executed should avoid requiring additional user input, default to `python {filename}`."
+          "reset": {
+            "type": "boolean",
+            "description": "whether to reset the kernel before executing the code. Default to `False`."
           }
         },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "PythonNotebook_print_cells_outputs",
+      "description": "print all notebook cells' content and output.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
         "required": []
       }
     },
     {
-      "name": "bing_search",
-      "description": "Return 3 most relevant results of a Bing search using the official Bing API. This tool does not provide website details, use other tools to browse website if you need.",
+      "name": "WebEnv_browse_website",
+      "description": "Give a http or https url to browse a website and return the summarize text. Note some websites may not be accessable due to network error. This tool only return the content of give url and cannot provide any information need interaction with the website.",
       "parameters": {
         "type": "object",
         "properties": {
-          "query": {
+          "url": {
             "type": "string",
-            "description": "The search query."
+            "description": "The realworld Uniform Resource Locator (web address) to scrape text from. Never provide something like \"<URL of the second news article>\", give real url!!! Example: 'https://www.deepmind.com/'"
+          },
+          "goals_to_browse": {
+            "type": "string",
+            "description": "The goals for browse the given `url` (e.g. what you want to find on webpage.). If you need more details, request it in here."
           }
         },
         "required": [
-          "query"
+          "url",
+          "goals_to_browse"
         ]
+      }
+    },
+    {
+      "name": "WebEnv_search_and_browse",
+      "description": "Search with search tools and browse the website returned by search. Note some websites may not be accessable due to network error.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "description": "The search query."
+          },
+          "goals_to_browse": {
+            "type": "string",
+            "description": "What's you want to find on the website returned by search. If you need more details, request it in here. Examples: 'What is latest news about deepmind?', 'What is the main idea of this article?'"
+          },
+          "region": {
+            "type": "string",
+            "description": "The region code of the search, default to `en-US`. Available regions: `en-US`, `zh-CN`, `ja-JP`, `de-DE`, `fr-FR`, `en-GB`."
+          }
+        },
+        "required": [
+          "search_query",
+          "goals_to_browse"
+        ]
+      }
+    },
+    {
+      "name": "FileSystemEnv_modify_file",
+      "description": "Modify the textual file lines in slice [start_index:end_index] based on `new_content` provided. Return content of the file after modification so no further need to call `read_from_file`.\nfilepath_content_lines[start_index:end_index] = new_content\n\nExample:\n```\nIn[0]: modify_file('test.txt', 'Hello World!') # This will insert a new line `Hello World!` at the end of the file `test.txt`.\nIn[1]: modify_file('test.txt', 'Hello World!', 0) # This will insert a new line `Hello World!` at the begin of the file `test.txt`.\nIn[2]: modify_file('test.txt', 'Hello World!', 0, 1) # This will replace the first line of the file `test.txt` with `Hello World!`. \n```",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filepath": {
+            "type": "string",
+            "description": "The path to the file to be modified, always use relative path to the workspace root."
+          },
+          "new_content": {
+            "type": "string",
+            "description": "The new content to be replaced with the old content."
+          },
+          "start_index": {
+            "type": "integer",
+            "description": "The start position in slice to modified file lines. Defaults to `None`, which means insert the new content at the end of the file. So do not provide this if you want to append the new content to the file."
+          },
+          "end_index": {
+            "type": "integer",
+            "description": "The end posistion in slice to modified file lines. Defaults to the value of `start_index`, which means if `start_index` provided, insert the new content at the `start_index` line."
+          }
+        },
+        "required": [
+          "filepath",
+          "new_content"
+        ]
+      }
+    },
+    {
+      "name": "FileSystemEnv_print_filesys_struture",
+      "description": "Return a tree-like structure for all files and folders in the workspace. Use this tool if you are not sure what files are in the workspace.\nThis function recursively walks through all the directories in the workspace\nand return them in a tree-like structure, \ndisplaying all the files under each directory.\n\nExample:\n```\n- root/\n    - sub_directory1/\n        - file1.txt\n        - file2.txt\n    - sub_directory2/\n        - file3.txt\n```",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "FileSystemEnv_read_from_file",
+      "description": "Open and read the textual file content in the workspace, you will see the content of the target file.\nDon't use this if the give `filepath` is writen or modified before, the content in `filepath` should be already returned.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filepath": {
+            "type": "string",
+            "description": "The path to the file to be opened, always use relative path to the workspace root."
+          },
+          "start_index": {
+            "type": "integer",
+            "description": "The starting line number of the content to be opened. Defaults to 0."
+          }
+        },
+        "required": [
+          "filepath"
+        ]
+      }
+    },
+    {
+      "name": "FileSystemEnv_write_to_file",
+      "description": "Write the textual file in the workspace with the content provided. \nWill automatically create the file if it does not exist. Also overwrite the file content if it already exists. If you want to append content to the file, use `modify_file` instead.\nBetter check if the file exists before directly writing to it. \nReturn content of the file after writing.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filepath": {
+            "type": "string",
+            "description": "The path to the file to be saved, always use relative path to the workspace root."
+          },
+          "content": {
+            "type": "string",
+            "description": "The content to be saved."
+          }
+        },
+        "required": [
+          "filepath",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "shell_command_executor",
+      "description": "The shell tool that execute shell command in root privilege, return the output and error. \nYou can use this tool to install packages, download files, run programs, etc.\nSet run_async=True to run the command in a new thread and return instantly if your command is time costly like install packages, host services. \nExample:\n```\nIn: shell_command_executor(command='echo \"hello world\"')\nOut: \"hello world\"\nIn: shell_command_executor(command='sleep 10', run_async=True)\nOut: {'shell_id': 0} # You can use this id to read the output and error later.\nIn: shell_command_executor(shell_id=0, kill=True)\nOut: \"\" # The shell 0 will be killed.\n```",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "The shell command to be executed, must avoid command requiring additional user input. Default is empty string."
+          },
+          "run_async": {
+            "type": "boolean",
+            "description": "Whether to run the command asynchronously, default is False. If True, call this tool again with shell_id to get the final output and error."
+          },
+          "shell_id": {
+            "type": "integer",
+            "description": "The id of shell to execute command, default is None, which means running in a new shell. Change this to execute command in the same shell."
+          },
+          "kill": {
+            "type": "boolean",
+            "description": "If True, kill the shell which runs the command after execution. Default is False. Don't use any other kill command!"
+          }
+        },
+        "required": []
       }
     },
     {
