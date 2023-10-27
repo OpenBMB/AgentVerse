@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import List, Optional
+from typing import List, Optional, Tuple, Dict
 
 from pydantic import Field
 
@@ -152,8 +152,8 @@ Latest Development:
         self.messages = []
 
     async def trim_messages(
-        self, current_message_chain: list[dict], model: str, history: List[dict]
-    ) -> tuple[dict, list[dict]]:
+        self, current_message_chain: List[Dict], model: str, history: List[Dict]
+    ) -> Tuple[Dict, List[Dict]]:
         new_messages_not_in_chain = [
             msg for msg in history if msg not in current_message_chain
         ]
@@ -172,7 +172,7 @@ Latest Development:
 
     async def update_running_summary(
         self,
-        new_events: list[Message],
+        new_events: List[Message],
         model: str = "gpt-3.5-turbo",
         max_summary_length: Optional[int] = None,
     ) -> dict:
@@ -233,7 +233,7 @@ Latest Development:
         return self.summary_message()
 
     async def _update_summary_with_batch(
-        self, new_events_batch: list[dict], model: str, max_summary_length: int
+        self, new_events_batch: List[dict], model: str, max_summary_length: int
     ) -> None:
         prompt = self.SUMMARIZATION_PROMPT.format(
             summary=self.summary, new_events=new_events_batch
@@ -254,11 +254,11 @@ Latest Development:
 
 
 def add_history_upto_token_limit(
-    prompt: list[dict], history: list[dict], t_limit: int, model: str
-) -> list[Message]:
+    prompt: List[dict], history: List[dict], t_limit: int, model: str
+) -> List[Message]:
     limit_reached = False
     current_prompt_length = 0
-    trimmed_messages: list[dict] = []
+    trimmed_messages: List[Dict] = []
     for message in history[::-1]:
         token_to_add = count_message_tokens(message, model)
         if current_prompt_length + token_to_add > t_limit:
