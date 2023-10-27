@@ -50,7 +50,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "python code to be executed, make sure it is valid python code with right format. don't provide shell command that started with '!' here."
+            "description": "python code to be executed, make sure it is valid python code with right format. don't provide shell command that started with '!' here. don't make your code print too much output."
           },
           "cell_index": {
             "type": "integer",
