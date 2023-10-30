@@ -2,7 +2,7 @@ pyyaml
 fastapi==0.95.1
 uvicorn
 py3langid
-iso-639
+setuptools-scm
 openai==0.27.8
 opencv-python==4.8.0.76
 gradio
@@ -17,5 +17,4 @@ colorlog
 rapidfuzz
 spacy
 colorama==0.4.6
-fschat[model_worker,webui]
 tiktoken==0.5.1

@@ -5,6 +5,9 @@ import subprocess
 with open("requirements.txt", "r") as f:
     requirements = f.read().splitlines()
 
+with open("requirements_local.txt", "r") as f:
+    requirements_local = f.read().splitlines()
+
 with open("README.md", "r", encoding='utf8') as fh:
     long_description = fh.read()
 
@@ -38,6 +41,9 @@ setuptools.setup(
     #     "langchain",
     # ],
     install_requires=requirements,
+    extras_require={
+        'local': requirements_local
+    },
     include_package_data = True,
     entry_points={
         "console_scripts": [

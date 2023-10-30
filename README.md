@@ -228,13 +228,20 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 
 ## Installation
 
+
 **Manually Install (Recommended!)**
+
+**Make sure you have Python >= 3.9**
 ```bash
 git clone https://github.com/OpenBMB/AgentVerse.git --depth 1
 cd AgentVerse
-python setup.py develop
+pip install -e .
 ```
-Some users have reported problems installing the `orjson` required by `gradio`. One simple workaround is to install it with Anaconda `conda install -c conda-forge orjson`.
+
+If you want to use AgentVerse with local models such as LLaMA, you need to additionally install some other dependencies:
+```bash
+pip install -r requirements_local.txt
+```
 
 **Install with pip**
 

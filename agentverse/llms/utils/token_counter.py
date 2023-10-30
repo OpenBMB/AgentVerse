@@ -5,7 +5,6 @@ from typing import List, Union, Dict
 from agentverse.logging import logger
 from agentverse.message import Message
 from agentverse.llms import LOCAL_LLMS
-from transformers import AutoTokenizer
 
 
 def count_string_tokens(prompt: str = "", model: str = "gpt-3.5-turbo") -> int:
@@ -29,6 +28,7 @@ def count_message_tokens(
         tokens_per_name = 1
         encoding_model = "gpt-4"
     elif model in LOCAL_LLMS:
+        from transformers import AutoTokenizer
         encoding = AutoTokenizer.from_pretrained(model)
     else:
         raise NotImplementedError(
