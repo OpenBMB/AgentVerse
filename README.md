@@ -257,7 +257,7 @@ You need to export your OpenAI API key as follows：
 export OPENAI_API_KEY="your_api_key_here"
 ```
 
-If you want use Azure OpenAI services, pleas export your Azure OpenAI key and OpenAI API base as follows：
+If you want use Azure OpenAI services, please export your Azure OpenAI key and OpenAI API base as follows：
 ```bash
 export AZURE_OPENAI_API_KEY="your_api_key_here"
 export AZURE_OPENAI_API_BASE="your_api_base_here"
