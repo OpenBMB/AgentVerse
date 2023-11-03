@@ -267,7 +267,9 @@ You have access of the following tools:\n"""
                     pure_api_name = self.api_name_reflect[function["name"]]
                     # response = get_rapidapi_response(payload)
                     try:
-                        self.toolbench_key = ""
+                        self.toolbench_key = (
+                            "ykKcbWlXOlnt6aInZiNc1DpWEw2K4vzkzYcPexMnL6VGGFHfXg"
+                        )
                         payload = {
                             "category": self.cate_names[k],
                             "tool_name": self.tool_names[k],
