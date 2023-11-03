@@ -25,7 +25,7 @@
     <a href="https://huggingface.co/AgentVerse">
         <img alt="HuggingFace" src="https://img.shields.io/badge/hugging_face-play-yellow">
     </a>
-    <a href="https://discord.gg/MjG3vzaT">
+    <a href="https://discord.gg/QyAmgpw2">
         <img alt="Discord" src="https://img.shields.io/badge/AgentVerse-Discord-purple?style=flat">
     </a>
     
@@ -201,13 +201,24 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 - [Contents](#contents)
 - [🚀 Getting Started](#-getting-started)
   - [Installation](#installation)
-  - [Simulation CLI Example](#simulation)
-  - [Task-Solving CLI Example](#task-solving)
+  - [Environment Variables](#environment-variables)
+  - [Simulation](#simulation)
+    - [Framework Required Modules](#framework-required-modules)
+    - [CLI Example](#cli-example)
+    - [GUI Example (Local)](#gui-example-local)
+  - [Task-Solving](#task-solving)
+    - [Framework Required Modules](#framework-required-modules-1)
+    - [CLI Example](#cli-example-1)
+- [AgentVerse Showcases](#agentverse-showcases)
+  - [Simulation Showcases](#simulation-showcases)
+  - [Task-Solving Showcases](#task-solving-showcases)
 - [🌟 Join Us!](#-join-us)
+  - [Leaders](#leaders)
+  - [Contributors](#contributors)
   - [How Can You Contribute?](#how-can-you-contribute)
-- [Social Media and Community](#social-media-and-community)
+  - [Social Media and Community](#social-media-and-community)
 - [Star History](#star-history)
-- [Citation](#citation)
+  - [Citation](#citation)
 - [Contact](#contact)
 
 
@@ -217,13 +228,20 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
 
 ## Installation
 
+
 **Manually Install (Recommended!)**
+
+**Make sure you have Python >= 3.9**
 ```bash
 git clone https://github.com/OpenBMB/AgentVerse.git --depth 1
 cd AgentVerse
-python setup.py develop
+pip install -e .
 ```
-Some users have reported problems installing the `orjson` required by `gradio`. One simple workaround is to install it with Anaconda `conda install -c conda-forge orjson`.
+
+If you want to use AgentVerse with local models such as LLaMA, you need to additionally install some other dependencies:
+```bash
+pip install -r requirements_local.txt
+```
 
 **Install with pip**
 
@@ -232,28 +250,17 @@ Or you can install through pip
 pip install -U agentverse
 ```
 
-
-You also need to export your OpenAI API key as follows：
+## Environment Variables
+You need to export your OpenAI API key as follows：
 ```bash
 # Export your OpenAI API key
 export OPENAI_API_KEY="your_api_key_here"
-# Or if you are using Azure
-export AZURE_OPENAI_API_KEY="your_api_key_here"
-export AZURE_OPENAI_API_BASE="your_api_base_here"
 ```
 
 If you want use Azure OpenAI services, pleas export your Azure OpenAI key and OpenAI API base as follows：
 ```bash
 export AZURE_OPENAI_API_KEY="your_api_key_here"
 export AZURE_OPENAI_API_BASE="your_api_base_here"
-```
-
-If you want to use the tools provided by BMTools, you need to install BMTools as follows:
-```bash
-git clone git+https://github.com/OpenBMB/BMTools.git
-cd BMTools
-pip install -r requirements.txt
-python setup.py develop
 ```
 
 ## Simulation
@@ -284,6 +291,14 @@ agentverse-simulation-gui --task simulation/nlp_classroom_9players
 ```
 After successfully launching the local server, you can visit [http://127.0.0.1:7860/](http://127.0.0.1:7860/) to view the classroom environment.
 
+If you want to run the simulation cases with tools (e.g., simulation/nlp_classroom_3players_withtool), you need to install BMTools as follows:
+```bash
+git clone git+https://github.com/OpenBMB/BMTools.git
+cd BMTools
+pip install -r requirements.txt
+python setup.py develop
+```
+This is optional. If you do not install BMTools, the simulation cases without tools can still run normally.
 
 ## Task-Solving 
 
@@ -313,7 +328,15 @@ To run AgentVerse on a specific problem, you can try
 agentverse-tasksolving --task tasksolving/brainstorming
 ```
 
-You can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
+To run the tool using cases presented in our paper, i.e., multi-agent using tools such as web browser, Jupyter notebook, bing search, etc., you can first build ToolsServer provided by [XAgent](https://github.com/OpenBMB/XAgent). You can follow their [instruction](https://github.com/OpenBMB/XAgent#%EF%B8%8F-build-and-setup-toolserver) to build and run the ToolServer.
+
+After building and launching the ToolServer, you can use the following command to run the task-solving cases with tools:
+```shell
+agentverse-tasksolving --task tasksolving/tool_using/24point
+```
+We have provided more tasks in `agentverse/tasks/tasksolving/tool_using/` that show how multi-agent can use tools to solve problems.
+
+Also, you can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
 
 
 # AgentVerse Showcases
@@ -499,7 +522,7 @@ Also, if you're passionate about advancing the frontiers of multi-agent applicat
 
 - Twitter: https://twitter.com/Agentverse71134
 
-- Discord: https://discord.gg/MjG3vzaT.
+- Discord: https://discord.gg/QyAmgpw2.
 
 - Hugging Face: https://huggingface.co/spaces/AgentVerse/agentVerse.
 

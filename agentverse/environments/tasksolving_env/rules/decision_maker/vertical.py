@@ -50,7 +50,7 @@ class VerticalDecisionMaker(BaseDecisionMaker):
             if not review.is_agree and review.content != "":
                 nonempty_reviews.append(review)
         agents[0].add_message_to_memory(nonempty_reviews)
-        result = agents[0].step(previous_plan, advice, task_description)
+        result = await agents[0].astep(previous_plan, advice, task_description)
         agents[0].add_message_to_memory([result])
         return [result]
 

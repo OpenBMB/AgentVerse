@@ -15,33 +15,47 @@ from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
 from agentverse.utils import AgentCriticism
 
-
 logger = get_logger()
 
 
 @agent_registry.register("solver")
 class SolverAgent(BaseAgent):
-    max_history: int = 3
+    max_history: int = 5
 
     def step(
         self, former_solution: str, advice: str, task_description: str = "", **kwargs
     ) -> SolverMessage:
+        pass
+
+    async def astep(
+        self, former_solution: str, advice: str, task_description: str = "", **kwargs
+    ) -> SolverMessage:
+        """Asynchronous version of step"""
         logger.debug("", self.name, Fore.MAGENTA)
         # prompt = self._fill_prompt_template(
         #     former_solution, critic_opinions, advice, task_description
         # )
-        prepend_prompt, append_prompt = self.get_all_prompts(
+        prepend_prompt, append_prompt, prompt_token = self.get_all_prompts(
             former_solution=former_solution,
             task_description=task_description,
             advice=advice,
             role_description=self.role_description,
             **kwargs,
         )
-        history = self.memory.to_messages(self.name, start_index=-self.max_history)
+
+        max_send_token = self.llm.send_token_limit(self.llm.args.model)
+        max_send_token -= prompt_token
+
+        history = await self.memory.to_messages(
+            self.name,
+            start_index=-self.max_history,
+            max_send_token=max_send_token,
+            model=self.llm.args.model,
+        )
         parsed_response = None
         for i in range(self.max_retry):
             try:
-                response = self.llm.generate_response(
+                response = await self.llm.agenerate_response(
                     prepend_prompt, history, append_prompt
                 )
                 parsed_response = self.output_parser.parse(response)
@@ -64,10 +78,6 @@ class SolverAgent(BaseAgent):
             receiver=self.get_receiver(),
         )
         return message
-
-    async def astep(self, env_description: str = "") -> SolverMessage:
-        """Asynchronous version of step"""
-        pass
 
     def _fill_prompt_template(
         self,

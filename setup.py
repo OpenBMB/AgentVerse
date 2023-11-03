@@ -5,12 +5,15 @@ import subprocess
 with open("requirements.txt", "r") as f:
     requirements = f.read().splitlines()
 
+with open("requirements_local.txt", "r") as f:
+    requirements_local = f.read().splitlines()
+
 with open("README.md", "r", encoding='utf8') as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="agentverse",
-    version="0.1.8",
+    version="0.1.8.1",
     author="AgentVerse Team",
     author_email="agentverse2@gmail.com",
     description="A versatile framework that streamlines the process of creating custom multi-agent environments for large language models (LLMs).",
@@ -38,6 +41,9 @@ setuptools.setup(
     #     "langchain",
     # ],
     install_requires=requirements,
+    extras_require={
+        'local': requirements_local
+    },
     include_package_data = True,
     entry_points={
         "console_scripts": [

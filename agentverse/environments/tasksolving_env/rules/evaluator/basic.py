@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class BasicEvaluator(BaseEvaluator):
     cnt_agents: int = 0
 
-    def step(
+    async def astep(
         self,
         agent: EvaluatorAgent,
         solution: List[SolverMessage],
@@ -27,7 +27,7 @@ class BasicEvaluator(BaseEvaluator):
         flatten_solution = "\n".join([s.content for s in solution])
         flatten_result = "\n".join([r.content for r in result])
         flatten_all_role_description = "\n".join(all_role_description)
-        evaluation = agent.step(
+        evaluation = await agent.astep(
             flatten_solution,
             flatten_result,
             task_description,
@@ -40,7 +40,7 @@ class BasicEvaluator(BaseEvaluator):
 class BasicEvaluator(BaseEvaluator):
     cnt_agents: int = 0
 
-    def step(
+    async def astep(
         self,
         agent: EvaluatorAgent,
         solution: List[SolverMessage],
@@ -54,7 +54,7 @@ class BasicEvaluator(BaseEvaluator):
         flatten_result = "\n".join([r.content for r in result])
         flatten_all_role_description = "\n".join(all_role_description)
         agent.add_message_to_memory(result)
-        evaluation = agent.step(
+        evaluation = await agent.astep(
             flatten_solution,
             flatten_result,
             task_description,

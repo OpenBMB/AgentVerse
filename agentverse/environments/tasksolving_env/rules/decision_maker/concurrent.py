@@ -59,7 +59,7 @@ class ConcurrentDecisionMaker(BaseDecisionMaker):
             last_reviews = nonempty_reviews
 
         agents[0].add_message_to_memory(last_reviews)
-        result = agents[0].step(previous_plan, advice, task_description)
+        result = await agents[0].astep(previous_plan, advice, task_description)
         # agents[0].add_message_to_memory([result])
         self.broadcast_messages(agents, [result])
         return [result]
