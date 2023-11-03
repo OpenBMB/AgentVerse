@@ -67,6 +67,10 @@ def load_agent(agent_config: Dict) -> BaseAgent:
     return agent
 
 
+def prepare_structure_config(task, tasks_dir):
+    pass
+
+
 def prepare_task_config(task, tasks_dir):
     """Read the yaml config of the given task in `tasks` directory."""
     all_task_dir = tasks_dir
