@@ -30,8 +30,8 @@ def _chat_completion_request(messages, model="gpt-3.5-turbo-16k", stop=None, **a
     # print(json_data)
     try:
         # Official OpenAI API
-        openai.api_key = "31b8638c9eea48709a596501490f9e88"
-        openai.api_base = "https://gersteinbiocodeeval-eastus2.openai.azure.com/"
+        openai.api_key = ""
+        openai.api_base = ""
         openai.api_type = "azure"
         openai.api_version = (
             "2023-07-01-preview"  # this may change in the future 2023-05-15 2023-06-13
