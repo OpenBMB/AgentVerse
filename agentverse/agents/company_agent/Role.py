@@ -6,6 +6,7 @@ import asyncio
 
 # import logging
 from agentverse.logging import get_logger
+from agentverse.utils.prompt_company import prompt
 
 # from agentverse.agents.agent import Agent
 from agentverse.agents.simulation_agent.conversation import BaseAgent
@@ -42,14 +43,14 @@ class Role(BaseAgent):
         self.tools = tools
         self.openai_conversation_history = []
         CFG = Configs()
-        rapidapi_registry = RapidAPIRegistry()
-        command_registry = CommandRegistry(CFG)
-        for command_category in COMMAND_CATEGORIES:
-            # print(command_category)
-            command_registry.import_commands(command_category)
-        # print(command_registry.commands)
-        registry_list = [command_registry, rapidapi_registry]
-        self.registry_list = registry_list
+        # rapidapi_registry = RapidAPIRegistry()
+        # command_registry = CommandRegistry(CFG)
+        # for command_category in COMMAND_CATEGORIES:
+        #     # print(command_category)
+        #     command_registry.import_commands(command_category)
+        # # print(command_registry.commands)
+        # registry_list = [command_registry, rapidapi_registry]
+        # self.registry_list = registry_list
         self.message_received = []
 
     def send_message(self, recipient, message):

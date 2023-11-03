@@ -6,9 +6,12 @@ from typing import List
 # from agentverse.agents import Agent
 from agentverse.agents.simulation_agent.conversation import BaseAgent
 from agentverse.environments import BaseEnvironment
-from agentverse.initialization import load_agent, load_environment, prepare_task_config
+from agentverse.initialization import (
+    load_agent,
+    load_environment,
+    prepare_structure_config,
+)
 from agentverse.environments.tasksolving_env.basic import BasicEnvironment
-from agentverse.initialization import load_agent, load_environment, prepare_task_config
 from agentverse.utils import AGENT_TYPES
 
 
@@ -28,7 +31,7 @@ class StartupCompany:
         Then this method will load the configuration from the yaml file in that directory.
         """
         # Prepare the config of the task
-        task_config = prepare_task_config(task, tasks_dir)
+        task_config = prepare_structure_config(task, tasks_dir)
 
         # Build the environment
         env_config = task_config["environment"]
