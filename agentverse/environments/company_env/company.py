@@ -4,6 +4,10 @@ from agentverse.agents.company_agent.Role import Role
 from agentverse.agents.company_agent.Recruiter import Recruiter
 from agentverse.structure import AgentPool
 from agentverse.message import Message
+from agentverse.config import Config
+import os
+import json
+import threading
 
 
 class Environment:
@@ -17,7 +21,7 @@ class Environment:
         self.recruiter = Recruiter(
             "recruiter", "recruiter", [], complex_task, self.agent_pool
         )
-        self.customer = Customer("customer", "customer", [])
+        # self.customer = Customer("customer", "customer", [])
         if Config.USE_STRUCTURE_FILE:
             structure_file_path = os.path.join(
                 "./company_structure", Config.STRUCTURE_FILE
@@ -49,9 +53,13 @@ class Environment:
 
         # Get the next agent index
         # agent_ids = self.rule.get_next_agent_idx(self)  # order
-        roles = self.planner.plan_tasks(self.complex_task, self.agent_pool)
-
-        messages = await asyncio.gather(*[role.astep("") for role in roles])
+        # roles = self.planner.plan_tasks(self.complex_task, self.agent_pool)
+        departments = self.company.CEO.plan_tasks_by_department(
+            self.get_sub_departments(), self.mission
+        )
+        messages = await asyncio.gather(
+            *[department.astep("") for department in departments]
+        )
 
         # Track the messages to get the role of the sender
         self.last_messages = messages

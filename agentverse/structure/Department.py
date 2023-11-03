@@ -3,7 +3,13 @@ import json
 import threading
 from agentverse.agents.company_agent.Planner import Planner
 from agentverse.agents.company_agent.Role import Role
+from agentverse.tool_call_handler.workspace.workspace import Workspace
+from agentverse.utils.common import WORK_SPACE_ROOT_DIR
+from agentverse.message import Message
 from agentverse.structure.AgentPool import AgentPool
+import asyncio
+from typing import List
+from agentverse.config import Config
 
 
 class Department:
@@ -28,6 +34,33 @@ class Department:
             for sub_department in self.sub_departments
             for role in sub_department.get_roles()
         ]
+
+    async def step(self) -> List[Message]:
+        """Run one step of the environment"""
+
+        # Get the next agent index
+        # agent_ids = self.rule.get_next_agent_idx(self)  # order
+        roles = self.planner.plan_tasks(self.complex_task, self.agent_pool)
+
+        messages = await asyncio.gather(*[role.astep("") for role in roles])
+
+        # Track the messages to get the role of the sender
+        self.last_messages = messages
+
+        # Some rules will select certain messages from all the messages
+        selected_messages = self.rule.select_message(self, messages)  # selector
+        self.last_messages = selected_messages
+        self.print_messages(selected_messages)
+
+        # Update the memory of the agents
+        self.rule.update_memory(self)  # updater: update memory
+
+        # Update the set of visible agents for each agent
+        self.rule.update_visible_agents(self)  # change receiver
+
+        self.cnt_turn += 1
+
+        return selected_messages
 
     def perform_mission(self, use_tool):
         if len(self.missions) > 0:

@@ -1,4 +1,7 @@
 import threading
+from agentverse.agents.company_agent.Planner import Planner
+from agentverse.structure.Department import Department
+from agentverse.config import Config
 
 
 class Company:

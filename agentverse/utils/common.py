@@ -20,10 +20,10 @@ from itertools import islice
 current_file_directory = os.path.dirname(os.path.abspath(__file__))
 
 # Find the position of "MALLM" in the path
-position = current_file_directory.rfind('MALLM')
+position = current_file_directory.rfind("AGENTVERSE")
 
 # If "MALLM" is found in the path, extract the path up to and including "MALLM"
-desired_path = current_file_directory[:position + len('MALLM')]
+desired_path = current_file_directory[: position + len("AGENTVERSE")]
 
 
 WORK_SPACE_ROOT_DIR = os.path.join(desired_path, "workspace_cache")
@@ -34,22 +34,25 @@ def get_first_n_tokens(text, n):
     token_gen = encoding.encode(text)
     first_n_tokens = token_gen[:n]
     return encoding.decode(first_n_tokens)
-    
+
+
 @unique
 class LLMStatusCode(Enum):
     SUCCESS = 0
     ERROR = 1
 
+
 @unique
 class ToolCallStatusCode(Enum):
     TOOL_CALL_SUCCESS = 0
     FORMAT_ERROR = 1
-    HALLUCINATE_NAME = 2 
-    OTHER_ERROR = 3 #想要的话可以拓展更多出来？
+    HALLUCINATE_NAME = 2
+    OTHER_ERROR = 3  # 想要的话可以拓展更多出来？
     GIVE_UP = 4
     GIVE_ANSWER = 5
     SERVER_ERROR = 6
     NULL = 7
+
 
 @unique
 class TaskStatusCode(Enum):
@@ -57,7 +60,8 @@ class TaskStatusCode(Enum):
     DOING = 1
     DONE = 2
     SPLIT = 3
-    
+
+
 class Singleton(abc.ABCMeta, type):
     """
     Singleton metaclass for ensuring only one instance of a class.
@@ -93,9 +97,8 @@ def parse_solution(text):
     thought = re.findall(thought_regex, text)[0]
     action = re.findall(action_regex, text)[0]
     action_input = re.findall(input_regex, text)[0]
-    return (
-        thought, action, action_input
-    )
+    return (thought, action, action_input)
+
 
 def retry(attempts):
     def decorator(func):
@@ -108,8 +111,11 @@ def retry(attempts):
                     e = ex  # Assign the exception to e
             if e:  # Check if e is not None before raising it
                 raise e
+
         return wrapper
+
     return decorator
+
 
 @retry(attempts=3)
 def retryable_function(func, *args, **kwargs):
@@ -120,12 +126,11 @@ def shorten_token(text, max_token=2048):
     """
     Shorten the text to max_token length.
     """
-    text_tokens = text.split(' ')
+    text_tokens = text.split(" ")
     if len(text_tokens) < max_token:
         return text
     else:
-        return ' '.join(text_tokens[:max_token])
-    
+        return " ".join(text_tokens[:max_token])
 
     """
 ref0: https://github.com/geekan/MetaGPT
@@ -133,6 +138,8 @@ ref1: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_
 ref2: https://github.com/Significant-Gravitas/Auto-GPT/blob/master/autogpt/llm/token_counter.py
 ref3: https://github.com/hwchase17/langchain/blob/master/langchain/chat_models/openai.py
 """
+
+
 import tiktoken
 
 TOKEN_COSTS = {
@@ -164,17 +171,23 @@ def count_message_tokens(messages, model="gpt-3.5-turbo-0613"):
         "gpt-4-32k-0314",
         "gpt-4-0613",
         "gpt-4-32k-0613",
-        }:
+    }:
         tokens_per_message = 3
         tokens_per_name = 1
     elif model == "gpt-3.5-turbo-0301":
-        tokens_per_message = 4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
+        tokens_per_message = (
+            4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
+        )
         tokens_per_name = -1  # if there's a name, the role is omitted
     elif "gpt-3.5-turbo" in model:
-        print("Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613.")
+        print(
+            "Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613."
+        )
         return count_message_tokens(messages, model="gpt-3.5-turbo-0613")
     elif "gpt-4" in model:
-        print("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613.")
+        print(
+            "Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613."
+        )
         return count_message_tokens(messages, model="gpt-4-0613")
     else:
         raise NotImplementedError(
@@ -207,17 +220,20 @@ def count_string_tokens(string: str, model_name: str) -> int:
 
 
 def check_cmd_exists(command) -> int:
-    """ 检查命令是否存在
+    """检查命令是否存在
     :param command: 待检查的命令
     :return: 如果命令存在，返回0，如果不存在，返回非0
     """
-    check_command = 'command -v ' + command + ' >/dev/null 2>&1 || { echo >&2 "no mermaid"; exit 1; }'
+    check_command = (
+        "command -v "
+        + command
+        + ' >/dev/null 2>&1 || { echo >&2 "no mermaid"; exit 1; }'
+    )
     result = os.system(check_command)
     return result
 
 
 class OutputParser:
-
     @classmethod
     def parse_blocks(cls, text: str):
         # 首先根据"##"将文本分割成不同的block
@@ -241,7 +257,7 @@ class OutputParser:
 
     @classmethod
     def parse_code(cls, text: str, lang: str = "") -> str:
-        pattern = rf'```{lang}.*?\s+(.*?)```'
+        pattern = rf"```{lang}.*?\s+(.*?)```"
         match = re.search(pattern, text, re.DOTALL)
         if match:
             code = match.group(1)
@@ -252,13 +268,13 @@ class OutputParser:
     @classmethod
     def parse_str(cls, text: str):
         text = text.split("=")[-1]
-        text = text.strip().strip("'").strip("\"")
+        text = text.strip().strip("'").strip('"')
         return text
 
     @classmethod
     def parse_file_list(cls, text: str) -> list[str]:
         # Regular expression pattern to find the tasks list.
-        pattern = r'\s*(.*=.*)?(\[.*\])'
+        pattern = r"\s*(.*=.*)?(\[.*\])"
 
         # Extract tasks list string using regex.
         match = re.search(pattern, text, re.DOTALL)
@@ -270,12 +286,12 @@ class OutputParser:
         else:
             tasks = text.split("\n")
         return tasks
-    
+
     @staticmethod
     def parse_python_code(text: str) -> str:
         for pattern in (
-            r'(.*?```python.*?\s+)?(?P<code>.*)(```.*?)', 
-            r'(.*?```python.*?\s+)?(?P<code>.*)', 
+            r"(.*?```python.*?\s+)?(?P<code>.*)(```.*?)",
+            r"(.*?```python.*?\s+)?(?P<code>.*)",
         ):
             match = re.search(pattern, text, re.DOTALL)
             if not match:
@@ -340,7 +356,6 @@ class OutputParser:
 
 
 class CodeParser:
-
     @classmethod
     def parse_block(cls, block: str, text: str) -> str:
         blocks = cls.parse_blocks(text)
@@ -371,7 +386,7 @@ class CodeParser:
     def parse_code(cls, block: str, text: str, lang: str = "") -> str:
         if block:
             text = cls.parse_block(block, text)
-        pattern = rf'```{lang}.*?\s+(.*?)```'
+        pattern = rf"```{lang}.*?\s+(.*?)```"
         match = re.search(pattern, text, re.DOTALL)
         if match:
             code = match.group(1)
@@ -383,7 +398,7 @@ class CodeParser:
     def parse_str(cls, block: str, text: str, lang: str = ""):
         code = cls.parse_code(block, text, lang)
         code = code.split("=")[-1]
-        code = code.strip().strip("'").strip("\"")
+        code = code.strip().strip("'").strip('"')
         return code
 
     @classmethod
@@ -391,7 +406,7 @@ class CodeParser:
         # Regular expression pattern to find the tasks list.
         code = cls.parse_code(block, text, lang)
         # print(code)
-        pattern = r'\s*(.*=.*)?(\[.*\])'
+        pattern = r"\s*(.*=.*)?(\[.*\])"
 
         # Extract tasks list string using regex.
         match = re.search(pattern, code, re.DOTALL)
@@ -414,7 +429,7 @@ class NoMoneyException(Exception):
         super().__init__(self.message)
 
     def __str__(self):
-        return f'{self.message} -> Amount required: {self.amount}'
+        return f"{self.message} -> Amount required: {self.amount}"
 
 
 def print_members(module, indent=0):
@@ -424,19 +439,19 @@ def print_members(module, indent=0):
     :param indent:
     :return:
     """
-    prefix = ' ' * indent
+    prefix = " " * indent
     for name, obj in inspect.getmembers(module):
         print(name, obj)
         if inspect.isclass(obj):
-            print(f'{prefix}Class: {name}')
+            print(f"{prefix}Class: {name}")
             # print the methods within the class
-            if name in ['__class__', '__base__']:
+            if name in ["__class__", "__base__"]:
                 continue
             print_members(obj, indent + 2)
         elif inspect.isfunction(obj):
-            print(f'{prefix}Function: {name}')
+            print(f"{prefix}Function: {name}")
         elif inspect.ismethod(obj):
-            print(f'{prefix}Method: {name}')
+            print(f"{prefix}Method: {name}")
 
 
 def parse_recipient(text):
