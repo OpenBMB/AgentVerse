@@ -19,6 +19,7 @@ from ..base import BaseEnvironment
 from agentverse.message import Message
 from agentverse.config import Configs
 from agentverse.utils import AgentAction, AgentFinish
+from agentverse.llms.openai_utils import OpenAIUtils
 
 
 class Role(BaseAgent):
@@ -37,7 +38,7 @@ class Role(BaseAgent):
         self.persona = persona
         self.company = None
         self.manager = None
-        # self.openai_chat = OpenAIUtils()
+        self.openai_chat = OpenAIUtils()
         self.openai_chat.set_system_prompt(self.persona)
         self.current_task = None
         self.task_results = []

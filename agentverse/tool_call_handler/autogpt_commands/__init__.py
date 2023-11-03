@@ -1,0 +1,15 @@
+COMMAND_CATEGORIES = [
+    "mallm.tool_call_handler.autogpt_commands.analyze_code",
+    # "mallm.tool_call_handler.autogpt_commands.audio_text",
+    "mallm.tool_call_handler.autogpt_commands.execute_code",
+    "mallm.tool_call_handler.autogpt_commands.file_operations",
+    "mallm.tool_call_handler.autogpt_commands.git_operations",
+    # "mallm.tool_call_handler.autogpt_commands.google_search",
+    # "mallm.tool_call_handler.autogpt_commands.image_gen",
+    # "mallm.tool_call_handler.autogpt_commands.improve_code",
+    "mallm.tool_call_handler.autogpt_commands.web_playwright",
+    "mallm.tool_call_handler.autogpt_commands.web_requests",
+    "mallm.tool_call_handler.autogpt_commands.write_tests",
+    # "mallm.tool_call_handler.autogpt_commands.app",
+    # "mallm.tool_call_handler.autogpt_commands.commands.task_statuses",
+]
