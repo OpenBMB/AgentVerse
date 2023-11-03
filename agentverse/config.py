@@ -1,7 +1,6 @@
 import datetime
 import os
 
-
 NOW_TIME = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 
@@ -27,7 +26,7 @@ class Config:
     COMPANY_ROLES_LIMIT = 8  # the number of roles in a company
     ALLOW_AUTO_GEN = True  # whether to allow auto generate the roles by recruiter
     os.makedirs("logs", exist_ok=True)
-    LOGGER = Logger("logs/" + NOW_TIME)  # the logger to record the logs
+    # LOGGER = Logger("logs/" + NOW_TIME)  # the logger to record the logs
     INNER_LOOP = 2  # the number of inner loop in each turn
     USE_COMPANY = True  # whether to use company
     TASK_FILE_NAME = "task_15_test.json"  # the file name of the tasks to be executed

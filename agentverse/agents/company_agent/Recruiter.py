@@ -16,7 +16,7 @@ class Recruiter(Role):
         self.company = None
         self.task = task
         self.agent_pool = agent_pool
-        self.openai_chat = OpenAIUtils()
+        # self.openai_chat = OpenAIUtils()
         self.logger = Config.LOGGER
         self.test_department = Department(
             "Test Department", "This is a test department."
