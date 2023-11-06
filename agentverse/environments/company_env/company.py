@@ -2,15 +2,18 @@ import asyncio
 from typing import List
 from agentverse.agents.company_agent.Role import Role
 from agentverse.agents.company_agent.Recruiter import Recruiter
+from agentverse.tool_call_handler.workspace.workspace import Workspace
 from agentverse.structure import AgentPool
 from agentverse.message import Message
 from agentverse.config import Config
+from agentverse.utils import WORK_SPACE_ROOT_DIR
+from agentverse.config import NOW_TIME
 import os
 import json
 import threading
 
 
-class Environment:
+class HierarchicalEnvironment:
     def __init__(self, roles_data, complex_task: str, max_turn: int = 10):
         roles = [
             Role(role["name"], role["persona"], role["tools"]) for role in roles_data
@@ -89,11 +92,6 @@ class Environment:
     def is_done(self) -> bool:
         """Check if the environment is done"""
         if self.cnt_turn >= self.max_turns or self.rule_params["end_flag"]:
-            # with open("record_human_eval.txt", "a") as f:
-            #     wd = dict()
-            #     wd['task_id'] = self.task_name
-            #     wd['code'] = self.rule_params['code']
-            #     f.write(json.dumps(wd))
             return True
         return False
 

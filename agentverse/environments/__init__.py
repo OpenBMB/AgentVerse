@@ -16,3 +16,4 @@ from .simulation_env.sde_team import SdeTeamEnvironment
 from .simulation_env.sde_team_given_tests import SdeTeamGivenTestsEnvironment
 
 from .tasksolving_env.basic import BasicEnvironment
+from .company_env.company import HierarchicalEnvironment

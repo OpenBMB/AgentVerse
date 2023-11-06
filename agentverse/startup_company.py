@@ -5,7 +5,7 @@ from typing import List
 
 # from agentverse.agents import Agent
 from agentverse.agents.simulation_agent.conversation import BaseAgent
-from agentverse.environments import BaseEnvironment
+from agentverse.environments import HierarchicalEnvironment
 from agentverse.initialization import (
     load_agent,
     load_environment,
@@ -20,7 +20,7 @@ openai_logger.setLevel(logging.WARNING)
 
 
 class StartupCompany:
-    def __init__(self, agents: List[BaseAgent], environment: BaseEnvironment):
+    def __init__(self, agents: List[BaseAgent], environment: HierarchicalEnvironment):
         self.agents = agents
         self.environment = environment
 
@@ -54,7 +54,7 @@ class StartupCompany:
         env_config["task_description"] = task_config.get("task_description", "")
         env_config["max_rounds"] = task_config.get("max_rounds", 3)
 
-        environment: BasicEnvironment = load_environment(env_config)
+        environment: HierarchicalEnvironment = load_environment(env_config)
 
         return cls(environment=environment, task=task)
 
@@ -78,3 +78,19 @@ class StartupCompany:
     def update_state(self, *args, **kwargs):
         """Run the environment for one step and return the return message."""
         self.environment.update_state(*args, **kwargs)
+
+
+def run_company(task, tasks_dir):
+    company = StartupCompany.from_task(task, tasks_dir)
+    company.run()
+    return
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--task", type=str, default="company")
+    parser.add_argument("--tasks_dir", type=str, default="tasks")
+    args = parser.parse_args()
+    run_company(args.task, args.tasks_dir)
