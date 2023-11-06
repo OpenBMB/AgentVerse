@@ -238,45 +238,23 @@ class Role(BaseAgent):
 
     async def astep(self, env_description: str = "") -> Message:
         """Asynchronous version of step"""
-        parsed_response = None
-        # Initialize the tool_observation with tool_memory
-        tool_observation = [self.tool_memory.to_string()]
-        while True:
-            prompt = self._fill_prompt_template(env_description, tool_observation)
-
-            for i in range(self.max_retry):
-                try:
-                    response = await self.llm.agenerate_response(prompt)
-                    parsed_response = self.output_parser.parse(response)
-                    if isinstance(parsed_response, AgentAction):
-                        # If the response is an action, call the tool
-                        # and append the observation to tool_observation
-                        observation = await self._acall_tool(parsed_response)
-                        tool_observation.append(
-                            parsed_response.log.strip()
-                            + f"\nObservation: {observation.strip()}"
-                        )
-                    break
-                except BaseException as e:
-                    logging.error(e)
-                    logging.warning("Retrying...")
-                    continue
-            if parsed_response is None or isinstance(parsed_response, AgentFinish):
-                break
-
-        if parsed_response is None:
-            logging.error(f"{self.name} failed to generate valid response.")
-
-        self._update_tool_memory(tool_observation)
-
-        message = Message(
-            content=""
-            if parsed_response is None
-            else parsed_response.return_values["output"],
-            sender=self.name,
-            receiver=self.get_receiver(),
+        if not self.tasks.empty():
+            task = self.tasks.get()
+            print(f"{self.name} is performing task: {task}")
+            self.logger.log({self.name: task, "type": "task assignment"})
+        else:
+            return
+        task_prompt = prompt.get_solution_prompt(
+            task=task["task"], necessary_information=task["necessary_information"]
         )
-        return message
+        # solution = self.openai_chat.chat(task_prompt)
+        solution = self.llm.generate_response(prompt=task_prompt)
+        self.memory[task["task"]] = solution
+        self.Memory.add_memory({"task": task["task"], "solution": solution})
+        self.task_results.append(solution)
+        self.logger.log({self.name: solution, "task": task, "type": "solution"})
+        # Use the approach to perform the task (implementation can be further refined)
+        return solution
 
     def prepare_history_info(self):
         history_information = ""

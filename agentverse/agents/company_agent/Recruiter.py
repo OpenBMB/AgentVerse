@@ -34,10 +34,14 @@ class Recruiter(Role):
         else:
             roles = self.agent_pool.get_roles_name_list()
         print("company roles:", roles)
-        structure_plan = self.openai_chat.function_call(
-            Prompt.get_department_structure_prompt(self.task, roles),
-            Prompt_Functions().get_functions("build_company"),
-        )
+        # structure_plan = self.openai_chat.function_call(
+        #     Prompt.get_department_structure_prompt(self.task, roles),
+        #     Prompt_Functions().get_functions("build_company"),
+        # )
+        structure_plan = self.llm.generate_response(
+            prompt=Prompt.get_department_structure_prompt(self.task, roles),
+            function=Prompt_Functions().get_functions("build_company"),
+        ).function_arguments
         departments = {}
         self.logger.log({"structure_plan": json.dumps(structure_plan)})
 
@@ -69,12 +73,19 @@ class Recruiter(Role):
         self.logger.log({"company": company.get_structure_str()})
 
         if Config.ALLOW_AUTO_GEN:
-            adding_more_roles = self.openai_chat.function_call(
-                Prompt.get_adding_new_role_prompt(
+            # adding_more_roles = self.openai_chat.function_call(
+            #     Prompt.get_adding_new_role_prompt(
+            #         self.task, company.get_structure_str()
+            #     ),
+            #     Prompt_Functions().get_functions("adding_new_roles"),
+            # )
+            adding_more_roles = self.llm.generate_response(
+                prompt=Prompt.get_adding_new_role_prompt(
                     self.task, company.get_structure_str()
                 ),
-                Prompt_Functions().get_functions("adding_new_roles"),
-            )
+                function=Prompt_Functions().get_functions("adding_new_roles"),
+            ).function_arguments
+
             if adding_more_roles["necessary"]:
                 for role in adding_more_roles["role_list"]:
                     role_name = role["role_name"]
