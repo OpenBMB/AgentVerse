@@ -157,6 +157,23 @@ TOKEN_COSTS = {
 }
 
 
+def retry(attempts):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            e = None  # Initialize e to None
+            for _ in range(attempts):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as ex:
+                    e = ex  # Assign the exception to e
+            if e:  # Check if e is not None before raising it
+                raise e
+
+        return wrapper
+
+    return decorator
+
+
 def count_message_tokens(messages, model="gpt-3.5-turbo-0613"):
     """Return the number of tokens used by a list of messages."""
     try:

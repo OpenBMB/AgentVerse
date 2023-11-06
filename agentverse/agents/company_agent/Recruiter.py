@@ -1,5 +1,8 @@
 import json
 from agentverse.agents.company_agent.Role import Role
+from agentverse.utils import Prompt, Prompt_Functions, retry, get_tools_by_names
+from agentverse.config import Config
+from agentverse.structure.Department import Department, Company
 
 
 class Recruiter(Role):
@@ -12,7 +15,6 @@ class Recruiter(Role):
         agent_pool=None,
     ):
         super().__init__(name, persona, tools)
-        self.logger = Config.LOGGER
         self.company = None
         self.task = task
         self.agent_pool = agent_pool

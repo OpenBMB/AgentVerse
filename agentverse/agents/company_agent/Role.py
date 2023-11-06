@@ -4,7 +4,7 @@ import os
 
 import asyncio
 
-# import logging
+import logging
 from agentverse.logging import get_logger
 from agentverse.utils.prompt_company import prompt
 
