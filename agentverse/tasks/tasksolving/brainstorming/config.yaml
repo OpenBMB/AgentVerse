@@ -17,7 +17,7 @@ prompts:
     What experts will you recruit to better generate good ideas?
     
     Output format example:
-    1. an electrical engineer specified in the filed of xxx
+    1. an electrical engineer specified in the field of xxx
     2. an economist who is good at xxx
     3. a lawyer with a good knowledge of xxx
     ...
