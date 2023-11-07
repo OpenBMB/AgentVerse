@@ -97,7 +97,7 @@ class OpenAIChatArgs(BaseModelArgs):
 @llm_registry.register("gpt-35-turbo")
 @llm_registry.register("gpt-3.5-turbo")
 @llm_registry.register("gpt-4")
-@llm_registry.register("llama-2-7b-chat-hf")
+@llm_registry.register("local")
 class OpenAIChat(BaseChatModel):
     args: OpenAIChatArgs = Field(default_factory=OpenAIChatArgs)
 

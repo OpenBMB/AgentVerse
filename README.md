@@ -205,10 +205,14 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
   - [Simulation](#simulation)
     - [Framework Required Modules](#framework-required-modules)
     - [CLI Example](#cli-example)
-    - [GUI Example (Local)](#gui-example-local)
+    - [GUI Example](#gui-example)
   - [Task-Solving](#task-solving)
     - [Framework Required Modules](#framework-required-modules-1)
     - [CLI Example](#cli-example-1)
+  - [Local Model Support](#local-model-support)
+    - [1. Install the Additional Dependencies](#1-install-the-additional-dependencies)
+    - [2. Launch the Local Server](#2-launch-the-local-server)
+    - [3. Modify the Config File](#3-modify-the-config-file)
 - [AgentVerse Showcases](#agentverse-showcases)
   - [Simulation Showcases](#simulation-showcases)
   - [Task-Solving Showcases](#task-solving-showcases)
@@ -282,7 +286,7 @@ You can create a multi-agent environments provided by us. Using the classroom sc
 agentverse-simulation --task simulation/nlp_classroom_9players
 ```
 
-### GUI Example (Local)
+### GUI Example
 
 We also provide a local website demo for this environment. You can launch it with
 
@@ -338,6 +342,33 @@ We have provided more tasks in `agentverse/tasks/tasksolving/tool_using/` that s
 
 Also, you can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
 
+## Local Model Support
+### 1. Install the Additional Dependencies
+If you want to use local models such as LLaMA, you need to additionally install some other dependencies:
+```bash
+pip install -r requirements_local.txt
+```
+
+### 2. Launch the Local Server
+Then modify the `MODEL_PATH` and `MODEL_NAME` according to your need to launch the local server with the following command:
+```bash
+bash scripts/run_local_model_server.sh
+```
+The script will launch a service for Llama 7B chat model.
+The `MODEL_NAME` in AgentVerse currently supports several models including `llama-2-7b-chat-hf`, `llama-2-13b-chat-hf`, `llama-2-70b-chat-hf`, `vicuna-7b-v1.5`, and `vicuna-13b-v1.5`. If you wish to integrate additional models that are [compatible with FastChat](https://github.com/lm-sys/FastChat/blob/main/docs/model_support.md), you need to:
+1. Add the new `MODEL_NAME` into the `LOCAL_LLMS` within `agentverse/llms/__init__.py`. Furthermore, establish
+2. Add the mapping from the new `MODEL_NAME` to its corresponding Huggingface identifier in the `LOCAL_LLMS_MAPPING` within the `agentverse/llms/__init__.py` file.
+
+### 3. Modify the Config File
+In your config file, set the `llm_type` to `local` and `model` to the `MODEL_NAME`. For example
+```yaml
+llm:
+  llm_type: local
+  model: llama-2-7b-chat-hf
+  ...
+```
+
+You can refer to `agentverse/tasks/tasksolving/commongen/llama-2-7b-chat-hf/config.yaml` for a more detailed example.
 
 # AgentVerse Showcases
 
