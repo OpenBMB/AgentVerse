@@ -155,7 +155,8 @@ agents:
       5. Provide an envision towards the future development of neural networks.
       Your goal is to ensure that the students understand the material, so it's important to speak slowly and clearly. You don't necessarily have to strictly follow the course outline when teaching, you can also talk about some other relevant topics. Remember, in each round of conversation, your response should only address one topic at most. Please take your time and don't rush through the content.
     prompt_template: *professor_prompt
-    ll gpt-4
+    llm:
+      llm_type: gpt-4
       model: gpt-4
       temperature: 0.7
       max_tokens: 250
