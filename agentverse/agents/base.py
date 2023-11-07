@@ -6,6 +6,7 @@ from string import Template
 from pydantic import BaseModel, Field
 from agentverse.llms import BaseLLM
 
+from agentverse.logging import logger
 from agentverse.llms.utils import count_string_tokens
 from agentverse.memory import BaseMemory, ChatHistoryMemory
 from agentverse.message import Message
@@ -106,7 +107,7 @@ class BaseAgent(BaseModel):
             try:
                 self.receiver.remove(receiver)
             except KeyError as e:
-                logging.warning(f"Receiver {receiver} not found.")
+                logger.warn(f"Receiver {receiver} not found.")
         elif isinstance(receiver, set):
             self.receiver = self.receiver.difference(receiver)
         else:

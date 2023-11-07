@@ -43,11 +43,11 @@ prompts:
 
     - During class, it's recommended that you listen to the professor by responding:
     Action: Listen
-    Action Input: None
+    Action Input: listen
 
     - If you have a question that you think it's worth discussing in class, you should first raise your hand using the following format to let the professor notice you:
     Action: RaiseHand
-    Action Input: None
+    Action Input: raise hand
 
     if the professor does call on your name, you MUST speak or ask a question, and use the following format:
     Action: Speak
@@ -115,7 +115,7 @@ agents:
       When teaching, it's not necessary to strictly adhere to the course outline. You can also incorporate other relevant topics into your lectures. It's important to take your time and not rush through the content, explaining each topic carefully and ensuring that your students fully grasp the material.
     prompt_template: *professor_prompt
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
       temperature: 0.7
       max_tokens: 250
     output_parser:
@@ -130,7 +130,7 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
       temperature: 0.7
       max_tokens: 100
     output_parser:
@@ -143,7 +143,7 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
       temperature: 0.7
       max_tokens: 100
     output_parser:
@@ -156,7 +156,7 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
       temperature: 0.7
       max_tokens: 100
     output_parser:
@@ -169,7 +169,7 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
       temperature: 0.7
       max_tokens: 100
     output_parser:
@@ -182,7 +182,7 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
       temperature: 0.7
       max_tokens: 100
     output_parser:
@@ -195,7 +195,7 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
       temperature: 0.7
       max_tokens: 100
     output_parser:
@@ -208,7 +208,7 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
       temperature: 0.7
       max_tokens: 100
     output_parser:
@@ -221,7 +221,7 @@ agents:
     memory: 
       memory_type: chat_history
     llm:
-      llm_type: text-davinci-003
+      llm_type: gpt-4
       temperature: 0.7
       max_tokens: 100
     output_parser:

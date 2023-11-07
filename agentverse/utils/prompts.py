@@ -1,6 +1,6 @@
 import json
 import os
-import logging
+from agentverse.logging import logger
 
 
 base_prompt = {
@@ -208,5 +208,5 @@ def load_prompt(file_dir, file_name="prompts.json", key=None):
         prompt = base_prompt.get(key, "")
 
     if prompt == "":
-        logging.warning(f"No prompt of {key} has been found")
+        logger.warn(f"No prompt of {key} has been found")
     return prompt
