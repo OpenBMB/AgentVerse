@@ -1,4 +1,4 @@
-import threading
+# import threading
 from agentverse.structure.Department import Department
 from agentverse.config import Config
 from agentverse.logging import Logger
@@ -59,59 +59,59 @@ class Company:
         for role in self.get_roles():
             self.logger.log({role.name: role.memory})
 
-    def startup(self, max_round: int, use_tool: bool):
-        save_results = {}
-        save_results["company_name"] = self.name
-        save_results["company_mission"] = self.mission
-        save_results["company_structure"] = self.get_structure()
-        print("max_round:", max_round)
-        for round in range(max_round):
-            save_results[f"round_{round}"] = {}
-            departments = self.CEO.plan_tasks_by_department(
-                self.get_sub_departments(), self.mission
-            )
-            threads = [
-                threading.Thread(target=department.perform_mission, args=(use_tool,))
-                for department in departments
-            ]
-            # for thread in threads:
-            #     thread.start()
-            # for thread in threads:
-            #     thread.join()
+    # def startup(self, max_round: int, use_tool: bool):
+    #     save_results = {}
+    #     save_results["company_name"] = self.name
+    #     save_results["company_mission"] = self.mission
+    #     save_results["company_structure"] = self.get_structure()
+    #     print("max_round:", max_round)
+    #     for round in range(max_round):
+    #         save_results[f"round_{round}"] = {}
+    #         departments = self.CEO.plan_tasks_by_department(
+    #             self.get_sub_departments(), self.mission
+    #         )
+    #         threads = [
+    #             threading.Thread(target=department.perform_mission, args=(use_tool,))
+    #             for department in departments
+    #         ]
+    #         # for thread in threads:
+    #         #     thread.start()
+    #         # for thread in threads:
+    #         #     thread.join()
 
-            max_threads = Config.MAX_THREADS
-            i = 0
-            while i < len(threads):
-                # Start a batch of threads
-                for j in range(min(max_threads, len(threads) - i)):
-                    try:
-                        threads[i + j].start()
-                    except:
-                        continue
-                # Wait for the batch of threads to finish
-                for j in range(min(max_threads, len(threads) - i)):
-                    try:
-                        threads[i + j].join()
-                    except:
-                        continue
-                # Move to the next batch
-                i += max_threads
+    #         max_threads = Config.MAX_THREADS
+    #         i = 0
+    #         while i < len(threads):
+    #             # Start a batch of threads
+    #             for j in range(min(max_threads, len(threads) - i)):
+    #                 try:
+    #                     threads[i + j].start()
+    #                 except:
+    #                     continue
+    #             # Wait for the batch of threads to finish
+    #             for j in range(min(max_threads, len(threads) - i)):
+    #                 try:
+    #                     threads[i + j].join()
+    #                 except:
+    #                     continue
+    #             # Move to the next batch
+    #             i += max_threads
 
-            # Ensure every role sends feedback to the planner at the end of the round
-            for department in departments:
-                if len(department.Memory.count()) > 0:
-                    # self.CEO.receive_feedback(department.name, department.memory[-1])
-                    self.CEO.receive_feedback(
-                        department.name, department.Memory.get_last_round()
-                    )
-                    save_results[f"round_{round}"][department.name] = {
-                        "department_results": department.Memory.get_last_round()
-                    }
-            summary = self.CEO.summarize_round()
-            save_results[f"round_{round}"]["summary"] = summary
-            self.log_memory()
-            self.memory.append(summary)
-            if summary["finished"]:
-                break
-        self.logger.log("Max turn reached. Ending the simulation.")
-        return save_results
+    #         # Ensure every role sends feedback to the planner at the end of the round
+    #         for department in departments:
+    #             if len(department.Memory.count()) > 0:
+    #                 # self.CEO.receive_feedback(department.name, department.memory[-1])
+    #                 self.CEO.receive_feedback(
+    #                     department.name, department.Memory.get_last_round()
+    #                 )
+    #                 save_results[f"round_{round}"][department.name] = {
+    #                     "department_results": department.Memory.get_last_round()
+    #                 }
+    #         summary = self.CEO.summarize_round()
+    #         save_results[f"round_{round}"]["summary"] = summary
+    #         self.log_memory()
+    #         self.memory.append(summary)
+    #         if summary["finished"]:
+    #             break
+    #     self.logger.log("Max turn reached. Ending the simulation.")
+    #     return save_results

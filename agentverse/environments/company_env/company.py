@@ -10,12 +10,14 @@ from agentverse.utils import WORK_SPACE_ROOT_DIR
 from agentverse.config import NOW_TIME
 import os
 import json
-import threading
+
+# import threading
 from agentverse.environments.simulation_env.rules.base import SimulationRule as Rule
 from agentverse.message import Message
 from ..base import BaseEnvironment
 from .. import env_registry as EnvironmentRegistry
 from agentverse.logging import Logger
+import typing
 
 
 @EnvironmentRegistry.register("company")
@@ -24,12 +26,14 @@ class HierarchicalEnvironment(BaseEnvironment):
     max_turns: int = 10
     cnt_turn: int = 0
     last_messages: List[Message] = []
-    agent_pool: AgentPool
+    agent_pool: typing.Any
     logger = Logger()
     recruiter: Recruiter
-    company: Company
+    company: typing.Any
+    planner: typing.Any
 
     class Config:
+        validate_assignment = True
         arbitrary_types_allowed = True
 
     def __init__(
@@ -47,27 +51,30 @@ class HierarchicalEnvironment(BaseEnvironment):
             ]
         else:
             roles = []
-        agent_pool = AgentPool(roles)
+        self.agent_pool = AgentPool(roles)
         # self.builder = CompanyBuilder(complex_task, self.agent_pool)
-        recruiter = Recruiter("recruiter", "recruiter", [], complex_task, agent_pool)
+        self.recruiter = Recruiter(
+            "recruiter", "recruiter", [], complex_task, self.agent_pool
+        )
         # self.customer = Customer("customer", "customer", [])
         if Config.USE_STRUCTURE_FILE:
             structure_file_path = os.path.join(structure_path, "structure.json")
-            company = recruiter.recruit_from_json(complex_task, structure_file_path)
+            self.company = self.recruiter.recruit_from_json(
+                complex_task, structure_file_path
+            )
         else:
-            company = recruiter.recruit(complex_task)
+            self.company = self.recruiter.recruit(complex_task)
         print("current directory:", os.getcwd())
         with open("./company_structure/company.jsonl", "a") as f:
-            f.write(json.dumps(company.get_structure(), indent=4) + "\n")
+            f.write(json.dumps(self.company.get_structure(), indent=4) + "\n")
         if Config.COMPANY_STRUCTURE_ONLY:
             print(
                 "company build success, simulaion end since only build company structure"
             )
             return
         print("company build success")
-        planner = company.CEO
-        max_turns = max_turn
-        complex_task = complex_task
+        self.planner = self.company.CEO
+        self.max_turns = max_turn
 
     def simulate_with_company(self, use_tool):
         simulate_results = self.company.startup(self.max_turns, use_tool)
@@ -116,26 +123,26 @@ class HierarchicalEnvironment(BaseEnvironment):
             return True
         return False
 
-    def simulate_with_no_company(self, use_tool):
-        turn = 0
-        for _ in range(self.max_turn):
-            roles = self.execute_tasks(use_tool)
-            self.log_memory()
-            # Ensure every role sends feedback to the planner at the end of the round
-            for role in roles:
-                if len(role.memory) > 0:
-                    self.planner.receive_feedback(
-                        role.name, role.memory[-1]
-                    )  # not included the situation that the role don't receive the response from openai
-            summary = self.summarize_round()
-            if summary["finished"]:
-                break
-            turn += 1
-        if turn == self.max_turn:
-            self.logger.log("Max turn reached. Ending the simulation.")
-        else:
-            self.logger.log("The simulation is finished.")
-        return summary
+    # def simulate_with_no_company(self, use_tool):
+    #     turn = 0
+    #     for _ in range(self.max_turn):
+    #         roles = self.execute_tasks(use_tool)
+    #         self.log_memory()
+    #         # Ensure every role sends feedback to the planner at the end of the round
+    #         for role in roles:
+    #             if len(role.memory) > 0:
+    #                 self.planner.receive_feedback(
+    #                     role.name, role.memory[-1]
+    #                 )  # not included the situation that the role don't receive the response from openai
+    #         summary = self.summarize_round()
+    #         if summary["finished"]:
+    #             break
+    #         turn += 1
+    #     if turn == self.max_turn:
+    #         self.logger.log("Max turn reached. Ending the simulation.")
+    #     else:
+    #         self.logger.log("The simulation is finished.")
+    #     return summary
 
     # def execute_tasks(self, use_tool, max_threads: int = Config.MAX_THREADS):
     #     roles = self.planner.plan_tasks(self.complex_task, self.agent_pool)
