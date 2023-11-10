@@ -15,6 +15,7 @@ from agentverse.environments.simulation_env.rules.base import SimulationRule as 
 from agentverse.message import Message
 from ..base import BaseEnvironment
 from .. import env_registry as EnvironmentRegistry
+from agentverse.logging import Logger
 
 
 @EnvironmentRegistry.register("company")
@@ -24,7 +25,7 @@ class HierarchicalEnvironment(BaseEnvironment):
     cnt_turn: int = 0
     last_messages: List[Message] = []
     agent_pool: AgentPool
-    logger = Config.LOGGER
+    logger = Logger()
     recruiter: Recruiter
     company: Company
 
@@ -66,7 +67,7 @@ class HierarchicalEnvironment(BaseEnvironment):
         complex_task = complex_task
 
     def simulate_with_company(self, use_tool):
-        simulate_results = self.company.startup(max_turns, use_tool)
+        simulate_results = self.company.startup(self.max_turns, use_tool)
         return simulate_results
 
     async def step(self) -> List[Message]:

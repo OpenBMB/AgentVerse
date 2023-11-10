@@ -4,6 +4,7 @@ from agentverse.structure import Department, AgentPool
 from agentverse.tool_call_handler.workspace.workspace import Workspace
 from agentverse.utils.common import WORK_SPACE_ROOT_DIR
 from agentverse.config import NOW_TIME, Config
+from agentverse.logging import Logger
 import threading
 import os
 

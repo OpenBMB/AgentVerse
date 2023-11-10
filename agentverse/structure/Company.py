@@ -1,6 +1,7 @@
 import threading
 from agentverse.structure.Department import Department
 from agentverse.config import Config
+from agentverse.logging import Logger
 
 
 class Company:
@@ -13,7 +14,7 @@ class Company:
         self.departments = {
             "Board": Department("Board").add_role(self.CEO).add_manager(self.CEO)
         }
-        self.logger = logger
+        self.logger = Logger()
         self.memory = []
         # design a tree structure for the company
 

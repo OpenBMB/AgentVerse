@@ -9,6 +9,7 @@ from agentverse.structure.AgentPool import AgentPool
 import asyncio
 from typing import List
 from agentverse.config import NOW_TIME, Config
+from agentverse.logging import Logger
 
 
 class Department:
@@ -27,7 +28,7 @@ class Department:
         self.memory = []
         # self.Memory = Memory()
         self.mission_memory = []
-        self.logger = Config.LOGGER
+        self.logger = Logger()
 
     def get_roles(self):
         return self.roles + [
