@@ -37,7 +37,7 @@ class StartupCompany:
         env_config = task_config["environment"]
 
         # Build agents for all pipeline (task)
-        # agents = {}
+        agents = {}
         # for i, agent_config in enumerate(task_config["agents"]):
         #     if agent_config.get("agent_type", "") == "critic":
         #         agent = load_agent(agent_config)
@@ -49,7 +49,7 @@ class StartupCompany:
         #         agent_type = AGENT_TYPES.from_string(agent_config.get("agent_type", ""))
         #         agents[agent_type] = load_agent(agent_config)
 
-        # env_config["agents"] = agents
+        env_config["agents"] = agents
 
         env_config["task_description"] = task_config.get("task_description", "")
         env_config["max_rounds"] = task_config.get("max_rounds", 3)

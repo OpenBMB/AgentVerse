@@ -6,6 +6,7 @@ import json
 import os
 from agentverse.agents.company_agent.Role import Role
 from agentverse.config import Config
+from agentverse.logging import Logger
 
 
 class AgentPool:
@@ -13,7 +14,7 @@ class AgentPool:
         self.roles = roles
         self.role_map = {role.name: role for role in roles}
         # self.openai_chat = OpenAIUtils()
-        self.logger = Config.LOGGER
+        self.logger = Logger()
 
     def get_role(self, role_name: str):
         return self.role_map.get(role_name, None)

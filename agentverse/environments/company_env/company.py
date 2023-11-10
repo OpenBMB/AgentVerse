@@ -19,11 +19,19 @@ from .. import env_registry as EnvironmentRegistry
 @EnvironmentRegistry.register("company")
 class HierarchicalEnvironment(BaseEnvironment):
     def __init__(
-        self, roles_data, complex_task: str, max_turn: int = 10, structure_path=None
+        self,
+        roles_data=None,
+        complex_task: str = "",
+        max_turn: int = 10,
+        structure_path=None,
     ):
-        roles = [
-            Role(role["name"], role["persona"], role["tools"]) for role in roles_data
-        ]
+        if roles_data is not None:
+            roles = [
+                Role(role["name"], role["persona"], role["tools"])
+                for role in roles_data
+            ]
+        else:
+            roles = []
         self.agent_pool = AgentPool(roles)
         self.logger = Config.LOGGER
         # self.builder = CompanyBuilder(complex_task, self.agent_pool)
