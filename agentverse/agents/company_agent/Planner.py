@@ -10,8 +10,7 @@ from agentverse.utils import (
     get_first_n_tokens,
 )
 from agentverse.config import Config
-from agentverse.structure import Department, Company, AgentPool
-from agentverse.agents.company_agent.Collaborator import Collaborator
+from agentverse.structure import Collaborator
 from agentverse.tool_call_handler import BASIC_TOOLS
 
 
@@ -32,7 +31,7 @@ class Planner(Role):
         self.company = None
 
     @retry(attempts=3)
-    def plan_tasks(self, complex_task, agent_pool: AgentPool):
+    def plan_tasks(self, complex_task, agent_pool):
         # openai_chat = OpenAIUtils()
         print(agent_pool.get_roles_list())
         roles_list = agent_pool.get_roles_name_list()
@@ -185,5 +184,5 @@ class Planner(Role):
         self.logger.log({"turn": self.round, "summary": json.dumps(summary)})
         return summary
 
-    def set_company(self, company: Company):
+    def set_company(self, company):
         return super().set_company(company)

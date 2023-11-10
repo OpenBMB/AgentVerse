@@ -5,14 +5,14 @@ import numpy as np
 import json
 import os
 from agentverse.agents.company_agent.Role import Role
-from agentverse.utils import Config, OpenAIUtils
+from agentverse.config import Config
 
 
 class AgentPool:
     def __init__(self, roles: List[Role]):
         self.roles = roles
         self.role_map = {role.name: role for role in roles}
-        self.openai_chat = OpenAIUtils()
+        # self.openai_chat = OpenAIUtils()
         self.logger = Config.LOGGER
 
     def get_role(self, role_name: str):

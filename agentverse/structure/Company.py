@@ -1,5 +1,4 @@
 import threading
-from agentverse.agents.company_agent.Planner import Planner
 from agentverse.structure.Department import Department
 from agentverse.config import Config
 
@@ -8,6 +7,8 @@ class Company:
     def __init__(self, name: str, task: str, logger):
         self.name = name
         self.mission = task
+        from agentverse.agents.company_agent import Planner
+
         self.CEO = Planner(self.mission, "CEO")  # Adding a CEO role
         self.departments = {
             "Board": Department("Board").add_role(self.CEO).add_manager(self.CEO)

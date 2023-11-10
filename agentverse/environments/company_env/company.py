@@ -1,7 +1,6 @@
 import asyncio
 from typing import List
-from agentverse.agents.company_agent.Role import Role
-from agentverse.agents.company_agent.Recruiter import Recruiter
+from agentverse.agents.company_agent import Role, Recruiter
 from agentverse.tool_call_handler.workspace.workspace import Workspace
 from agentverse.structure import AgentPool
 from agentverse.message import Message

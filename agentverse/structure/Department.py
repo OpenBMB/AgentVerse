@@ -1,15 +1,14 @@
 import os
 import json
 import threading
-from agentverse.agents.company_agent.Planner import Planner
-from agentverse.agents.company_agent.Role import Role
+
 from agentverse.tool_call_handler.workspace.workspace import Workspace
 from agentverse.utils.common import WORK_SPACE_ROOT_DIR
 from agentverse.message import Message
 from agentverse.structure.AgentPool import AgentPool
 import asyncio
 from typing import List
-from agentverse.config import Config
+from agentverse.config import NOW_TIME, Config
 
 
 class Department:
@@ -18,13 +17,15 @@ class Department:
         self.roles = []
         self.sub_departments = []
         self.super_department = None
+        from agentverse.agents.company_agent import Planner, Role
+
         self.manager = Planner(
             name=f"manager of department:{self.name}"
         )  # Adding a manager role
         self.description = description
         self.missions = []
         self.memory = []
-        self.Memory = Memory()
+        # self.Memory = Memory()
         self.mission_memory = []
         self.logger = Config.LOGGER
 
@@ -149,7 +150,7 @@ class Department:
     def add_mission(self, new_mission):
         self.missions.append(new_mission)
 
-    def add_role(self, role: Role):
+    def add_role(self, role):
         role.department = self
         self.roles.append(role)
         return self

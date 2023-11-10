@@ -14,11 +14,8 @@ from agentverse.message import Message
 
 logger = get_logger()
 
-from .. import env_registry as EnvironmentRegistry
-from ..base import BaseEnvironment
 from agentverse.message import Message
-from agentverse.config import Configs
-from agentverse.utils import AgentAction, AgentFinish
+from agentverse.config import Config
 from agentverse.llms.openai_utils import OpenAIUtils
 
 
@@ -44,7 +41,7 @@ class Role(BaseAgent):
         self.task_results = []
         self.tools = tools
         self.openai_conversation_history = []
-        CFG = Configs()
+        CFG = Config()
         # rapidapi_registry = RapidAPIRegistry()
         # command_registry = CommandRegistry(CFG)
         # for command_category in COMMAND_CATEGORIES:

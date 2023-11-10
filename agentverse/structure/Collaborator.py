@@ -1,5 +1,5 @@
 from agentverse.structure import Department, AgentPool
-from agentverse.agents.company_agent.Planner import Planner
+
 
 from agentverse.tool_call_handler.workspace.workspace import Workspace
 from agentverse.utils.common import WORK_SPACE_ROOT_DIR
@@ -13,6 +13,8 @@ class Collaborator(Department):
         super().__init__("Collaborate Department")
         self.task = task
         self.department_list = deparment_list
+        from agentverse.agents.company_agent import Planner
+
         self.manager = Planner(task, "Collaborate Planner")
 
     def get_department_roles(self):
