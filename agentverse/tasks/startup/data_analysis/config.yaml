@@ -96,7 +96,7 @@ name: pipeline
 
 
 environment:
-  env_type: task-basic
+  env_type: company
   max_turn: *max_turn
   rule:
     role_assigner:

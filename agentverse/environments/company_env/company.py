@@ -11,9 +11,14 @@ from agentverse.config import NOW_TIME
 import os
 import json
 import threading
+from agentverse.environments.simulation_env.rules.base import SimulationRule as Rule
+from agentverse.message import Message
+from ..base import BaseEnvironment
+from .. import env_registry as EnvironmentRegistry
 
 
-class HierarchicalEnvironment:
+@EnvironmentRegistry.register("company")
+class HierarchicalEnvironment(BaseEnvironment):
     def __init__(
         self, roles_data, complex_task: str, max_turn: int = 10, structure_path=None
     ):
@@ -21,7 +26,6 @@ class HierarchicalEnvironment:
             Role(role["name"], role["persona"], role["tools"]) for role in roles_data
         ]
         self.agent_pool = AgentPool(roles)
-        self.cnt_turn = 0
         self.logger = Config.LOGGER
         # self.builder = CompanyBuilder(complex_task, self.agent_pool)
         self.recruiter = Recruiter(
