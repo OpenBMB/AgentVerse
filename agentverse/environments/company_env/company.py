@@ -1,6 +1,7 @@
 import asyncio
 from typing import List
 from agentverse.agents.company_agent import Role, Recruiter
+from agentverse.structure import Department, Company
 from agentverse.tool_call_handler.workspace.workspace import Workspace
 from agentverse.structure import AgentPool
 from agentverse.message import Message
@@ -18,6 +19,15 @@ from .. import env_registry as EnvironmentRegistry
 
 @EnvironmentRegistry.register("company")
 class HierarchicalEnvironment(BaseEnvironment):
+    rule: Rule
+    max_turns: int = 10
+    cnt_turn: int = 0
+    last_messages: List[Message] = []
+    agent_pool: AgentPool
+    logger = Config.LOGGER
+    recruiter: Recruiter
+    company: Company
+
     def __init__(
         self,
         roles_data=None,
@@ -25,6 +35,7 @@ class HierarchicalEnvironment(BaseEnvironment):
         max_turn: int = 10,
         structure_path=None,
     ):
+        super().__init__()
         if roles_data is not None:
             roles = [
                 Role(role["name"], role["persona"], role["tools"])
@@ -32,35 +43,30 @@ class HierarchicalEnvironment(BaseEnvironment):
             ]
         else:
             roles = []
-        self.agent_pool = AgentPool(roles)
-        self.logger = Config.LOGGER
+        agent_pool = AgentPool(roles)
         # self.builder = CompanyBuilder(complex_task, self.agent_pool)
-        self.recruiter = Recruiter(
-            "recruiter", "recruiter", [], complex_task, self.agent_pool
-        )
+        recruiter = Recruiter("recruiter", "recruiter", [], complex_task, agent_pool)
         # self.customer = Customer("customer", "customer", [])
         if Config.USE_STRUCTURE_FILE:
             structure_file_path = os.path.join(structure_path, "structure.json")
-            self.company = self.recruiter.recruit_from_json(
-                complex_task, structure_file_path
-            )
+            company = recruiter.recruit_from_json(complex_task, structure_file_path)
         else:
-            self.company = self.recruiter.recruit(complex_task)
+            company = recruiter.recruit(complex_task)
         print("current directory:", os.getcwd())
         with open("./company_structure/company.jsonl", "a") as f:
-            f.write(json.dumps(self.company.get_structure(), indent=4) + "\n")
+            f.write(json.dumps(company.get_structure(), indent=4) + "\n")
         if Config.COMPANY_STRUCTURE_ONLY:
             print(
                 "company build success, simulaion end since only build company structure"
             )
             return
         print("company build success")
-        self.planner = self.company.CEO
-        self.max_turn = max_turn
-        self.complex_task = complex_task
+        planner = company.CEO
+        max_turns = max_turn
+        complex_task = complex_task
 
     def simulate_with_company(self, use_tool):
-        simulate_results = self.company.startup(self.max_turn, use_tool)
+        simulate_results = self.company.startup(max_turns, use_tool)
         return simulate_results
 
     async def step(self) -> List[Message]:
