@@ -37,24 +37,27 @@ class StartupCompany:
         env_config = task_config["environment"]
 
         # Build agents for all pipeline (task)
-        agents = {}
-        for i, agent_config in enumerate(task_config["agents"]):
-            if agent_config.get("agent_type", "") == "critic":
-                agent = load_agent(agent_config)
-                agents[AGENT_TYPES.CRITIC] = [
-                    copy.deepcopy(agent)
-                    for _ in range(task_config.get("cnt_agents", 1) - 1)
-                ]
-            else:
-                agent_type = AGENT_TYPES.from_string(agent_config.get("agent_type", ""))
-                agents[agent_type] = load_agent(agent_config)
+        # agents = {}
+        # for i, agent_config in enumerate(task_config["agents"]):
+        #     if agent_config.get("agent_type", "") == "critic":
+        #         agent = load_agent(agent_config)
+        #         agents[AGENT_TYPES.CRITIC] = [
+        #             copy.deepcopy(agent)
+        #             for _ in range(task_config.get("cnt_agents", 1) - 1)
+        #         ]
+        #     else:
+        #         agent_type = AGENT_TYPES.from_string(agent_config.get("agent_type", ""))
+        #         agents[agent_type] = load_agent(agent_config)
 
-        env_config["agents"] = agents
+        # env_config["agents"] = agents
 
         env_config["task_description"] = task_config.get("task_description", "")
         env_config["max_rounds"] = task_config.get("max_rounds", 3)
 
-        environment: HierarchicalEnvironment = load_environment(env_config)
+        environment = HierarchicalEnvironment(
+            complex_task=task_config.get("task_description", ""),
+            structure_path=tasks_dir,
+        )
 
         return cls(environment=environment, task=task)
 
@@ -91,6 +94,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", type=str, default="company")
-    parser.add_argument("--tasks_dir", type=str, default="tasks")
+    parser.add_argument(
+        "--tasks_dir",
+        type=str,
+        default="agentverse\tasks\startup\data_analysis\config.yaml",
+    )
     args = parser.parse_args()
     run_company(args.task, args.tasks_dir)

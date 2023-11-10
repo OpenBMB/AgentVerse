@@ -14,11 +14,14 @@ import threading
 
 
 class HierarchicalEnvironment:
-    def __init__(self, roles_data, complex_task: str, max_turn: int = 10):
+    def __init__(
+        self, roles_data, complex_task: str, max_turn: int = 10, structure_path=None
+    ):
         roles = [
             Role(role["name"], role["persona"], role["tools"]) for role in roles_data
         ]
         self.agent_pool = AgentPool(roles)
+        self.cnt_turn = 0
         self.logger = Config.LOGGER
         # self.builder = CompanyBuilder(complex_task, self.agent_pool)
         self.recruiter = Recruiter(
@@ -26,9 +29,7 @@ class HierarchicalEnvironment:
         )
         # self.customer = Customer("customer", "customer", [])
         if Config.USE_STRUCTURE_FILE:
-            structure_file_path = os.path.join(
-                "./company_structure", Config.STRUCTURE_FILE
-            )
+            structure_file_path = os.path.join(structure_path, "structure.json")
             self.company = self.recruiter.recruit_from_json(
                 complex_task, structure_file_path
             )
@@ -85,7 +86,6 @@ class HierarchicalEnvironment:
     def reset(self) -> None:
         """Reset the environment"""
         self.cnt_turn = 0
-        self.rule.reset()
         for agent in self.agents:
             agent.reset()
 
