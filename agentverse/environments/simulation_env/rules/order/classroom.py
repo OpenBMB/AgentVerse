@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import logging
 import re
 from typing import TYPE_CHECKING, Any, List, Optional
 
 from . import order_registry as OrderRegistry
 from .base import BaseOrder
+from agentverse.logging import logger
 
 if TYPE_CHECKING:
     from agentverse.environments import BaseEnvironment
@@ -75,7 +75,7 @@ class ClassroomOrder(BaseOrder):
         # `groups` should be set in the corresponding `visibility`,
         # and `group_speaker_mapping` should be maintained here.
         if "groups" not in environment.rule_params:
-            logging.warning(
+            logger.warn(
                 "The environment is grouped, but the grouping information is not provided."
             )
         groups = environment.rule_params.get(

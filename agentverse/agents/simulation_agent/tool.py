@@ -1,4 +1,3 @@
-import logging
 from string import Template
 from typing import List, NamedTuple, Optional, Union
 
@@ -9,12 +8,14 @@ from pydantic import Field
 from agentverse.memory import BaseMemory, ChatHistoryMemory
 from agentverse.message import Message
 from agentverse.utils import AgentAction, AgentFinish
+from agentverse.logging import logger
 
-#from . import agent_registry
-#from .base import BaseAgent
+# from . import agent_registry
+# from .base import BaseAgent
 
 from agentverse.agents import agent_registry
 from agentverse.agents.base import BaseAgent
+
 
 class ToolNotExistError(BaseException):
     """Exception raised when parsing output from a command fails."""
@@ -50,14 +51,14 @@ class ToolAgent(BaseAgent):
                         )
                     break
                 except BaseException as e:
-                    logging.error(e)
-                    logging.warning("Retrying...")
+                    logger.error(e)
+                    logger.warn("Retrying...")
                     continue
             if parsed_response is None or isinstance(parsed_response, AgentFinish):
                 break
 
         if parsed_response is None:
-            logging.error(f"{self.name} failed to generate valid response.")
+            logger.error(f"{self.name} failed to generate valid response.")
 
         self._update_tool_memory(tool_observation)
 
@@ -92,14 +93,14 @@ class ToolAgent(BaseAgent):
                         )
                     break
                 except BaseException as e:
-                    logging.error(e)
-                    logging.warning("Retrying...")
+                    logger.error(e)
+                    logger.warn("Retrying...")
                     continue
             if parsed_response is None or isinstance(parsed_response, AgentFinish):
                 break
 
         if parsed_response is None:
-            logging.error(f"{self.name} failed to generate valid response.")
+            logger.error(f"{self.name} failed to generate valid response.")
 
         self._update_tool_memory(tool_observation)
 

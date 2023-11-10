@@ -4,7 +4,7 @@ import tiktoken
 from typing import List, Union, Dict
 from agentverse.logging import logger
 from agentverse.message import Message
-from agentverse.llms import LOCAL_LLMS
+from agentverse.llms import LOCAL_LLMS, LOCAL_LLMS_MAPPING
 
 
 def count_string_tokens(prompt: str = "", model: str = "gpt-3.5-turbo") -> int:
@@ -27,9 +27,10 @@ def count_message_tokens(
         tokens_per_message = 3
         tokens_per_name = 1
         encoding_model = "gpt-4"
-    elif model in LOCAL_LLMS:
+    elif model.lower() in LOCAL_LLMS or model in LOCAL_LLMS:
         from transformers import AutoTokenizer
-        encoding = AutoTokenizer.from_pretrained(model)
+
+        encoding = AutoTokenizer.from_pretrained(LOCAL_LLMS_MAPPING[model.lower()])
     else:
         raise NotImplementedError(
             f"count_message_tokens() is not implemented for model {model}.\n"

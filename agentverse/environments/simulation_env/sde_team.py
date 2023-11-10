@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 import json
 
 from agentverse.agents.simulation_agent.conversation import BaseAgent
+from agentverse.logging import logger
 
 # from agentverse.environments.simulation_env.rules.base import Rule
 from agentverse.environments.simulation_env.rules.base import SimulationRule as Rule
@@ -116,7 +117,7 @@ class SdeTeamEnvironment(BaseEnvironment):
     def print_messages(self, messages: List[Message]) -> None:
         for message in messages:
             if message is not None:
-                logging.info(f"{message.sender}: {message.content}")
+                logger.info(f"{message.sender}: {message.content}")
 
     def reset(self) -> None:
         """Reset the environment"""

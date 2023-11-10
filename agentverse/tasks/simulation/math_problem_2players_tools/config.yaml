@@ -94,8 +94,8 @@ agents:
     prompt_template: *prompt
     verbose: true
     llm:
-      llm_type: text-davinci-003
-      model: text-davinci-003
+      llm_type: gpt-4
+      model: gpt-4
       temperature: 0.7
       max_tokens: 250
     output_parser:
@@ -110,8 +110,8 @@ agents:
     prompt_template: *prompt
     verbose: true
     llm:
-      llm_type: text-davinci-003
-      model: text-davinci-003
+      llm_type: gpt-4
+      model: gpt-4
       temperature: 0.7
       max_tokens: 250
     output_parser:

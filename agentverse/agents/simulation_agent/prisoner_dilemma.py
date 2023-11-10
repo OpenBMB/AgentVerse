@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import logging
 from string import Template
 from typing import TYPE_CHECKING, List
 
 from agentverse.message import Message
+from agentverse.logging import logger
 
 # from . import agent_registry
 # from .base import BaseAgent
@@ -30,12 +30,12 @@ class PrisonerDilemaAgent(BaseAgent):
                 parsed_response = self.output_parser.parse(self, environment, response)
                 break
             except Exception as e:
-                logging.error(e)
-                logging.warning("Retrying...")
+                logger.error(e)
+                logger.warn("Retrying...")
                 continue
 
         if parsed_response is None:
-            logging.error(f"{self.name} failed to generate valid response.")
+            logger.error(f"{self.name} failed to generate valid response.")
 
         message = Message(
             content=""
@@ -59,12 +59,12 @@ class PrisonerDilemaAgent(BaseAgent):
                 parsed_response = self.output_parser.parse(self, environment, response)
                 break
             except Exception as e:
-                logging.error(e)
-                logging.warning("Retrying...")
+                logger.error(e)
+                logger.warn("Retrying...")
                 continue
 
         if parsed_response is None:
-            logging.error(f"{self.name} failed to generate valid response.")
+            logger.error(f"{self.name} failed to generate valid response.")
 
         message = Message(
             content=""

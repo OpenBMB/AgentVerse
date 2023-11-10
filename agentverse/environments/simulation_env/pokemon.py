@@ -1,10 +1,10 @@
 import asyncio
 import datetime
-import logging
 from typing import Any, Dict, List, Optional, Set
 
 # from agentverse.agents.agent import Agent
 from agentverse.agents.simulation_agent.conversation import BaseAgent
+from agentverse.logging import logger
 
 # from agentverse.environments.simulation_env.rules.base import Rule
 from agentverse.environments.simulation_env.rules.base import SimulationRule as Rule
@@ -167,7 +167,7 @@ class PokemonEnvironment(BaseEnvironment):
     def print_messages(self, messages: List[Message]) -> None:
         for message in messages:
             if message is not None:
-                logging.info(f"{message.sender}: {message.content}")
+                logger.info(f"{message.sender}: {message.content}")
 
     def reset(self) -> None:
         """Reset the environment"""

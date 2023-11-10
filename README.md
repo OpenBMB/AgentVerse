@@ -25,7 +25,7 @@
     <a href="https://huggingface.co/AgentVerse">
         <img alt="HuggingFace" src="https://img.shields.io/badge/hugging_face-play-yellow">
     </a>
-    <a href="https://discord.gg/QyAmgpw2">
+    <a href="https://discord.gg/gDAXfjMw">
         <img alt="Discord" src="https://img.shields.io/badge/AgentVerse-Discord-purple?style=flat">
     </a>
     
@@ -64,7 +64,7 @@ Applications: software development system, consulting system, etc.
 
 - [2023/10/5] Re-factor our codebase to enable the deployment of both simulation and task-solving framework! We have placed the code for Minecraft example in the paper at the [`minecraft`](https://github.com/OpenBMB/AgentVerse/tree/minecraft) branch. Our tool-using example will soon be updated to the `main` branch. Stay tuned!
 
-- [2023/8/22] We're excited to share our paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848) that  illistrate the task-solving framework 
+- [2023/8/22] We're excited to share our paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848) that  illustrate the task-solving framework 
 in detail of AgentVerse.
 
 - [2023/6/5] We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun!
@@ -205,10 +205,14 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
   - [Simulation](#simulation)
     - [Framework Required Modules](#framework-required-modules)
     - [CLI Example](#cli-example)
-    - [GUI Example (Local)](#gui-example-local)
+    - [GUI Example](#gui-example)
   - [Task-Solving](#task-solving)
     - [Framework Required Modules](#framework-required-modules-1)
     - [CLI Example](#cli-example-1)
+  - [Local Model Support](#local-model-support)
+    - [1. Install the Additional Dependencies](#1-install-the-additional-dependencies)
+    - [2. Launch the Local Server](#2-launch-the-local-server)
+    - [3. Modify the Config File](#3-modify-the-config-file)
 - [AgentVerse Showcases](#agentverse-showcases)
   - [Simulation Showcases](#simulation-showcases)
   - [Task-Solving Showcases](#task-solving-showcases)
@@ -257,7 +261,7 @@ You need to export your OpenAI API key as follows：
 export OPENAI_API_KEY="your_api_key_here"
 ```
 
-If you want use Azure OpenAI services, pleas export your Azure OpenAI key and OpenAI API base as follows：
+If you want use Azure OpenAI services, please export your Azure OpenAI key and OpenAI API base as follows：
 ```bash
 export AZURE_OPENAI_API_KEY="your_api_key_here"
 export AZURE_OPENAI_API_BASE="your_api_base_here"
@@ -282,7 +286,7 @@ You can create a multi-agent environments provided by us. Using the classroom sc
 agentverse-simulation --task simulation/nlp_classroom_9players
 ```
 
-### GUI Example (Local)
+### GUI Example
 
 We also provide a local website demo for this environment. You can launch it with
 
@@ -338,6 +342,33 @@ We have provided more tasks in `agentverse/tasks/tasksolving/tool_using/` that s
 
 Also, you can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
 
+## Local Model Support
+### 1. Install the Additional Dependencies
+If you want to use local models such as LLaMA, you need to additionally install some other dependencies:
+```bash
+pip install -r requirements_local.txt
+```
+
+### 2. Launch the Local Server
+Then modify the `MODEL_PATH` and `MODEL_NAME` according to your need to launch the local server with the following command:
+```bash
+bash scripts/run_local_model_server.sh
+```
+The script will launch a service for Llama 7B chat model.
+The `MODEL_NAME` in AgentVerse currently supports several models including `llama-2-7b-chat-hf`, `llama-2-13b-chat-hf`, `llama-2-70b-chat-hf`, `vicuna-7b-v1.5`, and `vicuna-13b-v1.5`. If you wish to integrate additional models that are [compatible with FastChat](https://github.com/lm-sys/FastChat/blob/main/docs/model_support.md), you need to:
+1. Add the new `MODEL_NAME` into the `LOCAL_LLMS` within `agentverse/llms/__init__.py`. Furthermore, establish
+2. Add the mapping from the new `MODEL_NAME` to its corresponding Huggingface identifier in the `LOCAL_LLMS_MAPPING` within the `agentverse/llms/__init__.py` file.
+
+### 3. Modify the Config File
+In your config file, set the `llm_type` to `local` and `model` to the `MODEL_NAME`. For example
+```yaml
+llm:
+  llm_type: local
+  model: llama-2-7b-chat-hf
+  ...
+```
+
+You can refer to `agentverse/tasks/tasksolving/commongen/llama-2-7b-chat-hf/config.yaml` for a more detailed example.
 
 # AgentVerse Showcases
 
@@ -522,7 +553,7 @@ Also, if you're passionate about advancing the frontiers of multi-agent applicat
 
 - Twitter: https://twitter.com/Agentverse71134
 
-- Discord: https://discord.gg/QyAmgpw2.
+- Discord: https://discord.gg/gDAXfjMw.
 
 - Hugging Face: https://huggingface.co/spaces/AgentVerse/agentVerse.
 
