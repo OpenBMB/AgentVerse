@@ -68,7 +68,31 @@ def load_agent(agent_config: Dict) -> BaseAgent:
 
 
 def prepare_structure_config(task, tasks_dir):
-    pass
+    """Read the yaml config of the given task in `tasks` directory."""
+    all_task_dir = tasks_dir
+    task_path = os.path.join(all_task_dir, task)
+    config_path = os.path.join(task_path, "config.yaml")
+    if not os.path.exists(task_path):
+        all_tasks = []
+        for task in os.listdir(all_task_dir):
+            if (
+                os.path.isdir(os.path.join(all_task_dir, task))
+                and task != "__pycache__"
+            ):
+                all_tasks.append(task)
+                for subtask in os.listdir(os.path.join(all_task_dir, task)):
+                    if (
+                        os.path.isdir(os.path.join(all_task_dir, task, subtask))
+                        and subtask != "__pycache__"
+                    ):
+                        all_tasks.append(f"{task}/{subtask}")
+        raise ValueError(f"Task {task} not found. Available tasks: {all_tasks}")
+    if not os.path.exists(config_path):
+        raise ValueError(
+            "You should include the config.yaml file in the task directory"
+        )
+    task_config = yaml.safe_load(open(config_path))
+    return task_config
 
 
 def prepare_task_config(task, tasks_dir):

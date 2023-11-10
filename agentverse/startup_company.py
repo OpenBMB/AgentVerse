@@ -32,7 +32,7 @@ class StartupCompany:
         """
         # Prepare the config of the task
         task_config = prepare_structure_config(task, tasks_dir)
-
+        print(task_config)
         # Build the environment
         env_config = task_config["environment"]
 
