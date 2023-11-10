@@ -27,8 +27,8 @@ class HierarchicalEnvironment(BaseEnvironment):
     cnt_turn: int = 0
     last_messages: List[Message] = []
     agent_pool: typing.Any
-    logger = Logger()
-    recruiter: Recruiter
+    logger = typing.Any
+    recruiter: typing.Any
     company: typing.Any
     planner: typing.Any
 
