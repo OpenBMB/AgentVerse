@@ -13,6 +13,10 @@ from agentverse.config import Config
 from agentverse.structure import Collaborator
 from agentverse.tool_call_handler import BASIC_TOOLS
 
+from typing import TYPE_CHECKING, List
+
+from agentverse.message import Message
+
 
 class Planner(Role):
     def __init__(
@@ -186,3 +190,11 @@ class Planner(Role):
 
     def set_company(self, company):
         return super().set_company(company)
+
+    def add_message_to_memory(self, messages: List[Message]) -> None:
+        self.memory.add_message(messages)
+
+    def reset(self) -> None:
+        """Reset the agent"""
+        self.memory.reset()
+        # TODO: reset receiver

@@ -17,6 +17,9 @@ logger = get_logger()
 from agentverse.message import Message
 from agentverse.config import Config
 from agentverse.llms.openai_utils import OpenAIUtils
+from typing import TYPE_CHECKING, List
+
+from agentverse.message import Message
 
 
 class Role(BaseAgent):
@@ -289,3 +292,11 @@ class Role(BaseAgent):
 
     def clean_history_message(self):
         self.openai_conversation_history = []
+
+    def add_message_to_memory(self, messages: List[Message]) -> None:
+        self.memory.add_message(messages)
+
+    def reset(self) -> None:
+        """Reset the agent"""
+        self.memory.reset()
+        # TODO: reset receiver

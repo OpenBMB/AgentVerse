@@ -3,6 +3,9 @@ from agentverse.agents.company_agent.Role import Role
 from agentverse.utils import Prompt, Prompt_Functions, retry, get_tools_by_names
 from agentverse.config import Config
 from agentverse.structure import Department, Company
+from typing import TYPE_CHECKING, List
+
+from agentverse.message import Message
 
 
 class Recruiter(Role):
@@ -141,3 +144,14 @@ class Recruiter(Role):
                 department.add_role(role)
             company.add_department(department)
             company.departments["Board"].add_sub_department(department)
+
+    def step(self, env_description: str = "") -> Message:
+        return super().step(env_description)
+
+    def add_message_to_memory(self, messages: List[Message]) -> None:
+        self.memory.add_message(messages)
+
+    def reset(self) -> None:
+        """Reset the agent"""
+        self.memory.reset()
+        # TODO: reset receiver

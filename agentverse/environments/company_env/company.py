@@ -44,7 +44,7 @@ class HierarchicalEnvironment(BaseEnvironment):
         max_turn: int = 10,
         structure_path=None,
     ):
-        super().__init__(agents=None, rule=None)
+        super().__init__()
         if roles_data is not None:
             roles = [
                 Role(role["name"], role["persona"], role["tools"])
