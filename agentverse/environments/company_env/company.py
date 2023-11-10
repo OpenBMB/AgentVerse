@@ -22,7 +22,8 @@ import typing
 
 @EnvironmentRegistry.register("company")
 class HierarchicalEnvironment(BaseEnvironment):
-    rule: Rule
+    rule: Rule = None
+    agents: List = []
     max_turns: int = 10
     cnt_turn: int = 0
     last_messages: List[Message] = []
@@ -56,6 +57,7 @@ class HierarchicalEnvironment(BaseEnvironment):
         self.recruiter = Recruiter(
             "recruiter", "recruiter", [], complex_task, self.agent_pool
         )
+        self.logger = Logger()
         # self.customer = Customer("customer", "customer", [])
         if Config.USE_STRUCTURE_FILE:
             structure_file_path = os.path.join(structure_path, "structure.json")
