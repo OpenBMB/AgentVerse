@@ -8,6 +8,8 @@ import logging
 from agentverse.logging import get_logger
 from agentverse.utils.prompt_company import prompt
 
+from typing import Any
+
 # from agentverse.agents.agent import Agent
 from agentverse.agents.base import BaseAgent
 from agentverse.message import Message
@@ -23,27 +25,42 @@ from agentverse.message import Message
 
 
 class Role(BaseAgent):
+    tasks: Any = None
+    tasks_history: Any = None
+    memory: Any = None
+    inbox: Any = None
+    department: Any = None
+    persona: str = None
+    company: Any = None
+    manager: Any = None
+    openai_chat: Any = None
+    current_task: str = None
+    task_results: List[str] = []
+    tools: List[str] = None
+    openai_conversation_history: List[str] = []
+    message_received: List[str] = []
+
+    class Config:
+        validate_assignment = True
+        arbitrary_types_allowed = True
+
     def __init__(
         self,
         name: str = "Role",
         persona: str = "you are a helpful assistant",
         tools: list = [],
     ):
-        self.name = name
-        self.tasks = Queue()
-        self.tasks_history = []
-        self.memory = {}
-        self.inbox = Queue()
-        self.department = None
-        self.persona = persona
-        self.company = None
-        self.manager = None
-        self.openai_chat = OpenAIUtils()
-        self.openai_chat.set_system_prompt(self.persona)
-        self.current_task = None
-        self.task_results = []
-        self.tools = tools
-        self.openai_conversation_history = []
+        name = name
+        tasks = Queue()
+        tasks_history = []
+        memory = {}
+        inbox = Queue()
+        persona = persona
+        # self.openai_chat = OpenAIUtils()
+        # self.openai_chat.set_system_prompt(self.persona)
+        current_task = None
+        task_results = []
+        tools = tools
         CFG = Config()
         # rapidapi_registry = RapidAPIRegistry()
         # command_registry = CommandRegistry(CFG)
@@ -53,7 +70,6 @@ class Role(BaseAgent):
         # # print(command_registry.commands)
         # registry_list = [command_registry, rapidapi_registry]
         # self.registry_list = registry_list
-        self.message_received = []
 
     def send_message(self, recipient, message):
         if (

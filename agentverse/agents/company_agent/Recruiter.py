@@ -9,6 +9,10 @@ from agentverse.message import Message
 
 
 class Recruiter(Role):
+    class Config:
+        validate_assignment = True
+        arbitrary_types_allowed = True
+
     def __init__(
         self,
         name,
@@ -18,14 +22,9 @@ class Recruiter(Role):
         agent_pool=None,
     ):
         super().__init__(name, persona, tools)
-        self.company = None
-        self.task = task
-        self.agent_pool = agent_pool
-        # self.openai_chat = OpenAIUtils()
-        self.logger = Config.LOGGER
-        self.test_department = Department(
-            "Test Department", "This is a test department."
-        )
+        company = None
+        task = task
+        agent_pool = agent_pool
 
     def recruit_from_pool():
         raise NotImplementedError

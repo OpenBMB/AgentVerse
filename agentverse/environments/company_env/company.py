@@ -55,9 +55,13 @@ class HierarchicalEnvironment(BaseEnvironment):
         self.agent_pool = AgentPool(roles)
         # self.builder = CompanyBuilder(complex_task, self.agent_pool)
         self.recruiter = Recruiter(
-            "recruiter", "recruiter", [], complex_task, self.agent_pool
+            name="recruiter",
+            persona="You are a recruiter",
+            tools=[],
+            task=complex_task,
+            agent_pool=self.agent_pool,
         )
-        self.logger = Logger()
+        logger = Logger()
         # self.customer = Customer("customer", "customer", [])
         if Config.USE_STRUCTURE_FILE:
             structure_file_path = os.path.join(structure_path, "structure.json")
