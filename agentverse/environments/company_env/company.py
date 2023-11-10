@@ -29,6 +29,9 @@ class HierarchicalEnvironment(BaseEnvironment):
     recruiter: Recruiter
     company: Company
 
+    class Config:
+        arbitrary_types_allowed = True
+
     def __init__(
         self,
         roles_data=None,
@@ -134,36 +137,36 @@ class HierarchicalEnvironment(BaseEnvironment):
             self.logger.log("The simulation is finished.")
         return summary
 
-    def execute_tasks(self, use_tool, max_threads: int = Config.MAX_THREADS):
-        roles = self.planner.plan_tasks(self.complex_task, self.agent_pool)
-        threads = []
+    # def execute_tasks(self, use_tool, max_threads: int = Config.MAX_THREADS):
+    #     roles = self.planner.plan_tasks(self.complex_task, self.agent_pool)
+    #     threads = []
 
-        # Create threads
-        for role in self.agent_pool.roles:
-            workspace_root = os.path.join(WORK_SPACE_ROOT_DIR, NOW_TIME, role.name)
-            workspace, workspace_root = self.make_workspace(workspace_root)
-            if use_tool:
-                threads.append(
-                    threading.Thread(
-                        target=role.perform_task, args=(workspace, workspace_root)
-                    )
-                )
-            else:
-                threads.append(threading.Thread(target=role.perform_task_wo_tool))
+    #     # Create threads
+    #     for role in self.agent_pool.roles:
+    #         workspace_root = os.path.join(WORK_SPACE_ROOT_DIR, NOW_TIME, role.name)
+    #         workspace, workspace_root = self.make_workspace(workspace_root)
+    #         if use_tool:
+    #             threads.append(
+    #                 threading.Thread(
+    #                     target=role.perform_task, args=(workspace, workspace_root)
+    #                 )
+    #             )
+    #         else:
+    #             threads.append(threading.Thread(target=role.perform_task_wo_tool))
 
-        # Start threads in batches
-        i = 0
-        while i < len(threads):
-            # Start a batch of threads
-            for j in range(min(max_threads, len(threads) - i)):
-                threads[i + j].start()
-            # Wait for the batch of threads to finish
-            for j in range(min(max_threads, len(threads) - i)):
-                threads[i + j].join()
-            # Move to the next batch
-            i += max_threads
+    #     # Start threads in batches
+    #     i = 0
+    #     while i < len(threads):
+    #         # Start a batch of threads
+    #         for j in range(min(max_threads, len(threads) - i)):
+    #             threads[i + j].start()
+    #         # Wait for the batch of threads to finish
+    #         for j in range(min(max_threads, len(threads) - i)):
+    #             threads[i + j].join()
+    #         # Move to the next batch
+    #         i += max_threads
 
-        return roles
+    #     return roles
 
     def log_memory(self):
         for role in self.agent_pool.roles:
