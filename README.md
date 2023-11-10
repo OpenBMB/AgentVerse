@@ -25,7 +25,7 @@
     <a href="https://huggingface.co/AgentVerse">
         <img alt="HuggingFace" src="https://img.shields.io/badge/hugging_face-play-yellow">
     </a>
-    <a href="https://discord.gg/QyAmgpw2">
+    <a href="https://discord.gg/gDAXfjMw">
         <img alt="Discord" src="https://img.shields.io/badge/AgentVerse-Discord-purple?style=flat">
     </a>
     
@@ -553,7 +553,7 @@ Also, if you're passionate about advancing the frontiers of multi-agent applicat
 
 - Twitter: https://twitter.com/Agentverse71134
 
-- Discord: https://discord.gg/QyAmgpw2.
+- Discord: https://discord.gg/gDAXfjMw.
 
 - Hugging Face: https://huggingface.co/spaces/AgentVerse/agentVerse.
 
