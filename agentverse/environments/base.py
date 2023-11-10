@@ -30,8 +30,8 @@ class BaseEnvironment(BaseModel):
         rule_params: Variables set by the rule
     """
 
-    agents: List[BaseAgent]
-    rule: BaseRule
+    agents: Any
+    rule: Any
     max_turns: int = 10
     cnt_turn: int = 0
     last_messages: List[Message] = []
