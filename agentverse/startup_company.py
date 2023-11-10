@@ -13,7 +13,7 @@ from agentverse.initialization import (
 )
 from agentverse.environments.tasksolving_env.basic import BasicEnvironment
 from agentverse.utils import AGENT_TYPES
-
+import os
 
 openai_logger = logging.getLogger("openai")
 openai_logger.setLevel(logging.WARNING)
@@ -56,7 +56,7 @@ class StartupCompany:
 
         environment = HierarchicalEnvironment(
             complex_task=task_config.get("task_description", ""),
-            structure_path=tasks_dir,
+            structure_path=os.path.join(tasks_dir, task, "structure.json"),
         )
 
         return cls(environment=environment, task=task)
