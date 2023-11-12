@@ -37,13 +37,17 @@
 </p>
 
 <p align="center">
-    【English | <a href="README_zh.md">Chinese</a>】
+    【<a href="https://arxiv.org/abs/2308.10848">Paper</a>】 
+</p>
+
+<p align="center">
+    【English | <a href="README_zh.md">Chinese</a>】 
 </p>
 
 **AgentVerse** is designed to facilitate the deployment of multiple LLM-based agents in various applications. AgentVerse primarily provides two frameworks: **task-solving** and **simulation**. 
 
 - Task-solving: This framework assembles multiple agents as an automatic multi-agent system ([AgentVerse-Tasksolving](https://arxiv.org/pdf/2308.10848.pdf), [Multi-agent as system](https://arxiv.org/abs/2309.02427)) to collaboratively accomplish the corresponding tasks. 
-Applications: software development system, consulting system, etc.
+Applications: software development system, consulting system, etc. 
 
 <p align="center">
 <img width="616" alt="Screen Shot 2023-09-01 at 12 08 57 PM" src="https://github.com/OpenBMB/AgentVerse/assets/11704492/6db1c907-b7fc-42f9-946c-89853a28f386">
