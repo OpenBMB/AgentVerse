@@ -113,6 +113,7 @@ class OpenAIChat(BaseChatModel):
             logger.warn(f"Unused arguments: {kwargs}")
         if args["model"] in LOCAL_LLMS:
             openai.api_base = "http://localhost:5000/v1"
+            openai.api_key = "EMPTY"
         super().__init__(args=args, max_retry=max_retry)
 
     @classmethod
