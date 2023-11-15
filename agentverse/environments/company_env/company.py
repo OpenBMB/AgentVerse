@@ -32,6 +32,7 @@ class HierarchicalEnvironment(BaseEnvironment):
     recruiter: typing.Any
     company: typing.Any
     planner: typing.Any
+    CEO: typing.Any
 
     class Config:
         validate_assignment = True
@@ -64,15 +65,15 @@ class HierarchicalEnvironment(BaseEnvironment):
         logger = Logger()
         # self.customer = Customer("customer", "customer", [])
         if Config.USE_STRUCTURE_FILE:
-            structure_file_path = os.path.join(structure_path, "structure.json")
+            structure_file_path = os.path.join(structure_path)
             self.company = self.recruiter.recruit_from_json(
                 complex_task, structure_file_path
             )
         else:
             self.company = self.recruiter.recruit(complex_task)
         print("current directory:", os.getcwd())
-        with open("./company_structure/company.jsonl", "a") as f:
-            f.write(json.dumps(self.company.get_structure(), indent=4) + "\n")
+        # with open("./company_structure/company.jsonl", "a") as f:
+        #     f.write(json.dumps(self.company.get_structure(), indent=4) + "\n")
         if Config.COMPANY_STRUCTURE_ONLY:
             print(
                 "company build success, simulaion end since only build company structure"

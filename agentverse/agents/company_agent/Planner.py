@@ -34,14 +34,10 @@ class Planner(Role):
         complex_task_: str = "You need to plan the roles to finish complex tasks",
         name="Planner",
     ):
-        super().__init__(
-            name,
-            Prompt.get_planner_prompt(),
-            tools=BASIC_TOOLS,
-            complex_task=complex_task_,
-            logger=Logger(),
-        )
+        super().__init__(name, Prompt.get_planner_prompt(), tools=BASIC_TOOLS)
         # Config.MAX_TURN number of empty lists
+        self.complex_task = complex_task_
+        self.logger = Logger()
 
     async def step(self, departments_dict: dict, complex_task: str):
         assigned_departments = []

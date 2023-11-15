@@ -20,9 +20,13 @@ openai_logger.setLevel(logging.WARNING)
 
 
 class StartupCompany:
-    def __init__(self, agents: List[BaseAgent], environment: HierarchicalEnvironment):
-        self.agents = agents
+    def __init__(
+        self,
+        environment: HierarchicalEnvironment,
+        task: str = "",
+    ):
         self.environment = environment
+        self.task = task
 
     @classmethod
     def from_task(cls, task: str, tasks_dir: str):
@@ -56,7 +60,7 @@ class StartupCompany:
 
         environment = HierarchicalEnvironment(
             complex_task=task_config.get("task_description", ""),
-            structure_path=os.path.join(tasks_dir, task),
+            structure_path=os.path.join(tasks_dir, task, "structure.json"),
         )
 
         return cls(environment=environment, task=task)

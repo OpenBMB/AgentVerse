@@ -22,9 +22,9 @@ class Recruiter(Role):
         agent_pool=None,
     ):
         super().__init__(name, persona, tools)
-        company = None
-        task = task
-        agent_pool = agent_pool
+        self.company = None
+        self.task = task
+        self.agent_pool = agent_pool
 
     def recruit_from_pool():
         raise NotImplementedError
@@ -124,7 +124,7 @@ class Recruiter(Role):
         self.company = company
         return company
 
-    def recruit_from_json(self, task: str, json_file: str):
+    def recruit_from_json(self, task: str, json_file: str) -> Company:
         with open(json_file, "r") as f:
             company_structure = json.load(f)
         company = Company(company_structure["name"], task)
@@ -143,6 +143,7 @@ class Recruiter(Role):
                 department.add_role(role)
             company.add_department(department)
             company.departments["Board"].add_sub_department(department)
+        return company
 
     def step(self, env_description: str = "") -> Message:
         return super().step(env_description)

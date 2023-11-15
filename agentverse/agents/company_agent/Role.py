@@ -11,7 +11,6 @@ from agentverse.utils.prompt_company import prompt
 from typing import Any
 
 # from agentverse.agents.agent import Agent
-from agentverse.agents.base import BaseAgent
 from agentverse.message import Message
 
 logger = get_logger()
@@ -24,7 +23,7 @@ from typing import TYPE_CHECKING, List
 from agentverse.message import Message
 
 
-class Role(BaseAgent):
+class Role:
     tasks: Any = None
     tasks_history: Any = None
     memory: Any = None
@@ -51,7 +50,6 @@ class Role(BaseAgent):
         tools: list = [],
         **kwargs,
     ):
-        super().__init__(**kwargs)
         self.name = name
         self.tasks = Queue()
         self.tasks_history = []
