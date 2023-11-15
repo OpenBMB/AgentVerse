@@ -7,11 +7,10 @@ from agentverse.message import Message
 
 
 class BaseMemoryManipulator(BaseModel):
-
-    @abstractmethod
+    # @abstractmethod
     def manipulate_memory(self) -> None:
         pass
 
-    @abstractmethod
+    # @abstractmethod
     def reset(self) -> None:
         pass
