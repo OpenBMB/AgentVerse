@@ -127,7 +127,7 @@ class Recruiter(Role):
     def recruit_from_json(self, task: str, json_file: str):
         with open(json_file, "r") as f:
             company_structure = json.load(f)
-        company = Company(company_structure["name"], task, self.logger)
+        company = Company(company_structure["name"], task)
         for depatment_id, department_name in enumerate(
             company_structure["sub_departments"]
         ):

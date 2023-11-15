@@ -5,7 +5,7 @@ from agentverse.logging import Logger
 
 
 class Company:
-    def __init__(self, name: str, task: str, logger):
+    def __init__(self, name: str, task: str):
         self.name = name
         self.mission = task
         from agentverse.agents.company_agent import Planner

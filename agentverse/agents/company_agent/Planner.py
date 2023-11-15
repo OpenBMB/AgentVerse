@@ -10,29 +10,107 @@ from agentverse.utils import (
     get_first_n_tokens,
 )
 from agentverse.config import Config
+from typing import Any
 from agentverse.structure import Collaborator
 from agentverse.tool_call_handler import BASIC_TOOLS
 
 from typing import TYPE_CHECKING, List
 
 from agentverse.message import Message
+from agentverse.logging import Logger
 
 
 class Planner(Role):
+    round: int = 0
+    round_messages: List[List[str]] = [[] for _ in range(1000)]
+    complex_task: Any = ""
+    turn_summaries: Any = []
+    logger: Any = None
+    plans: List[str] = []
+    company: Any = None
+
     def __init__(
         self,
-        complex_task="You need to plan the roles to finish complex tasks",
+        complex_task_: str = "You need to plan the roles to finish complex tasks",
         name="Planner",
     ):
-        super().__init__(name, Prompt.get_planner_prompt(), tools=BASIC_TOOLS)
-        self.round = 0
+        super().__init__(
+            name,
+            Prompt.get_planner_prompt(),
+            tools=BASIC_TOOLS,
+            complex_task=complex_task_,
+            logger=Logger(),
+        )
         # Config.MAX_TURN number of empty lists
-        self.round_messages = [[] for _ in range(1000)]
-        self.complex_task = complex_task
-        self.turn_summaries = []
-        self.logger = Config.LOGGER
-        self.plans = []
-        self.company = None
+
+    async def step(self, departments_dict: dict, complex_task: str):
+        assigned_departments = []
+        # include the department name and description infomation
+        department_list_str = ""
+        for department in departments_dict.values():
+            department_list_str += (
+                department.name + ": " + department.description + "\t"
+            )
+        if self.round == 0:
+            task_plan_prompt = Prompt.get_task_planning_prompt_start_department(
+                complex_task, department_list_str
+            )
+        else:
+            task_plan_prompt = Prompt.get_task_planning_prompt_continue_department(
+                complex_task,
+                department_list_str,
+                self.turn_summaries[-1]["summary"],
+                self.plans[-1],
+            )
+
+        # task_plan = openai_chat.function_call(
+        #     task_plan_prompt,
+        #     Prompt_Functions().get_functions("plan_tasks_by_department"),
+        # )
+        task_plan = self.llm.generate_response(
+            prompt=task_plan_prompt,
+            function=Prompt_Functions().get_functions("plan_tasks_by_department"),
+        ).function_arguments
+        """
+        structure of task plan:
+        {'task_list':[{'task': 'CEO: You need to plan the roles to finish complex tasks', 'department_list': ['Department']},]}]}
+        """
+        self.plans.append(json.dumps(task_plan))
+        for task_info in task_plan["task_list"]:
+            task = task_info["task"]
+            department_names = task_info["department_list"]
+            # if the length of the department_names is above 1, then use the collaborator
+            if len(department_names) > 1:
+                department_list = [
+                    department
+                    for department in departments_dict.values()
+                    if department.name in department_names
+                ]
+                self.logger.log(
+                    {
+                        "department_names": department_names,
+                        "task": task,
+                        "type": "task assignment",
+                    }
+                )
+
+                collaborator = Collaborator(task, department_list)
+                assigned_departments.append(collaborator)
+            else:
+                department_name = department_names[0]
+                department = departments_dict.get(department_name)
+                if department:
+                    department.add_mission(task)
+                    assigned_departments.append(department)
+                    self.logger.log(
+                        {
+                            "department_name": department_name,
+                            "task": task,
+                            "type": "mission assignment",
+                        }
+                    )
+        self.round += 1
+        return assigned_departments
 
     @retry(attempts=3)
     def plan_tasks(self, complex_task, agent_pool):

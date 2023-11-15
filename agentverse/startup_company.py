@@ -32,7 +32,7 @@ class StartupCompany:
         """
         # Prepare the config of the task
         task_config = prepare_structure_config(task, tasks_dir)
-        print(task_config)
+
         # Build the environment
         env_config = task_config["environment"]
 
@@ -56,7 +56,7 @@ class StartupCompany:
 
         environment = HierarchicalEnvironment(
             complex_task=task_config.get("task_description", ""),
-            structure_path=os.path.join(tasks_dir, task, "structure.json"),
+            structure_path=os.path.join(tasks_dir, task),
         )
 
         return cls(environment=environment, task=task)

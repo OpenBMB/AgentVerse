@@ -49,19 +49,21 @@ class Role(BaseAgent):
         name: str = "Role",
         persona: str = "you are a helpful assistant",
         tools: list = [],
+        **kwargs,
     ):
-        name = name
-        tasks = Queue()
-        tasks_history = []
-        memory = {}
-        inbox = Queue()
-        persona = persona
+        super().__init__(**kwargs)
+        self.name = name
+        self.tasks = Queue()
+        self.tasks_history = []
+        self.memory = {}
+        self.inbox = Queue()
+        self.persona = persona
         # self.openai_chat = OpenAIUtils()
         # self.openai_chat.set_system_prompt(self.persona)
-        current_task = None
-        task_results = []
-        tools = tools
-        CFG = Config()
+        self.current_task = None
+        self.task_results = []
+        self.tools = tools
+        self.CFG = Config()
         # rapidapi_registry = RapidAPIRegistry()
         # command_registry = CommandRegistry(CFG)
         # for command_category in COMMAND_CATEGORIES:
