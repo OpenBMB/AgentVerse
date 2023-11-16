@@ -59,14 +59,14 @@ class Planner(Role):
                 self.plans[-1],
             )
 
-        # task_plan = openai_chat.function_call(
-        #     task_plan_prompt,
-        #     Prompt_Functions().get_functions("plan_tasks_by_department"),
-        # )
-        task_plan = self.llm.generate_response(
-            prompt=task_plan_prompt,
-            function=Prompt_Functions().get_functions("plan_tasks_by_department"),
-        ).function_arguments
+        task_plan = openai_chat.function_call(
+            task_plan_prompt,
+            Prompt_Functions().get_functions("plan_tasks_by_department"),
+        )
+        # task_plan = self.llm.generate_response(
+        #     prompt=task_plan_prompt,
+        #     function=Prompt_Functions().get_functions("plan_tasks_by_department"),
+        # ).function_arguments
         """
         structure of task plan:
         {'task_list':[{'task': 'CEO: You need to plan the roles to finish complex tasks', 'department_list': ['Department']},]}]}

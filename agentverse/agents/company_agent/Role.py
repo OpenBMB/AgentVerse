@@ -19,7 +19,7 @@ from agentverse.message import Message
 from agentverse.config import Config
 from agentverse.llms.openai_utils import OpenAIUtils
 from typing import TYPE_CHECKING, List
-
+from agentverse.llms import BaseLLM
 from agentverse.message import Message
 
 
@@ -38,6 +38,7 @@ class Role:
     tools: List[str] = None
     openai_conversation_history: List[str] = []
     message_received: List[str] = []
+    llm: BaseLLM
 
     class Config:
         validate_assignment = True

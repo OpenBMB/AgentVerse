@@ -32,7 +32,7 @@ class HierarchicalEnvironment(BaseEnvironment):
     recruiter: typing.Any
     company: typing.Any
     planner: typing.Any
-    CEO: typing.Any
+    rule_params: typing.Dict = {}
 
     class Config:
         validate_assignment = True
@@ -82,6 +82,7 @@ class HierarchicalEnvironment(BaseEnvironment):
         print("company build success")
         self.planner = self.company.CEO
         self.max_turns = max_turn
+        self.rule_params["end_flag"] = False
 
     def simulate_with_company(self, use_tool):
         simulate_results = self.company.startup(self.max_turns, use_tool)
@@ -94,7 +95,7 @@ class HierarchicalEnvironment(BaseEnvironment):
         # agent_ids = self.rule.get_next_agent_idx(self)  # order
         # roles = self.planner.plan_tasks(self.complex_task, self.agent_pool)
         departments = self.company.CEO.plan_tasks_by_department(
-            self.get_sub_departments(), self.mission
+            self.company.get_sub_departments(), self.company.mission
         )
         messages = await asyncio.gather(
             *[department.astep("") for department in departments]
