@@ -41,8 +41,8 @@ class OpenAIUtils:
         if Config.USE_AZURE:
             openai.api_type = "azure"
             openai.api_version = "2023-07-01-preview"
-            openai.api_base = os.environ.get("AZURE_OPENAI_API_BASE")
-        openai.api_key = os.environ.get("AZURE_OPENAI_API_KEY")
+            openai.api_base = os.environ.get("OPENAI_API_BASE")
+        openai.api_key = os.environ.get("OPENAI_API_KEY")
         if model_name not in engine_list:
             raise ValueError(
                 "The model name is not in the list of available models among gpt-35-turbo, gpt-35-turbo-16k, gpt-4, gpt-4-32k, text-embedding-ada-002."

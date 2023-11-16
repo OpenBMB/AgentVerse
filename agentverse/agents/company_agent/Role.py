@@ -57,8 +57,8 @@ class Role:
         self.memory = {}
         self.inbox = Queue()
         self.persona = persona
-        # self.openai_chat = OpenAIUtils()
-        # self.openai_chat.set_system_prompt(self.persona)
+        self.openai_chat = OpenAIUtils()
+        self.openai_chat.set_system_prompt(self.persona)
         self.current_task = None
         self.task_results = []
         self.tools = tools
@@ -264,8 +264,8 @@ class Role:
         task_prompt = prompt.get_solution_prompt(
             task=task["task"], necessary_information=task["necessary_information"]
         )
-        # solution = self.openai_chat.chat(task_prompt)
-        solution = self.llm.generate_response(prompt=task_prompt)
+        solution = self.openai_chat.chat(task_prompt)
+        # solution = self.llm.generate_response(prompt=task_prompt)
         self.memory[task["task"]] = solution
         self.Memory.add_memory({"task": task["task"], "solution": solution})
         self.task_results.append(solution)

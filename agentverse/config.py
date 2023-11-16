@@ -6,7 +6,7 @@ NOW_TIME = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 class Config:
     # USE_AZURE = True if os.getenv('USE_AZURE') == 'True' else False
-    USE_AZURE = True
+    USE_AZURE = False
     if USE_AZURE:
         OPENAI_API_TYPE = "azure"
         OPENAI_API_BASE = ""

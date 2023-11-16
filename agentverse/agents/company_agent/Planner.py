@@ -13,7 +13,7 @@ from agentverse.config import Config
 from typing import Any
 from agentverse.structure import Collaborator
 from agentverse.tool_call_handler import BASIC_TOOLS
-
+from agentverse.llms.openai_utils import OpenAIUtils
 from typing import TYPE_CHECKING, List
 
 from agentverse.message import Message
@@ -37,6 +37,7 @@ class Planner(Role):
         super().__init__(name, Prompt.get_planner_prompt(), tools=BASIC_TOOLS)
         # Config.MAX_TURN number of empty lists
         self.complex_task = complex_task_
+        self.openai_chat = OpenAIUtils()
         self.logger = Logger()
 
     async def step(self, departments_dict: dict, complex_task: str):
@@ -59,7 +60,7 @@ class Planner(Role):
                 self.plans[-1],
             )
 
-        task_plan = openai_chat.function_call(
+        task_plan = self.openai_chat.function_call(
             task_plan_prompt,
             Prompt_Functions().get_functions("plan_tasks_by_department"),
         )
@@ -82,12 +83,14 @@ class Planner(Role):
                     for department in departments_dict.values()
                     if department.name in department_names
                 ]
-                self.logger.log(
-                    {
-                        "department_names": department_names,
-                        "task": task,
-                        "type": "task assignment",
-                    }
+                self.logger._log(
+                    message=json.loads(
+                        {
+                            "department_names": department_names,
+                            "task": task,
+                            "type": "task assignment",
+                        }
+                    )
                 )
 
                 collaborator = Collaborator(task, department_list)
@@ -125,13 +128,16 @@ class Planner(Role):
                 self.turn_summaries[-1]["summary"],
                 self.plans[-1],
             )
-        # task_plan = openai_chat.function_call(
-        #     task_plan_prompt, Prompt_Functions().get_functions("plan_tasks")
-        # )
-        task_plan = self.llm.generate_response(
-            prompt=task_plan_prompt,
-            function=Prompt_Functions().get_functions("plan_tasks"),
-        ).function_arguments
+        task_plan = self.openai_chat.function_call(
+            task_plan_prompt, Prompt_Functions().get_functions("plan_tasks")
+        )
+
+        self.logger._log(message=json.loads(task_plan))
+
+        # task_plan = self.llm.generate_response(
+        #     prompt=task_plan_prompt,
+        #     function=Prompt_Functions().get_functions("plan_tasks"),
+        # ).function_arguments
         print(f"Task plan: {task_plan}")
         task_role_list = []
         self.plans.append(task_plan)
@@ -182,14 +188,15 @@ class Planner(Role):
                 self.plans[-1],
             )
 
-        # task_plan = openai_chat.function_call(
-        #     task_plan_prompt,
-        #     Prompt_Functions().get_functions("plan_tasks_by_department"),
-        # )
-        task_plan = self.llm.generate_response(
-            prompt=task_plan_prompt,
-            function=Prompt_Functions().get_functions("plan_tasks_by_department"),
-        ).function_arguments
+        task_plan = self.openai_chat.function_call(
+            task_plan_prompt,
+            Prompt_Functions().get_functions("plan_tasks_by_department"),
+        )
+        self.logger._log(message=json.loads(task_plan))
+        # task_plan = self.llm.generate_response(
+        #     prompt=task_plan_prompt,
+        #     function=Prompt_Functions().get_functions("plan_tasks_by_department"),
+        # ).function_arguments
         """
         structure of task plan:
         {'task_list':[{'task': 'CEO: You need to plan the roles to finish complex tasks', 'department_list': ['Department']},]}]}
