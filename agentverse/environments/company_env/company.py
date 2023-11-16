@@ -98,7 +98,7 @@ class HierarchicalEnvironment(BaseEnvironment):
             self.company.get_sub_departments(), self.company.mission
         )
         messages = await asyncio.gather(
-            *[department.astep("") for department in departments]
+            *[department.astep() for department in departments]
         )
 
         # Track the messages to get the role of the sender

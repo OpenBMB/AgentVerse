@@ -265,6 +265,7 @@ class Role:
             task=task["task"], necessary_information=task["necessary_information"]
         )
         solution = self.openai_chat.chat(task_prompt)
+        print("solution:", solution)
         # solution = self.llm.generate_response(prompt=task_prompt)
         self.memory[task["task"]] = solution
         self.Memory.add_memory({"task": task["task"], "solution": solution})

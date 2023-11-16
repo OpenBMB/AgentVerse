@@ -192,7 +192,7 @@ class Planner(Role):
             task_plan_prompt,
             Prompt_Functions().get_functions("plan_tasks_by_department"),
         )
-        self.logger._log(message=json.loads(task_plan))
+        self.logger._log(message=json.dumps(task_plan))
         # task_plan = self.llm.generate_response(
         #     prompt=task_plan_prompt,
         #     function=Prompt_Functions().get_functions("plan_tasks_by_department"),
@@ -206,35 +206,44 @@ class Planner(Role):
             task = task_info["task"]
             department_names = task_info["department_list"]
             # if the length of the department_names is above 1, then use the collaborator
-            if len(department_names) > 1:
-                department_list = [
-                    department
-                    for department in departments_dict.values()
-                    if department.name in department_names
-                ]
-                self.logger.log(
-                    {
-                        "department_names": department_names,
-                        "task": task,
-                        "type": "task assignment",
-                    }
-                )
 
-                collaborator = Collaborator(task, department_list)
-                assigned_departments.append(collaborator)
-            else:
-                department_name = department_names[0]
-                department = departments_dict.get(department_name)
-                if department:
-                    department.add_mission(task)
-                    assigned_departments.append(department)
-                    self.logger.log(
+            # ignoring the collaboration part
+
+            # if len(department_names) > 1:
+            #     department_list = [
+            #         department
+            #         for department in departments_dict.values()
+            #         if department.name in department_names
+            #     ]
+            #     self.logger._log(
+            #         message=json.dumps(
+            #             {
+            #                 "department_names": department_names,
+            #                 "task": task,
+            #                 "type": "task assignment",
+            #             }
+            #         )
+            #     )
+
+            #     collaborator = Collaborator(task, department_list)
+            #     assigned_departments.append(collaborator)
+            # else:
+
+            department_name = department_names[0]
+            department = departments_dict.get(department_name)
+            if department:
+                department.add_mission(task)
+                assigned_departments.append(department)
+                self.logger._log(
+                    message=json.dumps(
                         {
                             "department_name": department_name,
                             "task": task,
                             "type": "mission assignment",
                         }
                     )
+                )
+
         self.round += 1
         return assigned_departments
 

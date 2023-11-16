@@ -37,12 +37,17 @@ class Department:
             for role in sub_department.get_roles()
         ]
 
-    async def step(self) -> List[Message]:
+    async def astep(self) -> List[Message]:
         """Run one step of the environment"""
 
         # Get the next agent index
         # agent_ids = self.rule.get_next_agent_idx(self)  # order
-        roles = self.planner.plan_tasks(self.complex_task, self.agent_pool)
+        if len(self.missions) > 0:
+            mission = self.missions.pop(0)
+        else:
+            self.logger._log(message="No mission left in the department", level="error")
+            return
+        roles = self.manager.plan_tasks(mission, AgentPool(self.roles))
 
         messages = await asyncio.gather(*[role.astep("") for role in roles])
 
