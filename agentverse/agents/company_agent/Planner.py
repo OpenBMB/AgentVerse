@@ -155,13 +155,15 @@ class Planner(Role):
                     {"task": task, "necessary_information": necessary_information}
                 )
                 task_role_list.append(role)
-                self.logger.log(
-                    {
-                        "role_name": role_name,
-                        "task": task,
-                        "necessary_information": necessary_information,
-                        "type": "task assignment",
-                    }
+                self.logger._log(
+                    message=json.dumps(
+                        {
+                            "role_name": role_name,
+                            "task": task,
+                            "necessary_information": necessary_information,
+                            "type": "task assignment",
+                        }
+                    )
                 )
         self.round += 1
         return task_role_list

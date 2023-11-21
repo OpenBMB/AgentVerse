@@ -21,6 +21,7 @@ from agentverse.llms.openai_utils import OpenAIUtils
 from typing import TYPE_CHECKING, List
 from agentverse.llms import BaseLLM
 from agentverse.message import Message
+from agentverse.logging import Logger
 
 
 class Role:
@@ -63,6 +64,7 @@ class Role:
         self.task_results = []
         self.tools = tools
         self.CFG = Config()
+        self.logger = Logger()
         # rapidapi_registry = RapidAPIRegistry()
         # command_registry = CommandRegistry(CFG)
         # for command_category in COMMAND_CATEGORIES:
@@ -239,7 +241,9 @@ class Role:
         if not self.tasks.empty():
             task = self.tasks.get()
             print(f"{self.name} is performing task: {task}")
-            self.logger.log({self.name: task, "type": "task assignment"})
+            self.logger._log(
+                message=json.dumps({self.name: task, "type": "task assignment"})
+            )
         else:
             return
         task_prompt = prompt.get_solution_prompt(
@@ -249,7 +253,9 @@ class Role:
         self.memory[task["task"]] = solution
         self.Memory.add_memory({"task": task["task"], "solution": solution})
         self.task_results.append(solution)
-        self.logger.log({self.name: solution, "task": task, "type": "solution"})
+        self.logger._log(
+            message=json.dumps({self.name: solution, "task": task, "type": "solution"})
+        )
         # Use the approach to perform the task (implementation can be further refined)
         return solution
 
@@ -258,7 +264,9 @@ class Role:
         if not self.tasks.empty():
             task = self.tasks.get()
             print(f"{self.name} is performing task: {task}")
-            self.logger.log({self.name: task, "type": "task assignment"})
+            self.logger._log(
+                message=json.dumps({self.name: task, "type": "task assignment"})
+            )
         else:
             return
         task_prompt = prompt.get_solution_prompt(
@@ -270,7 +278,9 @@ class Role:
         self.memory[task["task"]] = solution
         self.Memory.add_memory({"task": task["task"], "solution": solution})
         self.task_results.append(solution)
-        self.logger.log({self.name: solution, "task": task, "type": "solution"})
+        self.logger.log(
+            message=json.dumps({self.name: solution, "task": task, "type": "solution"})
+        )
         # Use the approach to perform the task (implementation can be further refined)
         return solution
 
