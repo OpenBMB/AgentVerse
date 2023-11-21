@@ -132,7 +132,7 @@ class Planner(Role):
             task_plan_prompt, Prompt_Functions().get_functions("plan_tasks")
         )
 
-        self.logger._log(message=json.loads(task_plan))
+        self.logger._log(message=json.dumps(task_plan))
 
         # task_plan = self.llm.generate_response(
         #     prompt=task_plan_prompt,
