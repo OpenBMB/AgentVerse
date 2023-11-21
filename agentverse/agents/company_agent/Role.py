@@ -22,6 +22,7 @@ from typing import TYPE_CHECKING, List
 from agentverse.llms import BaseLLM
 from agentverse.message import Message
 from agentverse.logging import Logger
+from agentverse.memory import Memory
 
 
 class Role:
@@ -56,6 +57,7 @@ class Role:
         self.tasks = Queue()
         self.tasks_history = []
         self.memory = {}
+        self.Memory = Memory()
         self.inbox = Queue()
         self.persona = persona
         self.openai_chat = OpenAIUtils()

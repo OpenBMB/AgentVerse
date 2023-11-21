@@ -51,6 +51,20 @@ class Department:
 
         messages = await asyncio.gather(*[role.astep("") for role in roles])
 
+        for idx, role in enumerate(roles):
+            self.manager.receive_feedback(role.name, messages[idx])
+        summary = self.manager.summarize_round()
+        self.logger._log(message=json.dumps(summary), level="info")
+        if "finished" in summary:
+            if summary["finished"]:
+                self.rule_params["end_flag"] = True
+                self.logger._log(
+                    message="Mission finished in the department", level="info"
+                )
+                return
+
+        # summary = self.manager.summarize_round()
+
         # Track the messages to get the role of the sender
         self.last_messages = messages
 
@@ -60,10 +74,10 @@ class Department:
         self.print_messages(selected_messages)
 
         # Update the memory of the agents
-        self.rule.update_memory(self)  # updater: update memory
+        # self.rule.update_memory(self)  # updater: update memory
 
         # Update the set of visible agents for each agent
-        self.rule.update_visible_agents(self)  # change receiver
+        # self.rule.update_visible_agents(self)  # change receiver
 
         self.cnt_turn += 1
 
