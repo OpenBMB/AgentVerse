@@ -22,7 +22,7 @@ from typing import TYPE_CHECKING, List
 from agentverse.llms import BaseLLM
 from agentverse.message import Message
 from agentverse.logging import Logger
-from agentverse.memory import Memory
+from agentverse.memory.memory import Memory
 
 
 class Role:
@@ -280,7 +280,7 @@ class Role:
         self.memory[task["task"]] = solution
         self.Memory.add_memory({"task": task["task"], "solution": solution})
         self.task_results.append(solution)
-        self.logger.log(
+        self.logger._log(
             message=json.dumps({self.name: solution, "task": task, "type": "solution"})
         )
         # Use the approach to perform the task (implementation can be further refined)
