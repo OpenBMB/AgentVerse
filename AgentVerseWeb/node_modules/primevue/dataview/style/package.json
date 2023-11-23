@@ -1,6 +1,0 @@
-{
-    "main": "./dataviewstyle.cjs.js",
-    "module": "./dataviewstyle.esm.js",
-    "unpkg": "./dataviewstyle.min.js",
-    "types": "./DataViewStyle.d.ts"
-}

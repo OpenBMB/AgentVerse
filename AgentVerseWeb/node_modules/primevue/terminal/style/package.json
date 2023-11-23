@@ -1,6 +1,0 @@
-{
-    "main": "./terminalstyle.cjs.js",
-    "module": "./terminalstyle.esm.js",
-    "unpkg": "./terminalstyle.min.js",
-    "types": "./TerminalStyle.d.ts"
-}

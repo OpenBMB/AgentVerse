@@ -1,6 +1,0 @@
-{
-    "main": "./messagestyle.cjs.js",
-    "module": "./messagestyle.esm.js",
-    "unpkg": "./messagestyle.min.js",
-    "types": "./MessageStyle.d.ts"
-}

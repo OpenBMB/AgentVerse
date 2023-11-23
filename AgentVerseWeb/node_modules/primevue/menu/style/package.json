@@ -1,6 +1,0 @@
-{
-    "main": "./menustyle.cjs.js",
-    "module": "./menustyle.esm.js",
-    "unpkg": "./menustyle.min.js",
-    "types": "./MenuStyle.d.ts"
-}

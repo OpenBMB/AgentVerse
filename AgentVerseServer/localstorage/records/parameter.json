@@ -1,0 +1,432 @@
+{
+  "f129298f-f322-4e27-bf50-1c5c24080f8c": [
+    {
+      "interaction_id": "f129298f-f322-4e27-bf50-1c5c24080f8c",
+      "parameter_id": "2a800e51c3ae48f8bcab060d9251837c",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    }
+  ],
+  "2bc0d416-7c85-42b9-9702-e13b1ea18752": [
+    {
+      "interaction_id": "2bc0d416-7c85-42b9-9702-e13b1ea18752",
+      "parameter_id": "f9c7b90bf0ad4f6f898956f314b89d3f",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    }
+  ],
+  "2cb9a0a7-754f-424e-9c5b-b324b395a305": [
+    {
+      "interaction_id": "2cb9a0a7-754f-424e-9c5b-b324b395a305",
+      "parameter_id": "1256a90ab59a4e719a8fd4f3f72c374e",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    },
+    {
+      "interaction_id": "2cb9a0a7-754f-424e-9c5b-b324b395a305",
+      "parameter_id": "20f0d5c09cf94382a0ae68fd4e7848a6",
+      "args": {}
+    }
+  ],
+  "046bfefd-c6cd-42c5-ab7f-743e4a70ba6d": [
+    {
+      "interaction_id": "046bfefd-c6cd-42c5-ab7f-743e4a70ba6d",
+      "parameter_id": "e4d2b7dbc9e34f08a52ebd4541d72989",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    },
+    {
+      "interaction_id": "046bfefd-c6cd-42c5-ab7f-743e4a70ba6d",
+      "parameter_id": "47175e173bc94a26ab9895f9d3aa4894",
+      "args": {}
+    }
+  ],
+  "d46138ac-7e84-45a9-bd99-711e2c916872": [
+    {
+      "interaction_id": "d46138ac-7e84-45a9-bd99-711e2c916872",
+      "parameter_id": "9f96f3366ae445eebee81d1558bb6ba8",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    }
+  ],
+  "80818f18-759a-4b0f-86a5-4efa3acd1e60": [
+    {
+      "interaction_id": "80818f18-759a-4b0f-86a5-4efa3acd1e60",
+      "parameter_id": "b648d65c49424c4c84c198d39c767d45",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    },
+    {
+      "interaction_id": "80818f18-759a-4b0f-86a5-4efa3acd1e60",
+      "parameter_id": "c7f1188f35754f0cb7f99753255d065f",
+      "args": {}
+    }
+  ],
+  "c1d0573e-da50-4ac4-952b-ecd6b65f9138": [
+    {
+      "interaction_id": "c1d0573e-da50-4ac4-952b-ecd6b65f9138",
+      "parameter_id": "cc6584253b0a4bc7a794da6c64d3fff8",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    }
+  ],
+  "d8658322-7ff7-412d-8920-d03d8cebab69": [
+    {
+      "interaction_id": "d8658322-7ff7-412d-8920-d03d8cebab69",
+      "parameter_id": "57266f645ea54f38a1f32f12a64af607",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    }
+  ],
+  "6a081ca4-0929-4e01-98fe-1892c1d30703": [
+    {
+      "interaction_id": "6a081ca4-0929-4e01-98fe-1892c1d30703",
+      "parameter_id": "3b928bc921194b1e99ffe031faa954e8",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    }
+  ],
+  "6b8a7a53-596b-46d5-8e50-8912a350ab77": [
+    {
+      "interaction_id": "6b8a7a53-596b-46d5-8e50-8912a350ab77",
+      "parameter_id": "880d21d2863c45b990e33bc6017b51ed",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    },
+    {
+      "interaction_id": "6b8a7a53-596b-46d5-8e50-8912a350ab77",
+      "parameter_id": "332015bbd83d44ff86ccf954475d324d",
+      "args": {}
+    }
+  ],
+  "817102cd-c753-4c07-976b-898750839f3c": [
+    {
+      "interaction_id": "817102cd-c753-4c07-976b-898750839f3c",
+      "parameter_id": "7b643f48c26e4f928a1c5a2896114ec0",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    }
+  ],
+  "f4390315-6c72-4294-9b98-1742630fac66": [
+    {
+      "interaction_id": "f4390315-6c72-4294-9b98-1742630fac66",
+      "parameter_id": "bd7ea3849d8745079ccadc4be6184ed8",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    }
+  ],
+  "b71d597d-4e62-47f6-ae75-1f43e5b97ea2": [
+    {
+      "interaction_id": "b71d597d-4e62-47f6-ae75-1f43e5b97ea2",
+      "parameter_id": "f7d3686084094a20a67921e866c3fa24",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    }
+  ],
+  "b8914884-788c-4d01-adc2-fe48f6848e7e": [
+    {
+      "interaction_id": "b8914884-788c-4d01-adc2-fe48f6848e7e",
+      "parameter_id": "72312018491e4a58ae3f5423602e9fd2",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    },
+    {
+      "interaction_id": "b8914884-788c-4d01-adc2-fe48f6848e7e",
+      "parameter_id": "8df21fa3cdc24347864fd5ba517edcef",
+      "args": {}
+    }
+  ],
+  "e9449b8c-df48-45c6-833c-59a5303f2986": [
+    {
+      "interaction_id": "e9449b8c-df48-45c6-833c-59a5303f2986",
+      "parameter_id": "9757b96be8f945b58c4f340fd3895f7a",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    },
+    {
+      "interaction_id": "e9449b8c-df48-45c6-833c-59a5303f2986",
+      "parameter_id": "ba147a7c62994a9ebe169aa25f6d6ea7",
+      "args": {}
+    }
+  ],
+  "12049de3-4d6a-4230-98ae-37faa33f328b": [
+    {
+      "interaction_id": "12049de3-4d6a-4230-98ae-37faa33f328b",
+      "parameter_id": "5a88233b53ae4286b959c1d7837c0adf",
+      "args": {
+        "goal": {
+          "_object": {
+            "history": {},
+            "historyArr": [],
+            "sharedArr": [],
+            "currentInput": {
+              "task_des": "Recently, it has become popular in the AI field to verify the mathematical reasoning abilities of large language models by observing if they can solve the \"24-Point Game.\" What is this game? Does it have a code-based solution? If it does, provide a Python code along with test cases and test its functionality. What are some other similar games that can be used to test the models' mathematical reasoning abilities?",
+              "cnt_agents": "3"
+            },
+            "isRequestingAi": false,
+            "msgInfoList": [],
+            "setting": {},
+            "isShouldRefreshHistory": false
+          },
+          "_key": "currentInput",
+          "__v_isRef": true
+        }
+      }
+    }
+  ]
+}

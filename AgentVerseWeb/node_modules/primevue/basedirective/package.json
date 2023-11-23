@@ -1,6 +1,0 @@
-{
-    "main": "./basedirective.cjs.js",
-    "module": "./basedirective.esm.js",
-    "unpkg": "./basedirective.min.js",
-    "types": "./BaseDirective.d.ts"
-}

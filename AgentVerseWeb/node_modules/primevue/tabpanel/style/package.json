@@ -1,6 +1,0 @@
-{
-    "main": "./tabpanelstyle.cjs.js",
-    "module": "./tabpanelstyle.esm.js",
-    "unpkg": "./tabpanelstyle.min.js",
-    "types": "./TabPanelStyle.d.ts"
-}

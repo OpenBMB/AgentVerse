@@ -3,6 +3,7 @@ import logging
 
 # from agentverse.agentverse import AgentVerse
 from agentverse.tasksolving import TaskSolving
+import asyncio
 
 # from agentverse.gui import GUI
 from agentverse.logging import logger
@@ -26,10 +27,10 @@ args = parser.parse_args()
 logger.set_level(logging.DEBUG if args.debug else logging.INFO)
 
 
-def cli_main():
+async def cli_main():
     agentversepipeline = TaskSolving.from_task(args.task, args.tasks_dir)
-    agentversepipeline.run()
+    await agentversepipeline.run()
 
 
 if __name__ == "__main__":
-    cli_main()
+    asyncio.run(cli_main())
