@@ -272,10 +272,15 @@ class Planner(Role):
         # summary = openai_chat.function_call(
         #     prompt, Prompt_Functions().get_functions("summarize_round")
         # )
-        summary = self.llm.generate_response(
-            prompt=prompt,
-            function=Prompt_Functions().get_functions("summarize_round"),
-        ).function_arguments
+        summary = self.openai_chat.function_call(
+            prompt, Prompt_Functions().get_functions("summarize_round")
+        )
+
+        # self.llm.generate_response(
+        #     prompt=prompt,
+        #     function=Prompt_Functions().get_functions("summarize_round"),
+        # ).function_arguments
+
         self.turn_summaries.append({"turn": self.round, "summary": summary})
         self.logger.log({"turn": self.round, "summary": json.dumps(summary)})
         return summary
