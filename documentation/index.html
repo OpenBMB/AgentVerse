@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation:Agentverse</title>
+  <link type="text/css" rel="stylesheet" href="style.css" />
+</head>
+
+<body zoom="65%">
+  <button id="toggle-sidebar-button"></button>
+  <nav id="navbar">
+    <header>AgentVerse <br>Documentation</header>
+    <ul>
+      <li><a href="#Introduction" class="nav-link">Getting started</a></li>
+      <li>
+        <a href="#Requirements" class="nav-link">Requirements</a>
+      </li>
+      <li>
+        <a href="#Installation" class="nav-link">Installation</a>
+      </li>
+      <li><a href="#Simulations" class="nav-link"><u>Simulation agent</u> </a></li>
+      <!-- <li>
+        <a href="#Gui_Prisoners" class="nav-link">1. Prisoner's dilema</a>
+      </li>
+      <li><a href="#Gui_classroom" class="nav-link">2. NLP Classroom players</a></li> -->
+
+      <li><a href="#Gui_sd" class="nav-link">3. Software Design</a></li>
+      <!-- <li>
+
+        <a href="#cli" class="nav-link"><u>Simulation agent</u></a>
+      </li> -->
+      <!-- <li><a href="#prisoners" class="nav-link">1. Prisoner's dilema</a></li>
+      <li><a href="#NLP" class="nav-link">2. NLP Classroom players</a></li> -->
+    
+      <li><a href="#ts_agent" class="nav-link"><u>Task solving agent</u> </a></li>
+      <li><a href="#simulation_env" class="nav-link"><u>Simulation environment</u>
+        </a></li>
+      <li>
+        <a href="#Pokemon_env" class="nav-link">Pokemon</a>
+      </li>
+      <li><a href="#Reference" class="nav-link">Prisoner's dilema</Obj></a></li>
+      <li><a href="#sde_env" class="nav-link">SDE team </a></li>
+      <li><a href="#ts_env" class="nav-link"><u>Task solving environment</u></a></li>
+      <li><a href="#Contributing" class="nav-link">Contributing</a></li>
+    </ul>
+  </nav>
+  <main id="main-doc">
+    <section class="main-section" id="Introduction">
+      <article>
+        <img src="../imgs/agentverse">
+        <h2>Introduction: AgentVerse</h2>
+        <p>
+          🤖 AgentVerse 🪐 <br>
+          Think of it as a universe for LLM agents.
+          </br>It is designed to facilitate the deployment of multiple LLM-based agents in various applications, which
+          primarily provides two frameworks: task-solving and simulation
+          Introduce how to run an example successfully in CLI mode and in GUI mode
+        </p>
+        <p>
+          The codebase contained facilitates the creation and simulation of multi-agent systems, potentially incorporating language models for agent interactions. 
+        </p>
+ 
+      </article>
+    </section>
+
+    <section class="main-section" id="Requirements">
+      <h2>Requirements</h2>
+      <article>
+        <p>This documentation assumes you have the following:</p>
+        <ul>
+          <li> AgentVerse <a href="https://github.com/OpenBMB/AgentVerse" target="blank">github repo</a> </li>
+          <li> A Python virtual environment setup</li>
+          <li>
+            A working OpenAI API key
+          </li>
+          <li>Good working knowledge of Python</li>
+          <li>
+            Some experience of web development
+          </li>
+          <li>
+            Knowledge and understanding of yaml
+          </li>
+          <li>
+            Interest or a general understanding of LLM's
+          </li>
+          <li>
+            Knoweldge of github
+          </li>
+        </ul>
+        <img src="../imgs/docs/Python-virtual-env.png" width="65%" height="50%">
+      </article>
+    </section>
+
+    <section class="main-section" id="Installation">
+      <h2>Installation</h2>
+      <article>
+        <a href="https://github.com/OpenBMB/AgentVerse#installation" target="blank">This section</a> of the README has
+        details on how you can get up and running with installing this project. The steps below were used to install it
+        on Windows 10 using the recommended manually:
+
+        Make sure you have Python >= 3.9
+        <ul>
+          <li> Clone the AgentVerse github repo
+            <code> git clone https://github.com/OpenBMB/AgentVerse.git --depth 1
+              </code>
+          </li>
+          
+             
+          <li> Navigate into the folder
+            <code> cd AgentVerse</code>
+          </li>
+
+          <li>Install
+            <code>pip install -e .</code>
+          </li>
+
+          <li>Optional: If you want to use AgentVerse with local models such as LLaMA, you need to additionally install some other dependencies:
+            <code>pip install -r requirements_local.txt</code>
+          </li>
+        </ul><br>
+        Another alternative to install is:
+        <code>pip install -U agentverse</code>
+  </article>
+  <br>
+  <p><a href="https://github.com/OpenBMB/AgentVerse#environment-variables">This guide</a> shows how to export environment variables. On windows, the screenshot below gives as example on how it can be done.</p>
+      <img src="../imgs/docs/environmentKeys.png" width="65%" height="50%">
+    </section>
+
+    <br>
+    <hr>
+    <br>
+
+    <section class="main-section" id="Simulations">
+      <h1><u>Simulations: Graphical User Interface </u></h1>
+      <br>
+      <article>
+        Simulations can either have a Graphical User Interface (GUI) or a Command Line Interface (CLI), some simulations
+        have both interfaces. Here are some <a href="https://github.com/OpenBMB/AgentVerse/blob/main/README_simulation_cases.md">showcases</a>, examples of cli simulations can be found <a href="https://github.com/OpenBMB/AgentVerse#cli-example">here</a> and GUI simulations can be found <a href="https://github.com/OpenBMB/AgentVerse#gui-example">here.</a>
+        <p>
+          The simulation agent located inside the agents folder which is inside the agentverse folder defines a
+          BaseAgent which is a Python class that serves as the foundation for other agent classes in the AgentVerse
+          framework.
+          The class includes attributes such as name, llm, output_parser, and methods like step, reset, etc.
+          The agent can interact with an environment and has methods for performing steps, asynchronous steps, and
+          memory management.
+          It provides functionality for managing prompts, receivers, spending, and memory-related operations.
+          <br>
+          As part of the agent registry module in the AgentVerse framework there is an initialization file that imports
+          classes from various modules, including simulation agents (ConversationAgent, ToolAgent, etc.) and
+          task-solving agents (RoleAssignerAgent, CriticAgent, etc.).
+          The Registry class from agentverse.registry is used to manage and register agents.The file initializes an
+          instance of Registry named AgentRegistry for agent registration.
+          These files shown below collectively contribute to the structure and functionality of the AgentVerse
+          framework, providing a foundation for creating and managing different types of agents in both simulation and
+          task-solving scenarios.
+        </p>
+      </article>
+      <br>
+      <img src="../imgs/docs/simulations.png" width="65%" height="50%">
+    </section>
+    <br>
+    <hr>
+    <br>
+
+    <section class="main-section" id="Gui_Prisoners">
+      <h2>1. Prisoner's dilema</h2><br>
+      <article>
+        This class defines a PrisonerDilemaAgent within the AgentVerse framework.
+        This agent class is designed for simulating interactions in a Prisoner's Dilema scenario.
+        Additionally, subclasses PoliceAgent and PrisonerAgent inherit from PrisonerDilemaAgent, each representing a
+        specific role with additional role-specific information.
+
+        <br>
+        <u>
+          Imports and Type Checking
+        </u> : The from __future__ import annotations statement is used for postponed evaluation of type annotations.
+        The class also uses type hints, and there's a conditional import based on type checking to avoid circular
+        dependencies.
+        <br><u>Class Structure</u>: The class PrisonerDilemaAgent inherits from BaseAgent and serves as a base for
+        agents involved in a Prisoner's Dilemma scenario.
+        <br><u>Methods</u>:
+        <code>step</code> Represents a step in the agent's decision-making process within the environment.
+        <code>astep </code>An asynchronous version of step.
+        <code>_fill_prompt_template</code> A helper method to fill placeholders in the prompt template, including agent
+        name, environment description, role description, and chat history.
+        <code>add_message_to_memory </code>Adds messages to the agent's memory.
+        <code>reset </code>Resets the agent.
+        <br>
+        <u>Role-specific Subclasses</u> The PoliceAgent and PrisonerAgent subclasses introduce role-specific behavior
+        and template filling.
+
+
+
+      </article>
+    </section>
+ 
+    <!-- <section class="main-section" id="Gui_classroom">
+      <h2>2. Natural Language Processing : Classroom players</h2>
+      <article>
+
+        <p>
+
+        </p>
+        <code>
+
+                </code>
+      </article>
+      <img src="../imgs/docs/Python-virtual-env.png" width="65%" height="50%">
+    </section>
+    <br>
+    <hr>
+    <br>
+    <section class="main-section" id="Gui_sd">
+      <h2> 3. Software Design</h2>
+      <article>
+
+      </article>
+    </section> -->
+    <br> 
+    <hr>
+    <br> 
+    <!-- <section class="main-section" id="cli">
+      <h2><u>Simulations: Command Line Interface</u></h2>
+      <article>
+
+      </article>
+      <img src="../imgs/docs/Python-virtual-env.png" width="65%" height="50%">
+    </section>
+    <br>
+    <hr>
+    <br> -->
+    <!-- <section class="main-section" id="Constants">
+      <h2>Prisoner's dilema CLI
+      </h2>
+      <article>
+
+        <p>
+
+        </p>
+
+        <p>
+
+        </p>
+        <code>
+
+                </code>
+      </article>
+      <img src="../imgs/docs/Python-virtual-env.png" width="65%" height="50%">
+    </section>
+    <br>
+    <hr>
+    <br>
+    <section class="main-section" id="Data_Types">
+      <h2> <u>Natural Language Processing (NLP) Classroom players</u></h2>
+      <article>
+
+      </article>
+      <img src="../imgs/docs/Python-virtual-env.png" width="65%" height="50%">
+    </section> -->
+
+  
+    <section class="main-section" id="ts_agent">
+      <h2><u>Task solving agent - Command Line Interface</u></h2><br>
+      <article>
+        <p>
+          The base.py file located inside the task-solving agent folder, defines an abstract base class named BaseAgent within the AgentVerse framework. 
+          This class represents the foundation for creating agents in a multi-agent system. Agents are entities capable of interacting with an environment, processing messages, and maintaining memory.
+<br><br><u>Attributes:</u>
+<li>name (str): A unique identifier for the agent.</li>
+<li>llm (BaseLLM): An instance of a language model that the agent uses for generating responses.</li>
+<li>output_parser (OutputParser): An output parser that interprets the responses generated by the agent.</li>
+<li>prepend_prompt_template (str): Template for the prompt to be prepended before generating a response.</li>
+<li>append_prompt_template (str): Template for the prompt to be appended before generating a response.</li>
+<li>prompt_template (str): Combined template for the entire prompt used in generating a response.</li>
+<li>role_description (str): A description of the role of the agent.</li>
+<li>memory (BaseMemory): Memory for storing chat history and other relevant information.</li>
+<li>memory_manipulator (BaseMemoryManipulator): Manipulator for interacting with the agent's memory.</li>
+<li>max_retry (int): The maximum number of retry attempts if an error occurs during response generation.</li>
+<li>receiver (Set[str]): A set of identifiers representing the entities that can receive messages from the agent.</li>
+<li>async_mode (bool): A flag indicating whether the agent operates in asynchronous mode.</li>
+
+
+
+<br><u>Abstract Methods:</u>
+<li>step(self, env_description: str = "") -> Message: Abstract method to get one-step response.</li>
+<li>astep(self, env_description: str = "") -> Message: Abstract asynchronous version of step.</li>
+<li>reset(self) -> None: Abstract method to reset the agent.</li>
+<li>add_message_to_memory(self, messages: List[Message]) -> None: Abstract method to add a message to the agent's memory.</li>
+
+<br><u>Methods:</u>
+<code>get_spend(self)</code> -> float: Gets the spending of the agent (associated with language model usage).
+<code>get_spend_formatted(self)</code>  -> str: Gets the formatted spending of the agent.
+<code>get_all_prompts(self, **kwargs)</code>: Gets both prepend and append prompts along with the total number of tokens.
+<code>get_receiver(self)</code> -> Set[str]: Gets the set of entities that can receive messages from the agent.
+<code>set_receiver(self, receiver: Union[Set[str], str])</code> -> None: Sets the receiver entities.
+<code>add_receiver(self, receiver: Union[Set[str], str])</code>  -> None: Adds receiver entities.
+<code>remove_receiver(self, receiver: Union[Set[str], str])</code> -> None: Removes receiver entities.
+
+<br><br>This base class provides a blueprint for creating agents in a multi-agent system. It encapsulates common attributes and methods that agents might use to interact with the environment, generate responses, and manage their memory. The abstract methods enforce the implementation of core functionalities in derived agent classes. The class is designed to be extended to create specialized agents tailored for specific tasks or environments within the AgentVerse framework.
+        </p>
+      </article>
+    </section>
+
+    <br>
+    <hr>
+    <br>
+
+    <section class="main-section" id="simulation_env">
+      <h2><u>Simulation environment</u></h2><br>
+      <article>
+        The simulation environments are defined in a class named BasicEnvironment within the AgentVerse framework. This
+        environment, labeled as "sim-basic" in the EnvironmentRegistry, serves as a foundational simulation environment
+        implementing the logic of conversation. It is designed to facilitate interactions between multiple agents based
+        on a set of rules.
+        <br><br><u>Purpose:</u>
+
+        This class represents a basic simulation environment within the AgentVerse framework, implementing the logic of
+        conversation between agents.
+        <br><u>Inheritance:</u>
+
+        Inherits from BaseEnvironment, providing a base class for custom environment implementations.
+        <br><u>Registration:</u>
+
+        Registered in the EnvironmentRegistry under the name "sim-basic."
+        <br><u>Attributes:</u>
+        <li>agents: List of agents participating in the environment.</li>
+        <li>rule: Rule defining the logic of agent interactions.</li>
+        <li>max_turns: Maximum number of turns in the environment.</li>
+        <li>cnt_turn: Current turn number in the environment.</li>
+        <li>last_messages: Messages from the last turn.</li>
+        <li>rule_params: Variables set by the rule.</li>
+        <br><u>Initialization:</u>
+
+        The class initializes with a rule, and additional configurations for order, visibility, selector, updater, and
+        describer aspects of the rule are extracted from the rule configuration.
+        <br> <u>Methods:</u>
+
+        <code>step</code> Asynchronously runs one step of the environment, involving obtaining the next agent index,
+        generating the current environment description, generating the next message from each agent, selecting certain
+        messages based on rules, updating agent memory, updating the set of visible agents, and incrementing the turn
+        count.
+        <code>print_messages</code> Logs the content of selected messages.
+        <code>reset</code> Resets the environment, setting the turn count to 0, resetting the rule, and calling the
+        reset method for each agent.
+        <code>is_done</code> Checks if the environment is done based on the current turn count.
+        This class provides a flexible and extensible foundation for creating various simulation environments within the
+        AgentVerse framework. It encapsulates the common logic for agent interactions, allowing for easy customization
+        and extension based on specific simulation requirements.
+      </article>
+      <br> The code snippet below shows an example of it's usage:
+      <br># Creating an instance of the BasicEnvironment
+      <code>
+              basic_env = BasicEnvironment(rule=custom_rule, agents=[agent1, agent2])
+            </code>
+      # Running a step in the environment
+
+      <code>
+              resulting_messages = await basic_env.step()
+            </code>
+    </section>
+    <br>
+    <hr>
+    <br>
+    <section class="main-section" id="Pokemon_env">
+      <h2><u>Pokemon environment</u></h2><br>
+      <article>
+        Pokemon enviroment defines a class named PokemonEnvironment within the AgentVerse framework. This environment,
+        labeled as "pokemon" in the EnvironmentRegistry and is designed for simulating a Pokémon-themed scenario.
+        It involves multiple agents located in different places, and the environment allows for interactions and
+        responses to a player's messages.
+        <br>
+        <u>Initialization</u>: The class initializes with information about agents, their initial locations, a rule
+        governing the environment, and additional parameters.
+        <br><u>Environment Steps</u>: The step method simulates one step of the environment, allowing either routine
+        agent actions or responses to a player's input.
+        <br><u>Internal Methods</u>
+        <code>_routine_step</code> Simulates routine steps for non-player agents.
+        <code>_respond_to_player</code>Processes the player's input and triggers agent responses.
+        <code>update_state </code>Updates the state of agents based on their locations.
+        <code>print_messages</code>Logs messages for debugging or information.
+        <code>reset</code>Resets the environment to its initial state.
+        <code>is_done </code>Checks if the environment simulation is completed.
+        <code>get_test_messages </code>Returns a set of test messages for demonstration.
+
+      </article>
+    </section>
+    <br>
+    <hr>
+    <br>
+    <section class="main-section" id="Reference">
+      <h2><u>Prisoner's dilema</u></h2><br>
+      <article>
+        PrisonerDilemmaEnvironment, which is a specific environment implementation within the AgentVerse framework. This
+        environment is designed for simulating a scenario related to the prisoner's dilemma. The class inherits from
+        BasicEnvironment and is registered in the EnvironmentRegistry with the label "prisoner_dilemma."
+        The purpose of this class is to represent an environment for simulating the prisoner's dilemma, a classic
+        problem in game theory.
+        <br>-It inherits from BasicEnvironment, providing a foundation for custom environment implementations.
+        <br>-It is registered in the EnvironmentRegistry under the label "prisoner_dilemma."
+        <br>-It asynchronously runs one step of the environment simulation. It involves obtaining the next agent index,
+        generating the current environment description, generating the next message from each agent, selecting certain
+        messages based on rules, updating agent memory, updating the set of visible agents, and incrementing the turn
+        count.
+        <br>-It inherits attributes and methods from BasicEnvironment.and it utilizes a specific rule (SimulationRule)
+        for governing agent interactions in the environment.
+        <br> -For asynchronous execution it utilizes asynchronous programming with asyncio.gather to concurrently
+        execute agent steps.
+        This class is registered in the EnvironmentRegistry under the name "prisoner_dilemma," facilitating easy
+        retrieval and instantiation.
+        <br>
+        <br>
+        The screenshot below shows the location of the Prisoner's dilema's class
+      </article>
+      <br>
+
+      <img src="../imgs/docs/prisoner_env.png" width="65%" height="50%">
+    </section>
+    <br>
+    <hr>
+    <br>
+    <section class="main-section" id="sde_env">
+      <h2>Software Development Environment Team</h2><br>
+      <article>
+        This file defines a class named SdeTeamEnvironment within the AgentVerse framework. This environment class is
+        designed for simulating interactions in a software development environment where a team collaborates to craft
+        code. It extends the BaseEnvironment class and includes specific rules and behaviors for the given context.
+        <br>
+        <u>Imports </u>The class includes necessary imports for asynchronous operations, logging, typing, and JSON
+        handling.
+        <br><u>Class Structure:</u> The class SdeTeamEnvironment is registered in the EnvironmentRegistry as the
+        environment for simulating software development teams.
+        <br><u>Attributes:</u>
+        <u></u>agents: List of BaseAgent instances representing team members.
+        <li>rule</li> - Rule for the environment.
+        <li>max_turns</li> - Maximum number of turns for the simulation.
+        <li>cnt_turn</li> - Current turn number.
+        <li>last_messages</li>- Messages from the last turn.
+        <li>rule_params</li> - Variables set by the rule.
+        <li>task_name</li> - A string representing the name of the task or project (default is "test").
+
+        <br><u>Methods</u>
+        <code>Constructor (__init__)</code>
+        Initializes the environment with a specified rule and other optional parameters. It configures the rule based on
+        provided configurations for order, visibility, selector, updater, and describer.
+
+        <br><u>step Method</u>
+
+        Purpose: Runs one step of the environment simulation.
+        <code>Steps</code>
+        <li>Gets the next agent index based on the order rule.</li>
+        <li>Generates the next message asynchronously for each agent.</li>
+        <li>Selects certain messages based on the selector rule.</li>
+        <li>Updates memory of the agents using the updater rule.</li>
+        <li>Updates the set of visible agents for each agent.</li>
+        <li>Increments the turn count.</li>
+        <li>Returns the selected messages.</li>
+        <br>
+        <u>print_messages Method</u><br>
+
+        Purpose: Prints the sender and content of messages to the logging system.
+
+        <br><u>Parameters:</u>
+        <li>messages: List of Message instances.</li>
+        <li>
+          Output: Logs the sender and content of each message.
+        </li>
+        <li>reset Method:Resets the environment, including the turn count, rule, and agent states.</li>
+
+        <li>Output: Resets the environment state.</li>
+        <li>is_done Method: Checks if the environment is done, either reaching the maximum turns or an end flag.</li>
+        <li>Output: Returns True if the environment is done, False otherwise.</li>
+        <li>Rule Initialization and Configuration:
+          Initializes and configures the rule for order, visibility, selector, updater, and describer based on provided
+          configurations. </li>
+        <br>
+        The SdeTeamEnvironment class is specifically designed to model interactions within a software development
+        environment where a team collaborates to craft code. The environment includes rules for order, visibility,
+        selector, updater, and describer, which are tailored to simulate the dynamics of a software development team.
+        The asynchronous step method and other functionalities allow for the simulation of turns, messages, and
+        interactions among team members.
+        <br>
+        <u>Tool Loading</u>
+        The environment loads a tool named "code_interpreter" as part of the initialization process. This tool, along
+        with others, is loaded using the load_tools function from agentverse.initialization. The tools are used to
+        interact with specific functionalities related to the software development context.
+      </article>
+    </section>
+
+    <br>
+    <hr>
+    <br>
+
+
+    <section class="main-section" id="ts_env">
+      <h2>Task solving Enviroment</h2><br>
+      <article>
+       TasksolvingRule class defined within the AgentVerse framework represents a rule set for a task-solving environment where agents collaborate to perform tasks. 
+       The rule set includes components for role assignment, decision-making, execution, and evaluation. It extends the BaseRule class and is designed to be used in the context of multi-agent systems where agents need to work together to solve complex tasks.
+<br><br><u>Components:</u>
+<li>Role Assigner (BaseRoleAssigner): Assigns roles to agents based on the task description and advice.</li>
+<li>Decision Maker (BaseDecisionMaker): Determines the plan or decision for solving the task. It takes into account the task description, previous plans, and advice.</li>
+<li>Executor (BaseExecutor): Executes the task using the provided final solution from the decision-making stage.</li>
+<li>Evaluator (BaseEvaluator): Evaluates the solution and execution result to provide a score and advice.</li>
+
+<br><u>Attributes:</u>
+<li>role_assigner: Instance of the role assigner component.</li>
+<li>decision_maker: Instance of the decision maker component.</li>
+<li>executor: Instance of the executor component.</li>
+<li>evaluator: Instance of the evaluator component.</li>
+<li>role_assign_only_once: Boolean indicating whether role assignment should occur only once.</li>
+<li>add_execution_result_to_critic: Boolean indicating whether to add execution results to critic agents.</li>
+<li>add_execution_result_to_solver: Boolean indicating whether to add execution results to the solver agent.</li>
+<br><u>Methods:</u>
+<code>__init__ Method</code>
+
+Initializes the rule set with components configured using provided configurations for role assigner, decision maker, executor, and evaluator.
+<code>role_assign Method</code>
+
+Assigns roles to agents based on the task description, advice, and turn count.
+Handles scenarios where role assignment occurs only once.
+<code>decision_making Method</code>
+
+Determines the plan or decision for solving the task.
+Handles dynamic decision-making scenarios.
+Takes into account task description, previous plans, and advice.
+<code>execute Method</code>
+
+Executes the task using the executor component.
+Adds execution results to critic and solver agents based on configuration.
+<code>evaluate Method</code>
+
+Evaluates the solution and execution result using the evaluator component.
+Handles human evaluation scenarios by collecting scores and advice.
+<code>reset Method</code>
+
+Resets the state of the rule set by resetting each component.
+
+<br>
+<br>
+
+The TasksolvingRule class is designed for a task-solving environment where multiple agents collaborate to perform tasks. It integrates components for role assignment, decision-making, execution, and evaluation. The file incorporates dynamic decision-making scenarios, human evaluation, and configuration options for controlling the behavior of the rule set. Below is a screenshot showing codebase for this class.
+
+
+      </article><br>
+      <img src="../imgs/docs/ts_env.png" width="65%" height="50%">
+    </section>
+
+    <br>
+    <hr>
+    <br>
+
+    <section class="main-section" id="Contributing">
+      <h2>Contributing</h2><br>
+      <p>
+        To <a href="https://github.com/OpenBMB/AgentVerse#contributors">contribute</a> or if you are interested in
+        joining the agent verse and a become core AgentVerse team member - don't hesitate to reach out to the leaders,
+        their details are on the repo's README file.
+      </p>
+      <br>
+
+
+      <img src="../imgs/title.png" width="65%" height="50%">
+    </section>
+  </main>
+  <script>
+  </script>
+
+</html>
