@@ -282,7 +282,9 @@ class Planner(Role):
         # ).function_arguments
 
         self.turn_summaries.append({"turn": self.round, "summary": summary})
-        self.logger.log({"turn": self.round, "summary": json.dumps(summary)})
+        self.logger._log(
+            message=json.dumps({"turn": self.round, "summary": json.dumps(summary)})
+        )
         return summary
 
     def set_company(self, company):

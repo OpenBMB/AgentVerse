@@ -54,13 +54,11 @@ class Department:
         for idx, role in enumerate(roles):
             self.manager.receive_feedback(role.name, messages[idx])
         summary = self.manager.summarize_round()
-        self.logger._log(message=json.dumps(summary), level="info")
+        self.logger._log(message=json.dumps(summary))
         if "finished" in summary:
             if summary["finished"]:
                 self.rule_params["end_flag"] = True
-                self.logger._log(
-                    message="Mission finished in the department", level="info"
-                )
+                self.logger._log(message="Mission finished in the department")
                 return
 
         # summary = self.manager.summarize_round()
