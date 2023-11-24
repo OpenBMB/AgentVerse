@@ -101,16 +101,14 @@ class HierarchicalEnvironment(BaseEnvironment):
             *[department.astep() for department in departments]
         )
 
-        for idx, role in enumerate(departments):
-            self.manager.receive_feedback(departments.name, messages[idx])
-        summary = self.manager.summarize_round()
-        self.logger._log(message=json.dumps(summary), level="info")
+        for idx, department in enumerate(departments):
+            self.company.CEO.receive_feedback(department.name, messages[idx])
+        summary = self.company.CEO.summarize_round()
+        self.logger._log(message=json.dumps(summary))
         if "finished" in summary:
             if summary["finished"]:
                 self.rule_params["end_flag"] = True
-                self.logger._log(
-                    message="Mission finished in the Company", level="info"
-                )
+                self.logger._log(message="Mission finished in the Company")
                 return
         # Track the messages to get the role of the sender
         self.last_messages = messages

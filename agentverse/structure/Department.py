@@ -7,12 +7,14 @@ from agentverse.utils.common import WORK_SPACE_ROOT_DIR
 from agentverse.message import Message
 from agentverse.structure.AgentPool import AgentPool
 import asyncio
-from typing import List
+from typing import List, Dict
 from agentverse.config import NOW_TIME, Config
 from agentverse.logging import Logger
 
 
 class Department:
+    rule_params: Dict = {}
+
     def __init__(self, name, description=""):
         self.name = name
         self.roles = []
@@ -57,19 +59,19 @@ class Department:
         self.logger._log(message=json.dumps(summary))
         if "finished" in summary:
             if summary["finished"]:
-                self.rule_params["end_flag"] = True
+                # self.rule_params["end_flag"] = True
                 self.logger._log(message="Mission finished in the department")
                 return
 
         # summary = self.manager.summarize_round()
 
         # Track the messages to get the role of the sender
-        self.last_messages = messages
+        # self.last_messages = messages
 
-        # Some rules will select certain messages from all the messages
-        selected_messages = self.rule.select_message(self, messages)  # selector
-        self.last_messages = selected_messages
-        self.print_messages(selected_messages)
+        # # Some rules will select certain messages from all the messages
+        # selected_messages = self.rule.select_message(self, messages)  # selector
+        # self.last_messages = selected_messages
+        # self.print_messages(selected_messages)
 
         # Update the memory of the agents
         # self.rule.update_memory(self)  # updater: update memory
@@ -79,7 +81,7 @@ class Department:
 
         self.cnt_turn += 1
 
-        return selected_messages
+        return summary
 
     def perform_mission(self, use_tool):
         if len(self.missions) > 0:

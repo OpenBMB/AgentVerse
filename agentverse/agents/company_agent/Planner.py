@@ -24,8 +24,6 @@ class Planner(Role):
     round: int = 0
     round_messages: List[List[str]] = [[] for _ in range(1000)]
     complex_task: Any = ""
-    turn_summaries: Any = []
-    logger: Any = None
     plans: List[str] = []
     company: Any = None
 
@@ -39,6 +37,7 @@ class Planner(Role):
         self.complex_task = complex_task_
         self.openai_chat = OpenAIUtils()
         self.logger = Logger()
+        self.turn_summaries: Any = []
 
     async def step(self, departments_dict: dict, complex_task: str):
         assigned_departments = []
@@ -122,6 +121,7 @@ class Planner(Role):
                 complex_task, roles_list
             )
         else:
+            print("summary:", self.turn_summaries)
             task_plan_prompt = Prompt.get_task_planning_prompt_continue(
                 complex_task,
                 roles_list,
