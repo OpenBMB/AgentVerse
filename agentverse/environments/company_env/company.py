@@ -28,7 +28,7 @@ class HierarchicalEnvironment(BaseEnvironment):
     cnt_turn: int = 0
     last_messages: List[Message] = []
     agent_pool: typing.Any
-    logger = typing.Any
+    logger: typing.Any
     recruiter: typing.Any
     company: typing.Any
     planner: typing.Any
@@ -62,7 +62,7 @@ class HierarchicalEnvironment(BaseEnvironment):
             task=complex_task,
             agent_pool=self.agent_pool,
         )
-        logger = Logger()
+        self.logger = Logger()
         # self.customer = Customer("customer", "customer", [])
         if Config.USE_STRUCTURE_FILE:
             structure_file_path = os.path.join(structure_path)
