@@ -1,6 +1,8 @@
 import json
 import ast
-import openai
+from openai import AsyncOpenAI
+
+aclient = AsyncOpenAI()
 from string import Template
 from colorama import Fore
 from aiohttp import ClientSession
@@ -219,43 +221,41 @@ class ToolUsingExecutor(BaseExecutor):
             )
             for _ in range(3):
                 try:
-                    response = await openai.ChatCompletion.acreate(
-                        messages=[{"role": "user", "content": summarize_prompt}],
-                        model="gpt-3.5-turbo-16k",
-                        functions=[
-                            {
-                                "name": "parse_web_text",
-                                "description": "Parse the text of the webpage based on tthe question. Extract all related infomation about `Question` from the webpage. ! Don't provide information that is not shown in the webpage! ! Don't provide your own opinion!",
-                                "parameters": {
-                                    "type": "object",
-                                    "properties": {
-                                        "summary": {
+                    response = await aclient.chat.completions.create(messages=[{"role": "user", "content": summarize_prompt}],
+                    model="gpt-3.5-turbo-16k",
+                    functions=[
+                        {
+                            "name": "parse_web_text",
+                            "description": "Parse the text of the webpage based on tthe question. Extract all related infomation about `Question` from the webpage. ! Don't provide information that is not shown in the webpage! ! Don't provide your own opinion!",
+                            "parameters": {
+                                "type": "object",
+                                "properties": {
+                                    "summary": {
+                                        "type": "string",
+                                        "description": "Summary of the webpage with 50 words. Make sure all important information about `Question` is included. ! Don't provide information that is not shown in the webpage! ! Don't provide your own opinion!",
+                                    },
+                                    "related_details": {
+                                        "type": "string",
+                                        "description": "List all webpage details related to the question. Maximum 400 words. ! Don't provide information that is not shown in the webpage! ! Don't provide your own opinion!",
+                                    },
+                                    "useful_hyperlinks": {
+                                        "type": "array",
+                                        "description": "Maximum 3 items. Select useful hyperlinks in the webpage that related to the question. Make sure the url is useful for further browse. Don't provide repeated hyperlinks.",
+                                        "items": {
                                             "type": "string",
-                                            "description": "Summary of the webpage with 50 words. Make sure all important information about `Question` is included. ! Don't provide information that is not shown in the webpage! ! Don't provide your own opinion!",
-                                        },
-                                        "related_details": {
-                                            "type": "string",
-                                            "description": "List all webpage details related to the question. Maximum 400 words. ! Don't provide information that is not shown in the webpage! ! Don't provide your own opinion!",
-                                        },
-                                        "useful_hyperlinks": {
-                                            "type": "array",
-                                            "description": "Maximum 3 items. Select useful hyperlinks in the webpage that related to the question. Make sure the url is useful for further browse. Don't provide repeated hyperlinks.",
-                                            "items": {
-                                                "type": "string",
-                                                "description": "! Don't provide hyperlinks that is not shown in the webpage! ! Don't provide your own opinion!",
-                                            },
+                                            "description": "! Don't provide hyperlinks that is not shown in the webpage! ! Don't provide your own opinion!",
                                         },
                                     },
-                                    "required": [
-                                        "summary",
-                                        "related_details",
-                                        "useful_hyperlinks",
-                                    ],
                                 },
-                            }
-                        ],
-                        function_call={"name": "parse_web_text"},
-                    )
+                                "required": [
+                                    "summary",
+                                    "related_details",
+                                    "useful_hyperlinks",
+                                ],
+                            },
+                        }
+                    ],
+                    function_call={"name": "parse_web_text"})
                 except Exception as e:
                     logger.error("Failed to call the tool. Exception: " + str(e))
                     continue

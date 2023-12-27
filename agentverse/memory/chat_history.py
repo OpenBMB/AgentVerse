@@ -1,7 +1,9 @@
 import json
 import logging
 import os
-import openai
+from openai import AsyncOpenAI
+
+aclient = AsyncOpenAI()
 import copy
 from typing import List, Optional, Tuple, Dict
 
@@ -206,12 +208,10 @@ Latest Development:
             summary=self.summary, new_events=new_events_batch
         )
 
-        self.summary = await openai.ChatCompletion.acreate(
-            messages=[{"role": "user", "content": prompt}],
-            model=model,
-            max_tokens=max_summary_length,
-            temperature=0.5,
-        )["choices"][0]["message"]["content"]
+        self.summary = await aclient.chat.completions.create(messages=[{"role": "user", "content": prompt}],
+        model=model,
+        max_tokens=max_summary_length,
+        temperature=0.5)["choices"][0]["message"]["content"]
 
     def summary_message(self) -> dict:
         return {
