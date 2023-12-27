@@ -2,7 +2,9 @@ import os
 import json
 from string import Template
 import time
-import openai
+from openai import OpenAI
+
+client = OpenAI()
 from tqdm import tqdm
 
 with open("./results.jsonl", "r") as f:
@@ -50,11 +52,9 @@ def write_eval_to_file(file, skip=0):
         )
         for i in range(100):
             try:
-                eval_response = openai.ChatCompletion.create(
-                    model="gpt-4",
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=0.0,
-                )
+                eval_response = client.chat.completions.create(model="gpt-4",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.0)
             except:
                 time.sleep(min(i**2, 60))
                 continue

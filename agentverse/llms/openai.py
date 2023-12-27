@@ -17,31 +17,25 @@ from . import llm_registry, LOCAL_LLMS
 from .base import BaseChatModel, BaseCompletionModel, BaseModelArgs
 from .utils.jsonrepair import JsonRepair
 
-try:
-    import openai
-    from openai.error import OpenAIError
-except ImportError:
-    is_openai_available = False
-    logger.warn("openai package is not installed")
-else:
-    # openai.proxy = os.environ.get("http_proxy")
-    # if openai.proxy is None:
-    #     openai.proxy = os.environ.get("HTTP_PROXY")
-    if os.environ.get("OPENAI_API_KEY") != None:
-        openai.api_key = os.environ.get("OPENAI_API_KEY")
-        is_openai_available = True
-    elif os.environ.get("AZURE_OPENAI_API_KEY") != None:
-        openai.api_type = "azure"
-        openai.api_key = os.environ.get("AZURE_OPENAI_API_KEY")
-        openai.api_base = os.environ.get("AZURE_OPENAI_API_BASE")
-        openai.api_version = "2023-05-15"
-        is_openai_available = True
-    else:
-        logger.warn(
-            "OpenAI API key is not set. Please set the environment variable OPENAI_API_KEY"
-        )
-        is_openai_available = False
+import openai
 
+# openai.proxy = os.environ.get("http_proxy")
+# if openai.proxy is None:
+#     openai.proxy = os.environ.get("HTTP_PROXY")
+if os.environ.get("OPENAI_API_KEY") != None:
+    openai.api_key = os.environ.get("OPENAI_API_KEY")
+    is_openai_available = True
+elif os.environ.get("AZURE_OPENAI_API_KEY") != None:
+    openai.api_type = "azure"
+    openai.api_key = os.environ.get("AZURE_OPENAI_API_KEY")
+    openai.api_base = os.environ.get("AZURE_OPENAI_API_BASE")
+    openai.api_version = "2023-05-15"
+    is_openai_available = True
+else:
+    logger.warn(
+        "OpenAI API key is not set. Please set the environment variable OPENAI_API_KEY"
+    )
+    is_openai_available = False
 
 class OpenAIChatArgs(BaseModelArgs):
     model: str = Field(default="gpt-3.5-turbo")
@@ -148,11 +142,9 @@ class OpenAIChat(BaseChatModel):
         try:
             # Execute function call
             if functions != []:
-                response = openai.ChatCompletion.create(
-                    messages=messages,
-                    functions=functions,
-                    **self.args.dict(),
-                )
+                response = client.chat.completions.create(messages=messages,
+                functions=functions,
+                **self.args.dict())
                 if response["choices"][0]["message"].get("function_call") is not None:
                     self.collect_metrics(response)
                     return LLMResult(
@@ -179,10 +171,8 @@ class OpenAIChat(BaseChatModel):
                     )
 
             else:
-                response = openai.ChatCompletion.create(
-                    messages=messages,
-                    **self.args.dict(),
-                )
+                response = client.chat.completions.create(messages=messages,
+                **self.args.dict())
                 self.collect_metrics(response)
                 return LLMResult(
                     content=response["choices"][0]["message"]["content"],
@@ -212,11 +202,9 @@ class OpenAIChat(BaseChatModel):
             if functions != []:
                 async with ClientSession(trust_env=True) as session:
                     openai.aiosession.set(session)
-                    response = await openai.ChatCompletion.acreate(
-                        messages=messages,
-                        functions=functions,
-                        **self.args.dict(),
-                    )
+                    response = await aclient.chat.completions.create(messages=messages,
+                    functions=functions,
+                    **self.args.dict())
                 if response["choices"][0]["message"].get("function_call") is not None:
                     function_name = response["choices"][0]["message"]["function_call"][
                         "name"
@@ -280,10 +268,8 @@ class OpenAIChat(BaseChatModel):
             else:
                 async with ClientSession(trust_env=True) as session:
                     openai.aiosession.set(session)
-                    response = await openai.ChatCompletion.acreate(
-                        messages=messages,
-                        **self.args.dict(),
-                    )
+                    response = await aclient.chat.completions.create(messages=messages,
+                    **self.args.dict())
                 self.collect_metrics(response)
                 return LLMResult(
                     content=response["choices"][0]["message"]["content"],
@@ -352,13 +338,9 @@ def get_embedding(text: str, attempts=3) -> np.array:
     try:
         text = text.replace("\n", " ")
         if openai.api_type == "azure":
-            embedding = openai.Embedding.create(
-                input=[text], deployment_id="text-embedding-ada-002"
-            )["data"][0]["embedding"]
+            embedding = client.embeddings.create(input=[text], deployment_id="text-embedding-ada-002")["data"][0]["embedding"]
         else:
-            embedding = openai.Embedding.create(
-                input=[text], model="text-embedding-ada-002"
-            )["data"][0]["embedding"]
+            embedding = client.embeddings.create(input=[text], model="text-embedding-ada-002")["data"][0]["embedding"]
         return tuple(embedding)
     except Exception as e:
         attempt += 1
