@@ -11,7 +11,7 @@ astunparse
 langchain==0.0.157
 scikit-learn
 pydantic==1.10.7
-typing-extensions==4.5.0
+typing-extensions==4.9.0
 typing-inspect==0.8.0
 colorlog
 rapidfuzz

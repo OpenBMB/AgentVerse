@@ -17,39 +17,25 @@ from . import llm_registry, LOCAL_LLMS
 from .base import BaseChatModel, BaseCompletionModel, BaseModelArgs
 from .utils.jsonrepair import JsonRepair
 
-try:
-    from openai import AzureOpenAI, AsyncAzureOpenAI
-    
-    client = AzureOpenAI(api_key=os.environ.get("OPENAI_API_KEY"),
-    api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
-    azure_endpoint=os.environ.get("AZURE_OPENAI_API_BASE"),
-    api_version="2023-05-15",
-    azure_endpoint="http://localhost:5000/v1",
-    api_key="EMPTY")
-    aclient = AsyncAzureOpenAI(api_key=os.environ.get("OPENAI_API_KEY"),
-    api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
-    azure_endpoint=os.environ.get("AZURE_OPENAI_API_BASE"),
-    api_version="2023-05-15",
-    azure_endpoint="http://localhost:5000/v1",
-    api_key="EMPTY")
-    from openai.error import OpenAIError
-except ImportError:
-    is_openai_available = False
-    logger.warn("openai package is not installed")
-else:
-    # openai.proxy = os.environ.get("http_proxy")
-    # if openai.proxy is None:
-    #     openai.proxy = os.environ.get("HTTP_PROXY")
-    if os.environ.get("OPENAI_API_KEY") != None:
-        is_openai_available = True
-    elif os.environ.get("AZURE_OPENAI_API_KEY") != None:
-        is_openai_available = True
-    else:
-        logger.warn(
-            "OpenAI API key is not set. Please set the environment variable OPENAI_API_KEY"
-        )
-        is_openai_available = False
+import openai
 
+# openai.proxy = os.environ.get("http_proxy")
+# if openai.proxy is None:
+#     openai.proxy = os.environ.get("HTTP_PROXY")
+if os.environ.get("OPENAI_API_KEY") != None:
+    openai.api_key = os.environ.get("OPENAI_API_KEY")
+    is_openai_available = True
+elif os.environ.get("AZURE_OPENAI_API_KEY") != None:
+    openai.api_type = "azure"
+    openai.api_key = os.environ.get("AZURE_OPENAI_API_KEY")
+    openai.api_base = os.environ.get("AZURE_OPENAI_API_BASE")
+    openai.api_version = "2023-05-15"
+    is_openai_available = True
+else:
+    logger.warn(
+        "OpenAI API key is not set. Please set the environment variable OPENAI_API_KEY"
+    )
+    is_openai_available = False
 
 class OpenAIChatArgs(BaseModelArgs):
     model: str = Field(default="gpt-3.5-turbo")
@@ -120,6 +106,8 @@ class OpenAIChat(BaseChatModel):
         if len(kwargs) > 0:
             logger.warn(f"Unused arguments: {kwargs}")
         if args["model"] in LOCAL_LLMS:
+            openai.api_base = "http://localhost:5000/v1"
+            openai.api_key = "EMPTY"
         super().__init__(args=args, max_retry=max_retry)
 
     @classmethod
