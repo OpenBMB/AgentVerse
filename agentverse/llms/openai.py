@@ -30,6 +30,10 @@ else:
     if os.environ.get("OPENAI_API_KEY") != None:
         openai.api_key = os.environ.get("OPENAI_API_KEY")
         is_openai_available = True
+        # set openai api base url if it is set
+        if os.environ.get("OPENAI_BASE_URL") != None:
+            openai.base_url = os.environ.get("OPENAI_BASE_URL")
+            print("use new openai base url", openai.base_url)
     elif os.environ.get("AZURE_OPENAI_API_KEY") != None:
         openai.api_type = "azure"
         openai.api_key = os.environ.get("AZURE_OPENAI_API_KEY")
