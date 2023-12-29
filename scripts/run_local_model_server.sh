@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # See https://github.com/lm-sys/FastChat/blob/main/docs/openai_api.md for more usages.
 
 # export CUDA_VISIBLE_DEVICES=0

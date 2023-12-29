@@ -24,5 +24,6 @@ def cli_main():
     ui = GUI(args.task, args.tasks_dir,ui_kwargs={"share":args.share,"server_name":args.server_name})
     ui.launch()
 
+
 if __name__ == "__main__":
     cli_main()

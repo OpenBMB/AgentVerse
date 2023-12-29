@@ -173,4 +173,5 @@ results
 tmp/
 data/toolbench
 logs/
+llms/
 ci_smoke_test_output/

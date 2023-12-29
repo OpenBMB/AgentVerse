@@ -1,8 +1,8 @@
-<h1 align="center"> 🤖 AgentVerse 🪐 </h1>
+<h1 align="center"> 🤖 Milgram AgentVerse 🪐 </h1>
 
 <!--
 <h3 align="center">
-    <p>A Framework for Multi-LLM Environment Simulation</p>
+    <p>A Framework for Multi-LLM Environment Simulation in the Milgram Experiment Context</p>
 </h3>
 -->
 
@@ -46,8 +46,7 @@
 
 **AgentVerse** is designed to facilitate the deployment of multiple LLM-based agents in various applications. AgentVerse primarily provides two frameworks: **task-solving** and **simulation**. 
 
-- Task-solving: This framework assembles multiple agents as an automatic multi-agent system ([AgentVerse-Tasksolving](https://arxiv.org/pdf/2308.10848.pdf), [Multi-agent as system](https://arxiv.org/abs/2309.02427)) to collaboratively accomplish the corresponding tasks. 
-Applications: software development system, consulting system, etc. 
+**MilgramAgentVerse** is an extension to enable to study LLMs in the milgram experiment setting. 
 
 <p align="center">
 <img width="616" alt="Screen Shot 2023-09-01 at 12 08 57 PM" src="https://github.com/OpenBMB/AgentVerse/assets/11704492/6db1c907-b7fc-42f9-946c-89853a28f386">
@@ -64,45 +63,28 @@ Applications: software development system, consulting system, etc.
 
 
 # 📰 What's New
-- [2023/10/17] We're super excited to share our open-source AI community hugging face: [`AgentVerse`](https://huggingface.co/spaces/AgentVerse/agentVerse). You are able to try out the two simulation applications, NLP Classroom and Prisoner's Dilemma,with your code of the openai API key and the openai organization. Have fun!
-
-- [2023/10/5] Re-factor our codebase to enable the deployment of both simulation and task-solving framework! We have placed the code for Minecraft example in the paper at the [`minecraft`](https://github.com/OpenBMB/AgentVerse/tree/minecraft) branch. Our tool-using example will soon be updated to the `main` branch. Stay tuned!
-
-- [2023/8/22] We're excited to share our paper [AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors in Agents](https://arxiv.org/abs/2308.10848) that  illustrate the task-solving framework 
-in detail of AgentVerse.
-
-- [2023/6/5] We are thrilled to present an array of [demos](#-simple-demo-video), including [NLP Classroom](#nlp-classroom), [Prisoner Dilemma](#prisoner-dilemma), [Software Design](#software-design), [Database Administrator](#database-administrator-dba), and a simple [H5 Pokemon Game](#pokemon) that enables the interaction with the characters in Pokemon! Try out these demos and have fun!
-- [2023/5/1] 🚀 [AgentVerse](https://github.com/OpenBMB/AgentVerse) is officially launched!
-
+- [2023/12/29] Super exited to share that we added a run_local_model_server.py file with which you can also run your servers using python (we feel this is especially useful for windows users, or in case you just want to run out of your API terminal)
+- 
 
 
 
 # 🗓 Coming Soon
-- [x] Code release of our [paper](https://arxiv.org/abs/2308.10848)
-- [x] Add support for local LLM (LLaMA, Vicunna, etc.)
+- [ ] Add new agents for the milgram experiment
+- [ ] Add new environment for the milgram experiment
 - [ ] Add documentation
-- [ ] Support more sophisticated memory for conversation history
+
 
 
 <!--
 
+
 ## 👾 Simple Demo Video
 
-We demonstrate the following cases that are expertly crafted by AgentVerse.
+We demonstrate the Milgram Experiment which is crafted by @schutera.
 
 
-#### NLP Classroom
-In the NLP class, the professor and students engage in interactive communication. When students have a question, they raise their hands and patiently wait for the professor to call on them. Only after being called on by the professor, can students speak and ask their questions.
+#### Milgram Experiment (to be written and adjusted) 
 
-Use the following command to launch the NLP Classroom example:
-```bash
-python agentverse_command/main_simulation_gui.py --task simulation/nlp_classroom_9players
-```
-
-https://github.com/OpenBMB/AgentVerse/assets/11704492/6ea07850-595e-4a28-a82e-f863011353c2
-
-
-#### Prisoner Dilemma
 A prisoner's Dilemma is a thought experiment that challenges two completely rational agents to a dilemma: they can cooperate with their partner for mutual benefit or betray their partner ("defect") for individual reward.
 
 Use the following command to launch the Prisoner Dilemma example:
@@ -112,53 +94,6 @@ python agentverse_command/main_simulation_gui.py --task simulation/prisoner_dile
 
 https://github.com/OpenBMB/AgentVerse/assets/11704492/017c46e5-c738-4fca-9352-b008e2d518bd
 
-
-#### Software Design
-In the Software Design example, a code writer, a code tester and a code reviewer collaborate on the code generation problem. Given a problem, the code writer first composes the code implementation. The code tester runs the unit tests and provides the feedback. The code viewer then generates a review. After collecting the test feedback and review, the code writer iteratively refines the code.
-
-Use the following command to launch the Software Design example:
-```bash
-python agentverse_command/main_simulation_gui.py --task simulation/sde_team/sde_team_2players
-```
-
-https://github.com/OpenBMB/AgentVerse/assets/11704492/5058066a-abee-490d-8659-b4e54661626a
-
-
-#### [Database Administrator (DBA)](https://github.com/TsinghuaDatabaseGroup/DB-GPT)
-
-In the database diagnosis scenario, the Chief DBA monitors the system anomalies (e.g., slow queries, locks, crash down). If detected, the domain experts are alerted to analyze root causes, share insights, and suggest optimization solutions together. The Chief DBA then provides a summarized report to the user.
-
-```bash
-python agentverse_command/main_simulation_gui.py --task simulation/db_diag
-```
-
-https://github.com/OpenBMB/AgentVerse/assets/11704492/c633419d-afbb-47d4-bb12-6bb512e7af3a
-
-#### [Text Evaluation (ChatEval)](https://github.com/chanchimin/ChatEval)
-In the context of the text evaluation scenario, we recommend users explore the [ChatEval](https://github.com/chanchimin/ChatEval) repo. They've implemented a multi-agent referee team on AgentVerse to assess the quality of text generated by different models. When given two distinct pieces of text, roles within ChatEval can autonomously debate the nuances and disparities, drawing upon their assigned personas, and subsequently provide their judgments. Experiments indicate that their referee team, enriched with diverse roles specified in [config.yaml](#2-configuring-the-agents), aligns more closely with human evaluations. This demo is built upon the [Fastchat](https://github.com/lm-sys/FastChat) repo, and we'd like to express our appreciation for their foundational work.
-
-
-https://github.com/OpenBMB/AgentVerse/assets/75533759/58f33468-f15b-4bac-ae01-8d0780019f85
-
-#### Pokemon
-**Currently available only in [`release-0.1`](https://github.com/OpenBMB/AgentVerse/tree/release-0.1)**. In the game, agents can walk around the game world, and interact with one another. As a player, you take on the role of an agent and can engage with others at any time. There are 6 characters in the Pokémon environment who appeared in Pokemon Emerald: [May](https://bulbapedia.bulbagarden.net/wiki/May_(game)), [Professor Birch](https://bulbapedia.bulbagarden.net/wiki/Professor_Birch), [Steven Stone](https://bulbapedia.bulbagarden.net/wiki/Steven_Stone), [Maxie](https://bulbapedia.bulbagarden.net/wiki/Maxie), [Archie](https://bulbapedia.bulbagarden.net/wiki/Archie) and [Joseph](https://bulbapedia.bulbagarden.net/wiki/Mr._Stone). 
-
-To launch the Pokemon game, first launch a local server with the following command:
-```bash
-uvicorn pokemon_server:app --reload --port 10002
-```
-Then open another terminal in the project's root path and run the following command:
-```bash
-cd ui
-# If you do not have npm installed, you need to install it before running the following commands 
-# https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
-# We have tested on npm@9.6.4, node@20.0.0
-npm install
-npm run watch
-```
-Wait for the compilation to complete, and have fun! (WASD for moving around, and SPACE for launching a conversation.)
-
-https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f155e95782e7
 
 -->
 
