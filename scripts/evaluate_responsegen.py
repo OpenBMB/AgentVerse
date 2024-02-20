@@ -2,8 +2,9 @@ import os
 import json
 from string import Template
 import time
-import openai
+from openai import OpenAI
 from tqdm import tqdm
+from agentverse.llms.openai import DEFAULT_CLIENT as client
 
 with open("./results.jsonl", "r") as f:
     lines = list(f.readlines())
@@ -24,7 +25,6 @@ Answer: ('The better response is A' or 'The better response is B' or 'The better
 
 res = []
 eval = []
-
 
 def write_eval_to_file(file, skip=0):
     for idx, line in tqdm(enumerate(lines)):
@@ -50,7 +50,7 @@ def write_eval_to_file(file, skip=0):
         )
         for i in range(100):
             try:
-                eval_response = openai.ChatCompletion.create(
+                eval_response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.0,
@@ -59,7 +59,7 @@ def write_eval_to_file(file, skip=0):
                 time.sleep(min(i**2, 60))
                 continue
             break
-        text = eval_response["choices"][0]["message"]["content"]
+        text = eval_response.choices[0].message.content
         eval.append(text)
         text = text.replace("\n", "\n\n")
         f.write(f"{text}\n\n")
