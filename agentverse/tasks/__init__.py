@@ -16,5 +16,3 @@ from .pokemon.output_parser import PokemonParser
 from .sde_team.sde_team_3players.output_parser import SdeTeamParser
 from .sde_team.sde_team_2players.output_parser import SdeTeamGivenTestsParser
 from .minecraft.output_parser import Minecraft2PlayersParser
-from .minecraft_2players_painting.output_parser import Minecraft2PlayersPaintingParser
-from .minecraft_2players_paper.output_parser import Minecraft2PlayersPaperParser
