@@ -1,0 +1,15 @@
+[
+  {
+    "user_id": "admin",
+    "email": "admin",
+    "token": "agentverse-admin",
+    "name": "admin",
+    "available": true,
+    "create_time": "2023-10-27 14:31:09",
+    "update_time": "2023-10-27 14:31:09",
+    "corporation": "agentverse",
+    "industry": "AI",
+    "position": "agentverse",
+    "deleted": false
+  }
+]

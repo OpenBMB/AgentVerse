@@ -136,7 +136,6 @@ Latest Development:
 
         if not new_messages_not_in_chain:
             return self.summary_message(), []
-
         new_summary_message = await self.update_running_summary(
             new_events=new_messages_not_in_chain, model=model
         )
@@ -163,7 +162,6 @@ Latest Development:
         for event in new_events:
             if event["role"].lower() == "assistant":
                 event["role"] = "you"
-
             elif event["role"].lower() == "system":
                 event["role"] = "your computer"
 

@@ -12,6 +12,7 @@ def count_string_tokens(prompt: str = "", model: str = "gpt-3.5-turbo") -> int:
         return len(tiktoken.encoding_for_model(model).encode(prompt))
     elif model.lower() in LOCAL_LLMS or model in LOCAL_LLMS:
         from transformers import AutoTokenizer
+
         encoding = AutoTokenizer.from_pretrained(LOCAL_LLMS_MAPPING[model.lower()])
         return len(encoding.encode(prompt))
 

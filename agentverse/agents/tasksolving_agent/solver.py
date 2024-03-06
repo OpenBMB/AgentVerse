@@ -42,7 +42,6 @@ class SolverAgent(BaseAgent):
             role_description=self.role_description,
             **kwargs,
         )
-
         max_send_token = self.llm.send_token_limit(self.llm.args.model)
         max_send_token -= prompt_token
 

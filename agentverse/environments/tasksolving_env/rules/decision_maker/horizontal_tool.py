@@ -6,7 +6,7 @@ from colorama import Fore
 from itertools import cycle
 
 from typing import TYPE_CHECKING, List
-
+import uuid
 from . import decision_maker_registry
 from .base import BaseDecisionMaker
 from agentverse.logging import logger
@@ -45,6 +45,8 @@ class HorizontalToolDecisionMaker(BaseDecisionMaker):
         advice: str = "No advice yet.",
         **kwargs,
     ) -> List[str]:
+        interaction = kwargs.get("interaction", None)
+        cnt_turn = kwargs.get("cnt_turn", 0)
         agents[0].memory.reset()
         if advice != "No advice yet.":
             self.broadcast_messages(
@@ -74,6 +76,21 @@ class HorizontalToolDecisionMaker(BaseDecisionMaker):
                 f"[{review.sender}]: {review.content}",
                 Fore.YELLOW,
             )
+            if interaction:
+                await interaction.update_cache(
+                    update_data={
+                        "node_id": uuid.uuid4().hex,
+                        "task_id": cnt_turn,
+                        "stage_id": "decision_make",
+                        "data": {
+                            "name": review.sender,
+                            "thought": f"{review.content}",
+                            "stage_id": "decision_make",
+                        },
+                    },
+                    status="stage",
+                    current=cnt_turn,
+                )
             if end_flag:
                 break
 

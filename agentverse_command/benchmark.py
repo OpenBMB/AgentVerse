@@ -67,7 +67,7 @@ def cli_main():
         # print(args.single_agent)
         # print(args.discussion_mode)
         # exit()
-        plan, result, logs = agentverse.run()
+        plan, result, logs = asyncio.run(agentverse.run())
         f.write(
             json.dumps(
                 {

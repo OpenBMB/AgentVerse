@@ -338,7 +338,7 @@ To run AgentVerse on a specific problem, you can try
 agentverse-tasksolving --task tasksolving/brainstorming
 ```
 
-To run the tool using cases presented in our paper, i.e., multi-agent using tools such as web browser, Jupyter notebook, bing search, etc., you can first build ToolsServer provided by [XAgent](https://github.com/OpenBMB/XAgent). You can follow their [instruction](https://github.com/OpenBMB/XAgent#%EF%B8%8F-build-and-setup-toolserver) to build and run the ToolServer.
+To run the tool using cases presented in our paper, i.e., multi-agent using tools such as web browser, Jupyter notebook, bing search, etc., you can first build ToolsServer provided by [AgentVerse](https://github.com/OpenBMB/AgentVerse). You can follow their [instruction](https://github.com/OpenBMB/AgentVerse#%EF%B8%8F-build-and-setup-toolserver) to build and run the ToolServer.
 
 After building and launching the ToolServer, you can use the following command to run the task-solving cases with tools:
 ```shell

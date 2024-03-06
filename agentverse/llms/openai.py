@@ -129,6 +129,10 @@ class OpenAIChat(BaseChatModel):
             "gpt-4": 8192,
             "gpt-4-32k": 32768,
             "llama-2-7b-chat-hf": 4096,
+            "gpt-3.5-turbo-16k": 16384,
+            "gpt-4": 8192,
+            "gpt-4-32k": 32768,
+            "llama-2-7b-chat-hf": 4096,
         }
 
         return send_token_limit_dict[model]

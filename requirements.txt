@@ -18,3 +18,5 @@ rapidfuzz
 spacy
 colorama==0.4.6
 tiktoken==0.5.1
+inputimeout==1.0.4
+python-dotenv==1.0.0

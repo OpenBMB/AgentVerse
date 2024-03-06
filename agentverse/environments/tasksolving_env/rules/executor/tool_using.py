@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, List, Tuple
 from agentverse.agents import ExecutorAgent
 from agentverse.message import Message, ExecutorMessage, SolverMessage
 from agentverse.logging import logger
-
+import uuid
 from . import BaseExecutor, executor_registry
 import asyncio
 from agentverse.llms.utils.jsonrepair import JsonRepair
@@ -75,6 +75,8 @@ class ToolUsingExecutor(BaseExecutor):
         *args,
         **kwargs,
     ):
+        interaction = kwargs.get("interaction", None)
+        cnt_turn = kwargs.get("cnt_turn", 0)
         plan_this_turn = {}
         agent_name_this_turn = []
         for i in range(len(plans)):
@@ -164,6 +166,24 @@ class ToolUsingExecutor(BaseExecutor):
                     name,
                     Fore.YELLOW,
                 )
+                if interaction:
+                    await interaction.update_cache(
+                        update_data={
+                            "node_id": uuid.uuid4().hex,
+                            "task_id": cnt_turn,
+                            "stage_id": "aciton_exectuion",
+                            "data": {
+                                "name": name,
+                                "using_tools": {
+                                    "tool_name": observation.tool_name,
+                                    "tool_input": observation.tool_input,
+                                    "observation": observation.content,
+                                },
+                            },
+                        },
+                        status="stage",
+                        current=cnt_turn,
+                    )
                 if is_finish:
                     finished_agent_names.add(name)
                     result[name] = observation.content
@@ -323,7 +343,7 @@ class ToolUsingExecutor(BaseExecutor):
                     async with session.post(
                         f"{url}/execute_tool",
                         json=payload,
-                        timeout=30,
+                        timeout=60,
                     ) as response:
                         content = await response.text()
                         if command == "WebEnv_browse_website":
@@ -334,7 +354,6 @@ class ToolUsingExecutor(BaseExecutor):
                         elif command == "WebEnv_search_and_browse":
                             openai.aiosession.set(session)
                             content = json.loads(content)
-
                             # for i in range(len(content)):
                             summarized = await asyncio.gather(
                                 *[

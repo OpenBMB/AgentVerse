@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union, Optional
-
+from AgentVerseServer.interaction import AgentVerseInteraction
 from agentverse.agents.base import BaseAgent
 from agentverse.utils import AGENT_TYPES
 from agentverse.environments.tasksolving_env.rules.decision_maker import (
@@ -96,9 +96,11 @@ class TasksolvingRule(BaseRule):
         agents: List[BaseAgent],
         previous_plan: str,
         advice: str = "No advice yet.",
+        **kwargs,
     ) -> List[SolverMessage]:
         # TODO: plan should be string or a special type of object?
-
+        interaction = kwargs.get("interaction", None)
+        cnt_turn = kwargs.get("cnt_turn", 0)
         # dynamic
         if "dynamic" in self.decision_maker.name:
             plan = await self.decision_maker.astep(
@@ -114,6 +116,8 @@ class TasksolvingRule(BaseRule):
                 task_description=task_description,
                 previous_plan=previous_plan,
                 advice=advice,
+                interaction=interaction,
+                cnt_turn=cnt_turn,
             )
         return plan
 
@@ -122,13 +126,19 @@ class TasksolvingRule(BaseRule):
         task_description: str,
         agents: List[BaseAgent],
         final_solution: List[SolverMessage],
+        **kwargs,
     ) -> Any:
         """execution stage.
         Use the executor to finish the task.
         """
-
+        interaction = kwargs.get("interaction", None)
+        cnt_turn = kwargs.get("cnt_turn", 0)
         results = await self.executor.astep(
-            agents[AGENT_TYPES.EXECUTION], task_description, final_solution
+            agents[AGENT_TYPES.EXECUTION],
+            task_description,
+            final_solution,
+            interaction=interaction,
+            cnt_turn=cnt_turn,
         )
         if self.add_execution_result_to_critic:
             for agent in agents[AGENT_TYPES.CRITIC]:
