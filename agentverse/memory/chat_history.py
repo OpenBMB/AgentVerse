@@ -21,7 +21,7 @@ class ChatHistoryMemory(BaseMemory):
     max_summary_tlength: int = 500
     last_trimmed_index: int = 0
     summary: str = ""
-    SUMMARIZATION_PROMPT = '''Your task is to create a concise running summary of actions and information results in the provided text, focusing on key and potentially important information to remember.
+    SUMMARIZATION_PROMPT: str = '''Your task is to create a concise running summary of actions and information results in the provided text, focusing on key and potentially important information to remember.
 
 You will receive the current summary and your latest actions. Combine them, adding relevant key information from the latest development in 1st person past tense and keeping the summary concise.
 

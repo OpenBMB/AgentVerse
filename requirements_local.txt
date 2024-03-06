@@ -1,1 +1,1 @@
-fschat[model_worker,webui]
+fschat[model_worker,webui]==0.2.30
