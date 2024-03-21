@@ -64,6 +64,8 @@ Applications: software development system, consulting system, etc.
 
 
 # 📰 What's New
+- [2024/3/17] AgentVerse was introduced in NVIDIA's blog - [Building Your First LLM Agent Application](https://developer.nvidia.com/blog/building-your-first-llm-agent-application/). 
+
 - [2024/1/17] We're super excited to announce that our paper got accepted at ICLR 2024. More updates will be coming soon!
   
 - [2023/10/17] We're super excited to share our open-source AI community hugging face: [`AgentVerse`](https://huggingface.co/spaces/AgentVerse/agentVerse). You are able to try out the two simulation applications, NLP Classroom and Prisoner's Dilemma,with your code of the openai API key and the openai organization. Have fun!
