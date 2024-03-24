@@ -1,7 +1,3 @@
-from dotenv import load_dotenv, find_dotenv
-
-_ = load_dotenv(find_dotenv())
-
 import os
 from agentverse.gui import GUI
 from argparse import ArgumentParser

@@ -41,7 +41,7 @@ else:
     AZURE_API_BASE = os.environ.get("AZURE_OPENAI_API_BASE")
     VLLM_BASE_URL = os.environ.get("VLLM_BASE_URL")
     VLLM_API_KEY = os.environ.get("VLLM_API_KEY", "EMPTY")
-
+    
     if not OPENAI_API_KEY and not AZURE_API_KEY:
         logger.warn(
             "OpenAI API key is not set. Please set an environment variable OPENAI_API_KEY or "
@@ -61,7 +61,6 @@ else:
         DEFAULT_CLIENT_ASYNC = AsyncAzureOpenAI(
             api_key=AZURE_API_KEY,
             azure_endpoint=AZURE_API_BASE,
-            api_version="2024-02-15-preview",
         )
         api_key = AZURE_API_KEY
         base_url = AZURE_API_BASE
@@ -189,10 +188,15 @@ class OpenAIChat(BaseChatModel):
             "gpt-3.5-turbo": 4096,
             "gpt-35-turbo": 4096,
             "gpt-3.5-turbo-16k": 16384,
+            "gpt-3.5-turbo-0613": 16384,
+            "gpt-3.5-turbo-1106": 16384,
+            "gpt-3.5-turbo-0125": 16384,
             "gpt-4": 8192,
             "gpt-4-32k": 32768,
+            "gpt-4-0613": 32768,
+            "gpt-4-1106-preview": 131072,
+            "gpt-4-0125-preview": 131072,
             "llama-2-7b-chat-hf": 4096,
-            "gpt-4-long": 32768,
         }
         # Default to 4096 tokens if model is not in the dictionary
         return send_token_limit_dict[model] if model in send_token_limit_dict else 4096
@@ -321,7 +325,6 @@ class OpenAIChat(BaseChatModel):
             async_openai_client = AsyncOpenAI(
                 api_key=self.client_args["api_key"],
                 base_url=self.client_args["base_url"],
-                api_version="2024-02-15-preview",
             )
         try:
             if functions != []:
@@ -450,9 +453,13 @@ class OpenAIChat(BaseChatModel):
             "gpt-3.5-turbo-16k": 0.003,
             "gpt-3.5-turbo-0613": 0.0015,
             "gpt-3.5-turbo-16k-0613": 0.003,
+            "gpt-3.5-turbo-1106": 0.0005,
+            "gpt-3.5-turbo-0125": 0.0005,
             "gpt-4": 0.03,
             "gpt-4-0613": 0.03,
             "gpt-4-32k": 0.06,
+            "gpt-4-1106-preview": 0.01,
+            "gpt-4-0125-preview": 0.01,
             "llama-2-7b-chat-hf": 0.0,
         }
 
@@ -461,9 +468,13 @@ class OpenAIChat(BaseChatModel):
             "gpt-3.5-turbo-16k": 0.004,
             "gpt-3.5-turbo-0613": 0.002,
             "gpt-3.5-turbo-16k-0613": 0.004,
+            "gpt-3.5-turbo-1106": 0.0015,
+            "gpt-3.5-turbo-0125": 0.0015,
             "gpt-4": 0.06,
             "gpt-4-0613": 0.06,
             "gpt-4-32k": 0.12,
+            "gpt-4-1106-preview": 0.03,
+            "gpt-4-0125-preview": 0.03,
             "llama-2-7b-chat-hf": 0.0,
         }
 
