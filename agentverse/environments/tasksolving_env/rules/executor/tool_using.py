@@ -1,12 +1,12 @@
 import json
 import ast
-import openai
+from openai import OpenAI
 from string import Template
 from colorama import Fore
 from aiohttp import ClientSession
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, List, Tuple
-
+import httpx
 from agentverse.agents import ExecutorAgent
 from agentverse.message import Message, ExecutorMessage, SolverMessage
 from agentverse.logging import logger
@@ -14,9 +14,9 @@ from agentverse.logging import logger
 from . import BaseExecutor, executor_registry
 import asyncio
 from agentverse.llms.utils.jsonrepair import JsonRepair
+from agentverse.llms.openai import DEFAULT_CLIENT_ASYNC as client_async
 
 url = "http://127.0.0.1:8080"
-
 SUMMARIZE_PROMPT = """Here is the text gathered from a webpage, and a question you need to answer from the webpage. 
 -- Webpage -- 
 ${webpage}
@@ -219,7 +219,7 @@ class ToolUsingExecutor(BaseExecutor):
             )
             for _ in range(3):
                 try:
-                    response = await openai.ChatCompletion.acreate(
+                    response = await client_async.chat.completions.create(
                         messages=[{"role": "user", "content": summarize_prompt}],
                         model="gpt-3.5-turbo-16k",
                         functions=[
@@ -261,7 +261,7 @@ class ToolUsingExecutor(BaseExecutor):
                     continue
                 arguments = ast.literal_eval(
                     JsonRepair(
-                        response["choices"][0]["message"]["function_call"]["arguments"]
+                        response.choices[0].message.function_call.arguments
                     ).repair()
                 )
                 ret = (
@@ -300,7 +300,7 @@ class ToolUsingExecutor(BaseExecutor):
             }
         for i in range(3):
             try:
-                async with ClientSession(cookies=cookies, trust_env=True) as session:
+                async with httpx.AsyncClient(cookies=cookies, trust_env=True) as session:
                     if cookies is None:
                         async with session.post(
                             f"{url}/get_cookie", timeout=30
@@ -327,12 +327,12 @@ class ToolUsingExecutor(BaseExecutor):
                     ) as response:
                         content = await response.text()
                         if command == "WebEnv_browse_website":
-                            openai.aiosession.set(session)
+                            client_async.http_client = session
                             result = await _summarize_webpage(
                                 content, arguments["goals_to_browse"]
                             )
                         elif command == "WebEnv_search_and_browse":
-                            openai.aiosession.set(session)
+                            client_async.http_client = session
                             content = json.loads(content)
 
                             # for i in range(len(content)):

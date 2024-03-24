@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-import openai
+from openai import OpenAI
 import copy
 from typing import List, Optional, Tuple, Dict
 
@@ -12,7 +12,7 @@ from . import memory_registry
 from .base import BaseMemory
 from agentverse.llms.utils import count_message_tokens, count_string_tokens
 from agentverse.llms import OpenAIChat
-
+from agentverse.llms.openai import DEFAULT_CLIENT as openai_client
 
 @memory_registry.register("chat_history")
 class ChatHistoryMemory(BaseMemory):
@@ -206,12 +206,12 @@ Latest Development:
             summary=self.summary, new_events=new_events_batch
         )
 
-        self.summary = await openai.ChatCompletion.acreate(
+        self.summary = await openai_client.chat.completions.acreate(
             messages=[{"role": "user", "content": prompt}],
             model=model,
             max_tokens=max_summary_length,
             temperature=0.5,
-        )["choices"][0]["message"]["content"]
+        ).choices[0].message.content
 
     def summary_message(self) -> dict:
         return {

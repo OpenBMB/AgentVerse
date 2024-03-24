@@ -218,6 +218,8 @@ https://github.com/OpenBMB/AgentVerse/assets/11704492/4d07da68-f942-4205-b558-f1
     - [Framework Required Modules](#framework-required-modules-1)
     - [CLI Example](#cli-example-1)
   - [Local Model Support](#local-model-support)
+  - [vLLM Support](#vllm-support)
+  - [FSChat Support](#fschat-support)
     - [1. Install the Additional Dependencies](#1-install-the-additional-dependencies)
     - [2. Launch the Local Server](#2-launch-the-local-server)
     - [3. Modify the Config File](#3-modify-the-config-file)
@@ -351,6 +353,21 @@ We have provided more tasks in `agentverse/tasks/tasksolving/tool_using/` that s
 Also, you can take a look at `agentverse/tasks/tasksolving` for more experiments we have done in our paper.
 
 ## Local Model Support
+## vLLM Support
+If you want to use vLLM, follow the guide [here](https://docs.vllm.ai/en/latest/getting_started/quickstart.html) to install and setup the vLLM server which is used to handle larger inference workloads. Create the following environment variables to connect to the vLLM server:
+```bash
+export VLLM_API_KEY="your_api_key_here"
+export VLLM_API_BASE="http://your_vllm_url_here"
+```
+
+Then modify the `model` in the task config file so that it matches the model name in the vLLM server. For example:
+```yaml
+model_type: vllm
+model: llama-2-7b-chat-hf
+```
+
+## FSChat Support
+This section provides a step-by-step guide to integrate FSChat into AgentVerse. FSChat is a framework that supports local models such as LLaMA, Vicunna, etc. running on your local machine.
 ### 1. Install the Additional Dependencies
 If you want to use local models such as LLaMA, you need to additionally install some other dependencies:
 ```bash
