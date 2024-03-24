@@ -35,6 +35,7 @@ jobs:
       env: 
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         OPENAI_ORGANIZATION: ${{ secrets.OPENAI_ORGANIZATION }}
+        OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL  }}
       run: |
         python setup.py develop 
         python agentverse_command/benchmark.py --task tasksolving/mgsm/gpt-3.5 --dataset_path data/mgsm/test_sample.jsonl --overwrite --output_path ci_smoke_test_output --tasks_dir ./agentverse/tasks
