@@ -31,7 +31,7 @@ db.createUser({ user: "user", pwd: "000000", roles: [{ role: "readWrite", db: "m
 ```
 
 ### 4. Acquiring and Building the Environment via Docker
-Start by downloading the necessary files from either [Tsinghua Cloud](https://cloud.tsinghua.edu.cn/f/f57bb9ae244d4607a066/?dl=1) or [Google Drive](https://drive.google.com/file/d/1S-NyuD6MoZSjUIX3-zFvFN8DGm9bgB6R/view?usp=sharing). After extraction, navigate to the folder via terminal and execute the command below to construct the Docker image:
+Start by downloading the necessary files from either [Tsinghua Cloud](https://cloud.tsinghua.edu.cn/f/6c1213d699ef415ebf21/?dl=1). After extraction, navigate to the folder via terminal and execute the command below to construct the Docker image:
 ```bash
 bash build_all.sh
 ```
