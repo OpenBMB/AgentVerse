@@ -232,11 +232,12 @@ class OpenAIChat(BaseChatModel):
         try:
             # Execute function call
             if functions != []:
-                response = openai_client.chat.completions.create(
-                    messages=messages,
-                    functions=functions,
-                    **self.args.dict(),
-                )
+                async with async_openai_client:   
+                    response = openai_client.chat.completions.create(
+                        messages=messages,
+                        functions=functions,
+                        **self.args.dict(),
+                    )
 
                 logger.log_prompt(
                     [
@@ -275,10 +276,11 @@ class OpenAIChat(BaseChatModel):
                     )
 
             else:
-                response = openai_client.chat.completions.create(
-                    messages=messages,
-                    **self.args.dict(),
-                )
+                async with async_openai_client:   
+                    response = openai_client.chat.completions.create(
+                        messages=messages,
+                        **self.args.dict(),
+                    )
                 logger.log_prompt(
                     [
                         {
