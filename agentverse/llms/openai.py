@@ -209,7 +209,7 @@ class OpenAIChat(BaseChatModel):
     #         exception_types=(OpenAIError, json.decoder.JSONDecodeError, Exception)
     #     ),
     # )
-    def generate_response(
+    async def generate_response(
         self,
         prepend_prompt: str = "",
         history: List[dict] = [],
