@@ -41,7 +41,7 @@ else:
     AZURE_API_BASE = os.environ.get("AZURE_OPENAI_API_BASE")
     VLLM_BASE_URL = os.environ.get("VLLM_BASE_URL")
     VLLM_API_KEY = os.environ.get("VLLM_API_KEY", "EMPTY")
-    
+
     if not OPENAI_API_KEY and not AZURE_API_KEY:
         logger.warn(
             "OpenAI API key is not set. Please set an environment variable OPENAI_API_KEY or "
@@ -49,7 +49,9 @@ else:
         )
     elif OPENAI_API_KEY:
         DEFAULT_CLIENT = OpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL)
-        DEFAULT_CLIENT_ASYNC = AsyncOpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL)
+        DEFAULT_CLIENT_ASYNC = AsyncOpenAI(
+            api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL
+        )
         api_key = OPENAI_API_KEY
         base_url = OPENAI_BASE_URL
     elif AZURE_API_KEY:
@@ -232,12 +234,11 @@ class OpenAIChat(BaseChatModel):
         try:
             # Execute function call
             if functions != []:
-                async with async_openai_client:   
-                    response = openai_client.chat.completions.create(
-                        messages=messages,
-                        functions=functions,
-                        **self.args.dict(),
-                    )
+                response = openai_client.chat.completions.create(
+                    messages=messages,
+                    functions=functions,
+                    **self.args.dict(),
+                )
 
                 logger.log_prompt(
                     [
@@ -276,11 +277,10 @@ class OpenAIChat(BaseChatModel):
                     )
 
             else:
-                async with async_openai_client:   
-                    response = openai_client.chat.completions.create(
-                        messages=messages,
-                        **self.args.dict(),
-                    )
+                response = openai_client.chat.completions.create(
+                    messages=messages,
+                    **self.args.dict(),
+                )
                 logger.log_prompt(
                     [
                         {
