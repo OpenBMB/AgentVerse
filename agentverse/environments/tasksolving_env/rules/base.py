@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union, Optional
+from enum import Enum
 
 from agentverse.agents.base import BaseAgent
 from agentverse.utils import AGENT_TYPES
@@ -71,7 +72,7 @@ class TasksolvingRule(BaseRule):
     async def role_assign(
         self,
         task_description: str,
-        agents: List[BaseAgent],
+        agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]],
         cnt_turn: int,
         advice: str = "",
     ) -> List[BaseAgent]:
@@ -79,21 +80,21 @@ class TasksolvingRule(BaseRule):
         if self.role_assign_only_once and cnt_turn > 0:
             agents = [agents[AGENT_TYPES.SOLVER]] + agents[AGENT_TYPES.CRITIC]
         else:
-            agents = await self.role_assigner.astep(
+            critic_agents = await self.role_assigner.astep(
                 role_assigner=agents[AGENT_TYPES.ROLE_ASSIGNMENT],
                 group_members=[agents[AGENT_TYPES.SOLVER]] + agents[AGENT_TYPES.CRITIC],
                 advice=advice,
                 task_description=task_description,
             )
             if self.role_assign_only_once and cnt_turn == 0:
-                agents[AGENT_TYPES.SOLVER] = agents[0]
-                agents[AGENT_TYPES.CRITIC] = agents[1:]
-        return agents
+                agents[AGENT_TYPES.SOLVER] = critic_agents[0]
+                agents[AGENT_TYPES.CRITIC] = critic_agents[1:]
+        return critic_agents
 
     async def decision_making(
         self,
         task_description: str,
-        agents: List[BaseAgent],
+        agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]],
         previous_plan: str,
         advice: str = "No advice yet.",
     ) -> List[SolverMessage]:
@@ -120,7 +121,7 @@ class TasksolvingRule(BaseRule):
     async def execute(
         self,
         task_description: str,
-        agents: List[BaseAgent],
+        agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]],
         final_solution: List[SolverMessage],
     ) -> Any:
         """execution stage.
@@ -140,7 +141,7 @@ class TasksolvingRule(BaseRule):
     async def evaluate(
         self,
         task_description: str,
-        agents: List[BaseAgent],
+        agents: Dict[Enum, Union[BaseAgent, List[BaseAgent]]],
         solution: List[SolverMessage],
         result: List[ExecutorMessage],
     ) -> Tuple[List[int], str]:
