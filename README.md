@@ -584,7 +584,7 @@ Also, if you're passionate about advancing the frontiers of multi-agent applicat
 
 # Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=OpenBMB/AgentVerse&type=Date)](https://star-history.com/#OpenBMB/AgentVerse&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=OpenBMB/AgentVerse)](https://star-history.com/#OpenBMB/AgentVerse)
 
 
 ## Citation
