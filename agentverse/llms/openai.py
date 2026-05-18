@@ -239,6 +239,8 @@ class OpenAIChat(BaseChatModel):
                     functions=functions,
                     **self.args.dict(),
                 )
+                if not response.choices or response.choices[0].message is None:
+                    raise ValueError("LLM returned empty or filtered response")
 
                 logger.log_prompt(
                     [
@@ -281,6 +283,8 @@ class OpenAIChat(BaseChatModel):
                     messages=messages,
                     **self.args.dict(),
                 )
+                if not response.choices or response.choices[0].message is None:
+                    raise ValueError("LLM returned empty or filtered response")
                 logger.log_prompt(
                     [
                         {
@@ -335,6 +339,8 @@ class OpenAIChat(BaseChatModel):
                     functions=functions,
                     **self.args.dict(),
                 )
+                if not response.choices or response.choices[0].message is None:
+                    raise ValueError("LLM returned empty or filtered response")
                 logger.log_prompt(
                     [
                         {
@@ -415,6 +421,8 @@ class OpenAIChat(BaseChatModel):
                     messages=messages,
                     **self.args.dict(),
                 )
+                if not response.choices or response.choices[0].message is None:
+                    raise ValueError("LLM returned empty or filtered response")
                 self.collect_metrics(response)
                 logger.log_prompt(
                     [

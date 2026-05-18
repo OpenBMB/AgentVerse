@@ -59,6 +59,8 @@ def write_eval_to_file(file, skip=0):
                 time.sleep(min(i**2, 60))
                 continue
             break
+        if not eval_response.choices or eval_response.choices[0].message is None:
+            raise ValueError("LLM returned empty or filtered response")
         text = eval_response.choices[0].message.content
         eval.append(text)
         text = text.replace("\n", "\n\n")
