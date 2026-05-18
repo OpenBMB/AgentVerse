@@ -206,12 +206,15 @@ Latest Development:
             summary=self.summary, new_events=new_events_batch
         )
 
-        self.summary = await openai_client.chat.completions.acreate(
+        _resp = await openai_client.chat.completions.acreate(
             messages=[{"role": "user", "content": prompt}],
             model=model,
             max_tokens=max_summary_length,
             temperature=0.5,
-        ).choices[0].message.content
+        )
+        if not _resp.choices or _resp.choices[0].message is None:
+            raise ValueError("LLM returned empty or filtered response")
+        self.summary = _resp.choices[0].message.content
 
     def summary_message(self) -> dict:
         return {
