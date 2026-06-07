@@ -39,3 +39,4 @@ LOCAL_LLMS_MAPPING = {
 
 from .base import BaseLLM, BaseChatModel, BaseCompletionModel, LLMResult
 from .openai import OpenAIChat
+from .minimax import MiniMaxChat
