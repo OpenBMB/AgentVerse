@@ -252,7 +252,7 @@ class OpenAIChat(BaseChatModel):
                     self.collect_metrics(response)
 
                     return LLMResult(
-                        content=response.choices[0].message.get("content", ""),
+                        content=response.choices[0].message.content or "",
                         function_name=response.choices[0].message.function_call.name,
                         function_arguments=ast.literal_eval(
                             response.choices[0].message.function_call.arguments
