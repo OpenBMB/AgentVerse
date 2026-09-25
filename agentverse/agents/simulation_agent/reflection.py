@@ -4,6 +4,8 @@ from __future__ import annotations
 An agent based upon Observation-Planning-Reflection architecture.
 """
 
+import ast
+import re
 from logging import getLogger
 
 from abc import abstractmethod
@@ -51,6 +53,60 @@ class ReflectionAgent(BaseAgent):
             raise ValueError("current_time should be str")
         return dt.strptime(current_time, "%Y-%m-%d %H:%M:%S")
 
+    def _parse_and_call(self, output: str):
+        """Safely parse LLM output and call the corresponding method.
+
+        Replaces insecure eval() call with safe parsing.
+        LLM output format: "say(description, target)" or "act(description, target)"
+
+        Args:
+            output: LLM output string to parse
+
+        Returns:
+            Tuple of (reaction, target) from the called method,
+            or (None, None) if parsing fails or do_nothing
+        """
+        output = output.strip()
+
+        # Check which method to call
+        if output.startswith("say("):
+            method_name = "_say"
+            # Extract content between parentheses
+            match = re.match(r"^say\(\s*(.*?)\s*\)\s*$", output, re.DOTALL)
+            if not match:
+                return None, None
+            args_str = match.group(1)
+        elif output.startswith("act("):
+            method_name = "_act"
+            match = re.match(r"^act\(\s*(.*?)\s*\)\s*$", output, re.DOTALL)
+            if not match:
+                return None, None
+            args_str = match.group(1)
+        elif output.startswith("do_nothing("):
+            return None, None
+        else:
+            return None, None
+
+        # Get the method
+        method = getattr(self, method_name, None)
+        if method is None:
+            return None, None
+
+        # Parse arguments safely
+        try:
+            if not args_str.strip():
+                return method()
+            # Try to parse as a literal (handles strings, numbers, etc.)
+            args = ast.literal_eval(f"({args_str},)")
+            return method(*args)
+        except Exception:
+            # Fallback: try simple string parsing for backward compatibility
+            try:
+                # Handle simple case: single unquoted string
+                return method(args_str.strip())
+            except Exception:
+                return None, None
+
     def step(self, current_time: dt, env_description: str = "") -> Message:
         """
         Call this method at each time frame
@@ -67,21 +123,17 @@ class ReflectionAgent(BaseAgent):
                 response = self.llm.agenerate_response(prompt)
                 parsed_response = self.output_parser.parse(response)
 
-                if "say(" in parsed_response.return_values["output"]:
-                    reaction, target = eval(
-                        "self._" + parsed_response.return_values["output"].strip()
-                    )
-                elif "act(" in parsed_response.return_values["output"]:
-                    reaction, target = eval(
-                        "self._" + parsed_response.return_values["output"].strip()
-                    )
-                elif "do_nothing(" in parsed_response.return_values["output"]:
-                    reaction, target = None, None
-                else:
-                    raise Exception(
-                        f"no valid parsed_response detected, "
-                        f"cur response {parsed_response.return_values['output']}"
-                    )
+                reaction, target = self._parse_and_call(
+                    parsed_response.return_values["output"]
+                )
+                if reaction is None and target is None:
+                    # Check if it was a valid but unparseable output
+                    output = parsed_response.return_values["output"]
+                    if not any(x in output for x in ["say(", "act(", "do_nothing("]):
+                        raise Exception(
+                            f"no valid parsed_response detected, "
+                            f"cur response {output}"
+                        )
                 break
 
             except Exception as e:
@@ -125,21 +177,17 @@ class ReflectionAgent(BaseAgent):
                 response = await self.llm.agenerate_response(prompt)
                 parsed_response = self.output_parser.parse(response)
 
-                if "say(" in parsed_response.return_values["output"]:
-                    reaction, target = eval(
-                        "self._" + parsed_response.return_values["output"].strip()
-                    )
-                elif "act(" in parsed_response.return_values["output"]:
-                    reaction, target = eval(
-                        "self._" + parsed_response.return_values["output"].strip()
-                    )
-                elif "do_nothing(" in parsed_response.return_values["output"]:
-                    reaction, target = None, None
-                else:
-                    raise Exception(
-                        f"no valid parsed_response detected, "
-                        f"cur response {parsed_response.return_values['output']}"
-                    )
+                reaction, target = self._parse_and_call(
+                    parsed_response.return_values["output"]
+                )
+                if reaction is None and target is None:
+                    # Check if it was a valid but unparseable output
+                    output = parsed_response.return_values["output"]
+                    if not any(x in output for x in ["say(", "act(", "do_nothing("]):
+                        raise Exception(
+                            f"no valid parsed_response detected, "
+                            f"cur response {output}"
+                        )
 
                 break
 
