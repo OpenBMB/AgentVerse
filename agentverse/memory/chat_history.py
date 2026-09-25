@@ -101,7 +101,7 @@ Latest Development:
                 continue
             messages.append(
                 {
-                    "role": "assistant",
+                    "role": "user",
                     "content": f"[{message.sender}]: {message.content}",
                 }
             )

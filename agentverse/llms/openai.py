@@ -511,6 +511,6 @@ def get_embedding(text: str, attempts=3) -> np.array:
         ).model_dump_json(indent=2)
         return tuple(embedding)
     except Exception as e:
-        attempt += 1
+        attempts += 1
         logger.error(f"Error {e} when requesting openai models. Retrying")
         raise
