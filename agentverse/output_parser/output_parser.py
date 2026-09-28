@@ -374,16 +374,18 @@ class HumanevalSolverParser(OutputParser):
                 text,
                 re.DOTALL,
             )[0]
+            code = parsed_result[4].strip().strip("`").strip()
+            if code.startswith("python3"):
+                code = code[len("python3") :]
+            elif code.startswith("python"):
+                code = code[len("python") :]
+            code = code.strip()
             cleaned_output = {
                 "thought": parsed_result[0].strip(),
                 "reasoning": parsed_result[1].strip(),
                 "criticism": parsed_result[2].strip(),
                 "file_path": parsed_result[3].strip().strip("`"),
-                "code": parsed_result[4]
-                .strip()
-                .strip("```")
-                .strip("python")
-                .strip("python3"),
+                "code": code,
                 "command": parsed_result[5].strip().strip("`"),
             }
         except BaseException as e:
